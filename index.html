@@ -9,11 +9,9 @@
     <style>
         :root {
             --bg-color: #0d0d0e;
-            --sidebar-bg: #141416;
             --card-bg: #18181b;
             --input-bg: #222226;
             --border-color: rgba(255, 255, 255, 0.08);
-            --border-hover: rgba(200, 168, 110, 0.4);
             --text-main: #ffffff;
             --text-sub: #8e8e93;
             --primary: #C8A86E;
@@ -29,12 +27,1395 @@
 
         body.light-mode {
             --bg-color: #f5f5f7;
-            --sidebar-bg: #ffffff;
             --card-bg: #ffffff;
             --input-bg: #f0f0f4;
             --border-color: rgba(0, 0, 0, 0.08);
-            --border-hover: rgba(179, 142, 75, 0.45);
             --text-main: #18181b;
+            --text-sub: #6c6c70;
+            --primary: #B38E4B;
+            --primary-light: rgba(179, 142, 75, 0.12);
+            --primary-btn-text: #ffffff;
+            --shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+            --nav-bg: #ffffff;
+            --ios-icon-bg: #e5e5ea;
+            --ios-icon-stroke: #1c1c1e;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif; }
+        
+        /* 🍎 全域精緻細膩滾動條 */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 999px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.28); }
+        body.light-mode ::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.15); }
+        body.light-mode ::-webkit-scrollbar-thumb:hover { background: rgba(0, 0, 0, 0.28); }
+
+        body { 
+            background-color: var(--bg-color); 
+            color: var(--text-main); 
+            display: flex; 
+            justify-content: center; 
+            min-height: 100vh; 
+            transition: background-color 0.25s ease; 
+        }
+
+        /* ============================================================
+           📱 手機端排版：完整保留原本調校好的樣式，絕不更動！
+           ============================================================ */
+        @media (max-width: 859px) {
+            body { 
+                min-height: 100dvh; 
+                padding-bottom: calc(75px + env(safe-area-inset-bottom, 16px)); 
+            }
+            .app-container { 
+                width: 100%; 
+                max-width: 480px; 
+                padding: 10px 14px 6px 14px; 
+                display: flex; 
+                flex-direction: column; 
+                justify-content: flex-start; 
+                gap: 10px; 
+            }
+            .stats-bar { padding: 8px 10px; border-radius: 16px; }
+            .stat-item .val { font-size: 16px; }
+            .flashcard-container { height: clamp(210px, 32vh, 270px); }
+            .card-face { padding: 18px 14px; border-radius: 22px; }
+            .card-prompt-text { font-size: clamp(28px, 8vw, 42px); }
+            .card-prompt-text.long-text { font-size: clamp(20px, 5.5vw, 28px); }
+            .card-input { padding: 14px 16px; font-size: 16px; border-radius: 18px; }
+            .btn-submit { padding: 0 20px; font-size: 16px; border-radius: 18px; }
+            .btn-action { padding: 14px; font-size: 16px; border-radius: 18px; }
+
+            body.keyboard-open {
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                overflow: hidden !important;
+                padding-bottom: 0 !important;
+            }
+            body.keyboard-open .app-container { padding: 6px 12px 0 12px !important; gap: 6px !important; }
+            body.keyboard-open header { display: flex !important; padding: 0 2px !important; }
+            body.keyboard-open .silks-logo { height: 28px !important; }
+            body.keyboard-open .app-title { font-size: 17px !important; }
+            body.keyboard-open .theme-toggle { padding: 4px 10px !important; font-size: 11px !important; }
+            body.keyboard-open .stats-bar { display: grid !important; padding: 5px 8px !important; gap: 4px !important; border-radius: 12px !important; }
+            body.keyboard-open .stat-item .val { font-size: 15px !important; }
+            body.keyboard-open .stat-item .lbl { font-size: 10px !important; }
+            body.keyboard-open .flashcard-container { height: 140px !important; margin-top: 0 !important; }
+            body.keyboard-open .card-face { padding: 10px 12px !important; border-radius: 16px !important; }
+            body.keyboard-open .card-badge { font-size: 11px !important; padding: 2px 8px !important; border-radius: 8px !important; }
+            body.keyboard-open .card-prompt-text { font-size: 26px !important; line-height: 1.25 !important; }
+            body.keyboard-open .card-prompt-text.long-text { font-size: 18px !important; }
+            body.keyboard-open .card-star { top: 8px !important; right: 10px !important; font-size: 18px !important; }
+            body.keyboard-open .card-face div[style*="font-size: 13px"] { display: none !important; }
+            body.keyboard-open .action-area { gap: 6px !important; }
+            body.keyboard-open .card-input { padding: 12px 14px !important; font-size: 15px !important; border-radius: 14px !important; }
+            body.keyboard-open .btn-submit { padding: 0 18px !important; font-size: 15px !important; border-radius: 14px !important; }
+            body.keyboard-open .nav-bar { display: none !important; }
+            
+            .desktop-dock-nav { display: none !important; }
+        }
+
+        /* 頂部 Header */
+        header { display: flex; justify-content: space-between; align-items: center; padding: 2px 2px; }
+        .header-left { display: flex; align-items: center; gap: 10px; }
+        
+        .silks-logo {
+            height: 34px;
+            width: auto;
+            max-width: 42px;
+            object-fit: contain;
+            display: block;
+            transition: filter 0.2s;
+        }
+
+        body:not(.light-mode) .silks-logo { filter: brightness(0) invert(1); }
+        body.light-mode .silks-logo { filter: none; }
+
+        .app-title { font-size: 19px; font-weight: 800; color: var(--text-main); letter-spacing: 0.5px; transition: color 0.2s; }
+        
+        .theme-toggle { 
+            background: var(--card-bg); 
+            border: 1px solid var(--border-color); 
+            padding: 6px 14px; 
+            border-radius: 20px; 
+            cursor: pointer; 
+            color: var(--text-main); 
+            font-size: 13px; 
+            font-weight: 600; 
+            display: flex; 
+            align-items: center; 
+            gap: 6px; 
+            transition: 0.2s; 
+        }
+        .theme-toggle svg { width: 14px; height: 14px; stroke: var(--primary); fill: none; stroke-width: 2.2; }
+
+        /* 數據總覽 Bar */
+        .stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; background: var(--card-bg); border: 1px solid var(--border-color); box-shadow: var(--shadow); text-align: center; }
+        .stat-item .val { font-weight: 800; color: var(--primary); }
+        .stat-item .lbl { font-size: 11px; color: var(--text-sub); margin-top: 1px; }
+
+        .view-content { display: none; flex-direction: column; gap: 12px; width: 100%; }
+        .view-content.active { display: flex; }
+
+        .learn-layout { display: flex; flex-direction: column; gap: 12px; width: 100%; }
+
+        /* 大卡牌核心容器 */
+        .flashcard-container { perspective: 1000px; width: 100%; transition: height 0.2s ease; }
+        .flashcard { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 24px; }
+        .flashcard.flipped { transform: rotateY(180deg); }
+        
+        .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 24px; background: var(--card-bg); border: 1px solid var(--border-color); padding: 22px 18px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; text-align: center; box-shadow: var(--shadow); }
+        .card-back { transform: rotateY(180deg); }
+
+        .card-star { position: absolute; top: 16px; right: 18px; font-size: 24px; color: #404040; cursor: pointer; z-index: 10; }
+        .card-star.active { color: #f59e0b; }
+        .card-badge { font-size: 12px; font-weight: 700; padding: 5px 14px; border-radius: 14px; background: var(--input-bg); border: 1px solid var(--border-color); color: var(--primary); letter-spacing: 0.3px; }
+        
+        .card-prompt-text { font-weight: 800; letter-spacing: 0.5px; color: var(--text-main); margin: auto 0; line-height: 1.35; padding: 0 10px; word-break: break-word; }
+
+        /* 卡牌背面答案展現 */
+        .result-badge { font-size: 14px; font-weight: 800; padding: 6px 16px; border-radius: 18px; }
+        .result-badge.correct { background: rgba(48, 209, 88, 0.18); color: var(--accent); border: 1px solid rgba(48, 209, 88, 0.35); }
+        .result-badge.wrong { background: rgba(255, 69, 58, 0.18); color: var(--danger); border: 1px solid rgba(255, 69, 58, 0.35); }
+        .ans-code { font-size: 34px; font-weight: 900; color: var(--primary); margin-top: 4px; word-break: break-word; }
+        .ans-cn { font-size: 20px; font-weight: 700; color: var(--text-main); margin-top: 4px; line-height: 1.3; }
+        .ans-user { font-size: 13px; color: var(--text-sub); margin-top: 8px; background: var(--input-bg); padding: 5px 12px; border-radius: 10px; border: 1px solid var(--border-color); }
+
+        /* 下方輸入框與按鈕 */
+        .action-area { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+        .input-group { width: 100%; display: flex; gap: 8px; }
+        .card-input { flex: 1; border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-main); font-weight: 600; outline: none; transition: 0.2s; box-shadow: var(--shadow); }
+        .card-input:focus { border-color: var(--primary); }
+        .btn-submit { background: var(--primary); color: var(--primary-btn-text); border: none; font-weight: 800; cursor: pointer; transition: opacity 0.2s; }
+        .btn-submit:active { opacity: 0.85; }
+        
+        .btn-action { background: var(--primary); color: var(--primary-btn-text); font-weight: 800; border: none; width: 100%; cursor: pointer; transition: opacity 0.2s, background-color 0.2s; }
+        .btn-action:active { opacity: 0.85; }
+        .hidden { display: none !important; }
+
+        /* 📋 十題測驗成績單結算卡片樣式 */
+        .exam-report-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            border: 1px solid var(--border-color);
+            padding: 24px 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .exam-score-header {
+            text-align: center;
+            padding: 10px 0 16px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .exam-score-title { font-size: 13px; font-weight: 700; color: var(--primary); letter-spacing: 1px; text-transform: uppercase; }
+        .exam-score-val { font-size: 58px; font-weight: 900; color: var(--text-main); margin: 6px 0; line-height: 1; font-feature-settings: "tnum"; }
+        .exam-score-sub { font-size: 13px; color: var(--text-sub); font-weight: 500; }
+        
+        .exam-details-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 380px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+        .exam-item-box {
+            background: var(--input-bg);
+            border-radius: 16px;
+            padding: 14px 16px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 13px;
+        }
+        .exam-item-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 700;
+        }
+        .exam-item-badge {
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 8px;
+            font-weight: 800;
+        }
+        .exam-item-badge.correct { background: rgba(48, 209, 88, 0.18); color: var(--accent); }
+        .exam-item-badge.wrong { background: rgba(255, 69, 58, 0.18); color: var(--danger); }
+        .exam-item-row { display: flex; gap: 8px; line-height: 1.4; }
+        .exam-item-row .lbl { color: var(--text-sub); min-width: 65px; flex-shrink: 0; }
+        .exam-item-row .val { color: var(--text-main); font-weight: 600; }
+        .exam-item-row .user-ans.correct { color: var(--accent); font-weight: 700; }
+        .exam-item-row .user-ans.wrong { color: var(--danger); font-weight: 700; }
+
+        /* 測驗模式 */
+        .quiz-card { background: var(--card-bg); border-radius: 22px; padding: 20px 16px; border: 1px solid var(--border-color); box-shadow: var(--shadow); }
+        .quiz-q { font-size: 18px; font-weight: 800; margin-bottom: 16px; line-height: 1.4; }
+        .quiz-opts { display: flex; flex-direction: column; gap: 10px; }
+        .q-opt { background: var(--input-bg); border: 1px solid var(--border-color); padding: 14px 16px; border-radius: 16px; font-weight: 700; font-size: 15px; text-align: left; cursor: pointer; color: var(--text-main); transition: 0.15s; }
+        .q-opt.correct { background: rgba(48, 209, 88, 0.2); border-color: var(--accent); color: var(--accent); }
+        .q-opt.wrong { background: rgba(255, 69, 58, 0.2); border-color: var(--danger); color: var(--danger); }
+
+        /* 代碼庫清單 */
+        .search-box { width: 100%; padding: 14px 18px; border-radius: 16px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-main); font-size: 15px; font-weight: 600; outline: none; }
+        .list-container { display: flex; flex-direction: column; gap: 8px; }
+        .list-item { background: var(--card-bg); padding: 14px 18px; border-radius: 18px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+        .list-item-left .code { font-weight: 900; font-size: 17px; color: var(--primary); }
+        .list-item-left .cn { font-size: 14px; font-weight: 700; color: var(--text-main); margin-top: 3px; }
+        .list-item-cat { font-size: 11px; padding: 3px 8px; border-radius: 8px; background: var(--input-bg); color: var(--text-sub); font-weight: 700; }
+
+        /* iOS 原生設定列表 */
+        .ios-group-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-sub);
+            padding: 6px 16px 8px 16px;
+            letter-spacing: -0.1px;
+        }
+        .ios-group {
+            background: var(--card-bg);
+            border-radius: 14px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+        .ios-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 11px 16px;
+            cursor: pointer;
+            position: relative;
+            background: var(--card-bg);
+            transition: background-color 0.15s;
+        }
+        .ios-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 56px;
+            right: 0;
+            height: 1px;
+            background: var(--border-color);
+            opacity: 0.6;
+        }
+        .ios-item:active { background: var(--input-bg); }
+        .ios-item-left { display: flex; align-items: center; gap: 14px; }
+        
+        .ios-icon-box {
+            width: 30px;
+            height: 30px;
+            border-radius: 7px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--ios-icon-bg);
+            flex-shrink: 0;
+            transition: background-color 0.2s;
+        }
+        .ios-icon-box svg {
+            width: 17px;
+            height: 17px;
+            stroke: var(--ios-icon-stroke);
+            fill: none;
+            stroke-width: 2.2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: stroke 0.2s;
+        }
+
+        .ios-label {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-main);
+            letter-spacing: -0.3px;
+        }
+
+        .ios-check {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--primary);
+            opacity: 0;
+            transform: scale(0.7);
+            transition: opacity 0.15s ease, transform 0.15s ease;
+        }
+        .ios-item.active .ios-check {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* 手機底部導覽列 */
+        .nav-bar { 
+            position: fixed; 
+            bottom: 0; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            width: 100%; 
+            max-width: 480px; 
+            background: var(--nav-bg); 
+            border-top: 1px solid var(--border-color); 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            padding-top: 8px;
+            padding-bottom: calc(14px + env(safe-area-inset-bottom, 12px)); 
+            z-index: 100; 
+        }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; border: none; background: none; color: var(--text-sub); font-size: 11px; font-weight: 700; cursor: pointer; }
+        .nav-item.active { color: var(--primary); }
+        .nav-item .icon { font-size: 18px; }
+
+        /* ============================================================
+           💻 電腦端專業大器設計：全頁面統一 880px + 底部 macOS 膠囊 Dock
+           ============================================================ */
+        @media (min-width: 860px) {
+            body { 
+                padding: 40px 0 120px 0; 
+            }
+            .app-container { 
+                max-width: 880px; 
+                padding: 0 20px; 
+                gap: 22px; 
+            }
+            .nav-bar { display: none !important; }
+
+            header {
+                padding: 0 4px 14px 4px;
+                border-bottom: 1px solid var(--border-color);
+            }
+            .silks-logo { height: 42px; max-width: 50px; }
+            .app-title { font-size: 24px; letter-spacing: 0.8px; }
+            .theme-toggle { padding: 8px 18px; font-size: 14px; border-radius: 24px; }
+
+            .stats-bar { 
+                border-radius: 22px; 
+                padding: 20px 28px; 
+                margin: 4px 0 10px 0;
+            }
+            .stat-item .val { font-size: 26px; }
+            .stat-item .lbl { font-size: 13px; margin-top: 4px; }
+
+            .learn-layout { 
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+                width: 100%;
+            }
+            .flashcard-container { height: 390px; }
+            .card-face { border-radius: 28px; padding: 40px 36px; }
+            .card-prompt-text { font-size: 52px; }
+            .card-prompt-text.long-text { font-size: 36px; }
+            .action-area { gap: 14px; margin-top: 10px; }
+            .input-group { gap: 14px; }
+            .card-input { padding: 18px 24px; font-size: 17px; border-radius: 18px; }
+            .btn-submit { padding: 0 34px; font-size: 17px; border-radius: 18px; }
+            .btn-action { padding: 18px; font-size: 17px; border-radius: 18px; }
+
+            .exam-report-card { border-radius: 28px; padding: 36px; }
+            .exam-details-list { 
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 14px;
+                max-height: 480px; 
+                padding-right: 8px; 
+            }
+
+            .quiz-card {
+                padding: 36px;
+                border-radius: 28px;
+            }
+            .quiz-q {
+                font-size: 23px;
+                margin-bottom: 26px;
+            }
+            .quiz-opts {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 16px;
+            }
+            .q-opt {
+                padding: 22px 24px;
+                font-size: 17px;
+                border-radius: 20px;
+                display: flex;
+                align-items: center;
+            }
+
+            .search-box {
+                padding: 18px 24px;
+                font-size: 16px;
+                border-radius: 20px;
+                margin-bottom: 6px;
+            }
+            .list-container {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 14px;
+            }
+            .list-item {
+                padding: 18px 22px;
+                border-radius: 20px;
+            }
+
+            .settings-grid-2col {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 24px;
+                align-items: start;
+            }
+            .settings-full-width {
+                grid-column: 1 / -1;
+                margin-top: 4px;
+            }
+            .ios-group {
+                margin-bottom: 0;
+                border-radius: 18px;
+            }
+
+            /* 🍎 macOS / iPadOS 懸浮膠囊 Dock */
+            .desktop-dock-nav {
+                position: fixed;
+                bottom: 26px;
+                left: 50%;
+                transform: translateX(-50%);
+                z-index: 1000;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                background: rgba(24, 24, 27, 0.88);
+                backdrop-filter: blur(28px);
+                -webkit-backdrop-filter: blur(28px);
+                padding: 7px 10px;
+                border-radius: 24px;
+                border: 1px solid rgba(255, 255, 255, 0.12);
+                box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
+            }
+            body.light-mode .desktop-dock-nav {
+                background: rgba(255, 255, 255, 0.92);
+                border: 1px solid rgba(0, 0, 0, 0.08);
+                box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+            }
+            .dock-item {
+                border: none;
+                background: transparent;
+                padding: 10px 22px;
+                border-radius: 16px;
+                font-size: 14px;
+                font-weight: 600;
+                color: var(--text-sub);
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                transition: all 0.2s ease;
+            }
+            .dock-item svg {
+                width: 16px;
+                height: 16px;
+                stroke: currentColor;
+                fill: none;
+                stroke-width: 2.2;
+            }
+            .dock-item:hover {
+                color: var(--text-main);
+                background: rgba(255, 255, 255, 0.06);
+            }
+            body.light-mode .dock-item:hover {
+                background: rgba(0, 0, 0, 0.04);
+            }
+            .dock-item.active {
+                background: var(--primary);
+                color: var(--primary-btn-text);
+                box-shadow: 0 4px 14px rgba(200, 168, 110, 0.35);
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <!-- 頂部 Header -->
+    <header>
+        <div class="header-left">
+            <img src="silks_logo.png" alt="晶英酒店" class="silks-logo" onerror="this.style.display='none'">
+            <div class="app-title">OPERA 卡牌大師</div>
+        </div>
+
+        <button class="theme-toggle" id="theme-btn" onclick="toggleTheme()">
+            <svg id="theme-icon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            <span id="theme-text">深色模式</span>
+        </button>
+    </header>
+
+    <!-- 數據概況 Bar -->
+    <div class="stats-bar">
+        <div class="stat-item"><div class="val" id="st-accuracy">0%</div><div class="lbl">正確率</div></div>
+        <div class="stat-item"><div class="val" id="st-streak">0</div><div class="lbl">連續答對</div></div>
+        <div class="stat-item"><div class="val" id="st-wrong">0</div><div class="lbl">錯題本</div></div>
+        <div class="stat-item"><div class="val" id="st-fav">0</div><div class="lbl">收藏數</div></div>
+    </div>
+
+    <!-- 1. 學習卡片頁 -->
+    <div id="view-learn" class="view-content active">
+        <div class="learn-layout">
+            <!-- 刷題卡牌容器 -->
+            <div class="flashcard-container" id="learn-card-container">
+                <div class="flashcard" id="main-card">
+                    <div class="card-face card-front">
+                        <span class="card-star" id="card-star" onclick="toggleFav(event)">★</span>
+                        <div class="card-badge" id="card-badge">隨機出題</div>
+                        <div class="card-prompt-text" id="card-prompt">--</div>
+                        <div style="font-size: 13px; color: var(--text-sub);">輸入後送出翻轉卡片 👆</div>
+                    </div>
+                    <div class="card-face card-back">
+                        <div class="result-badge" id="card-result-badge">🎉 答對了！</div>
+                        <div style="margin: auto 0;">
+                            <div class="ans-code" id="card-ans-code">VC</div>
+                            <div class="ans-cn" id="card-ans-cn">房間已清潔，待查房，不可入住</div>
+                            <div class="ans-user" id="card-ans-user">你的輸入：VC</div>
+                        </div>
+                        <div style="font-size: 13px; color: var(--text-sub);">按 Enter 或點擊「下一題」繼續刷題</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 📋 十題測驗成績單結算容器 -->
+            <div class="exam-report-card hidden" id="exam-report-view">
+                <div class="exam-score-header">
+                    <div class="exam-score-title">十題測驗 成績結算</div>
+                    <div class="exam-score-val" id="exam-final-score">100</div>
+                    <div class="exam-score-sub" id="exam-final-eval">滿分 100 分 · 一題 10 分</div>
+                </div>
+                <div class="exam-details-list" id="exam-results-list"></div>
+                <div style="display: flex; gap: 14px; margin-top: 6px;">
+                    <button class="btn-action" onclick="initExam10Session(); nextCard(true);">再測一次 (全新10題)</button>
+                    <button class="btn-action" style="background: var(--input-bg); color: var(--text-main);" onclick="changePool('all');">返回自主學習</button>
+                </div>
+            </div>
+
+            <div class="action-area" id="learn-action-area">
+                <form id="input-form" class="input-group" onsubmit="event.preventDefault(); submitAnswer();">
+                    <input type="text" class="card-input" id="type-input" placeholder="鍵盤輸入答案後按 Enter 或送出..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                    <button type="submit" class="btn-submit">送出</button>
+                </form>
+                <button class="btn-action hidden" id="next-card-btn" onclick="requestNextCard()">下一題 ➔ (Enter)</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. 考題測驗頁 -->
+    <div id="view-quiz" class="view-content">
+        <div class="quiz-card">
+            <div class="quiz-q" id="quiz-title">載入中...</div>
+            <div class="quiz-opts" id="quiz-options"></div>
+        </div>
+        <button class="btn-action hidden" id="quiz-next-btn" onclick="requestNextQuiz()">下一題 ➔ (Enter)</button>
+    </div>
+
+    <!-- 3. 代碼庫頁 -->
+    <div id="view-search" class="view-content">
+        <input type="text" class="search-box" id="search-input" placeholder="🔍 搜尋代碼、分機號碼、中文或部門..." oninput="renderSearchList()">
+        <div class="list-container" id="search-list"></div>
+    </div>
+
+    <!-- 4. 設定頁 -->
+    <div id="view-settings" class="view-content">
+        <div class="settings-grid-2col">
+            <!-- 模組一：測驗題庫類型 -->
+            <div>
+                <div class="ios-group-title">測驗題庫類型</div>
+                <div class="ios-group">
+                    <div class="ios-item active" id="scope-all" onclick="changeScope('all')">
+                        <div class="ios-item-left">
+                            <div class="ios-icon-box">
+                                <svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                            </div>
+                            <span class="ios-label">全選</span>
+                        </div>
+                        <span class="ios-check">✓</span>
+                    </div>
+                    <div class="ios-item" id="scope-opera" onclick="changeScope('opera')">
+                        <div class="ios-item-left">
+                            <div class="ios-icon-box">
+                                <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                            </div>
+                            <span class="ios-label">OPERA縮寫</span>
+                        </div>
+                        <span class="ios-check">✓</span>
+                    </div>
+                    <div class="ios-item" id="scope-ext" onclick="changeScope('ext')">
+                        <div class="ios-item-left">
+                            <div class="ios-icon-box">
+                                <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                            </div>
+                            <span class="ios-label">館內分機表</span>
+                        </div>
+                        <span class="ios-check">✓</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 模組二：測驗範圍篩選 -->
+            <div>
+                <div class="ios-group-title">測驗範圍篩選</div>
+                <div class="ios-group">
+                    <div class="ios-item active" id="pool-all" onclick="changePool('all')">
+                        <div class="ios-item-left">
+                            <div class="ios-icon-box">
+                                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+                            </div>
+                            <span class="ios-label">全選</span>
+                        </div>
+                        <span class="ios-check">✓</span>
+                    </div>
+                    <div class="ios-item" id="pool-exam10" onclick="changePool('exam10')">
+                        <div class="ios-item-left">
+                            <div class="ios-icon-box">
+                                <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y1="13"></line><line x1="16" y1="17" x2="8" y1="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                            </div>
+                            <span class="ios-label">十題測驗</span>
+                        </div>
+                        <span class="ios-check">✓</span>
+                    </div>
+                    <div class="ios-item" id="pool-wrong" onclick="changePool('wrong')">
+                        <div class="ios-item-left">
+                            <div class="ios-icon-box">
+                                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                            </div>
+                            <span class="ios-label">錯題練習</span>
+                        </div>
+                        <span class="ios-check">✓</span>
+                    </div>
+                    <div class="ios-item" id="pool-fav" onclick="changePool('fav')">
+                        <div class="ios-item-left">
+                            <div class="ios-icon-box">
+                                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            </div>
+                            <span class="ios-label">我的收藏</span>
+                        </div>
+                        <span class="ios-check">✓</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 模組三：數據管理中心 -->
+            <div class="settings-full-width">
+                <div class="ios-group-title">數據管理</div>
+                <div class="ios-group">
+                    <div class="ios-item" onclick="resetAllData()">
+                        <div class="ios-item-left">
+                            <div class="ios-icon-box">
+                                <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                            </div>
+                            <span class="ios-label" style="color: var(--danger); font-weight: 600;">清空所有紀錄與錯題本</span>
+                        </div>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 💻 電腦端懸浮膠囊 Dock -->
+<div class="desktop-dock-nav">
+    <button class="dock-item active" onclick="switchTab('learn', this)">
+        <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+        學習卡片
+    </button>
+    <button class="dock-item" onclick="switchTab('quiz', this)">
+        <svg viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+        考題測驗
+    </button>
+    <button class="dock-item" onclick="switchTab('search', this)">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        代碼與分機
+    </button>
+    <button class="dock-item" onclick="switchTab('settings', this)">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        設定
+    </button>
+</div>
+
+<!-- 📱 手機端底部導覽列 -->
+<nav class="nav-bar">
+    <button class="nav-item active" onclick="switchTab('learn', this)"><span class="icon">📖</span>學習卡片</button>
+    <button class="nav-item" onclick="switchTab('quiz', this)"><span class="icon">📝</span>考題測驗</button>
+    <button class="nav-item" onclick="switchTab('search', this)"><span class="icon">🔍</span>代碼分機</button>
+    <button class="nav-item" onclick="switchTab('settings', this)"><span class="icon">⚙️</span>設定</button>
+</nav>
+
+<script>
+const rawDb = [
+  ["0930 915 993","禮賓司公務機","飯店分機","ext"],["3216","訂席主任","飯店分機","ext"],["3156","大中餐廳訂席","飯店分機","ext"],
+  ["3505-3506","房務部辦事員","飯店分機","ext"],["3400","資深客務部經理","飯店分機","ext"],["3411","客務部經理","飯店分機","ext"],
+  ["3410","值班經理","飯店分機","ext"],["3409","櫃檯主任","飯店分機","ext"],["3401","禮賓司","飯店分機","ext"],
+  ["3402-3404","櫃檯接待","飯店分機","ext"],["3405","櫃檯出納","飯店分機","ext"],["3424","禮賓司辦公室","飯店分機","ext"],
+  ["3425","代客停車員","飯店分機","ext"],["3431","行政樓層接待","飯店分機","ext"],["3432","行政樓層貴賓廊","飯店分機","ext"],
+  ["3461","健身中心櫃檯","飯店分機","ext"],["3225","水晶廊","飯店分機","ext"],["3214","宴會廳秘書","飯店分機","ext"],
+  ["3236/3237","晶英軒領台","飯店分機","ext"],["3212-3213","RB領台","飯店分機","ext"],["3215","外賣中心","飯店分機","ext"],
+  ["3600","人資主任","飯店分機","ext"],["3700","客房部總監-林竑伸","飯店分機","ext"],["**777","維修報修","飯店分機","ext"],
+  ["3902","安全部辦公室","飯店分機","ext"],["**333","城市車旅停管中心","飯店分機","ext"],["3103","李總秘書 Shelly","飯店分機","ext"],
+  ["AC","空氣清淨機","客房備品","opera"],["ADJ","調整","帳務訂房","opera"],["AMD","更改","帳務訂房","opera"],
+  ["AR","相鄰房","房態排房","opera"],["AT","接送（機場到飯店）","前台禮賓","opera"],["BAG","托特包（特殊專案贈送，如新春專案）","客房備品","opera"],
+  ["BB","嬰兒澡盆（含小水勺+小板凳）","客房備品","opera"],["BC","嬰兒床","客房備品","opera"],["BEAR","泰迪熊（特殊專案贈送，熊熊愛上你、新春專案）","客房備品","opera"],
+  ["BF","早餐","帳務訂房","opera"],["BL","黑名單","貴賓客情","opera"],["BT/_","公司付款","帳務訂房","opera"],
+  ["CB","多寶閣（六種點心）","客房備品","opera"],["CFM","確認","帳務訂房","opera"],["C/I","登記入住 16:00","前台禮賓","opera"],
+  ["C/O","登記退房 12:00","前台禮賓","opera"],["CR","邊間","房態排房","opera"],["CSP","VIP 重要貴賓","貴賓客情","opera"],
+  ["CV/_","收住宿券付款","帳務訂房","opera"],["DB","加臥鋪床","客房備品","opera"],["DCRC","除非可安排相同條件房型","房態排房","opera"],
+  ["DCRM","不可換房","房態排房","opera"],["DF","不同樓層","房態排房","opera"],["DND","請勿打擾","前台禮賓","opera"],
+  ["DT","接送（飯店到機場）","前台禮賓","opera"],["DURA","住宿期間（宿期）","帳務訂房","opera"],["DUVET","單人被","客房備品","opera"],
+  ["EP","環保專案（續住不打掃）","帳務訂房","opera"],["ETA","預計抵達時間","前台禮賓","opera"],["ETD","預計出發時間","前台禮賓","opera"],
+  ["ETR","護送客人至房間","前台禮賓","opera"],["EXI","快速進房，直接護送客人至房間辦理登記","前台禮賓","opera"],["EXO","快速退房","前台禮賓","opera"],
+  ["FC","遠離邊間","房態排房","opera"],["FE","遠離電梯","房態排房","opera"],["FOC","免費房（用於團體，如16間送1間）","帳務訂房","opera"],
+  ["FUG","強制升等","房態排房","opera"],["FYI","轉告同仁事項用語","前台禮賓","opera"],["GTA","旅行社保證訂房","帳務訂房","opera"],
+  ["GTD","保證訂房","帳務訂房","opera"],["HEAT","暖氣","客房備品","opera"],["HF","高樓層","房態排房","opera"],
+  ["HR","happy hour","帳務訂房","opera"],["IB","熨斗跟燙板","客房備品","opera"],["ID","身分證/居留證","前台禮賓","opera"],
+  ["IFM","告知/通知","前台禮賓","opera"],["I/H","目前住在館內","前台禮賓","opera"],["IN","相通的房間","房態排房","opera"],
+  ["INCO","查無此人","前台禮賓","opera"],["INV","發票","帳務訂房","opera"],["KID","兒童拖鞋","客房備品","opera"],
+  ["KL","嬰兒肥皂","客房備品","opera"],["L&F","遺失物","前台禮賓","opera"],["Latex Pillow","乳膠枕","客房備品","opera"],
+  ["LF","低樓層","房態排房","opera"],["M/C","晨喚","前台禮賓","opera"],["M&G","請值班經理出來向客人打招呼","前台禮賓","opera"],
+  ["MM","桌上型放大款化妝鏡","客房備品","opera"],["MOD","駐館主管（通常僅周末/連假配置經理以上）","前台禮賓","opera"],["NC","沒有訂房單","帳務訂房","opera"],
+  ["N/C","名片","前台禮賓","opera"],["NE","靠近電梯","房態排房","opera"],["NS","非吸菸房","房態排房","opera"],
+  ["N/S","沒有出現的訂房客人","帳務訂房","opera"],["O/A","客人自付款項","帳務訂房","opera"],["OOO","當日無法販售之房間","房態排房","opera"],
+  ["OOS","今日可售，但要晚一點","房態排房","opera"],["P/B","（誰）要幫該房客付款","帳務訂房","opera"],["P/F","幫（誰）付款","帳務訂房","opera"],
+  ["PKG","專案贈禮","帳務訂房","opera"],["PS","求婚/蜜月佈置（含天鵝毛巾，玫瑰花瓣鋪床）","客房備品","opera"],["PV","公園景觀","房態排房","opera"],
+  ["QQ","館內其他消費單據","帳務訂房","opera"],["QR","安靜房","房態排房","opera"],["RC/_","旅行社結帳/OTA","帳務訂房","opera"],
+  ["RED","紅酒","客房備品","opera"],["RQ","要求","前台禮賓","opera"],["RV#","訂房編號","帳務訂房","opera"],
+  ["SAL","浴鹽","客房備品","opera"],["SBF","行政樓層早餐","帳務訂房","opera"],["SCRN","房客指接聽指定人士的來電","貴賓客情","opera"],
+  ["SF","同樓層","房態排房","opera"],["SJ","記者","貴賓客情","opera"],["SL","行政專案","帳務訂房","opera"],
+  ["SMK","有吸菸習慣的客人（全館禁菸）","貴賓客情","opera"],["SP","回流客，6-12次","貴賓客情","opera"],["SPS","回流客，12次以上","貴賓客情","opera"],
+  ["SR","非行政專案，但可享有行政禮遇","貴賓客情","opera"],["SSP","極敏感客人","貴賓客情","opera"],["S/W","同住登記","帳務訂房","opera"],
+  ["SZ","消毒鍋","客房備品","opera"],["TB","塌塌米床","客房備品","opera"],["TD","開夜床服務","客房備品","opera"],
+  ["TEA","烏龍茶葉罐","客房備品","opera"],["TF","物品轉交","前台禮賓","opera"],["TI","同業","貴賓客情","opera"],
+  ["TKS","票券","帳務訂房","opera"],["VI","房間已完成，可入住","房態排房","opera"],["VC","房間已清潔，待查房，不可入住","房態排房","opera"],
+  ["VD","髒房尚不可入住","房態排房","opera"],["VP","待修繕","房態排房","opera"],["W/L","候補名單","帳務訂房","opera"],
+  ["WR","囍房佈置（含天鵝毛巾、房門囍字、水12瓶）","客房備品","opera"],["XB","行軍床","客房備品","opera"]
+];
+const db = rawDb.map(([code, cn, cat, type]) => ({ code, cn, cat, type }));
+
+let state = {
+    favs: [],
+    wrongs: [],
+    stats: { total: 0, correct: 0, streak: 0 },
+    theme: 'dark',
+    poolType: 'all',
+    scope: 'all'
+};
+
+let examSession = {
+    questions: [],
+    currentIndex: 0,
+    answers: [],
+    score: 0
+};
+
+function loadState() {
+    const saved = localStorage.getItem('opera_app_data');
+    if (saved) state = JSON.parse(saved);
+    if (!state.scope) state.scope = 'all';
+    applyThemeUI();
+    updateStatsUI();
+    updateScopeUI();
+}
+
+function saveState() {
+    localStorage.setItem('opera_app_data', JSON.stringify(state));
+    updateStatsUI();
+}
+
+function updateStatsUI() {
+    document.getElementById('st-fav').innerText = state.favs.length;
+    document.getElementById('st-wrong').innerText = state.wrongs.length;
+    document.getElementById('st-streak').innerText = state.stats.streak;
+    const acc = state.stats.total > 0 ? Math.round((state.stats.correct / state.stats.total) * 100) : 0;
+    document.getElementById('st-accuracy').innerText = `${acc}%`;
+}
+
+function updateScopeUI() {
+    document.querySelectorAll('[id^="scope-"]').forEach(el => el.classList.remove('active'));
+    document.getElementById(`scope-${state.scope}`)?.classList.add('active');
+    document.querySelectorAll('[id^="pool-"]').forEach(el => el.classList.remove('active'));
+    document.getElementById(`pool-${state.poolType}`)?.classList.add('active');
+}
+
+function getScopedDatabase() {
+    if (state.scope === 'opera') return db.filter(x => x.type === 'opera');
+    if (state.scope === 'ext') return db.filter(x => x.type === 'ext');
+    return db;
+}
+
+function getPool() {
+    const scoped = getScopedDatabase();
+    if (state.poolType === 'wrong') {
+        const pool = scoped.filter(x => state.wrongs.includes(x.code));
+        return pool.length > 0 ? pool : scoped;
+    }
+    if (state.poolType === 'fav') {
+        const pool = scoped.filter(x => state.favs.includes(x.code));
+        return pool.length > 0 ? pool : scoped;
+    }
+    return scoped;
+}
+
+function checkChineseMatch(userInput, targetStr) {
+    const clean = s => s.toLowerCase().replace(/[\s\-_/，,、。.！!？?（）()]/g, '');
+    const u = clean(userInput);
+    if (!u || u.length < 1) return false;
+
+    const targetFull = clean(targetStr);
+    const targetMain = clean(targetStr.replace(/（.*?）|\(.*?\)/g, ''));
+
+    if (targetFull.includes(u) && (u.length >= 2 || targetFull.length <= 2)) return true;
+    if (targetMain && targetMain.includes(u) && (u.length >= 2 || targetMain.length <= 2)) return true;
+    if (u.includes(targetMain) && targetMain.length >= 2) return true;
+
+    let matchCount = 0;
+    let tempTarget = targetFull;
+    for (const char of u) {
+        const idx = tempTarget.indexOf(char);
+        if (idx > -1) {
+            matchCount++;
+            tempTarget = tempTarget.slice(0, idx) + tempTarget.slice(idx + 1);
+        }
+    }
+
+    const precision = matchCount / u.length;
+    const baseTarget = targetMain.length >= 2 ? targetMain : targetFull;
+    const recall = matchCount / baseTarget.length;
+
+    if (u.length >= 3 && precision >= 0.75 && recall >= 0.6) return true;
+    if (u.length >= 4 && precision >= 0.7 && recall >= 0.5) return true;
+
+    return false;
+}
+
+function checkCodeMatch(userInput, targetCode) {
+    const clean = s => s.trim()
+        .replace(/[\uFF0A]/g, '*')
+        .toUpperCase()
+        .replace(/[\s\-_/]/g, '');
+
+    const u = clean(userInput);
+    const t = clean(targetCode);
+    if (!u) return false;
+
+    if (t.includes('*')) {
+        return u === t;
+    }
+
+    if (u === t) return true;
+
+    const rawParts = targetCode.split(/[-\/]/).map(p => clean(p));
+    if (rawParts.length === 2 && !isNaN(rawParts[0]) && !isNaN(rawParts)) {
+        const start = parseInt(rawParts[0], 10);
+        const end = parseInt(rawParts, 10);
+        if (end > start && end - start <= 5) {
+            const userNum = parseInt(u, 10);
+            if (userNum >= start && userNum <= end) return true;
+        }
+    }
+
+    if (rawParts.some(part => part === u)) return true;
+
+    return false;
+}
+
+let currentCard = null;
+let currentDirection = 'code';
+let lastSubmitTime = 0;
+let isNextCooldown = false;
+let isFirstLoad = true;
+
+function initExam10Session() {
+    const scopedList = [...getScopedDatabase()].sort(() => Math.random() - 0.5);
+    examSession.questions = scopedList.slice(0, 10);
+    examSession.currentIndex = 0;
+    examSession.answers = [];
+    examSession.score = 0;
+
+    const reportView = document.getElementById('exam-report-view');
+    const cardContainer = document.getElementById('learn-card-container');
+    const actionArea = document.getElementById('learn-action-area');
+    
+    if (reportView) reportView.classList.add('hidden');
+    if (cardContainer) cardContainer.classList.remove('hidden');
+    if (actionArea) actionArea.classList.remove('hidden');
+
+    nextCard(false);
+}
+
+function nextCard(shouldFocus = false) {
+    const cardEl = document.getElementById('main-card');
+    cardEl.classList.remove('flipped');
+
+    document.getElementById('input-form').classList.remove('hidden');
+    document.getElementById('next-card-btn').classList.add('hidden');
+    const input = document.getElementById('type-input');
+    input.value = '';
+
+    setTimeout(() => {
+        if (state.poolType === 'exam10') {
+            if (examSession.currentIndex >= 10) {
+                showExamResults();
+                return;
+            }
+            if (examSession.questions.length === 0) {
+                initExam10Session();
+            }
+            currentCard = examSession.questions[examSession.currentIndex];
+        } else {
+            const pool = getPool();
+            currentCard = pool[Math.floor(Math.random() * pool.length)];
+        }
+        
+        currentDirection = Math.random() < 0.5 ? 'code' : 'cn';
+        const promptEl = document.getElementById('card-prompt');
+
+        if (state.poolType === 'exam10') {
+            document.getElementById('card-badge').innerText = `十題測驗 · 第 ${examSession.currentIndex + 1} / 10 題 (10分/題)`;
+        } else {
+            document.getElementById('card-badge').innerText = currentDirection === 'code' ? `【${currentCard.cat}】代碼 ➔ 中文` : `【${currentCard.cat}】中文 ➔ 代碼`;
+        }
+
+        if (currentDirection === 'code') {
+            input.placeholder = currentCard.type === 'ext' ? '請輸入單位或部門名稱...' : '請輸入中文意思...';
+            promptEl.innerText = currentCard.code;
+            promptEl.className = currentCard.code.length > 12 ? 'card-prompt-text long-text' : 'card-prompt-text';
+        } else {
+            input.placeholder = currentCard.type === 'ext' ? '請輸入分機號碼（例: 3225, **777）...' : '請輸入代碼 (例: VC, SSP)...';
+            promptEl.innerText = currentCard.cn;
+            promptEl.className = currentCard.cn.length > 8 ? 'card-prompt-text long-text' : 'card-prompt-text';
+        }
+
+        const isFav = state.favs.includes(currentCard.code);
+        document.getElementById('card-star').classList.toggle('active', isFav);
+
+        const isDesktop = window.innerWidth >= 860;
+        if ((isDesktop || shouldFocus) && !isFirstLoad) {
+            input.focus();
+        }
+        isFirstLoad = false;
+    }, 200);
+}
+
+function requestNextCard() {
+    if (isNextCooldown) return;
+    if (Date.now() - lastSubmitTime < 350) return;
+
+    isNextCooldown = true;
+    const btn = document.getElementById('next-card-btn');
+    btn.innerText = "⏳ 1 秒後進入下一題...";
+    btn.style.opacity = "0.75";
+    btn.style.pointerEvents = "none";
+
+    setTimeout(() => {
+        btn.innerText = "下一題 ➔ (Enter)";
+        btn.style.opacity = "1";
+        btn.style.pointerEvents = "auto";
+        isNextCooldown = false;
+
+        if (state.poolType === 'exam10') {
+            examSession.currentIndex++;
+            if (examSession.currentIndex >= 10) {
+                showExamResults();
+                return;
+            }
+        }
+        nextCard(true);
+    }, 1000);
+}
+
+function submitAnswer() {
+    const input = document.getElementById('type-input');
+    const val = input.value.trim();
+    if (!val) return;
+
+    lastSubmitTime = Date.now();
+    input.blur();
+
+    state.stats.total++;
+    let isCorrect = false;
+
+    if (currentDirection === 'code') {
+        isCorrect = checkChineseMatch(val, currentCard.cn);
+    } else {
+        isCorrect = checkCodeMatch(val, currentCard.code);
+    }
+
+    if (state.poolType === 'exam10') {
+        if (isCorrect) examSession.score += 10;
+        examSession.answers.push({
+            card: currentCard,
+            direction: currentDirection,
+            userVal: val,
+            isCorrect: isCorrect
+        });
+    }
+
+    if (isCorrect) {
+        state.stats.correct++;
+        state.stats.streak++;
+        const wIdx = state.wrongs.indexOf(currentCard.code);
+        if (wIdx > -1) state.wrongs.splice(wIdx, 1);
+    } else {
+        state.stats.streak = 0;
+        if (!state.wrongs.includes(currentCard.code)) state.wrongs.push(currentCard.code);
+    }
+    saveState();
+
+    const resBadge = document.getElementById('card-result-badge');
+    resBadge.className = `result-badge ${isCorrect ? 'correct' : 'wrong'}`;
+    resBadge.innerText = isCorrect ? '🎉 答對了！(+10分)' : '❌ 答錯了！(0分)';
+
+    document.getElementById('card-ans-code').innerText = currentCard.code;
+    document.getElementById('card-ans-cn').innerText = currentCard.cn;
+    document.getElementById('card-ans-user').innerText = `你的回答：${val}`;
+
+    document.getElementById('main-card').classList.add('flipped');
+
+    document.getElementById('input-form').classList.add('hidden');
+    const nextBtn = document.getElementById('next-card-btn');
+    if (state.poolType === 'exam10' && examSession.currentIndex === 9) {
+        nextBtn.innerText = "查看成績結算 ➔ (Enter)";
+    } else {
+        nextBtn.innerText = "下一題 ➔ (Enter)";
+    }
+    nextBtn.classList.remove('hidden');
+}
+
+function showExamResults() {
+    document.getElementById('learn-card-container').classList.add('hidden');
+    document.getElementById('learn-action-area').classList.add('hidden');
+    
+    const reportView = document.getElementById('exam-report-view');
+    reportView.classList.remove('hidden');
+
+    document.getElementById('exam-final-score').innerText = examSession.score;
+    const evalText = examSession.score === 100 ? "滿分完美！全數正確" : examSession.score >= 80 ? "表現優秀！已掌握多數代碼" : "繼續加油！多練習錯題本";
+    document.getElementById('exam-final-eval').innerText = `${evalText}（滿分 100 分 · 一題 10 分）`;
+
+    const listEl = document.getElementById('exam-results-list');
+    listEl.innerHTML = '';
+
+    examSession.answers.forEach((item, idx) => {
+        const div = document.createElement('div');
+        div.className = 'exam-item-box';
+        const qPrompt = item.direction === 'code' ? item.card.code : item.card.cn;
+        const qTarget = item.direction === 'code' ? item.card.cn : item.card.code;
+
+        div.innerHTML = `
+            <div class="exam-item-top">
+                <span>第 ${idx + 1} 題 · ${item.card.cat}</span>
+                <span class="exam-item-badge ${item.isCorrect ? 'correct' : 'wrong'}">${item.isCorrect ? '+10分 正確' : '0分 錯誤'}</span>
+            </div>
+            <div class="exam-item-row">
+                <span class="lbl">題目：</span>
+                <span class="val">${qPrompt}</span>
+            </div>
+            <div class="exam-item-row">
+                <span class="lbl">你的回答：</span>
+                <span class="user-ans ${item.isCorrect ? 'correct' : 'wrong'}">${item.userVal}</span>
+            </div>
+            <div class="exam-item-row">
+                <span class="lbl">正確答案：</span>
+                <span class="val">${qTarget}（完整：${item.card.code} - ${item.card.cn}）</span>
+            </div>
+        `;
+        listEl.appendChild(div);
+    });
+}
+
+function toggleFav(e) {
+    e.stopPropagation();
+    if (!currentCard) return;
+    const idx = state.favs.indexOf(currentCard.code);
+    if (idx > -1) state.favs.splice(idx, 1);
+    else state.favs.push(currentCard.code);
+    saveState();
+    document.getElementById('card-star').classList.toggle('active', state.favs.includes(currentCard.code));
+}
+
+let lastQuizAnswerTime = 0;
+let isQuizCooldown = false;
+
+function requestNextQuiz() {
+    if (isQuizCooldown) return;
+    if (Date.now() - lastQuizAnswerTime < 350) return;
+
+    isQuizCooldown = true;
+    const btn = document.getElementById('quiz-next-btn');
+    btn.innerText = "⏳ 1 秒後進入下一題...";
+    btn.style.opacity = "0.75";
+    btn.style.pointerEvents = "none";
+
+    setTimeout(() => {
+        btn.innerText = "下一題 ➔ (Enter)";
+        btn.style.opacity = "1";
+        btn.style.pointerEvents = "auto";
+        isQuizCooldown = false;
+        nextQuizQuestion();
+    }, 1000);
+}
+
+window.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        const nextCardBtn = document.getElementById('next-card-btn');
+        const learnView = document.getElementById('view-learn');
+        if (learnView.classList.contains('active') && !nextCardBtn.classList.contains('hidden')) {
+            e.preventDefault();
+            requestNextCard();
+            return;
+        }
+
+        const quizNextBtn = document.getElementById('quiz-next-btn');
+        const quizView = document.getElementById('view-quiz');
+        if (quizView.classList.contains('active') && !quizNextBtn.classList.contains('hidden')) {
+            e.preventDefault();
+            requestNextQuiz();
+            return;
+        }
+    }
+});
+
+// 📱 手機端防捲鎖定
+const typeInput = document.getElementById('type-input');
+let scrollLockInterval = null;
+
+function snapToTop() {
+    if (window.scrollY !== 0 || document.documentElement.scrollTop !== 0 || document.body.scrollTop !== 0) {
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+    }
+}
+
+typeInput.addEventListener('pointerdown', () => {
+    if (window.innerWidth < 860) {
+        document.body.classList.add('keyboard-open');
+        snapToTop();
+    }
+});
+
+typeInput.addEventListener('focus', () => {
+    if (window.innerWidth < 860) {
+        document.body.classList.add('keyboard-open');
+        snapToTop();
+
+        clearInterval(scrollLockInterval);
+        let count = 0;
+        scrollLockInterval = setInterval(() => {
+            snapToTop();
+            count++;
+            if (count > 30) {
+                clearInterval(scrollLockInterval);
+            }
+        }, 20);
+    }
+});
+
+typeInput.addEventListener('blur', () => {
+    clearInterval(scrollLockInterval);
+    document.body.classList.remove('keyboard-open');
+    snapToTop();
+});
+
+window.addEventListener('scroll', () => {
+    if (document.activeElement === typeInput && window.innerWidth < 860) {
+        snapToTop();
+    }
+}, { passive: true });
+
+if (window.visualViewport) {
+    window.visualViewport.addEventListener('scroll', () => {
+        if (document.activeElement === typeInput && window.innerWidth < 860) {
+            snapToTop();
+        }
+    });
+    window.visualViewport.addEventListener('resize', () => {
+        if (document.activeElement === typeInput && window.innerWidth < 860) {
+            snapToTop();
+        }
+    });
+}
+
+// 2. 考題測驗頁
+let currentQuiz = null;
+let currentQuizType = 'code2cn';
+
+function nextQuizQuestion() {
+    document.getElementById('quiz-next-btn').classList.add('hidden');
+    const activeScopedList = getScopedDatabase();
+    currentQuiz = activeScopedList[Math.floor(Math.random() * activeScopedList.length)];
+    currentQuizType = Math.random() < 0.5 ? 'code2cn' : 'cn2code';
+
+    let targetAnswer = "";
+    let opts = [];
+
+    if (currentQuizType === 'code2cn') {
+        const labelName = currentQuiz.type === 'ext' ? '分機號碼' : '代碼';
+        document.getElementById('quiz-title').innerText = `【 ${currentQuiz.code} 】（${currentQuiz.cat}）代表什麼？`;
+        targetAnswer = currentQuiz.cn;
+        opts = [targetAnswer];
+        while (opts.length < 4 && opts.length < activeScopedList.length) {
+            let rand = activeScopedList[Math.floor(Math.random() * activeScopedList.length)].cn;
+            if (!opts.includes(rand)) opts.push(rand);
+        }
+    } else {
+        const labelName = currentQuiz.type === 'ext' ? '分機/電話' : '代碼';
+        document.getElementById('quiz-title').innerText = `【 ${currentQuiz.cn} 】（${currentQuiz.cat}）的${labelName}是？`;
+        targetAnswer = currentQuiz.code;
+        opts = [targetAnswer];
+        while (opts.length < 4 && opts.length < activeScopedList.length) {
+            let rand = activeScopedList[Math.floor(Math.random() * activeScopedList.length)].code;
+            if (!opts.includes(rand)) opts.push(rand);
+        }
+    }
+
+    opts.sort(() => Math.random() - 0.5);
+
+    const container = document.getElementById('quiz-options');
+    container.innerHTML = '';
+
+    opts.forEach(o => {
+        const div = document.createElement('div');
+        div.className = 'q-opt';
+        div.innerText = o;
+        div.onclick = () => checkQuiz(div, o, targetAnswer);
+        container.appendChild(div);
+    });
+}
+
+function checkQuiz(btn, selected, target) {
+    const all = document.querySelectorAll('.q-opt');
+    all.forEach(x => x.onclick = null);
+
+    lastQuizAnswerTime = Date.now();
+    state.stats.total++;
+
+    if (selected === target) {
+        btn.classList.add('correct');
+        state.stats.correct++;
+        state.stats.streak++;
+        const wIdx = state.wrongs.indexOf(currentQuiz.code);
+        if (wIdx > -1) state.wrongs.splice(wIdx, 1);
+    } else {
+        btn.classList.add('wrong');
+        state.stats.streak = 0;
+        all.forEach(x => { if (x.innerText === target) x.classList.add('correct'); });
+        if (!state.wrongs.includes(currentQuiz.code)) state.wrongs.push(currentQuiz.code);
+    }
+    saveState();
+    const qBtn = document.getElementById('quiz-next-btn');
+    qBtn.innerText = "下一題 ➔ (Enter)";
+    qBtn.classList.remove('hidden');
+}
+
+function changeScope(scope) {
+    state.scope = scope;
+    updateScopeUI();
+    saveState();
+    if (state.poolType === 'exam10') initExam10Session();
+    else nextCard(false);
+    nextQuizQuestion();
+}
+
+function changePool(type) {
+    state.poolType = type;
+    updateScopeUI();
+    saveState();
+
+    if (type === 'exam10') {
+        initExam10Session();
+    } else {
+        const reportView = document.getElementById('exam-report-view');
+        const cardContainer = document.getElementById('learn-card-container');
+        const actionArea = document.getElementById('learn-action-area');
+        if (reportView) reportView.classList.add('hidden');
+        if (cardContainer) cardContainer.classList.remove('hidden');
+        if (actionArea) actionArea.classList.remove('hidden');
+        nextCard(false);
+    }
+}
+
+function renderSearchList() {
+    const q = document.getElementById('search-input').value.toLowerCase();
+    const container = document.getElementById('search-list');
+    container.innerHTML = '';
+
+    const filtered = db.filter(x => x.code.toLowerCase().includes(q) || x.cn.includes(q) || x.cat.includes(q));
+    filtered.forEach(x => {
+        const div = document.createElement('div');
+        div.className = 'list-item';
+        div.innerHTML = `
+            <div class="list-item-left">
+                <div class="code">${x.code}</div>
+                <div class="cn">${x.cn}</div>
+            </div>
+            <div class="list-item-cat">${x.cat}</div>
+        `;
+        container.appendChild(div);
+    });
+}
+
+function switchTab(tab, btn) {
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    document.querySelectorAll('.dock-item').forEach(i => i.classList.remove('active'));
+    document.querySelectorAll('.view-content').forEach(v => v.classList.remove('active'));
+
+    const activeIndex = ['learn', 'quiz', 'search', 'settings'].indexOf(tab);
+    if (activeIndex > -1) {
+        document.querySelectorAll('.nav-item')[activeIndex]?.classList.add('active');
+        document.querySelectorAll('.dock-item')[activeIndex]?.classList.add('active');
+    }
+
+    document.getElementById(`view-${tab}`).classList.add('active');
+    if (tab === 'search') renderSearchList();
+}
+
+function toggleTheme() {
+    state.theme = state.theme === 'dark' ? 'light' : 'dark';
+    applyThemeUI();
+    saveState();
+}
+
+function applyThemeUI() {
+    const textEl = document.getElementById('theme-text');
+    const iconEl = document.getElementById('theme-icon');
+    if (state.theme === 'light') {
+        document.body.classList.add('light-mode');
+        textEl.innerText = '深色模式';
+        iconEl.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
+    } else {
+        document.body.classList.remove('light-mode');
+        textEl.innerText = '淺色模式';
+        iconEl.innerHTML = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="12" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>';
+    }
+}
+
+function resetAllData() {
+    if (confirm("確定要重置所有紀錄與錯題本嗎？")) {
+        localStorage.removeItem('opera_app_data');
+        state = { favs: [], wrongs: [], stats: { total: 0, correct: 0, streak: 0 }, theme: 'dark', poolType: 'all', scope: 'all' };
+        saveState();
+        applyThemeUI();
+        alert("資料已重置！");
+        location.reload();
+    }
+}
+
+loadState();
+nextCard(false);
+nextQuizQuestion();
+</script>
+</body>
+</html>            --text-main: #18181b;
             --text-sub: #6c6c70;
             --primary: #B38E4B;
             --primary-light: rgba(179, 142, 75, 0.12);

@@ -69,7 +69,7 @@
             }
             .stats-bar { padding: 8px 10px; border-radius: 16px; }
             .stat-item .val { font-size: 16px; }
-            .flashcard-container { height: clamp(230px, 36vh, 290px); }
+            .flashcard-container { height: clamp(230px, 35vh, 290px); }
             .card-face { padding: 18px 14px; border-radius: 22px; }
             .card-prompt-text { font-size: clamp(28px, 8vw, 42px); }
             .card-prompt-text.long-text { font-size: clamp(20px, 5.5vw, 28px); }
@@ -77,17 +77,52 @@
             .btn-submit { padding: 0 20px; font-size: 16px; border-radius: 18px; }
             .btn-action { padding: 14px; font-size: 16px; border-radius: 18px; }
 
-            body.keyboard-open { padding-bottom: 0 !important; }
-            body.keyboard-open .app-container { padding: 6px 12px !important; gap: 8px !important; }
-            body.keyboard-open header,
-            body.keyboard-open .stats-bar,
-            body.keyboard-open .nav-bar { display: none !important; }
-            body.keyboard-open .flashcard-container { height: 165px !important; margin-top: 0 !important; }
-            body.keyboard-open .card-face { padding: 12px 14px !important; border-radius: 18px !important; }
-            body.keyboard-open .card-prompt-text { font-size: 26px !important; }
-            body.keyboard-open .card-prompt-text.long-text { font-size: 18px !important; }
-            body.keyboard-open .card-star,
-            body.keyboard-open .card-face div[style*="font-size: 13px"] { display: none !important; }
+            /* 📱 鍵盤彈起時：絕不隱藏頂部與數據，卡片緊湊收納，全面保留所有資訊 */
+            body.keyboard-open {
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                overflow: hidden !important;
+                padding-bottom: 0 !important;
+            }
+            body.keyboard-open .app-container {
+                padding: 8px 14px !important;
+                gap: 8px !important;
+            }
+            /* 頂部 Header 與 數據 Bar 永遠保留顯示 */
+            body.keyboard-open header { display: flex !important; margin-bottom: 2px !important; }
+            body.keyboard-open .stats-bar { display: grid !important; padding: 6px 10px !important; }
+            body.keyboard-open .nav-bar { display: none !important; } /* 僅隱藏底部導覽列避免浮在半空中 */
+
+            /* 卡牌微調比例，使整體資訊在鍵盤上方一次看全 */
+            body.keyboard-open .flashcard-container { 
+                height: clamp(145px, 23vh, 175px) !important; 
+                margin-top: 0 !important;
+            }
+            body.keyboard-open .card-face { 
+                padding: 10px 14px !important; 
+                border-radius: 18px !important;
+            }
+            body.keyboard-open .card-prompt-text { 
+                font-size: 28px !important; 
+            }
+            body.keyboard-open .card-prompt-text.long-text { 
+                font-size: 20px !important; 
+            }
+            body.keyboard-open .card-star { 
+                top: 10px !important; 
+                right: 12px !important; 
+                font-size: 20px !important; 
+            }
+            body.keyboard-open .card-badge {
+                font-size: 11px !important;
+                padding: 3px 10px !important;
+            }
+            body.keyboard-open .card-face div[style*="font-size: 13px"] {
+                display: none !important; /* 暫時隱藏翻轉小提示字串以釋放垂直空間 */
+            }
         }
 
         /* 頂部 Header */
@@ -426,8 +461,8 @@
                     </div>
                     <div class="exam-details-list" id="exam-results-list"></div>
                     <div style="display: flex; gap: 10px; margin-top: 4px;">
-                        <button class="btn-action" onclick="initExam10()">🔄 再測一次 (全新10題)</button>
-                        <button class="btn-action" style="background: var(--input-bg); color: var(--text-main);" onclick="changePool('all')">📖 返回自主學習</button>
+                        <button class="btn-action" onclick="initExam10Session(); nextCard(true);">🔄 再測一次 (全新10題)</button>
+                        <button class="btn-action" style="background: var(--input-bg); color: var(--text-main);" onclick="changePool('all');">📖 返回自主學習</button>
                     </div>
                 </div>
 
@@ -515,7 +550,7 @@
             </div>
         </div>
 
-        <!-- 🎯 模組二：測驗範圍篩選（更新文字與加入十題測驗） -->
+        <!-- 🎯 模組二：測驗範圍篩選（點選十題測驗不強制跳頁） -->
         <div>
             <div class="ios-group-title">測驗範圍篩選</div>
             <div class="ios-group">
@@ -531,7 +566,6 @@
                 <div class="ios-item" id="pool-exam10" onclick="changePool('exam10')">
                     <div class="ios-item-left">
                         <div class="ios-icon-box">
-                            <!-- 📋 十題測驗原生 iOS 灰底線條圖示 -->
                             <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y1="13"></line><line x1="16" y1="17" x2="8" y1="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
                         </div>
                         <span class="ios-label">十題測驗</span>
@@ -927,20 +961,23 @@ let lastSubmitTime = 0;
 let isNextCooldown = false;
 let isFirstLoad = true;
 
-// 📋 啟動「十題測驗」流程
-function initExam10() {
+// 📋 預備十題測驗抽題（僅在背景完成準備，不強迫跳頁）
+function initExam10Session() {
     const scopedList = [...getScopedDatabase()].sort(() => Math.random() - 0.5);
     examSession.questions = scopedList.slice(0, 10);
     examSession.currentIndex = 0;
     examSession.answers = [];
     examSession.score = 0;
 
-    // 還原視圖
-    document.getElementById('exam-report-view').classList.add('hidden');
-    document.getElementById('learn-card-container').classList.remove('hidden');
-    document.getElementById('learn-action-area').classList.remove('hidden');
+    const reportView = document.getElementById('exam-report-view');
+    const cardContainer = document.getElementById('learn-card-container');
+    const actionArea = document.getElementById('learn-action-area');
+    
+    if (reportView) reportView.classList.add('hidden');
+    if (cardContainer) cardContainer.classList.remove('hidden');
+    if (actionArea) actionArea.classList.remove('hidden');
 
-    nextCard(true);
+    nextCard(false);
 }
 
 function nextCard(shouldFocus = false) {
@@ -953,11 +990,13 @@ function nextCard(shouldFocus = false) {
     input.value = '';
 
     setTimeout(() => {
-        // 判斷是否為十題測驗
         if (state.poolType === 'exam10') {
             if (examSession.currentIndex >= 10) {
                 showExamResults();
                 return;
+            }
+            if (examSession.questions.length === 0) {
+                initExam10Session();
             }
             currentCard = examSession.questions[examSession.currentIndex];
         } else {
@@ -1039,7 +1078,6 @@ function submitAnswer() {
         isCorrect = checkCodeMatch(val, currentCard.code);
     }
 
-    // 📋 十題測驗計分紀錄
     if (state.poolType === 'exam10') {
         if (isCorrect) examSession.score += 10;
         examSession.answers.push({
@@ -1081,7 +1119,6 @@ function submitAnswer() {
     nextBtn.classList.remove('hidden');
 }
 
-// 📋 展現十題測驗結算成績單
 function showExamResults() {
     document.getElementById('learn-card-container').classList.add('hidden');
     document.getElementById('learn-action-area').classList.add('hidden');
@@ -1176,13 +1213,13 @@ window.addEventListener('keydown', (e) => {
     }
 });
 
+// 📱 點選輸入框時：啟動防捲鎖定，Header、數據、卡牌、輸入框 100% 完整保留
 const typeInput = document.getElementById('type-input');
 typeInput.addEventListener('focus', () => {
     if (window.innerWidth < 860) {
         document.body.classList.add('keyboard-open');
-        setTimeout(() => { window.scrollTo(0, 0); }, 30);
-        setTimeout(() => { window.scrollTo(0, 0); }, 150);
-        setTimeout(() => { window.scrollTo(0, 0); }, 300);
+        window.scrollTo(0, 0);
+        document.body.scrollTop = 0;
     }
 });
 typeInput.addEventListener('blur', () => {
@@ -1265,24 +1302,27 @@ function changeScope(scope) {
     state.scope = scope;
     updateScopeUI();
     saveState();
-    if (state.poolType === 'exam10') initExam10();
+    if (state.poolType === 'exam10') initExam10Session();
     else nextCard(false);
     nextQuizQuestion();
     renderMiniSearch();
 }
 
+// 🎯 設定頁切換測驗範圍（不跳頁，僅完成準備）
 function changePool(type) {
     state.poolType = type;
     updateScopeUI();
     saveState();
 
     if (type === 'exam10') {
-        switchTab('learn', document.querySelectorAll('.nav-item')[0]);
-        initExam10();
+        initExam10Session(); // 背景準備好 10 題，不強制跳分頁
     } else {
-        document.getElementById('exam-report-view').classList.add('hidden');
-        document.getElementById('learn-card-container').classList.remove('hidden');
-        document.getElementById('learn-action-area').classList.remove('hidden');
+        const reportView = document.getElementById('exam-report-view');
+        const cardContainer = document.getElementById('learn-card-container');
+        const actionArea = document.getElementById('learn-action-area');
+        if (reportView) reportView.classList.add('hidden');
+        if (cardContainer) cardContainer.classList.remove('hidden');
+        if (actionArea) actionArea.classList.remove('hidden');
         nextCard(false);
     }
 }

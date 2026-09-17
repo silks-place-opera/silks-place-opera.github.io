@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
     <title>OPERA 卡牌大師</title>
-    <!-- iOS 主畫面與分頁圖示 -->
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
     <link rel="icon" type="image/png" href="apple-touch-icon.png">
     <style>
@@ -46,20 +45,76 @@
             display: flex; 
             justify-content: center; 
             min-height: 100vh; 
-            padding-bottom: calc(90px + env(safe-area-inset-bottom, 20px)); 
             transition: background-color 0.2s; 
         }
-        
-        .app-container { width: 100%; max-width: 480px; padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+
+        /* 📱 手機端排版 */
+        @media (max-width: 859px) {
+            body { 
+                min-height: 100dvh; 
+                padding-bottom: calc(75px + env(safe-area-inset-bottom, 16px)); 
+            }
+            .app-container { 
+                width: 100%; 
+                max-width: 480px; 
+                padding: 12px 14px 6px 14px; 
+                display: flex; 
+                flex-direction: column; 
+                justify-content: flex-start; 
+                gap: 12px; 
+            }
+            .stats-bar { padding: 8px 10px; border-radius: 16px; }
+            .stat-item .val { font-size: 16px; }
+            .flashcard-container { 
+                height: clamp(230px, 36vh, 290px); 
+            }
+            .card-face { padding: 18px 14px; border-radius: 22px; }
+            .card-prompt-text { font-size: clamp(28px, 8vw, 42px); }
+            .card-prompt-text.long-text { font-size: clamp(20px, 5.5vw, 28px); }
+            .card-input { padding: 14px 16px; font-size: 16px; border-radius: 18px; }
+            .btn-submit { padding: 0 20px; font-size: 16px; border-radius: 18px; }
+            .btn-action { padding: 14px; font-size: 16px; border-radius: 18px; }
+
+            body.keyboard-open {
+                padding-bottom: 0 !important;
+            }
+            body.keyboard-open .app-container {
+                padding: 6px 12px !important;
+                gap: 8px !important;
+            }
+            body.keyboard-open header,
+            body.keyboard-open .stats-bar,
+            body.keyboard-open .nav-bar { 
+                display: none !important; 
+            }
+            body.keyboard-open .flashcard-container { 
+                height: 165px !important; 
+                margin-top: 0 !important;
+            }
+            body.keyboard-open .card-face { 
+                padding: 12px 14px !important; 
+                border-radius: 18px !important;
+            }
+            body.keyboard-open .card-prompt-text { 
+                font-size: 26px !important; 
+            }
+            body.keyboard-open .card-prompt-text.long-text { 
+                font-size: 18px !important; 
+            }
+            body.keyboard-open .card-star,
+            body.keyboard-open .card-face div[style*="font-size: 13px"] { 
+                display: none !important; 
+            }
+        }
 
         /* 頂部 Header */
-        header { display: flex; justify-content: space-between; align-items: center; padding: 4px 2px; }
-        .header-left { display: flex; align-items: center; gap: 10px; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 2px 2px; }
+        .header-left { display: flex; align-items: center; gap: 8px; }
         
         .silks-logo {
-            height: 38px;
+            height: 34px;
             width: auto;
-            max-width: 45px;
+            max-width: 42px;
             object-fit: contain;
             display: block;
             transition: filter 0.2s;
@@ -68,162 +123,77 @@
         body:not(.light-mode) .silks-logo { filter: brightness(0) invert(1); }
         body.light-mode .silks-logo { filter: none; }
 
-        .app-title { font-size: 20px; font-weight: 800; color: var(--text-main); letter-spacing: 0.5px; transition: color 0.2s; }
-        .theme-toggle { background: var(--card-bg); border: 1px solid var(--border-color); padding: 7px 14px; border-radius: 20px; cursor: pointer; color: var(--text-main); font-size: 13px; font-weight: 700; transition: 0.2s; }
+        .app-title { font-size: 19px; font-weight: 800; color: var(--text-main); letter-spacing: 0.5px; transition: color 0.2s; }
+        .theme-toggle { background: var(--card-bg); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 20px; cursor: pointer; color: var(--text-main); font-size: 12px; font-weight: 700; transition: 0.2s; }
 
-        /* 電腦版頂部選單 */
         .desktop-nav { display: none; }
 
         /* 數據總覽 Bar */
-        .stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; background: var(--card-bg); padding: 14px 12px; border-radius: 20px; border: 1px solid var(--border-color); box-shadow: var(--shadow); text-align: center; }
-        .stat-item .val { font-size: 18px; font-weight: 800; color: var(--primary); }
-        .stat-item .lbl { font-size: 11px; color: var(--text-sub); margin-top: 2px; }
+        .stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; background: var(--card-bg); border: 1px solid var(--border-color); box-shadow: var(--shadow); text-align: center; }
+        .stat-item .val { font-weight: 800; color: var(--primary); }
+        .stat-item .lbl { font-size: 11px; color: var(--text-sub); margin-top: 1px; }
 
-        .view-content { display: none; flex-direction: column; gap: 14px; width: 100%; }
+        .view-content { display: none; flex-direction: column; gap: 12px; width: 100%; }
         .view-content.active { display: flex; }
 
-        /* 學習區結構容器 */
-        .learn-layout { display: flex; flex-direction: column; gap: 14px; width: 100%; }
+        .learn-layout { display: flex; flex-direction: column; gap: 12px; width: 100%; }
         .desktop-side-panel { display: none; }
 
-        /* 測驗進度條 */
-        .exam-progress-bar-container {
-            width: 100%;
-            height: 6px;
-            background: var(--input-bg);
-            border-radius: 6px;
-            overflow: hidden;
-        }
-        .exam-progress-bar {
-            height: 100%;
-            background: var(--primary);
-            width: 4%;
-            transition: width 0.3s ease;
-        }
-
         /* 大卡牌核心容器 */
-        .flashcard-container { perspective: 1000px; width: 100%; height: 380px; transition: height 0.25s ease; }
-        .flashcard { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 28px; }
+        .flashcard-container { perspective: 1000px; width: 100%; transition: height 0.2s ease; }
+        .flashcard { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 24px; }
         .flashcard.flipped { transform: rotateY(180deg); }
         
-        .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 28px; background: var(--card-bg); border: 1px solid var(--border-color); padding: 26px 20px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; text-align: center; box-shadow: var(--shadow); }
+        .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 24px; background: var(--card-bg); border: 1px solid var(--border-color); padding: 22px 18px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; text-align: center; box-shadow: var(--shadow); }
         .card-back { transform: rotateY(180deg); }
 
-        .card-star { position: absolute; top: 20px; right: 22px; font-size: 26px; color: #404040; cursor: pointer; z-index: 10; }
+        .card-star { position: absolute; top: 16px; right: 18px; font-size: 24px; color: #404040; cursor: pointer; z-index: 10; }
         .card-star.active { color: #f59e0b; }
-        .card-badge { font-size: 13px; font-weight: 800; padding: 6px 16px; border-radius: 16px; background: var(--input-bg); border: 1px solid var(--border-color); color: var(--primary); }
+        .card-badge { font-size: 12px; font-weight: 800; padding: 5px 14px; border-radius: 14px; background: var(--input-bg); border: 1px solid var(--border-color); color: var(--primary); }
         
-        .card-prompt-text { font-size: 50px; font-weight: 900; letter-spacing: 0.5px; color: var(--text-main); margin: auto 0; line-height: 1.35; padding: 0 10px; word-break: break-word; }
-        .card-prompt-text.long-text { font-size: 34px; }
+        .card-prompt-text { font-weight: 900; letter-spacing: 0.5px; color: var(--text-main); margin: auto 0; line-height: 1.3; padding: 0 10px; word-break: break-word; }
 
         /* 卡牌背面答案展現 */
-        .result-badge { font-size: 16px; font-weight: 800; padding: 7px 18px; border-radius: 20px; }
+        .result-badge { font-size: 15px; font-weight: 800; padding: 6px 16px; border-radius: 18px; }
         .result-badge.correct { background: rgba(16, 185, 129, 0.2); color: var(--accent); border: 1px solid var(--accent); }
         .result-badge.wrong { background: rgba(239, 68, 68, 0.2); color: var(--danger); border: 1px solid var(--danger); }
-        .ans-code { font-size: 46px; font-weight: 900; color: var(--primary); margin-top: 6px; }
-        .ans-cn { font-size: 24px; font-weight: 800; color: var(--text-main); margin-top: 6px; line-height: 1.3; }
-        .ans-user { font-size: 14px; color: var(--text-sub); margin-top: 12px; background: var(--input-bg); padding: 6px 14px; border-radius: 10px; border: 1px solid var(--border-color); }
+        .ans-code { font-size: 34px; font-weight: 900; color: var(--primary); margin-top: 4px; word-break: break-word; }
+        .ans-cn { font-size: 20px; font-weight: 800; color: var(--text-main); margin-top: 4px; line-height: 1.25; }
+        .ans-user { font-size: 13px; color: var(--text-sub); margin-top: 8px; background: var(--input-bg); padding: 5px 12px; border-radius: 10px; border: 1px solid var(--border-color); }
 
         /* 下方輸入框與按鈕 */
-        .action-area { display: flex; flex-direction: column; gap: 10px; width: 100%; }
-        .input-group { width: 100%; display: flex; gap: 10px; }
-        .card-input { flex: 1; padding: 18px 20px; border-radius: 20px; border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-main); font-size: 18px; font-weight: 700; outline: none; transition: 0.2s; box-shadow: var(--shadow); }
+        .action-area { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+        .input-group { width: 100%; display: flex; gap: 8px; }
+        .card-input { flex: 1; border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-main); font-weight: 700; outline: none; transition: 0.2s; box-shadow: var(--shadow); }
         .card-input:focus { border-color: var(--primary); }
-        .btn-submit { background: var(--primary); color: var(--primary-btn-text); border: none; border-radius: 20px; padding: 0 26px; font-size: 17px; font-weight: 800; cursor: pointer; transition: opacity 0.2s; }
+        .btn-submit { background: var(--primary); color: var(--primary-btn-text); border: none; font-weight: 800; cursor: pointer; transition: opacity 0.2s; }
         .btn-submit:active { opacity: 0.85; }
         
-        .btn-action { background: var(--primary); color: var(--primary-btn-text); padding: 16px; border-radius: 20px; font-weight: 800; border: none; width: 100%; cursor: pointer; font-size: 17px; transition: opacity 0.2s, background-color 0.2s; }
+        .btn-action { background: var(--primary); color: var(--primary-btn-text); font-weight: 800; border: none; width: 100%; cursor: pointer; transition: opacity 0.2s, background-color 0.2s; }
         .btn-action:active { opacity: 0.85; }
         .hidden { display: none !important; }
 
-        /* 📊 25 題結算報告專屬樣式 */
-        .exam-result-panel { display: flex; flex-direction: column; gap: 14px; width: 100%; }
-        .score-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 24px;
-            padding: 24px 20px;
-            text-align: center;
-            box-shadow: var(--shadow);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-        }
-        .score-title { font-size: 14px; font-weight: 800; color: var(--text-sub); letter-spacing: 0.5px; }
-        .score-val { font-size: 64px; font-weight: 900; color: var(--primary); line-height: 1; margin: 4px 0; }
-        .score-badge { font-size: 15px; font-weight: 800; padding: 6px 18px; border-radius: 20px; }
-        .score-badge.pass { background: rgba(16, 185, 129, 0.2); color: var(--accent); border: 1px solid var(--accent); }
-        .score-badge.fail { background: rgba(239, 68, 68, 0.2); color: var(--danger); border: 1px solid var(--danger); }
-        .score-stats { display: flex; gap: 24px; font-size: 13px; color: var(--text-sub); font-weight: 700; margin-top: 4px; }
-        .score-stats span b { color: var(--text-main); font-size: 16px; }
-
-        .exam-report-list { display: flex; flex-direction: column; gap: 10px; width: 100%; }
-        .report-item {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 18px;
-            padding: 14px 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            box-shadow: var(--shadow);
-        }
-        .report-item.is-correct { border-left: 5px solid var(--accent); }
-        .report-item.is-wrong { border-left: 5px solid var(--danger); }
-        .report-header { display: flex; justify-content: space-between; align-items: center; }
-        .report-q-num { font-size: 12px; font-weight: 800; color: var(--text-sub); }
-        .report-tag { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 8px; background: var(--input-bg); color: var(--primary); }
-        .report-prompt { font-size: 18px; font-weight: 900; color: var(--text-main); }
-        .report-ans-box {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            font-size: 13px;
-            background: var(--input-bg);
-            padding: 10px 12px;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-        }
-        .report-user-ans { color: var(--text-sub); }
-        .report-user-ans.ans-correct { color: var(--accent); font-weight: 800; }
-        .report-user-ans.ans-wrong { color: var(--danger); font-weight: 800; }
-        .report-correct-ans { color: var(--text-main); font-weight: 800; }
-
-        /* 📱 鍵盤喚起特訓模式 */
-        body.keyboard-open { padding-bottom: 10px; }
-        body.keyboard-open header,
-        body.keyboard-open .stats-bar,
-        body.keyboard-open .nav-bar,
-        body.keyboard-open .exam-progress-bar-container { display: none !important; }
-        body.keyboard-open .flashcard-container { height: 210px !important; margin-top: 4px; }
-        body.keyboard-open .card-face { padding: 14px 16px !important; }
-        body.keyboard-open .card-prompt-text { font-size: 38px !important; }
-        body.keyboard-open .card-prompt-text.long-text { font-size: 26px !important; }
-        body.keyboard-open .card-star,
-        body.keyboard-open .card-face div[style*="font-size: 13px"] { display: none; }
-
-        /* 測驗模式 (四選一) */
-        .quiz-card { background: var(--card-bg); border-radius: 24px; padding: 24px 20px; border: 1px solid var(--border-color); box-shadow: var(--shadow); }
-        .quiz-q { font-size: 20px; font-weight: 800; margin-bottom: 20px; line-height: 1.4; }
-        .quiz-opts { display: flex; flex-direction: column; gap: 12px; }
-        .q-opt { background: var(--input-bg); border: 1px solid var(--border-color); padding: 16px 20px; border-radius: 18px; font-weight: 700; font-size: 16px; text-align: left; cursor: pointer; color: var(--text-main); transition: 0.15s; }
+        /* 測驗模式 */
+        .quiz-card { background: var(--card-bg); border-radius: 22px; padding: 20px 16px; border: 1px solid var(--border-color); box-shadow: var(--shadow); }
+        .quiz-q { font-size: 18px; font-weight: 800; margin-bottom: 16px; line-height: 1.4; }
+        .quiz-opts { display: flex; flex-direction: column; gap: 10px; }
+        .q-opt { background: var(--input-bg); border: 1px solid var(--border-color); padding: 14px 16px; border-radius: 16px; font-weight: 700; font-size: 15px; text-align: left; cursor: pointer; color: var(--text-main); transition: 0.15s; }
         .q-opt.correct { background: rgba(16, 185, 129, 0.2); border-color: var(--accent); color: var(--accent); }
         .q-opt.wrong { background: rgba(239, 68, 68, 0.2); border-color: var(--danger); color: var(--danger); }
 
         /* 代碼庫清單 */
-        .search-box { width: 100%; padding: 16px 20px; border-radius: 18px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-main); font-size: 16px; font-weight: 600; outline: none; }
-        .list-container { display: flex; flex-direction: column; gap: 10px; }
-        .list-item { background: var(--card-bg); padding: 16px 20px; border-radius: 20px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
-        .list-item-left .code { font-weight: 900; font-size: 18px; color: var(--primary); }
-        .list-item-left .cn { font-size: 15px; font-weight: 700; color: var(--text-main); margin-top: 4px; }
+        .search-box { width: 100%; padding: 14px 18px; border-radius: 16px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-main); font-size: 15px; font-weight: 600; outline: none; }
+        .list-container { display: flex; flex-direction: column; gap: 8px; }
+        .list-item { background: var(--card-bg); padding: 14px 18px; border-radius: 18px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+        .list-item-left .code { font-weight: 900; font-size: 17px; color: var(--primary); }
+        .list-item-left .cn { font-size: 14px; font-weight: 700; color: var(--text-main); margin-top: 3px; }
         .list-item-cat { font-size: 11px; padding: 3px 8px; border-radius: 8px; background: var(--input-bg); color: var(--text-sub); font-weight: 700; }
 
         /* 設定頁面專屬風格 */
-        .setting-section { background: var(--card-bg); border-radius: 24px; padding: 22px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 14px; }
-        .setting-title { font-size: 16px; font-weight: 800; color: var(--text-main); }
-        .pool-selector { display: flex; flex-direction: column; gap: 10px; }
-        .pool-opt { background: var(--input-bg); border: 1px solid var(--border-color); padding: 16px 18px; border-radius: 16px; font-size: 15px; font-weight: 700; color: var(--text-sub); display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .setting-section { background: var(--card-bg); border-radius: 22px; padding: 18px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 12px; }
+        .setting-title { font-size: 15px; font-weight: 800; color: var(--text-main); }
+        .pool-selector { display: flex; flex-direction: column; gap: 8px; }
+        .pool-opt { background: var(--input-bg); border: 1px solid var(--border-color); padding: 14px 16px; border-radius: 14px; font-size: 14px; font-weight: 700; color: var(--text-sub); display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
         .pool-opt.active { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
 
         /* 手機底部導覽列 */
@@ -238,183 +208,46 @@
             border-top: 1px solid var(--border-color); 
             display: grid; 
             grid-template-columns: repeat(4, 1fr); 
-            padding-top: 10px;
-            padding-bottom: calc(20px + env(safe-area-inset-bottom, 16px)); 
+            padding-top: 8px;
+            padding-bottom: calc(14px + env(safe-area-inset-bottom, 12px)); 
             z-index: 100; 
         }
-        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 5px; border: none; background: none; color: var(--text-sub); font-size: 11px; font-weight: 700; cursor: pointer; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; border: none; background: none; color: var(--text-sub); font-size: 11px; font-weight: 700; cursor: pointer; }
         .nav-item.active { color: var(--primary); }
-        .nav-item .icon { font-size: 20px; }
+        .nav-item .icon { font-size: 18px; }
 
-        /* ============================================================
-           💻 電腦端超寬高質感介面（螢幕寬度 >= 860px 時自動啟動）
-           ============================================================ */
+        /* 💻 電腦端擴展佈局（>= 860px） */
         @media (min-width: 860px) {
             body { padding-bottom: 30px; }
             .app-container { max-width: 1120px; padding: 24px 32px; gap: 20px; }
-
             .nav-bar { display: none !important; }
-            .desktop-nav { 
-                display: flex; 
-                gap: 8px; 
-                background: var(--card-bg); 
-                padding: 6px; 
-                border-radius: 18px; 
-                border: 1px solid var(--border-color);
-            }
-            .d-nav-item {
-                border: none;
-                background: transparent;
-                padding: 8px 18px;
-                border-radius: 12px;
-                font-size: 14px;
-                font-weight: 700;
-                color: var(--text-sub);
-                cursor: pointer;
-                transition: 0.2s;
-            }
-            .d-nav-item.active {
-                background: var(--primary);
-                color: var(--primary-btn-text);
-            }
-
-            .learn-layout {
-                display: grid;
-                grid-template-columns: 580px 1fr;
-                gap: 24px;
-                align-items: start;
-            }
-
-            .desktop-side-panel {
-                display: flex;
-                flex-direction: column;
-                gap: 16px;
-                height: 100%;
-            }
-
-            .side-card {
-                background: var(--card-bg);
-                border: 1px solid var(--border-color);
-                border-radius: 24px;
-                padding: 20px;
-                box-shadow: var(--shadow);
-            }
-            .side-title {
-                font-size: 15px;
-                font-weight: 800;
-                color: var(--primary);
-                margin-bottom: 12px;
-                display: flex;
-                align-items: center;
-                gap: 6px;
-            }
-
-            /* 📊 弱點分析圓餅圖樣式 */
-            .chart-content-box {
-                display: flex;
-                align-items: center;
-                gap: 20px;
-                padding: 4px 0;
-            }
-            .chart-donut {
-                width: 120px;
-                height: 120px;
-                border-radius: 50%;
-                position: relative;
-                flex-shrink: 0;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                transition: background 0.3s ease;
-            }
-            .chart-donut::after {
-                content: '';
-                width: 78px;
-                height: 78px;
-                background: var(--card-bg);
-                border-radius: 50%;
-                position: absolute;
-            }
-            .chart-center-info {
-                position: relative;
-                z-index: 2;
-                text-align: center;
-            }
-            .chart-center-val {
-                font-size: 22px;
-                font-weight: 900;
-                color: var(--text-main);
-                line-height: 1.1;
-            }
-            .chart-center-lbl {
-                font-size: 10px;
-                color: var(--text-sub);
-                margin-top: 2px;
-            }
-
-            .chart-legend {
-                display: flex;
-                flex-direction: column;
-                gap: 8px;
-                flex: 1;
-            }
-            .legend-item {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                font-size: 13px;
-                font-weight: 700;
-            }
-            .legend-left {
-                display: flex;
-                align-items: center;
-                gap: 8px;
-            }
-            .legend-dot {
-                width: 10px;
-                height: 10px;
-                border-radius: 50%;
-                flex-shrink: 0;
-            }
-            .legend-count {
-                color: var(--text-sub);
-                font-size: 12px;
-            }
-
-            /* 右側微型代碼速查清單 */
-            .mini-search-box {
-                width: 100%;
-                padding: 10px 14px;
-                border-radius: 12px;
-                border: 1px solid var(--border-color);
-                background: var(--input-bg);
-                color: var(--text-main);
-                font-size: 13px;
-                outline: none;
-                margin-bottom: 10px;
-            }
-            .mini-list-scroll {
-                max-height: 200px;
-                overflow-y: auto;
-                display: flex;
-                flex-direction: column;
-                gap: 6px;
-                padding-right: 4px;
-            }
-            .mini-list-item {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 8px 12px;
-                background: var(--input-bg);
-                border-radius: 10px;
-                font-size: 13px;
-            }
+            .desktop-nav { display: flex; gap: 8px; background: var(--card-bg); padding: 6px; border-radius: 18px; border: 1px solid var(--border-color); }
+            .d-nav-item { border: none; background: transparent; padding: 8px 18px; border-radius: 12px; font-size: 14px; font-weight: 700; color: var(--text-sub); cursor: pointer; transition: 0.2s; }
+            .d-nav-item.active { background: var(--primary); color: var(--primary-btn-text); }
+            .learn-layout { display: grid; grid-template-columns: 580px 1fr; gap: 24px; align-items: start; }
+            .flashcard-container { height: 380px; }
+            .card-prompt-text { font-size: 46px; }
+            .card-prompt-text.long-text { font-size: 32px; }
+            .desktop-side-panel { display: flex; flex-direction: column; gap: 16px; height: 100%; }
+            .side-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 24px; padding: 20px; box-shadow: var(--shadow); }
+            .side-title { font-size: 15px; font-weight: 800; color: var(--primary); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+            .chart-content-box { display: flex; align-items: center; gap: 20px; padding: 4px 0; }
+            .chart-donut { width: 120px; height: 120px; border-radius: 50%; position: relative; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+            .chart-donut::after { content: ''; width: 78px; height: 78px; background: var(--card-bg); border-radius: 50%; position: absolute; }
+            .chart-center-info { position: relative; z-index: 2; text-align: center; }
+            .chart-center-val { font-size: 22px; font-weight: 900; color: var(--text-main); line-height: 1.1; }
+            .chart-center-lbl { font-size: 10px; color: var(--text-sub); margin-top: 2px; }
+            .chart-legend { display: flex; flex-direction: column; gap: 8px; flex: 1; }
+            .legend-item { display: flex; align-items: center; justify-content: space-between; font-size: 13px; font-weight: 700; }
+            .legend-left { display: flex; align-items: center; gap: 8px; }
+            .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+            .legend-count { color: var(--text-sub); font-size: 12px; }
+            .mini-search-box { width: 100%; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-main); font-size: 13px; outline: none; margin-bottom: 10px; }
+            .mini-list-scroll { max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
+            .mini-list-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: var(--input-bg); border-radius: 10px; font-size: 13px; }
             .mini-list-item .m-code { font-weight: 800; color: var(--primary); }
             .mini-list-item .m-cn { color: var(--text-sub); font-size: 12px; }
-
-            #view-quiz .quiz-card,
-            #view-settings .setting-section { max-width: 700px; margin: 0 auto; width: 100%; }
+            #view-quiz .quiz-card, #view-settings .setting-section { max-width: 700px; margin: 0 auto; width: 100%; }
         }
     </style>
 </head>
@@ -427,11 +260,10 @@
             <div class="app-title">OPERA 卡牌大師</div>
         </div>
 
-        <!-- 💻 電腦版頂部切換選單 -->
         <div class="desktop-nav">
             <button class="d-nav-item active" onclick="switchTab('learn', this)">📖 學習卡片</button>
             <button class="d-nav-item" onclick="switchTab('quiz', this)">📝 考題測驗</button>
-            <button class="d-nav-item" onclick="switchTab('search', this)">🔍 代碼庫</button>
+            <button class="d-nav-item" onclick="switchTab('search', this)">🔍 代碼與分機</button>
             <button class="d-nav-item" onclick="switchTab('settings', this)">⚙️ 設定</button>
         </div>
 
@@ -446,69 +278,40 @@
         <div class="stat-item"><div class="val" id="st-fav">0</div><div class="lbl">收藏數</div></div>
     </div>
 
-    <!-- 1. 學習卡片頁 (25 題隨機測驗) -->
+    <!-- 1. 學習卡片頁 -->
     <div id="view-learn" class="view-content active">
         <div class="learn-layout">
-            <!-- 左欄：測驗作答區 -->
-            <div style="display: flex; flex-direction: column; gap: 14px; width: 100%;">
-                
-                <!-- 卡牌作答容器 -->
-                <div id="exam-card-wrapper" style="display: flex; flex-direction: column; gap: 14px; width: 100%;">
-                    <!-- 25 題進度條 -->
-                    <div class="exam-progress-bar-container">
-                        <div class="exam-progress-bar" id="exam-progress"></div>
-                    </div>
-
-                    <div class="flashcard-container">
-                        <div class="flashcard" id="main-card">
-                            <div class="card-face card-front">
-                                <span class="card-star" id="card-star" onclick="toggleFav(event)">★</span>
-                                <div class="card-badge" id="card-badge">第 1 / 25 題</div>
-                                <div class="card-prompt-text" id="card-prompt">--</div>
-                                <div style="font-size: 13px; color: var(--text-sub);">輸入後送出翻轉卡片 👆</div>
-                            </div>
-                            <div class="card-face card-back">
-                                <div class="result-badge" id="card-result-badge">🎉 答對了！</div>
-                                <div style="margin: auto 0;">
-                                    <div class="ans-code" id="card-ans-code">VC</div>
-                                    <div class="ans-cn" id="card-ans-cn">房間已清潔，待查房，不可入住</div>
-                                    <div class="ans-user" id="card-ans-user">你的輸入：VC</div>
-                                </div>
-                                <div style="font-size: 13px; color: var(--text-sub);" id="card-back-hint">按 Enter 或點擊繼續</div>
-                            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
+                <div class="flashcard-container">
+                    <div class="flashcard" id="main-card">
+                        <div class="card-face card-front">
+                            <span class="card-star" id="card-star" onclick="toggleFav(event)">★</span>
+                            <div class="card-badge" id="card-badge">隨機出題</div>
+                            <div class="card-prompt-text" id="card-prompt">--</div>
+                            <div style="font-size: 13px; color: var(--text-sub);">輸入後送出翻轉卡片 👆</div>
                         </div>
-                    </div>
-
-                    <div class="action-area">
-                        <form id="input-form" class="input-group" onsubmit="event.preventDefault(); submitAnswer();">
-                            <input type="text" class="card-input" id="type-input" placeholder="鍵盤輸入答案後按 Enter 或送出..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-                            <button type="submit" class="btn-submit">送出</button>
-                        </form>
-                        <button class="btn-action hidden" id="next-card-btn" onclick="requestNextCard()">下一題 ➔ (Enter)</button>
+                        <div class="card-face card-back">
+                            <div class="result-badge" id="card-result-badge">🎉 答對了！</div>
+                            <div style="margin: auto 0;">
+                                <div class="ans-code" id="card-ans-code">VC</div>
+                                <div class="ans-cn" id="card-ans-cn">房間已清潔，待查房，不可入住</div>
+                                <div class="ans-user" id="card-ans-user">你的輸入：VC</div>
+                            </div>
+                            <div style="font-size: 13px; color: var(--text-sub);">按 Enter 或點擊「下一題」繼續刷題</div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- 25 題測驗結算面板 (預設隱藏) -->
-                <div class="exam-result-panel hidden" id="exam-result-panel">
-                    <div class="score-card">
-                        <div class="score-title">🎯 25 題卡牌隨機測驗成績</div>
-                        <div class="score-val" id="res-score">0</div>
-                        <div class="score-badge" id="res-score-badge">成績計算中...</div>
-                        <div class="score-stats">
-                            <span>答對題數：<b id="res-correct-count">0</b> / 25</span>
-                            <span>每題：<b>4 分</b></span>
-                            <span>滿分：<b>100 分</b></span>
-                        </div>
-                        <button class="btn-action" style="margin-top: 10px;" onclick="startNewExam(true)">🔄 再測一次（換新 25 題）</button>
-                    </div>
-
-                    <div style="font-size: 16px; font-weight: 800; color: var(--text-main); margin-top: 6px;">📋 25 題完整答題清單與解答</div>
-                    <div class="exam-report-list" id="exam-report-list"></div>
+                <div class="action-area">
+                    <form id="input-form" class="input-group" onsubmit="event.preventDefault(); submitAnswer();">
+                        <input type="text" class="card-input" id="type-input" placeholder="鍵盤輸入答案後按 Enter 或送出..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                        <button type="submit" class="btn-submit">送出</button>
+                    </form>
+                    <button class="btn-action hidden" id="next-card-btn" onclick="requestNextCard()">下一題 ➔ (Enter)</button>
                 </div>
-
             </div>
 
-            <!-- 💻 右欄：電腦版專屬即時弱點圓餅圖 + 速查清單 -->
+            <!-- 電腦版右側面板 -->
             <div class="desktop-side-panel">
                 <div class="side-card">
                     <div class="side-title">📊 錯題弱點分析（各類別佔比）</div>
@@ -524,8 +327,8 @@
                 </div>
 
                 <div class="side-card" style="flex: 1;">
-                    <div class="side-title">🔍 邊刷邊查（代碼速查）</div>
-                    <input type="text" class="mini-search-box" id="mini-search" placeholder="輸入代碼或關鍵字快速檢索..." oninput="renderMiniSearch()">
+                    <div class="side-title">🔍 邊刷邊查（速查清單）</div>
+                    <input type="text" class="mini-search-box" id="mini-search" placeholder="輸入代碼、單位或號碼快速檢索..." oninput="renderMiniSearch()">
                     <div class="mini-list-scroll" id="mini-search-list"></div>
                 </div>
             </div>
@@ -543,18 +346,36 @@
 
     <!-- 3. 代碼庫頁 -->
     <div id="view-search" class="view-content">
-        <input type="text" class="search-box" id="search-input" placeholder="🔍 搜尋代碼、中文或分類..." oninput="renderSearchList()">
+        <input type="text" class="search-box" id="search-input" placeholder="🔍 搜尋代碼、分機號碼、中文或部門..." oninput="renderSearchList()">
         <div class="list-container" id="search-list"></div>
     </div>
 
     <!-- 4. 設定頁 -->
     <div id="view-settings" class="view-content">
         <div class="setting-section">
-            <div class="setting-title">🎯 學習卡片題庫選擇</div>
+            <div class="setting-title">📚 測驗題庫類型</div>
+            <div class="pool-selector">
+                <div class="pool-opt active" id="scope-all" onclick="changeScope('all')">
+                    <span>🏨 全部綜合練習（OPERA + 分機表 共132題）</span>
+                    <span style="font-size: 13px;">綜合</span>
+                </div>
+                <div class="pool-opt" id="scope-opera" onclick="changeScope('opera')">
+                    <span>📖 僅測驗 OPERA 縮寫（105題）</span>
+                    <span style="font-size: 13px;">OPERA</span>
+                </div>
+                <div class="pool-opt" id="scope-ext" onclick="changeScope('ext')">
+                    <span>☎️ 僅測驗 晶英分機表（27題）</span>
+                    <span style="font-size: 13px;">分機</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="setting-section">
+            <div class="setting-title">🎯 刷題範圍篩選</div>
             <div class="pool-selector">
                 <div class="pool-opt active" id="pool-all" onclick="changePool('all')">
-                    <span>📖 全部代碼 (105題)</span>
-                    <span style="font-size: 13px;">預設</span>
+                    <span>📖 範圍內全部題目</span>
+                    <span id="setting-pool-total" style="font-size: 13px;">132題</span>
                 </div>
                 <div class="pool-opt" id="pool-wrong" onclick="changePool('wrong')">
                     <span>❌ 錯題專區</span>
@@ -575,120 +396,151 @@
     </div>
 </div>
 
-<!-- 📱 手機端底部導覽列 -->
+<!-- 手機端底部導覽列 -->
 <nav class="nav-bar">
     <button class="nav-item active" onclick="switchTab('learn', this)"><span class="icon">📖</span>學習卡片</button>
     <button class="nav-item" onclick="switchTab('quiz', this)"><span class="icon">📝</span>考題測驗</button>
-    <button class="nav-item" onclick="switchTab('search', this)"><span class="icon">🔍</span>代碼庫</button>
+    <button class="nav-item" onclick="switchTab('search', this)"><span class="icon">🔍</span>代碼分機</button>
     <button class="nav-item" onclick="switchTab('settings', this)"><span class="icon">⚙️</span>設定</button>
 </nav>
 
 <script>
+// 🏨 132 組完整資料庫（OPERA 代碼 105 組 + 晶英最新分機表 27 組）
 const db = [
-    { code: "AC", cn: "空氣清淨機", cat: "客房備品" },
-    { code: "ADJ", cn: "調整", cat: "帳務訂房" },
-    { code: "AMD", cn: "更改", cat: "帳務訂房" },
-    { code: "AR", cn: "相鄰房", cat: "房態排房" },
-    { code: "AT", cn: "接送（機場到飯店）", cat: "前台禮賓" },
-    { code: "BAG", cn: "托特包（特殊專案贈送，如新春專案）", cat: "客房備品" },
-    { code: "BB", cn: "嬰兒澡盆（含小水勺+小板凳）", cat: "客房備品" },
-    { code: "BC", cn: "嬰兒床", cat: "客房備品" },
-    { code: "BEAR", cn: "泰迪熊（特殊專案贈送，熊熊愛上你、新春專案）", cat: "客房備品" },
-    { code: "BF", cn: "早餐", cat: "帳務訂房" },
-    { code: "BL", cn: "黑名單", cat: "貴賓客情" },
-    { code: "BT/_", cn: "公司付款", cat: "帳務訂房" },
-    { code: "CB", cn: "多寶閣（六種點心）", cat: "客房備品" },
-    { code: "CFM", cn: "確認", cat: "帳務訂房" },
-    { code: "C/I", cn: "登記入住 16:00", cat: "前台禮賓" },
-    { code: "C/O", cn: "登記退房 12:00", cat: "前台禮賓" },
-    { code: "CR", cn: "邊間", cat: "房態排房" },
-    { code: "CSP", cn: "VIP 重要貴賓", cat: "貴賓客情" },
-    { code: "CV/_", cn: "收住宿券付款", cat: "帳務訂房" },
-    { code: "DB", cn: "加臥鋪床", cat: "客房備品" },
-    { code: "DCRC", cn: "除非可安排相同條件房型", cat: "房態排房" },
-    { code: "DCRM", cn: "不可換房", cat: "房態排房" },
-    { code: "DF", cn: "不同樓層", cat: "房態排房" },
-    { code: "DND", cn: "請勿打擾", cat: "前台禮賓" },
-    { code: "DT", cn: "接送（飯店到機場）", cat: "前台禮賓" },
-    { code: "DURA", cn: "住宿期間（宿期）", cat: "帳務訂房" },
-    { code: "DUVET", cn: "單人被", cat: "客房備品" },
-    { code: "EP", cn: "環保專案（續住不打掃）", cat: "帳務訂房" },
-    { code: "ETA", cn: "預計抵達時間", cat: "前台禮賓" },
-    { code: "ETD", cn: "預計出發時間", cat: "前台禮賓" },
-    { code: "ETR", cn: "護送客人至房間", cat: "前台禮賓" },
-    { code: "EXI", cn: "快速進房，直接護送客人至房間辦理登記", cat: "前台禮賓" },
-    { code: "EXO", cn: "快速退房", cat: "前台禮賓" },
-    { code: "FC", cn: "遠離邊間", cat: "房態排房" },
-    { code: "FE", cn: "遠離電梯", cat: "房態排房" },
-    { code: "FOC", cn: "免費房（用於團體，如16間送1間）", cat: "帳務訂房" },
-    { code: "FUG", cn: "強制升等", cat: "房態排房" },
-    { code: "FYI", cn: "轉告同仁事項用語", cat: "前台禮賓" },
-    { code: "GTA", cn: "旅行社保證訂房", cat: "帳務訂房" },
-    { code: "GTD", cn: "保證訂房", cat: "帳務訂房" },
-    { code: "HEAT", cn: "暖氣", cat: "客房備品" },
-    { code: "HF", cn: "高樓層", cat: "房態排房" },
-    { code: "HR", cn: "happy hour", cat: "帳務訂房" },
-    { code: "IB", cn: "熨斗跟燙板", cat: "客房備品" },
-    { code: "ID", cn: "身分證/居留證", cat: "前台禮賓" },
-    { code: "IFM", cn: "告知/通知", cat: "前台禮賓" },
-    { code: "I/H", cn: "目前住在館內", cat: "前台禮賓" },
-    { code: "IN", cn: "相通的房間", cat: "房態排房" },
-    { code: "INCO", cn: "查無此人", cat: "前台禮賓" },
-    { code: "INV", cn: "發票", cat: "帳務訂房" },
-    { code: "KID", cn: "兒童拖鞋", cat: "客房備品" },
-    { code: "KL", cn: "嬰兒肥皂", cat: "客房備品" },
-    { code: "L&F", cn: "遺失物", cat: "前台禮賓" },
-    { code: "Latex Pillow", cn: "乳膠枕", cat: "客房備品" },
-    { code: "LF", cn: "低樓層", cat: "房態排房" },
-    { code: "M/C", cn: "晨喚", cat: "前台禮賓" },
-    { code: "M&G", cn: "請值班經理出來向客人打招呼", cat: "前台禮賓" },
-    { code: "MM", cn: "桌上型放大款化妝鏡", cat: "客房備品" },
-    { code: "MOD", cn: "駐館主管（通常僅周末/連假配置經理以上）", cat: "前台禮賓" },
-    { code: "NC", cn: "沒有訂房單", cat: "帳務訂房" },
-    { code: "N/C", cn: "名片", cat: "前台禮賓" },
-    { code: "NE", cn: "靠近電梯", cat: "房態排房" },
-    { code: "NS", cn: "非吸菸房", cat: "房態排房" },
-    { code: "N/S", cn: "沒有出現的訂房客人", cat: "帳務訂房" },
-    { code: "O/A", cn: "客人自付款項", cat: "帳務訂房" },
-    { code: "OOO", cn: "當日無法販售之房間", cat: "房態排房" },
-    { code: "OOS", cn: "今日可售，但要晚一點", cat: "房態排房" },
-    { code: "P/B", cn: "（誰）要幫該房客付款", cat: "帳務訂房" },
-    { code: "P/F", cn: "幫（誰）付款", cat: "帳務訂房" },
-    { code: "PKG", cn: "專案贈禮", cat: "帳務訂房" },
-    { code: "PS", cn: "求婚/蜜月佈置（含天鵝毛巾，玫瑰花瓣鋪床）", cat: "客房備品" },
-    { code: "PV", cn: "公園景觀", cat: "房態排房" },
-    { code: "QQ", cn: "館內其他消費單據", cat: "帳務訂房" },
-    { code: "QR", cn: "安靜房", cat: "房態排房" },
-    { code: "RC/_", cn: "旅行社結帳/OTA", cat: "帳務訂房" },
-    { code: "RED", cn: "紅酒", cat: "客房備品" },
-    { code: "RQ", cn: "要求", cat: "前台禮賓" },
-    { code: "RV#", cn: "訂房編號", cat: "帳務訂房" },
-    { code: "SAL", cn: "浴鹽", cat: "客房備品" },
-    { code: "SBF", cn: "行政樓層早餐", cat: "帳務訂房" },
-    { code: "SCRN", cn: "房客指接聽指定人士的來電", cat: "貴賓客情" },
-    { code: "SF", cn: "同樓層", cat: "房態排房" },
-    { code: "SJ", cn: "記者", cat: "貴賓客情" },
-    { code: "SL", cn: "行政專案", cat: "帳務訂房" },
-    { code: "SMK", cn: "有吸菸習慣的客人（全館禁菸）", cat: "貴賓客情" },
-    { code: "SP", cn: "回流客，6-12次", cat: "貴賓客情" },
-    { code: "SPS", cn: "回流客，12次以上", cat: "貴賓客情" },
-    { code: "SR", cn: "非行政專案，但可享有行政禮遇", cat: "貴賓客情" },
-    { code: "SSP", cn: "極敏感客人", cat: "貴賓客情" },
-    { code: "S/W", cn: "同住登記", cat: "帳務訂房" },
-    { code: "SZ", cn: "消毒鍋", cat: "客房備品" },
-    { code: "TB", cn: "塌塌米床", cat: "客房備品" },
-    { code: "TD", cn: "開夜床服務", cat: "客房備品" },
-    { code: "TEA", cn: "烏龍茶葉罐", cat: "客房備品" },
-    { code: "TF", cn: "物品轉交", cat: "前台禮賓" },
-    { code: "TI", cn: "同業", cat: "貴賓客情" },
-    { code: "TKS", cn: "票券", cat: "帳務訂房" },
-    { code: "VI", cn: "房間已完成，可入住", cat: "房態排房" },
-    { code: "VC", cn: "房間已清潔，待查房，不可入住", cat: "房態排房" },
-    { code: "VD", cn: "髒房尚不可入住", cat: "房態排房" },
-    { code: "VP", cn: "待修繕", cat: "房態排房" },
-    { code: "W/L", cn: "候補名單", cat: "帳務訂房" },
-    { code: "WR", cn: "囍房佈置（含天鵝毛巾、房門囍字、水12瓶）", cat: "客房備品" },
-    { code: "XB", cn: "行軍床", cat: "客房備品" }
+    // --- 晶英最新正確分機表 (27組) ---
+    { code: "0930 915 993", cn: "禮賓司公務機", cat: "飯店分機", type: "ext" },
+    { code: "3216", cn: "訂席主任", cat: "飯店分機", type: "ext" },
+    { code: "3156", cn: "大中餐廳訂席", cat: "飯店分機", type: "ext" },
+    { code: "3505-3506", cn: "房務部辦事員", cat: "飯店分機", type: "ext" },
+    { code: "3400", cn: "資深客務部經理", cat: "飯店分機", type: "ext" },
+    { code: "3411", cn: "客務部經理", cat: "飯店分機", type: "ext" },
+    { code: "3410", cn: "值班經理", cat: "飯店分機", type: "ext" },
+    { code: "3409", cn: "櫃檯主任", cat: "飯店分機", type: "ext" },
+    { code: "3401", cn: "禮賓司", cat: "飯店分機", type: "ext" },
+    { code: "3402-3404", cn: "櫃檯接待", cat: "飯店分機", type: "ext" },
+    { code: "3405", cn: "櫃檯出納", cat: "飯店分機", type: "ext" },
+    { code: "3424", cn: "禮賓司辦公室", cat: "飯店分機", type: "ext" },
+    { code: "3425", cn: "代客停車員", cat: "飯店分機", type: "ext" },
+    { code: "3431", cn: "行政樓層接待", cat: "飯店分機", type: "ext" },
+    { code: "3432", cn: "行政樓層貴賓廊", cat: "飯店分機", type: "ext" },
+    { code: "3461", cn: "健身中心櫃檯", cat: "飯店分機", type: "ext" },
+    { code: "3225", cn: "水晶廊", cat: "飯店分機", type: "ext" },
+    { code: "3214", cn: "宴會廳秘書", cat: "飯店分機", type: "ext" },
+    { code: "3236/3237", cn: "晶英軒領台", cat: "飯店分機", type: "ext" },
+    { code: "3212-3213", cn: "RB領台", cat: "飯店分機", type: "ext" },
+    { code: "3215", cn: "外賣中心", cat: "飯店分機", type: "ext" },
+    { code: "3600", cn: "人資主任", cat: "飯店分機", type: "ext" },
+    { code: "3700", cn: "客房部總監-林竑伸", cat: "飯店分機", type: "ext" },
+    { code: "**777", cn: "維修報修", cat: "飯店分機", type: "ext" },
+    { code: "3902", cn: "安全部辦公室", cat: "飯店分機", type: "ext" },
+    { code: "**333", cn: "城市車旅停管中心", cat: "飯店分機", type: "ext" },
+    { code: "3103", cn: "李總秘書 Shelly", cat: "飯店分機", type: "ext" },
+
+    // --- OPERA 代碼 (105組) ---
+    { code: "AC", cn: "空氣清淨機", cat: "客房備品", type: "opera" },
+    { code: "ADJ", cn: "調整", cat: "帳務訂房", type: "opera" },
+    { code: "AMD", cn: "更改", cat: "帳務訂房", type: "opera" },
+    { code: "AR", cn: "相鄰房", cat: "房態排房", type: "opera" },
+    { code: "AT", cn: "接送（機場到飯店）", cat: "前台禮賓", type: "opera" },
+    { code: "BAG", cn: "托特包（特殊專案贈送，如新春專案）", cat: "客房備品", type: "opera" },
+    { code: "BB", cn: "嬰兒澡盆（含小水勺+小板凳）", cat: "客房備品", type: "opera" },
+    { code: "BC", cn: "嬰兒床", cat: "客房備品", type: "opera" },
+    { code: "BEAR", cn: "泰迪熊（特殊專案贈送，熊熊愛上你、新春專案）", cat: "客房備品", type: "opera" },
+    { code: "BF", cn: "早餐", cat: "帳務訂房", type: "opera" },
+    { code: "BL", cn: "黑名單", cat: "貴賓客情", type: "opera" },
+    { code: "BT/_", cn: "公司付款", cat: "帳務訂房", type: "opera" },
+    { code: "CB", cn: "多寶閣（六種點心）", cat: "客房備品", type: "opera" },
+    { code: "CFM", cn: "確認", cat: "帳務訂房", type: "opera" },
+    { code: "C/I", cn: "登記入住 16:00", cat: "前台禮賓", type: "opera" },
+    { code: "C/O", cn: "登記退房 12:00", cat: "前台禮賓", type: "opera" },
+    { code: "CR", cn: "邊間", cat: "房態排房", type: "opera" },
+    { code: "CSP", cn: "VIP 重要貴賓", cat: "貴賓客情", type: "opera" },
+    { code: "CV/_", cn: "收住宿券付款", cat: "帳務訂房", type: "opera" },
+    { code: "DB", cn: "加臥鋪床", cat: "客房備品", type: "opera" },
+    { code: "DCRC", cn: "除非可安排相同條件房型", cat: "房態排房", type: "opera" },
+    { code: "DCRM", cn: "不可換房", cat: "房態排房", type: "opera" },
+    { code: "DF", cn: "不同樓層", cat: "房態排房", type: "opera" },
+    { code: "DND", cn: "請勿打擾", cat: "前台禮賓", type: "opera" },
+    { code: "DT", cn: "接送（飯店到機場）", cat: "前台禮賓", type: "opera" },
+    { code: "DURA", cn: "住宿期間（宿期）", cat: "帳務訂房", type: "opera" },
+    { code: "DUVET", cn: "單人被", cat: "客房備品", type: "opera" },
+    { code: "EP", cn: "環保專案（續住不打掃）", cat: "帳務訂房", type: "opera" },
+    { code: "ETA", cn: "預計抵達時間", cat: "前台禮賓", type: "opera" },
+    { code: "ETD", cn: "預計出發時間", cat: "前台禮賓", type: "opera" },
+    { code: "ETR", cn: "護送客人至房間", cat: "前台禮賓", type: "opera" },
+    { code: "EXI", cn: "快速進房，直接護送客人至房間辦理登記", cat: "前台禮賓", type: "opera" },
+    { code: "EXO", cn: "快速退房", cat: "前台禮賓", type: "opera" },
+    { code: "FC", cn: "遠離邊間", cat: "房態排房", type: "opera" },
+    { code: "FE", cn: "遠離電梯", cat: "房態排房", type: "opera" },
+    { code: "FOC", cn: "免費房（用於團體，如16間送1間）", cat: "帳務訂房", type: "opera" },
+    { code: "FUG", cn: "強制升等", cat: "房態排房", type: "opera" },
+    { code: "FYI", cn: "轉告同仁事項用語", cat: "前台禮賓", type: "opera" },
+    { code: "GTA", cn: "旅行社保證訂房", cat: "帳務訂房", type: "opera" },
+    { code: "GTD", cn: "保證訂房", cat: "帳務訂房", type: "opera" },
+    { code: "HEAT", cn: "暖氣", cat: "客房備品", type: "opera" },
+    { code: "HF", cn: "高樓層", cat: "房態排房", type: "opera" },
+    { code: "HR", cn: "happy hour", cat: "帳務訂房", type: "opera" },
+    { code: "IB", cn: "熨斗跟燙板", cat: "客房備品", type: "opera" },
+    { code: "ID", cn: "身分證/居留證", cat: "前台禮賓", type: "opera" },
+    { code: "IFM", cn: "告知/通知", cat: "前台禮賓", type: "opera" },
+    { code: "I/H", cn: "目前住在館內", cat: "前台禮賓", type: "opera" },
+    { code: "IN", cn: "相通的房間", cat: "房態排房", type: "opera" },
+    { code: "INCO", cn: "查無此人", cat: "前台禮賓", type: "opera" },
+    { code: "INV", cn: "發票", cat: "帳務訂房", type: "opera" },
+    { code: "KID", cn: "兒童拖鞋", cat: "客房備品", type: "opera" },
+    { code: "KL", cn: "嬰兒肥皂", cat: "客房備品", type: "opera" },
+    { code: "L&F", cn: "遺失物", cat: "前台禮賓", type: "opera" },
+    { code: "Latex Pillow", cn: "乳膠枕", cat: "客房備品", type: "opera" },
+    { code: "LF", cn: "低樓層", cat: "房態排房", type: "opera" },
+    { code: "M/C", cn: "晨喚", cat: "前台禮賓", type: "opera" },
+    { code: "M&G", cn: "請值班經理出來向客人打招呼", cat: "前台禮賓", type: "opera" },
+    { code: "MM", cn: "桌上型放大款化妝鏡", cat: "客房備品", type: "opera" },
+    { code: "MOD", cn: "駐館主管（通常僅周末/連假配置經理以上）", cat: "前台禮賓", type: "opera" },
+    { code: "NC", cn: "沒有訂房單", cat: "帳務訂房", type: "opera" },
+    { code: "N/C", cn: "名片", cat: "前台禮賓", type: "opera" },
+    { code: "NE", cn: "靠近電梯", cat: "房態排房", type: "opera" },
+    { code: "NS", cn: "非吸菸房", cat: "房態排房", type: "opera" },
+    { code: "N/S", cn: "沒有出現的訂房客人", cat: "帳務訂房", type: "opera" },
+    { code: "O/A", cn: "客人自付款項", cat: "帳務訂房", type: "opera" },
+    { code: "OOO", cn: "當日無法販售之房間", cat: "房態排房", type: "opera" },
+    { code: "OOS", cn: "今日可售，但要晚一點", cat: "房態排房", type: "opera" },
+    { code: "P/B", cn: "（誰）要幫該房客付款", cat: "帳務訂房", type: "opera" },
+    { code: "P/F", cn: "幫（誰）付款", cat: "帳務訂房", type: "opera" },
+    { code: "PKG", cn: "專案贈禮", cat: "帳務訂房", type: "opera" },
+    { code: "PS", cn: "求婚/蜜月佈置（含天鵝毛巾，玫瑰花瓣鋪床）", cat: "客房備品", type: "opera" },
+    { code: "PV", cn: "公園景觀", cat: "房態排房", type: "opera" },
+    { code: "QQ", cn: "館內其他消費單據", cat: "帳務訂房", type: "opera" },
+    { code: "QR", cn: "安靜房", cat: "房態排房", type: "opera" },
+    { code: "RC/_", cn: "旅行社結帳/OTA", cat: "帳務訂房", type: "opera" },
+    { code: "RED", cn: "紅酒", cat: "客房備品", type: "opera" },
+    { code: "RQ", cn: "要求", cat: "前台禮賓", type: "opera" },
+    { code: "RV#", cn: "訂房編號", cat: "帳務訂房", type: "opera" },
+    { code: "SAL", cn: "浴鹽", cat: "客房備品", type: "opera" },
+    { code: "SBF", cn: "行政樓層早餐", cat: "帳務訂房", type: "opera" },
+    { code: "SCRN", cn: "房客指接聽指定人士的來電", cat: "貴賓客情", type: "opera" },
+    { code: "SF", cn: "同樓層", cat: "房態排房", type: "opera" },
+    { code: "SJ", cn: "記者", cat: "貴賓客情", type: "opera" },
+    { code: "SL", cn: "行政專案", cat: "帳務訂房", type: "opera" },
+    { code: "SMK", cn: "有吸菸習慣的客人（全館禁菸）", cat: "貴賓客情", type: "opera" },
+    { code: "SP", cn: "回流客，6-12次", cat: "貴賓客情", type: "opera" },
+    { code: "SPS", cn: "回流客，12次以上", cat: "貴賓客情", type: "opera" },
+    { code: "SR", cn: "非行政專案，但可享有行政禮遇", cat: "貴賓客情", type: "opera" },
+    { code: "SSP", cn: "極敏感客人", cat: "貴賓客情", type: "opera" },
+    { code: "S/W", cn: "同住登記", cat: "帳務訂房", type: "opera" },
+    { code: "SZ", cn: "消毒鍋", cat: "客房備品", type: "opera" },
+    { code: "TB", cn: "塌塌米床", cat: "客房備品", type: "opera" },
+    { code: "TD", cn: "開夜床服務", cat: "客房備品", type: "opera" },
+    { code: "TEA", cn: "烏龍茶葉罐", cat: "客房備品", type: "opera" },
+    { code: "TF", cn: "物品轉交", cat: "前台禮賓", type: "opera" },
+    { code: "TI", cn: "同業", cat: "貴賓客情", type: "opera" },
+    { code: "TKS", cn: "票券", cat: "帳務訂房", type: "opera" },
+    { code: "VI", cn: "房間已完成，可入住", cat: "房態排房", type: "opera" },
+    { code: "VC", cn: "房間已清潔，待查房，不可入住", cat: "房態排房", type: "opera" },
+    { code: "VD", cn: "髒房尚不可入住", cat: "房態排房", type: "opera" },
+    { code: "VP", cn: "待修繕", cat: "房態排房", type: "opera" },
+    { code: "W/L", cn: "候補名單", cat: "帳務訂房", type: "opera" },
+    { code: "WR", cn: "囍房佈置（含天鵝毛巾、房門囍字、水12瓶）", cat: "客房備品", type: "opera" },
+    { code: "XB", cn: "行軍床", cat: "客房備品", type: "opera" }
 ];
 
 const categoryConfig = {
@@ -696,7 +548,8 @@ const categoryConfig = {
     "客房備品": { color: "#10b981" },
     "前台禮賓": { color: "#8b5cf6" },
     "貴賓客情": { color: "#f59e0b" },
-    "帳務訂房": { color: "#ef4444" }
+    "帳務訂房": { color: "#ef4444" },
+    "飯店分機": { color: "#06b6d4" }
 };
 
 let state = {
@@ -704,25 +557,18 @@ let state = {
     wrongs: [],
     stats: { total: 0, correct: 0, streak: 0 },
     theme: 'dark',
-    poolType: 'all'
-};
-
-/* 🎯 25 題測驗狀態控制物件 */
-let exam = {
-    totalQuestions: 25,
-    currentIndex: 0,
-    questions: [], // 抽取 25 題不重複：[{ item, direction }]
-    records: [],   // 作答紀錄：[{ num, prompt, promptType, userAns, correctAns, isCorrect, cat, code, cn }]
-    score: 0,
-    isFinished: false
+    poolType: 'all',
+    scope: 'all'
 };
 
 function loadState() {
     const saved = localStorage.getItem('opera_app_data');
     if (saved) state = JSON.parse(saved);
+    if (!state.scope) state.scope = 'all';
     applyThemeUI();
     updateStatsUI();
     updateWeaknessChart();
+    updateScopeUI();
 }
 
 function saveState() {
@@ -739,6 +585,16 @@ function updateStatsUI() {
     document.getElementById('st-accuracy').innerText = `${acc}%`;
     document.getElementById('setting-wrong-count').innerText = `${state.wrongs.length}題`;
     document.getElementById('setting-fav-count').innerText = `${state.favs.length}題`;
+    
+    const activeScopedList = getScopedDatabase();
+    document.getElementById('setting-pool-total').innerText = `${activeScopedList.length}題`;
+}
+
+function updateScopeUI() {
+    document.querySelectorAll('[id^="scope-"]').forEach(el => el.classList.remove('active'));
+    document.getElementById(`scope-${state.scope}`)?.classList.add('active');
+    document.querySelectorAll('.pool-opt').forEach(el => el.classList.remove('active'));
+    document.getElementById(`pool-${state.poolType}`)?.classList.add('active');
 }
 
 function updateWeaknessChart() {
@@ -750,7 +606,7 @@ function updateWeaknessChart() {
     const totalWrongs = state.wrongs.length;
     totalCountEl.innerText = totalWrongs;
 
-    const catCounts = { "房態排房": 0, "客房備品": 0, "前台禮賓": 0, "貴賓客情": 0, "帳務訂房": 0 };
+    const catCounts = { "房態排房": 0, "客房備品": 0, "前台禮賓": 0, "貴賓客情": 0, "帳務訂房": 0, "飯店分機": 0 };
     state.wrongs.forEach(code => {
         const item = db.find(x => x.code === code);
         if (item && catCounts[item.cat] !== undefined) {
@@ -799,6 +655,25 @@ function updateWeaknessChart() {
     pie.style.background = `conic-gradient(${gradParts.join(', ')})`;
 }
 
+function getScopedDatabase() {
+    if (state.scope === 'opera') return db.filter(x => x.type === 'opera');
+    if (state.scope === 'ext') return db.filter(x => x.type === 'ext');
+    return db;
+}
+
+function getPool() {
+    const scoped = getScopedDatabase();
+    if (state.poolType === 'wrong') {
+        const pool = scoped.filter(x => state.wrongs.includes(x.code));
+        return pool.length > 0 ? pool : scoped;
+    }
+    if (state.poolType === 'fav') {
+        const pool = scoped.filter(x => state.favs.includes(x.code));
+        return pool.length > 0 ? pool : scoped;
+    }
+    return scoped;
+}
+
 function checkChineseMatch(userInput, targetStr) {
     const clean = s => s.toLowerCase().replace(/[\s\-_/，,、。.！!？?（）()]/g, '');
     const u = clean(userInput);
@@ -831,55 +706,50 @@ function checkChineseMatch(userInput, targetStr) {
     return false;
 }
 
-function getPool() {
-    if (state.poolType === 'wrong') {
-        const pool = db.filter(x => state.wrongs.includes(x.code));
-        return pool.length > 0 ? pool : db;
+// 🔢 代碼與分機號碼嚴格比對（** 嚴格要求，全形 ＊ 自動相容，連號範圍支援）
+function checkCodeMatch(userInput, targetCode) {
+    // 全形星號轉半形，轉大寫，移除連字符與空格（嚴格保留星號 *）
+    const clean = s => s.trim()
+        .replace(/[\uFF0A]/g, '*')
+        .toUpperCase()
+        .replace(/[\s\-_/]/g, '');
+
+    const u = clean(userInput);
+    const t = clean(targetCode);
+    if (!u) return false;
+
+    // 🌟 嚴格約束：若題目號碼包含星號 (如 **777, **333)，使用者必須打出 ** 才算分
+    if (t.includes('*')) {
+        return u === t;
     }
-    if (state.poolType === 'fav') {
-        const pool = db.filter(x => state.favs.includes(x.code));
-        return pool.length > 0 ? pool : db;
+
+    // 1. 完全一致
+    if (u === t) return true;
+
+    // 2. 智慧展開連號 (如 3402-3404 支援輸入 3402, 3403, 3404)
+    const rawParts = targetCode.split(/[-\/]/).map(p => clean(p));
+    if (rawParts.length === 2 && !isNaN(rawParts[0]) && !isNaN(rawParts[1])) {
+        const start = parseInt(rawParts[0], 10);
+        const end = parseInt(rawParts[1], 10);
+        if (end > start && end - start <= 5) {
+            const userNum = parseInt(u, 10);
+            if (userNum >= start && userNum <= end) return true;
+        }
     }
-    return db;
+
+    // 3. 複合分機號碼拆分比對 (如 3236/3237)
+    if (rawParts.some(part => part === u)) return true;
+
+    return false;
 }
 
-/* 🎲 開始新一輪 25 題不重複隨機測驗 */
-function startNewExam(autoFocus = false) {
-    const rawPool = [...getPool()];
-    // Fisher-Yates 洗牌
-    for (let i = rawPool.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [rawPool[i], rawPool[j]] = [rawPool[j], rawPool[i]];
-    }
-
-    // 取前 25 題 (若題庫小於 25 題則全取)
-    const count = Math.min(25, rawPool.length);
-    const selected = rawPool.slice(0, count);
-
-    exam.totalQuestions = count;
-    exam.currentIndex = 0;
-    exam.records = [];
-    exam.score = 0;
-    exam.isFinished = false;
-
-    // 隨機分配每題方向：code (代碼 ➔ 中文) 或 cn (中文 ➔ 代碼)
-    exam.questions = selected.map(item => ({
-        item: item,
-        direction: Math.random() < 0.5 ? 'code' : 'cn'
-    }));
-
-    // 切換顯示模式
-    document.getElementById('exam-card-wrapper').classList.remove('hidden');
-    document.getElementById('exam-result-panel').classList.add('hidden');
-
-    loadCardQuestion(0, autoFocus);
-}
-
+let currentCard = null;
+let currentDirection = 'code';
 let lastSubmitTime = 0;
 let isNextCooldown = false;
+let isFirstLoad = true;
 
-/* 🃏 載入特定題號的卡片 */
-function loadCardQuestion(index, autoFocus = true) {
+function nextCard(shouldFocus = false) {
     const cardEl = document.getElementById('main-card');
     cardEl.classList.remove('flipped');
 
@@ -888,38 +758,65 @@ function loadCardQuestion(index, autoFocus = true) {
     const input = document.getElementById('type-input');
     input.value = '';
 
-    // 更新進度條
-    const progressPercent = Math.round(((index + 1) / exam.totalQuestions) * 100);
-    document.getElementById('exam-progress').style.width = `${progressPercent}%`;
-
     setTimeout(() => {
-        const qObj = exam.questions[index];
-        const item = qObj.item;
-        const dir = qObj.direction;
+        const pool = getPool();
+        currentCard = pool[Math.floor(Math.random() * pool.length)];
+        
+        currentDirection = Math.random() < 0.5 ? 'code' : 'cn';
         const promptEl = document.getElementById('card-prompt');
 
-        if (dir === 'code') {
-            document.getElementById('card-badge').innerText = `第 ${index + 1} / ${exam.totalQuestions} 題 · 【${item.cat}】代碼 ➔ 中文`;
-            promptEl.innerText = item.code;
-            promptEl.className = 'card-prompt-text';
-            input.placeholder = '請輸入中文意思...';
+        if (currentDirection === 'code') {
+            if (currentCard.type === 'ext') {
+                document.getElementById('card-badge').innerText = `【${currentCard.cat}】號碼 ➔ 請輸入單位/職稱`;
+                input.placeholder = '請輸入單位或部門名稱（例: 水晶廊）...';
+            } else {
+                document.getElementById('card-badge').innerText = `【${currentCard.cat}】代碼 ➔ 請輸入中文`;
+                input.placeholder = '請輸入中文意思...';
+            }
+            promptEl.innerText = currentCard.code;
+            promptEl.className = currentCard.code.length > 12 ? 'card-prompt-text long-text' : 'card-prompt-text';
         } else {
-            document.getElementById('card-badge').innerText = `第 ${index + 1} / ${exam.totalQuestions} 題 · 【${item.cat}】中文 ➔ 代碼`;
-            promptEl.innerText = item.cn;
-            promptEl.className = item.cn.length > 8 ? 'card-prompt-text long-text' : 'card-prompt-text';
-            input.placeholder = '請輸入代碼 (例: VC, SSP)...';
+            if (currentCard.type === 'ext') {
+                document.getElementById('card-badge').innerText = `【${currentCard.cat}】單位 ➔ 請輸入分機/電話`;
+                input.placeholder = '請輸入分機號碼（例: 3225, **777）...';
+            } else {
+                document.getElementById('card-badge').innerText = `【${currentCard.cat}】中文 ➔ 請輸入代碼`;
+                input.placeholder = '請輸入代碼 (例: VC, SSP)...';
+            }
+            promptEl.innerText = currentCard.cn;
+            promptEl.className = currentCard.cn.length > 8 ? 'card-prompt-text long-text' : 'card-prompt-text';
         }
 
-        const isFav = state.favs.includes(item.code);
+        const isFav = state.favs.includes(currentCard.code);
         document.getElementById('card-star').classList.toggle('active', isFav);
 
-        if (autoFocus) {
+        const isDesktop = window.innerWidth >= 860;
+        if ((isDesktop || shouldFocus) && !isFirstLoad) {
             input.focus();
         }
+        isFirstLoad = false;
     }, 200);
 }
 
-/* 📥 提交本題答案 */
+function requestNextCard() {
+    if (isNextCooldown) return;
+    if (Date.now() - lastSubmitTime < 350) return;
+
+    isNextCooldown = true;
+    const btn = document.getElementById('next-card-btn');
+    btn.innerText = "⏳ 1 秒後進入下一題...";
+    btn.style.opacity = "0.75";
+    btn.style.pointerEvents = "none";
+
+    setTimeout(() => {
+        btn.innerText = "下一題 ➔ (Enter)";
+        btn.style.opacity = "1";
+        btn.style.pointerEvents = "auto";
+        isNextCooldown = false;
+        nextCard(true);
+    }, 1000);
+}
+
 function submitAnswer() {
     const input = document.getElementById('type-input');
     const val = input.value.trim();
@@ -928,154 +825,50 @@ function submitAnswer() {
     lastSubmitTime = Date.now();
     input.blur();
 
-    const qObj = exam.questions[exam.currentIndex];
-    const item = qObj.item;
-    const dir = qObj.direction;
-
     state.stats.total++;
     let isCorrect = false;
 
-    if (dir === 'code') {
-        isCorrect = checkChineseMatch(val, item.cn);
+    if (currentDirection === 'code') {
+        isCorrect = checkChineseMatch(val, currentCard.cn);
     } else {
-        const cleanUser = val.toUpperCase().replace(/[\s\-_/]/g, '');
-        const cleanTarget = item.code.toUpperCase().replace(/[\s\-_/]/g, '');
-        isCorrect = (cleanUser === cleanTarget);
+        isCorrect = checkCodeMatch(val, currentCard.code);
     }
 
     if (isCorrect) {
         state.stats.correct++;
         state.stats.streak++;
-        exam.score += 4; // 一題 4 分
-        const wIdx = state.wrongs.indexOf(item.code);
+        const wIdx = state.wrongs.indexOf(currentCard.code);
         if (wIdx > -1) state.wrongs.splice(wIdx, 1);
     } else {
         state.stats.streak = 0;
-        if (!state.wrongs.includes(item.code)) state.wrongs.push(item.code);
+        if (!state.wrongs.includes(currentCard.code)) state.wrongs.push(currentCard.code);
     }
     saveState();
 
-    // 紀錄此題作答資訊
-    exam.records.push({
-        num: exam.currentIndex + 1,
-        cat: item.cat,
-        code: item.code,
-        cn: item.cn,
-        prompt: dir === 'code' ? item.code : item.cn,
-        promptType: dir === 'code' ? '英翻中 (代碼 ➔ 中文)' : '中翻英 (中文 ➔ 代碼)',
-        userAns: val,
-        correctAns: dir === 'code' ? item.cn : item.code,
-        isCorrect: isCorrect
-    });
-
-    // 翻轉卡片
     const resBadge = document.getElementById('card-result-badge');
     resBadge.className = `result-badge ${isCorrect ? 'correct' : 'wrong'}`;
-    resBadge.innerText = isCorrect ? '🎉 答對了！(+4分)' : '❌ 答錯了！(+0分)';
+    resBadge.innerText = isCorrect ? '🎉 答對了！' : '❌ 答錯了！';
 
-    document.getElementById('card-ans-code').innerText = item.code;
-    document.getElementById('card-ans-cn').innerText = item.cn;
+    document.getElementById('card-ans-code').innerText = currentCard.code;
+    document.getElementById('card-ans-cn').innerText = currentCard.cn;
     document.getElementById('card-ans-user').innerText = `你的回答：${val}`;
 
     document.getElementById('main-card').classList.add('flipped');
+
     document.getElementById('input-form').classList.add('hidden');
-
     const nextBtn = document.getElementById('next-card-btn');
-    if (exam.currentIndex >= exam.totalQuestions - 1) {
-        nextBtn.innerText = "🏁 查看測驗成績與解答 (Enter)";
-        document.getElementById('card-back-hint').innerText = "點擊或按 Enter 查看 25 題總成績報告";
-    } else {
-        nextBtn.innerText = `下一題 (${exam.currentIndex + 2}/${exam.totalQuestions}) ➔ (Enter)`;
-        document.getElementById('card-back-hint').innerText = "按 Enter 或點擊「下一題」繼續刷題";
-    }
+    nextBtn.innerText = "下一題 ➔ (Enter)";
     nextBtn.classList.remove('hidden');
-}
-
-/* ⏱️ 下一題 / 完成測驗 */
-function requestNextCard() {
-    if (isNextCooldown) return;
-    if (Date.now() - lastSubmitTime < 350) return;
-
-    // 若已經是最後一題，結算進入成績面板
-    if (exam.currentIndex >= exam.totalQuestions - 1) {
-        showExamResult();
-        return;
-    }
-
-    isNextCooldown = true;
-    const btn = document.getElementById('next-card-btn');
-    btn.innerText = "⏳ 載入下一題...";
-    btn.style.opacity = "0.75";
-    btn.style.pointerEvents = "none";
-
-    setTimeout(() => {
-        btn.style.opacity = "1";
-        btn.style.pointerEvents = "auto";
-        isNextCooldown = false;
-        exam.currentIndex++;
-        loadCardQuestion(exam.currentIndex, true);
-    }, 400);
-}
-
-/* 📊 展現 25 題測驗報告與成績清單 */
-function showExamResult() {
-    exam.isFinished = true;
-    document.getElementById('exam-card-wrapper').classList.add('hidden');
-    const resultPanel = document.getElementById('exam-result-panel');
-    resultPanel.classList.remove('hidden');
-
-    const correctCount = exam.records.filter(r => r.isCorrect).length;
-    const finalScore = correctCount * 4; // 滿分 100
-
-    document.getElementById('res-score').innerText = `${finalScore}分`;
-    document.getElementById('res-correct-count').innerText = correctCount;
-
-    const badge = document.getElementById('res-score-badge');
-    if (finalScore >= 90) {
-        badge.className = 'score-badge pass';
-        badge.innerText = '🏆 優秀超群！熟練度極高！';
-    } else if (finalScore >= 60) {
-        badge.className = 'score-badge pass';
-        badge.innerText = '💪 恭喜及格！再接再厲衝刺滿分！';
-    } else {
-        badge.className = 'score-badge fail';
-        badge.innerText = '📚 需多加強！建議重測並複習錯題。';
-    }
-
-    // 渲染 25 題清單
-    const listContainer = document.getElementById('exam-report-list');
-    listContainer.innerHTML = '';
-
-    exam.records.forEach(r => {
-        const itemDiv = document.createElement('div');
-        itemDiv.className = `report-item ${r.isCorrect ? 'is-correct' : 'is-wrong'}`;
-        itemDiv.innerHTML = `
-            <div class="report-header">
-                <span class="report-q-num">第 ${r.num} 題 · ${r.promptType}</span>
-                <span class="report-tag">【${r.cat}】${r.isCorrect ? '✔ +4分' : '✘ 0分'}</span>
-            </div>
-            <div class="report-prompt">${r.prompt}</div>
-            <div class="report-ans-box">
-                <div class="report-user-ans ${r.isCorrect ? 'ans-correct' : 'ans-wrong'}">你的回答：${r.userAns} ${r.isCorrect ? '(正確)' : '(錯誤)'}</div>
-                <div class="report-correct-ans">標準解答：${r.correctAns}</div>
-            </div>
-        `;
-        listContainer.appendChild(itemDiv);
-    });
-
-    // 滾動回頂部
-    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function toggleFav(e) {
     e.stopPropagation();
-    const currentItem = exam.questions[exam.currentIndex]?.item;
-    if (!currentItem) return;
-    const idx = state.favs.indexOf(currentItem.code);
+    if (!currentCard) return;
+    const idx = state.favs.indexOf(currentCard.code);
     if (idx > -1) state.favs.splice(idx, 1);
-    else state.favs.push(currentItem.code);
+    else state.favs.push(currentCard.code);
     saveState();
-    document.getElementById('card-star').classList.toggle('active', state.favs.includes(currentItem.code));
+    document.getElementById('card-star').classList.toggle('active', state.favs.includes(currentCard.code));
 }
 
 let lastQuizAnswerTime = 0;
@@ -1100,12 +893,11 @@ function requestNextQuiz() {
     }, 1000);
 }
 
-// ⌨️ 全域 Enter 鍵智慧監聽
 window.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
         const nextCardBtn = document.getElementById('next-card-btn');
         const learnView = document.getElementById('view-learn');
-        if (learnView.classList.contains('active') && !nextCardBtn.classList.contains('hidden') && !exam.isFinished) {
+        if (learnView.classList.contains('active') && !nextCardBtn.classList.contains('hidden')) {
             e.preventDefault();
             requestNextCard();
             return;
@@ -1123,39 +915,46 @@ window.addEventListener('keydown', (e) => {
 
 const typeInput = document.getElementById('type-input');
 typeInput.addEventListener('focus', () => {
-    document.body.classList.add('keyboard-open');
-    setTimeout(() => { window.scrollTo({ top: 0, behavior: 'smooth' }); }, 150);
+    if (window.innerWidth < 860) {
+        document.body.classList.add('keyboard-open');
+        setTimeout(() => { window.scrollTo(0, 0); }, 30);
+        setTimeout(() => { window.scrollTo(0, 0); }, 150);
+        setTimeout(() => { window.scrollTo(0, 0); }, 300);
+    }
 });
 typeInput.addEventListener('blur', () => {
     document.body.classList.remove('keyboard-open');
 });
 
-// 2. 考題測驗頁 (四選一)
+// 2. 考題測驗頁
 let currentQuiz = null;
 let currentQuizType = 'code2cn';
 
 function nextQuizQuestion() {
     document.getElementById('quiz-next-btn').classList.add('hidden');
-    currentQuiz = db[Math.floor(Math.random() * db.length)];
+    const activeScopedList = getScopedDatabase();
+    currentQuiz = activeScopedList[Math.floor(Math.random() * activeScopedList.length)];
     currentQuizType = Math.random() < 0.5 ? 'code2cn' : 'cn2code';
 
     let targetAnswer = "";
     let opts = [];
 
     if (currentQuizType === 'code2cn') {
-        document.getElementById('quiz-title').innerText = `【 ${currentQuiz.code} 】（${currentQuiz.cat}）代表什麼意思？`;
+        const labelName = currentQuiz.type === 'ext' ? '分機號碼' : '代碼';
+        document.getElementById('quiz-title').innerText = `【 ${currentQuiz.code} 】（${currentQuiz.cat}）代表什麼？`;
         targetAnswer = currentQuiz.cn;
         opts = [targetAnswer];
-        while (opts.length < 4) {
-            let rand = db[Math.floor(Math.random() * db.length)].cn;
+        while (opts.length < 4 && opts.length < activeScopedList.length) {
+            let rand = activeScopedList[Math.floor(Math.random() * activeScopedList.length)].cn;
             if (!opts.includes(rand)) opts.push(rand);
         }
     } else {
-        document.getElementById('quiz-title').innerText = `【 ${currentQuiz.cn} 】（${currentQuiz.cat}）的代碼是？`;
+        const labelName = currentQuiz.type === 'ext' ? '分機/電話' : '代碼';
+        document.getElementById('quiz-title').innerText = `【 ${currentQuiz.cn} 】（${currentQuiz.cat}）的${labelName}是？`;
         targetAnswer = currentQuiz.code;
         opts = [targetAnswer];
-        while (opts.length < 4) {
-            let rand = db[Math.floor(Math.random() * db.length)].code;
+        while (opts.length < 4 && opts.length < activeScopedList.length) {
+            let rand = activeScopedList[Math.floor(Math.random() * activeScopedList.length)].code;
             if (!opts.includes(rand)) opts.push(rand);
         }
     }
@@ -1199,12 +998,20 @@ function checkQuiz(btn, selected, target) {
     qBtn.classList.remove('hidden');
 }
 
+function changeScope(scope) {
+    state.scope = scope;
+    updateScopeUI();
+    saveState();
+    nextCard(false);
+    nextQuizQuestion();
+    renderMiniSearch();
+}
+
 function changePool(type) {
     state.poolType = type;
-    document.querySelectorAll('.pool-opt').forEach(el => el.classList.remove('active'));
-    document.getElementById(`pool-${type}`).classList.add('active');
+    updateScopeUI();
     saveState();
-    startNewExam(false);
+    nextCard(false);
 }
 
 function renderSearchList() {
@@ -1233,7 +1040,8 @@ function renderMiniSearch() {
     if (!container) return;
     container.innerHTML = '';
 
-    const filtered = db.filter(x => x.code.toLowerCase().includes(q) || x.cn.includes(q) || x.cat.includes(q)).slice(0, 15);
+    const activeScopedList = getScopedDatabase();
+    const filtered = activeScopedList.filter(x => x.code.toLowerCase().includes(q) || x.cn.includes(q) || x.cat.includes(q)).slice(0, 15);
     filtered.forEach(x => {
         const div = document.createElement('div');
         div.className = 'mini-list-item';
@@ -1280,7 +1088,7 @@ function applyThemeUI() {
 function resetAllData() {
     if (confirm("確定要重置所有紀錄與錯題本嗎？")) {
         localStorage.removeItem('opera_app_data');
-        state = { favs: [], wrongs: [], stats: { total: 0, correct: 0, streak: 0 }, theme: 'dark', poolType: 'all' };
+        state = { favs: [], wrongs: [], stats: { total: 0, correct: 0, streak: 0 }, theme: 'dark', poolType: 'all', scope: 'all' };
         saveState();
         applyThemeUI();
         alert("資料已重置！");
@@ -1288,9 +1096,8 @@ function resetAllData() {
     }
 }
 
-// 初始化
 loadState();
-startNewExam(false); // 首次開啟不搶焦點，維持完整首頁
+nextCard(false);
 nextQuizQuestion();
 renderMiniSearch();
 </script>

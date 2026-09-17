@@ -8,51 +8,59 @@
     <link rel="icon" type="image/png" href="apple-touch-icon.png">
     <style>
         :root {
-            --bg-color: #000000;
-            --card-bg: #1c1c1e;
-            --input-bg: #2c2c2e;
-            --border-color: #38383a;
+            --bg-color: #0d0d0e;
+            --card-bg: #18181b;
+            --input-bg: #222226;
+            --border-color: rgba(255, 255, 255, 0.08);
             --text-main: #ffffff;
             --text-sub: #8e8e93;
             --primary: #C8A86E;
-            --primary-light: rgba(200, 168, 110, 0.15);
+            --primary-light: rgba(200, 168, 110, 0.12);
             --primary-btn-text: #121212;
             --accent: #30d158;
             --danger: #ff453a;
-            --shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
             --nav-bg: #121212;
-            --ios-icon-bg: #2c2c2e;
+            --ios-icon-bg: #27272a;
             --ios-icon-stroke: #ffffff;
         }
 
         body.light-mode {
-            --bg-color: #f2f2f7;
+            --bg-color: #f5f5f7;
             --card-bg: #ffffff;
-            --input-bg: #e5e5ea;
-            --border-color: #c6c6c8;
-            --text-main: #000000;
+            --input-bg: #f0f0f4;
+            --border-color: rgba(0, 0, 0, 0.08);
+            --text-main: #18181b;
             --text-sub: #6c6c70;
             --primary: #B38E4B;
             --primary-light: rgba(179, 142, 75, 0.12);
             --primary-btn-text: #ffffff;
-            --shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+            --shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
             --nav-bg: #ffffff;
             --ios-icon-bg: #e5e5ea;
             --ios-icon-stroke: #1c1c1e;
         }
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif; }
         
+        /* 🍎 全域精緻細膩滾動條（徹底消除 Windows 醜陋粗白捲軸） */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 999px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.28); }
+        body.light-mode ::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.15); }
+        body.light-mode ::-webkit-scrollbar-thumb:hover { background: rgba(0, 0, 0, 0.28); }
+
         body { 
             background-color: var(--bg-color); 
             color: var(--text-main); 
             display: flex; 
             justify-content: center; 
             min-height: 100vh; 
-            transition: background-color 0.2s; 
+            transition: background-color 0.25s ease; 
         }
 
-        /* 📱 手機端排版 */
+        /* 📱 手機端排版保持原樣，穩定好用 */
         @media (max-width: 859px) {
             body { 
                 min-height: 100dvh; 
@@ -77,7 +85,6 @@
             .btn-submit { padding: 0 20px; font-size: 16px; border-radius: 18px; }
             .btn-action { padding: 14px; font-size: 16px; border-radius: 18px; }
 
-            /* 📱 鍵盤彈起時：絕不隱藏頂部與數據，卡片緊湊收納，全面保留所有資訊 */
             body.keyboard-open {
                 position: fixed !important;
                 top: 0 !important;
@@ -87,47 +94,22 @@
                 overflow: hidden !important;
                 padding-bottom: 0 !important;
             }
-            body.keyboard-open .app-container {
-                padding: 8px 14px !important;
-                gap: 8px !important;
-            }
-            /* 頂部 Header 與 數據 Bar 永遠保留顯示 */
+            body.keyboard-open .app-container { padding: 8px 14px !important; gap: 8px !important; }
             body.keyboard-open header { display: flex !important; margin-bottom: 2px !important; }
             body.keyboard-open .stats-bar { display: grid !important; padding: 6px 10px !important; }
-            body.keyboard-open .nav-bar { display: none !important; } /* 僅隱藏底部導覽列避免浮在半空中 */
-
-            /* 卡牌微調比例，使整體資訊在鍵盤上方一次看全 */
-            body.keyboard-open .flashcard-container { 
-                height: clamp(145px, 23vh, 175px) !important; 
-                margin-top: 0 !important;
-            }
-            body.keyboard-open .card-face { 
-                padding: 10px 14px !important; 
-                border-radius: 18px !important;
-            }
-            body.keyboard-open .card-prompt-text { 
-                font-size: 28px !important; 
-            }
-            body.keyboard-open .card-prompt-text.long-text { 
-                font-size: 20px !important; 
-            }
-            body.keyboard-open .card-star { 
-                top: 10px !important; 
-                right: 12px !important; 
-                font-size: 20px !important; 
-            }
-            body.keyboard-open .card-badge {
-                font-size: 11px !important;
-                padding: 3px 10px !important;
-            }
-            body.keyboard-open .card-face div[style*="font-size: 13px"] {
-                display: none !important; /* 暫時隱藏翻轉小提示字串以釋放垂直空間 */
-            }
+            body.keyboard-open .nav-bar { display: none !important; }
+            body.keyboard-open .flashcard-container { height: clamp(145px, 23vh, 175px) !important; margin-top: 0 !important; }
+            body.keyboard-open .card-face { padding: 10px 14px !important; border-radius: 18px !important; }
+            body.keyboard-open .card-prompt-text { font-size: 28px !important; }
+            body.keyboard-open .card-prompt-text.long-text { font-size: 20px !important; }
+            body.keyboard-open .card-star { top: 10px !important; right: 12px !important; font-size: 20px !important; }
+            body.keyboard-open .card-badge { font-size: 11px !important; padding: 3px 10px !important; }
+            body.keyboard-open .card-face div[style*="font-size: 13px"] { display: none !important; }
         }
 
         /* 頂部 Header */
         header { display: flex; justify-content: space-between; align-items: center; padding: 2px 2px; }
-        .header-left { display: flex; align-items: center; gap: 8px; }
+        .header-left { display: flex; align-items: center; gap: 10px; }
         
         .silks-logo {
             height: 34px;
@@ -142,7 +124,23 @@
         body.light-mode .silks-logo { filter: none; }
 
         .app-title { font-size: 19px; font-weight: 800; color: var(--text-main); letter-spacing: 0.5px; transition: color 0.2s; }
-        .theme-toggle { background: var(--card-bg); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 20px; cursor: pointer; color: var(--text-main); font-size: 12px; font-weight: 700; transition: 0.2s; }
+        
+        /* ☀️ 深淺模式切換鈕 */
+        .theme-toggle { 
+            background: var(--card-bg); 
+            border: 1px solid var(--border-color); 
+            padding: 6px 14px; 
+            border-radius: 20px; 
+            cursor: pointer; 
+            color: var(--text-main); 
+            font-size: 13px; 
+            font-weight: 600; 
+            display: flex; 
+            align-items: center; 
+            gap: 6px; 
+            transition: 0.2s; 
+        }
+        .theme-toggle svg { width: 14px; height: 14px; stroke: var(--primary); fill: none; stroke-width: 2.2; }
 
         .desktop-nav { display: none; }
 
@@ -167,22 +165,22 @@
 
         .card-star { position: absolute; top: 16px; right: 18px; font-size: 24px; color: #404040; cursor: pointer; z-index: 10; }
         .card-star.active { color: #f59e0b; }
-        .card-badge { font-size: 12px; font-weight: 800; padding: 5px 14px; border-radius: 14px; background: var(--input-bg); border: 1px solid var(--border-color); color: var(--primary); }
+        .card-badge { font-size: 12px; font-weight: 700; padding: 5px 14px; border-radius: 14px; background: var(--input-bg); border: 1px solid var(--border-color); color: var(--primary); letter-spacing: 0.3px; }
         
-        .card-prompt-text { font-weight: 900; letter-spacing: 0.5px; color: var(--text-main); margin: auto 0; line-height: 1.3; padding: 0 10px; word-break: break-word; }
+        .card-prompt-text { font-weight: 800; letter-spacing: 0.5px; color: var(--text-main); margin: auto 0; line-height: 1.35; padding: 0 10px; word-break: break-word; }
 
         /* 卡牌背面答案展現 */
-        .result-badge { font-size: 15px; font-weight: 800; padding: 6px 16px; border-radius: 18px; }
-        .result-badge.correct { background: rgba(48, 209, 88, 0.2); color: var(--accent); border: 1px solid var(--accent); }
-        .result-badge.wrong { background: rgba(255, 69, 58, 0.2); color: var(--danger); border: 1px solid var(--danger); }
+        .result-badge { font-size: 14px; font-weight: 800; padding: 6px 16px; border-radius: 18px; }
+        .result-badge.correct { background: rgba(48, 209, 88, 0.18); color: var(--accent); border: 1px solid rgba(48, 209, 88, 0.35); }
+        .result-badge.wrong { background: rgba(255, 69, 58, 0.18); color: var(--danger); border: 1px solid rgba(255, 69, 58, 0.35); }
         .ans-code { font-size: 34px; font-weight: 900; color: var(--primary); margin-top: 4px; word-break: break-word; }
-        .ans-cn { font-size: 20px; font-weight: 800; color: var(--text-main); margin-top: 4px; line-height: 1.25; }
+        .ans-cn { font-size: 20px; font-weight: 700; color: var(--text-main); margin-top: 4px; line-height: 1.3; }
         .ans-user { font-size: 13px; color: var(--text-sub); margin-top: 8px; background: var(--input-bg); padding: 5px 12px; border-radius: 10px; border: 1px solid var(--border-color); }
 
         /* 下方輸入框與按鈕 */
         .action-area { display: flex; flex-direction: column; gap: 8px; width: 100%; }
         .input-group { width: 100%; display: flex; gap: 8px; }
-        .card-input { flex: 1; border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-main); font-weight: 700; outline: none; transition: 0.2s; box-shadow: var(--shadow); }
+        .card-input { flex: 1; border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-main); font-weight: 600; outline: none; transition: 0.2s; box-shadow: var(--shadow); }
         .card-input:focus { border-color: var(--primary); }
         .btn-submit { background: var(--primary); color: var(--primary-btn-text); border: none; font-weight: 800; cursor: pointer; transition: opacity 0.2s; }
         .btn-submit:active { opacity: 0.85; }
@@ -204,17 +202,17 @@
         }
         .exam-score-header {
             text-align: center;
-            padding: 12px 0;
+            padding: 10px 0 16px 0;
             border-bottom: 1px solid var(--border-color);
         }
-        .exam-score-title { font-size: 15px; font-weight: 700; color: var(--text-sub); }
-        .exam-score-val { font-size: 52px; font-weight: 900; color: var(--primary); margin: 6px 0; line-height: 1; }
-        .exam-score-sub { font-size: 13px; color: var(--text-sub); font-weight: 600; }
+        .exam-score-title { font-size: 13px; font-weight: 700; color: var(--primary); letter-spacing: 1px; text-transform: uppercase; }
+        .exam-score-val { font-size: 58px; font-weight: 900; color: var(--text-main); margin: 6px 0; line-height: 1; font-feature-settings: "tnum"; }
+        .exam-score-sub { font-size: 13px; color: var(--text-sub); font-weight: 500; }
         
         .exam-details-list {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
             max-height: 380px;
             overflow-y: auto;
             padding-right: 4px;
@@ -233,7 +231,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-weight: 800;
+            font-weight: 700;
         }
         .exam-item-badge {
             font-size: 11px;
@@ -241,8 +239,8 @@
             border-radius: 8px;
             font-weight: 800;
         }
-        .exam-item-badge.correct { background: rgba(48, 209, 88, 0.2); color: var(--accent); }
-        .exam-item-badge.wrong { background: rgba(255, 69, 58, 0.2); color: var(--danger); }
+        .exam-item-badge.correct { background: rgba(48, 209, 88, 0.18); color: var(--accent); }
+        .exam-item-badge.wrong { background: rgba(255, 69, 58, 0.18); color: var(--danger); }
         .exam-item-row { display: flex; gap: 8px; line-height: 1.4; }
         .exam-item-row .lbl { color: var(--text-sub); min-width: 65px; flex-shrink: 0; }
         .exam-item-row .val { color: var(--text-main); font-weight: 600; }
@@ -278,6 +276,7 @@
             border-radius: 14px;
             overflow: hidden;
             margin-bottom: 20px;
+            border: 1px solid var(--border-color);
         }
         .ios-item {
             display: flex;
@@ -364,38 +363,230 @@
         .nav-item.active { color: var(--primary); }
         .nav-item .icon { font-size: 18px; }
 
-        /* 💻 電腦端擴展佈局（>= 860px） */
+        /* ============================================================
+           💻 電腦端專業極簡設計（macOS / iPadOS 旗艦風格 + 晶英沉穩質感）
+           ============================================================ */
         @media (min-width: 860px) {
-            body { padding-bottom: 30px; }
-            .app-container { max-width: 1120px; padding: 24px 32px; gap: 20px; }
+            body { padding: 24px 0 40px 0; }
+            .app-container { 
+                max-width: 1140px; 
+                padding: 0 32px; 
+                gap: 22px; 
+            }
             .nav-bar { display: none !important; }
-            .desktop-nav { display: flex; gap: 8px; background: var(--card-bg); padding: 6px; border-radius: 18px; border: 1px solid var(--border-color); }
-            .d-nav-item { border: none; background: transparent; padding: 8px 18px; border-radius: 12px; font-size: 14px; font-weight: 700; color: var(--text-sub); cursor: pointer; transition: 0.2s; }
-            .d-nav-item.active { background: var(--primary); color: var(--primary-btn-text); }
-            .learn-layout { display: grid; grid-template-columns: 580px 1fr; gap: 24px; align-items: start; }
-            .flashcard-container { height: 380px; }
-            .card-prompt-text { font-size: 46px; }
-            .card-prompt-text.long-text { font-size: 32px; }
-            .desktop-side-panel { display: flex; flex-direction: column; gap: 16px; height: 100%; }
-            .side-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 24px; padding: 20px; box-shadow: var(--shadow); }
-            .side-title { font-size: 15px; font-weight: 800; color: var(--primary); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
-            .chart-content-box { display: flex; align-items: center; gap: 20px; padding: 4px 0; }
-            .chart-donut { width: 120px; height: 120px; border-radius: 50%; position: relative; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
-            .chart-donut::after { content: ''; width: 78px; height: 78px; background: var(--card-bg); border-radius: 50%; position: absolute; }
+
+            /* 🍎 macOS 經典分段控制導覽列（Segmented Control） */
+            .desktop-nav { 
+                display: flex; 
+                gap: 4px; 
+                background: rgba(255, 255, 255, 0.05); 
+                padding: 4px; 
+                border-radius: 14px; 
+                border: 1px solid var(--border-color); 
+            }
+            body.light-mode .desktop-nav {
+                background: rgba(0, 0, 0, 0.04);
+            }
+            .d-nav-item { 
+                border: none; 
+                background: transparent; 
+                padding: 8px 16px; 
+                border-radius: 10px; 
+                font-size: 13px; 
+                font-weight: 600; 
+                color: var(--text-sub); 
+                cursor: pointer; 
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                transition: all 0.18s ease; 
+            }
+            .d-nav-item svg {
+                width: 15px;
+                height: 15px;
+                stroke: currentColor;
+                fill: none;
+                stroke-width: 2.2;
+            }
+            .d-nav-item:hover {
+                color: var(--text-main);
+            }
+            .d-nav-item.active { 
+                background: var(--card-bg); 
+                color: var(--primary); 
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            }
+
+            /* 頂部數據列全面沉穩化 */
+            .stats-bar {
+                border-radius: 18px;
+                padding: 14px 20px;
+            }
+            .stat-item .val { font-size: 22px; }
+            .stat-item .lbl { font-size: 12px; margin-top: 2px; }
+
+            /* 雙欄主架構 */
+            .learn-layout { 
+                display: grid; 
+                grid-template-columns: 600px 1fr; 
+                gap: 26px; 
+                align-items: start; 
+            }
+
+            /* 卡牌微調比例 */
+            .flashcard-container { 
+                height: 400px; 
+            }
+            .card-face {
+                border-radius: 26px;
+                padding: 32px 28px;
+            }
+            .card-prompt-text { font-size: 48px; }
+            .card-prompt-text.long-text { font-size: 34px; }
+
+            /* 🍎 電腦版輸入框黃金比例強化 */
+            .action-area { gap: 10px; margin-top: 4px; }
+            .input-group { gap: 10px; }
+            .card-input { 
+                padding: 16px 20px; 
+                font-size: 16px; 
+                border-radius: 16px; 
+                background: var(--card-bg);
+            }
+            .btn-submit { 
+                padding: 0 28px; 
+                font-size: 16px; 
+                border-radius: 16px; 
+            }
+            .btn-action { 
+                padding: 16px; 
+                font-size: 16px; 
+                border-radius: 16px; 
+            }
+
+            /* 🍎 成績結算單電腦版優化（消除雙重捲軸，整體一目了然） */
+            .exam-report-card {
+                border-radius: 26px;
+                padding: 28px;
+            }
+            .exam-details-list {
+                max-height: 420px;
+                padding-right: 8px;
+            }
+
+            /* 🍎 右側儀表板精修 */
+            .desktop-side-panel { 
+                display: flex; 
+                flex-direction: column; 
+                gap: 20px; 
+                height: 100%; 
+            }
+            .side-card { 
+                background: var(--card-bg); 
+                border: 1px solid var(--border-color); 
+                border-radius: 24px; 
+                padding: 22px 24px; 
+                box-shadow: var(--shadow); 
+            }
+            .side-title { 
+                font-size: 13px; 
+                font-weight: 700; 
+                color: var(--primary); 
+                margin-bottom: 16px; 
+                display: flex; 
+                align-items: center; 
+                gap: 8px; 
+                letter-spacing: 0.5px;
+            }
+            .side-title svg {
+                width: 16px;
+                height: 16px;
+                stroke: var(--primary);
+                fill: none;
+                stroke-width: 2.2;
+            }
+
+            /* 莫蘭迪奢華色系圓餅圖 */
+            .chart-content-box { 
+                display: flex; 
+                align-items: center; 
+                gap: 24px; 
+                padding: 6px 0; 
+            }
+            .chart-donut { 
+                width: 124px; 
+                height: 124px; 
+                border-radius: 50%; 
+                position: relative; 
+                flex-shrink: 0; 
+                display: flex; 
+                align-items: center; 
+                justify-content: center; 
+            }
+            .chart-donut::after { 
+                content: ''; 
+                width: 82px; 
+                height: 82px; 
+                background: var(--card-bg); 
+                border-radius: 50%; 
+                position: absolute; 
+            }
             .chart-center-info { position: relative; z-index: 2; text-align: center; }
-            .chart-center-val { font-size: 22px; font-weight: 900; color: var(--text-main); line-height: 1.1; }
+            .chart-center-val { font-size: 24px; font-weight: 900; color: var(--text-main); line-height: 1.1; font-feature-settings: "tnum"; }
             .chart-center-lbl { font-size: 10px; color: var(--text-sub); margin-top: 2px; }
+
             .chart-legend { display: flex; flex-direction: column; gap: 8px; flex: 1; }
-            .legend-item { display: flex; align-items: center; justify-content: space-between; font-size: 13px; font-weight: 700; }
+            .legend-item { display: flex; align-items: center; justify-content: space-between; font-size: 13px; font-weight: 600; }
             .legend-left { display: flex; align-items: center; gap: 8px; }
-            .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-            .legend-count { color: var(--text-sub); font-size: 12px; }
-            .mini-search-box { width: 100%; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-main); font-size: 13px; outline: none; margin-bottom: 10px; }
-            .mini-list-scroll { max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
-            .mini-list-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: var(--input-bg); border-radius: 10px; font-size: 13px; }
+            .legend-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+            .legend-count { color: var(--text-sub); font-size: 12px; font-feature-settings: "tnum"; }
+
+            /* 搜尋框與速查表 */
+            .mini-search-box { 
+                width: 100%; 
+                padding: 12px 16px; 
+                border-radius: 14px; 
+                border: 1px solid var(--border-color); 
+                background: var(--input-bg); 
+                color: var(--text-main); 
+                font-size: 13px; 
+                font-weight: 500;
+                outline: none; 
+                margin-bottom: 12px; 
+            }
+            .mini-list-scroll { 
+                max-height: 220px; 
+                overflow-y: auto; 
+                display: flex; 
+                flex-direction: column; 
+                gap: 6px; 
+                padding-right: 6px;
+            }
+            .mini-list-item { 
+                display: flex; 
+                justify-content: space-between; 
+                align-items: center; 
+                padding: 9px 14px; 
+                background: var(--input-bg); 
+                border-radius: 12px; 
+                font-size: 13px; 
+                transition: background 0.15s;
+            }
+            .mini-list-item:hover {
+                background: rgba(255, 255, 255, 0.08);
+            }
             .mini-list-item .m-code { font-weight: 800; color: var(--primary); }
             .mini-list-item .m-cn { color: var(--text-sub); font-size: 12px; }
-            #view-quiz .quiz-card, #view-settings .ios-group, #view-settings .ios-group-title { max-width: 680px; margin-left: auto; margin-right: auto; width: 100%; }
+
+            /* 設定與測驗模式置中對齊 */
+            #view-quiz .quiz-card, 
+            #view-settings .ios-group, 
+            #view-settings .ios-group-title { 
+                max-width: 680px; 
+                margin-left: auto; 
+                margin-right: auto; 
+                width: 100%; 
+            }
         }
     </style>
 </head>
@@ -408,14 +599,30 @@
             <div class="app-title">OPERA 卡牌大師</div>
         </div>
 
+        <!-- 💻 電腦端分段控制導覽（去除所有 Emoji，純黑金向量圖示） -->
         <div class="desktop-nav">
-            <button class="d-nav-item active" onclick="switchTab('learn', this)">📖 學習卡片</button>
-            <button class="d-nav-item" onclick="switchTab('quiz', this)">📝 考題測驗</button>
-            <button class="d-nav-item" onclick="switchTab('search', this)">🔍 代碼與分機</button>
-            <button class="d-nav-item" onclick="switchTab('settings', this)">⚙️ 設定</button>
+            <button class="d-nav-item active" onclick="switchTab('learn', this)">
+                <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                學習卡片
+            </button>
+            <button class="d-nav-item" onclick="switchTab('quiz', this)">
+                <svg viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                考題測驗
+            </button>
+            <button class="d-nav-item" onclick="switchTab('search', this)">
+                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                代碼與分機
+            </button>
+            <button class="d-nav-item" onclick="switchTab('settings', this)">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                設定
+            </button>
         </div>
 
-        <button class="theme-toggle" id="theme-btn" onclick="toggleTheme()">🌙 深色模式</button>
+        <button class="theme-toggle" id="theme-btn" onclick="toggleTheme()">
+            <svg id="theme-icon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            <span id="theme-text">深色模式</span>
+        </button>
     </header>
 
     <!-- 數據概況 Bar -->
@@ -429,9 +636,9 @@
     <!-- 1. 學習卡片頁 -->
     <div id="view-learn" class="view-content active">
         <div class="learn-layout">
-            <div style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
+            <div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
                 
-                <!-- 正常刷題卡牌容器 -->
+                <!-- 刷題卡牌容器 -->
                 <div class="flashcard-container" id="learn-card-container">
                     <div class="flashcard" id="main-card">
                         <div class="card-face card-front">
@@ -452,17 +659,17 @@
                     </div>
                 </div>
 
-                <!-- 📋 十題測驗成績單結算容器（預設隱藏） -->
+                <!-- 📋 十題測驗成績單結算容器 -->
                 <div class="exam-report-card hidden" id="exam-report-view">
                     <div class="exam-score-header">
-                        <div class="exam-score-title">🏆 十題測驗 成績結算</div>
+                        <div class="exam-score-title">十題測驗 成績結算</div>
                         <div class="exam-score-val" id="exam-final-score">100</div>
                         <div class="exam-score-sub" id="exam-final-eval">滿分 100 分 · 一題 10 分</div>
                     </div>
                     <div class="exam-details-list" id="exam-results-list"></div>
-                    <div style="display: flex; gap: 10px; margin-top: 4px;">
-                        <button class="btn-action" onclick="initExam10Session(); nextCard(true);">🔄 再測一次 (全新10題)</button>
-                        <button class="btn-action" style="background: var(--input-bg); color: var(--text-main);" onclick="changePool('all');">📖 返回自主學習</button>
+                    <div style="display: flex; gap: 12px; margin-top: 6px;">
+                        <button class="btn-action" onclick="initExam10Session(); nextCard(true);">再測一次 (全新10題)</button>
+                        <button class="btn-action" style="background: var(--input-bg); color: var(--text-main);" onclick="changePool('all');">返回自主學習</button>
                     </div>
                 </div>
 
@@ -475,10 +682,13 @@
                 </div>
             </div>
 
-            <!-- 電腦版右側面板 -->
+            <!-- 電腦版右側面板（無 Emoji，全精美 SVG 與莫蘭迪色） -->
             <div class="desktop-side-panel">
                 <div class="side-card">
-                    <div class="side-title">📊 錯題弱點分析（各類別佔比）</div>
+                    <div class="side-title">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 1 10 10"></path></svg>
+                        錯題弱點分析（各類別佔比）
+                    </div>
                     <div class="chart-content-box">
                         <div class="chart-donut" id="weakness-pie">
                             <div class="chart-center-info">
@@ -491,7 +701,10 @@
                 </div>
 
                 <div class="side-card" style="flex: 1;">
-                    <div class="side-title">🔍 邊刷邊查（速查清單）</div>
+                    <div class="side-title">
+                        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        邊刷邊查（代碼速查）
+                    </div>
                     <input type="text" class="mini-search-box" id="mini-search" placeholder="輸入代碼、單位或號碼快速檢索..." oninput="renderMiniSearch()">
                     <div class="mini-list-scroll" id="mini-search-list"></div>
                 </div>
@@ -516,7 +729,6 @@
 
     <!-- 4. 設定頁 -->
     <div id="view-settings" class="view-content">
-        <!-- 🎯 模組一：測驗題庫類型 -->
         <div>
             <div class="ios-group-title">測驗題庫類型</div>
             <div class="ios-group">
@@ -550,7 +762,6 @@
             </div>
         </div>
 
-        <!-- 🎯 模組二：測驗範圍篩選（點選十題測驗不強制跳頁） -->
         <div>
             <div class="ios-group-title">測驗範圍篩選</div>
             <div class="ios-group">
@@ -593,7 +804,6 @@
             </div>
         </div>
 
-        <!-- 🎯 模組三：數據管理中心 -->
         <div>
             <div class="ios-group-title">數據管理</div>
             <div class="ios-group">
@@ -620,9 +830,7 @@
 </nav>
 
 <script>
-// 🏨 132 組完整資料庫（OPERA 代碼 105 組 + 晶英最新分機表 27 組）
 const db = [
-    // --- 晶英最新分機表 (27組) ---
     { code: "0930 915 993", cn: "禮賓司公務機", cat: "飯店分機", type: "ext" },
     { code: "3216", cn: "訂席主任", cat: "飯店分機", type: "ext" },
     { code: "3156", cn: "大中餐廳訂席", cat: "飯店分機", type: "ext" },
@@ -651,7 +859,6 @@ const db = [
     { code: "**333", cn: "城市車旅停管中心", cat: "飯店分機", type: "ext" },
     { code: "3103", cn: "李總秘書 Shelly", cat: "飯店分機", type: "ext" },
 
-    // --- OPERA 代碼 (105組) ---
     { code: "AC", cn: "空氣清淨機", cat: "客房備品", type: "opera" },
     { code: "ADJ", cn: "調整", cat: "帳務訂房", type: "opera" },
     { code: "AMD", cn: "更改", cat: "帳務訂房", type: "opera" },
@@ -758,13 +965,14 @@ const db = [
     { code: "XB", cn: "行軍床", cat: "客房備品", type: "opera" }
 ];
 
+/* 🍎 莫蘭迪奢華色彩配置（與晶英香檳金高度融合） */
 const categoryConfig = {
-    "房態排房": { color: "#007aff" },
-    "客房備品": { color: "#34c759" },
-    "前台禮賓": { color: "#af52de" },
-    "貴賓客情": { color: "#ff9500" },
-    "帳務訂房": { color: "#ff3b30" },
-    "飯店分機": { color: "#5ac8fa" }
+    "房態排房": { color: "#6C8EA4" }, // 霧灰藍
+    "客房備品": { color: "#7CA982" }, // 鼠尾草綠
+    "前台禮賓": { color: "#9E829C" }, // 莫蘭迪紫
+    "貴賓客情": { color: "#D4A373" }, // 陶土琥珀
+    "帳務訂房": { color: "#C96A6A" }, // 乾燥玫瑰紅
+    "飯店分機": { color: "#C8A86E" }  // 晶英香檳金
 };
 
 let state = {
@@ -776,7 +984,6 @@ let state = {
     scope: 'all'
 };
 
-// 📋 十題測驗專屬運作狀態
 let examSession = {
     questions: [],
     currentIndex: 0,
@@ -837,9 +1044,9 @@ function updateWeaknessChart() {
     if (totalWrongs === 0) {
         pie.style.background = `conic-gradient(var(--primary) 0deg 360deg)`;
         legendBox.innerHTML = `
-            <div style="font-size: 13px; color: var(--accent); font-weight: 800; line-height: 1.6;">
-                ✨ 完美掌控！<br>
-                <span style="font-size: 12px; color: var(--text-sub); font-weight: 500;">目前沒有累積任何錯題。繼續答題時會在此即時分析你的易錯類別。</span>
+            <div style="font-size: 13px; color: var(--accent); font-weight: 600; line-height: 1.6;">
+                完美掌控！<br>
+                <span style="font-size: 12px; color: var(--text-sub); font-weight: 400;">目前無錯題累積，系統將在答題時即時分析。</span>
             </div>
         `;
         return;
@@ -865,7 +1072,7 @@ function updateWeaknessChart() {
                 <div class="legend-dot" style="background: ${conf.color}"></div>
                 <span>${catName}</span>
             </div>
-            <div class="legend-count">${count > 0 ? `${percent}% (${count}題)` : `<span style="color:var(--text-sub);opacity:0.6;">0%</span>`}</div>
+            <div class="legend-count">${count > 0 ? `${percent}% (${count}題)` : `<span style="color:var(--text-sub);opacity:0.5;">0%</span>`}</div>
         `;
         legendBox.appendChild(div);
     });
@@ -961,7 +1168,6 @@ let lastSubmitTime = 0;
 let isNextCooldown = false;
 let isFirstLoad = true;
 
-// 📋 預備十題測驗抽題（僅在背景完成準備，不強迫跳頁）
 function initExam10Session() {
     const scopedList = [...getScopedDatabase()].sort(() => Math.random() - 0.5);
     examSession.questions = scopedList.slice(0, 10);
@@ -1008,7 +1214,7 @@ function nextCard(shouldFocus = false) {
         const promptEl = document.getElementById('card-prompt');
 
         if (state.poolType === 'exam10') {
-            document.getElementById('card-badge').innerText = `📋 十題測驗 第 ${examSession.currentIndex + 1} / 10 題 (10分/題)`;
+            document.getElementById('card-badge').innerText = `十題測驗 · 第 ${examSession.currentIndex + 1} / 10 題 (10分/題)`;
         } else {
             document.getElementById('card-badge').innerText = currentDirection === 'code' ? `【${currentCard.cat}】代碼 ➔ 中文` : `【${currentCard.cat}】中文 ➔ 代碼`;
         }
@@ -1127,7 +1333,7 @@ function showExamResults() {
     reportView.classList.remove('hidden');
 
     document.getElementById('exam-final-score').innerText = examSession.score;
-    const evalText = examSession.score === 100 ? "🌟 滿分完美！全數正確！" : examSession.score >= 80 ? "👏 優秀！已掌握多數代碼！" : "💪 繼續加油！多練習錯題本！";
+    const evalText = examSession.score === 100 ? "滿分完美！全數正確" : examSession.score >= 80 ? "表現優秀！已掌握多數代碼" : "繼續加油！多練習錯題本";
     document.getElementById('exam-final-eval').innerText = `${evalText}（滿分 100 分 · 一題 10 分）`;
 
     const listEl = document.getElementById('exam-results-list');
@@ -1141,11 +1347,11 @@ function showExamResults() {
 
         div.innerHTML = `
             <div class="exam-item-top">
-                <span>第 ${idx + 1} 題（${item.card.cat}）</span>
+                <span>第 ${idx + 1} 題 · ${item.card.cat}</span>
                 <span class="exam-item-badge ${item.isCorrect ? 'correct' : 'wrong'}">${item.isCorrect ? '+10分 正確' : '0分 錯誤'}</span>
             </div>
             <div class="exam-item-row">
-                <span class="lbl">出題題目：</span>
+                <span class="lbl">題目：</span>
                 <span class="val">${qPrompt}</span>
             </div>
             <div class="exam-item-row">
@@ -1153,7 +1359,7 @@ function showExamResults() {
                 <span class="user-ans ${item.isCorrect ? 'correct' : 'wrong'}">${item.userVal}</span>
             </div>
             <div class="exam-item-row">
-                <span class="lbl">正確解答：</span>
+                <span class="lbl">正確答案：</span>
                 <span class="val">${qTarget}（完整：${item.card.code} - ${item.card.cn}）</span>
             </div>
         `;
@@ -1213,7 +1419,6 @@ window.addEventListener('keydown', (e) => {
     }
 });
 
-// 📱 點選輸入框時：啟動防捲鎖定，Header、數據、卡牌、輸入框 100% 完整保留
 const typeInput = document.getElementById('type-input');
 typeInput.addEventListener('focus', () => {
     if (window.innerWidth < 860) {
@@ -1308,14 +1513,13 @@ function changeScope(scope) {
     renderMiniSearch();
 }
 
-// 🎯 設定頁切換測驗範圍（不跳頁，僅完成準備）
 function changePool(type) {
     state.poolType = type;
     updateScopeUI();
     saveState();
 
     if (type === 'exam10') {
-        initExam10Session(); // 背景準備好 10 題，不強制跳分頁
+        initExam10Session();
     } else {
         const reportView = document.getElementById('exam-report-view');
         const cardContainer = document.getElementById('learn-card-container');
@@ -1388,13 +1592,16 @@ function toggleTheme() {
 }
 
 function applyThemeUI() {
-    const btn = document.getElementById('theme-btn');
+    const textEl = document.getElementById('theme-text');
+    const iconEl = document.getElementById('theme-icon');
     if (state.theme === 'light') {
         document.body.classList.add('light-mode');
-        btn.innerText = '🌙 深色模式';
+        textEl.innerText = '深色模式';
+        iconEl.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
     } else {
         document.body.classList.remove('light-mode');
-        btn.innerText = '☀️ 淺色模式';
+        textEl.innerText = '淺色模式';
+        iconEl.innerHTML = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>';
     }
 }
 

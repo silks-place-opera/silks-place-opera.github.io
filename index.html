@@ -43,7 +43,7 @@
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif; }
         
-        /* 🍎 全域精緻細膩滾動條（徹底消除 Windows 醜陋粗白捲軸） */
+        /* 🍎 全域精緻細膩滾動條 */
         ::-webkit-scrollbar { width: 5px; height: 5px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 999px; }
@@ -60,7 +60,7 @@
             transition: background-color 0.25s ease; 
         }
 
-        /* 📱 手機端排版保持原樣，穩定好用 */
+        /* 📱 手機端排版保持最佳狀態 */
         @media (max-width: 859px) {
             body { 
                 min-height: 100dvh; 
@@ -69,15 +69,15 @@
             .app-container { 
                 width: 100%; 
                 max-width: 480px; 
-                padding: 12px 14px 6px 14px; 
+                padding: 10px 14px 6px 14px; 
                 display: flex; 
                 flex-direction: column; 
                 justify-content: flex-start; 
-                gap: 12px; 
+                gap: 10px; 
             }
             .stats-bar { padding: 8px 10px; border-radius: 16px; }
             .stat-item .val { font-size: 16px; }
-            .flashcard-container { height: clamp(230px, 35vh, 290px); }
+            .flashcard-container { height: clamp(210px, 32vh, 270px); }
             .card-face { padding: 18px 14px; border-radius: 22px; }
             .card-prompt-text { font-size: clamp(28px, 8vw, 42px); }
             .card-prompt-text.long-text { font-size: clamp(20px, 5.5vw, 28px); }
@@ -94,17 +94,27 @@
                 overflow: hidden !important;
                 padding-bottom: 0 !important;
             }
-            body.keyboard-open .app-container { padding: 8px 14px !important; gap: 8px !important; }
-            body.keyboard-open header { display: flex !important; margin-bottom: 2px !important; }
-            body.keyboard-open .stats-bar { display: grid !important; padding: 6px 10px !important; }
-            body.keyboard-open .nav-bar { display: none !important; }
-            body.keyboard-open .flashcard-container { height: clamp(145px, 23vh, 175px) !important; margin-top: 0 !important; }
-            body.keyboard-open .card-face { padding: 10px 14px !important; border-radius: 18px !important; }
-            body.keyboard-open .card-prompt-text { font-size: 28px !important; }
-            body.keyboard-open .card-prompt-text.long-text { font-size: 20px !important; }
-            body.keyboard-open .card-star { top: 10px !important; right: 12px !important; font-size: 20px !important; }
-            body.keyboard-open .card-badge { font-size: 11px !important; padding: 3px 10px !important; }
+            body.keyboard-open .app-container { padding: 6px 12px 0 12px !important; gap: 6px !important; }
+            body.keyboard-open header { display: flex !important; padding: 0 2px !important; }
+            body.keyboard-open .silks-logo { height: 28px !important; }
+            body.keyboard-open .app-title { font-size: 17px !important; }
+            body.keyboard-open .theme-toggle { padding: 4px 10px !important; font-size: 11px !important; }
+            body.keyboard-open .stats-bar { display: grid !important; padding: 5px 8px !important; gap: 4px !important; border-radius: 12px !important; }
+            body.keyboard-open .stat-item .val { font-size: 15px !important; }
+            body.keyboard-open .stat-item .lbl { font-size: 10px !important; }
+            body.keyboard-open .flashcard-container { height: 140px !important; margin-top: 0 !important; }
+            body.keyboard-open .card-face { padding: 10px 12px !important; border-radius: 16px !important; }
+            body.keyboard-open .card-badge { font-size: 11px !important; padding: 2px 8px !important; border-radius: 8px !important; }
+            body.keyboard-open .card-prompt-text { font-size: 26px !important; line-height: 1.25 !important; }
+            body.keyboard-open .card-prompt-text.long-text { font-size: 18px !important; }
+            body.keyboard-open .card-star { top: 8px !important; right: 10px !important; font-size: 18px !important; }
             body.keyboard-open .card-face div[style*="font-size: 13px"] { display: none !important; }
+            body.keyboard-open .action-area { gap: 6px !important; }
+            body.keyboard-open .card-input { padding: 12px 14px !important; font-size: 15px !important; border-radius: 14px !important; }
+            body.keyboard-open .btn-submit { padding: 0 18px !important; font-size: 15px !important; border-radius: 14px !important; }
+            body.keyboard-open .nav-bar { display: none !important; }
+            
+            .desktop-dock-nav { display: none !important; }
         }
 
         /* 頂部 Header */
@@ -125,7 +135,6 @@
 
         .app-title { font-size: 19px; font-weight: 800; color: var(--text-main); letter-spacing: 0.5px; transition: color 0.2s; }
         
-        /* ☀️ 深淺模式切換鈕 */
         .theme-toggle { 
             background: var(--card-bg); 
             border: 1px solid var(--border-color); 
@@ -141,8 +150,6 @@
             transition: 0.2s; 
         }
         .theme-toggle svg { width: 14px; height: 14px; stroke: var(--primary); fill: none; stroke-width: 2.2; }
-
-        .desktop-nav { display: none; }
 
         /* 數據總覽 Bar */
         .stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; background: var(--card-bg); border: 1px solid var(--border-color); box-shadow: var(--shadow); text-align: center; }
@@ -364,228 +371,179 @@
         .nav-item .icon { font-size: 18px; }
 
         /* ============================================================
-           💻 電腦端專業極簡設計（macOS / iPadOS 旗艦風格 + 晶英沉穩質感）
+           💻 電腦端專業大器設計：間距全幅放寬 + 底部 macOS 懸浮 Dock
            ============================================================ */
         @media (min-width: 860px) {
-            body { padding: 24px 0 40px 0; }
+            body { 
+                padding: 36px 0 120px 0; /* 底部預留寬裕空間給懸浮 Dock */
+            }
             .app-container { 
-                max-width: 1140px; 
-                padding: 0 32px; 
-                gap: 22px; 
+                max-width: 1200px; 
+                padding: 0 40px; 
+                gap: 24px; /* 頂部間距加大 */
             }
             .nav-bar { display: none !important; }
 
-            /* 🍎 macOS 經典分段控制導覽列（Segmented Control） */
-            .desktop-nav { 
-                display: flex; 
-                gap: 4px; 
-                background: rgba(255, 255, 255, 0.05); 
-                padding: 4px; 
-                border-radius: 14px; 
-                border: 1px solid var(--border-color); 
+            /* 🍎 電腦版頂部 Header 釋放寬敞感 */
+            header {
+                padding: 0 4px 10px 4px;
             }
-            body.light-mode .desktop-nav {
-                background: rgba(0, 0, 0, 0.04);
-            }
-            .d-nav-item { 
-                border: none; 
-                background: transparent; 
-                padding: 8px 16px; 
-                border-radius: 10px; 
-                font-size: 13px; 
-                font-weight: 600; 
-                color: var(--text-sub); 
-                cursor: pointer; 
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                transition: all 0.18s ease; 
-            }
-            .d-nav-item svg {
-                width: 15px;
-                height: 15px;
-                stroke: currentColor;
-                fill: none;
-                stroke-width: 2.2;
-            }
-            .d-nav-item:hover {
-                color: var(--text-main);
-            }
-            .d-nav-item.active { 
-                background: var(--card-bg); 
-                color: var(--primary); 
-                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-            }
+            .silks-logo { height: 42px; max-width: 50px; }
+            .app-title { font-size: 23px; letter-spacing: 0.8px; }
+            .theme-toggle { padding: 8px 18px; font-size: 14px; border-radius: 24px; }
 
-            /* 頂部數據列全面沉穩化 */
-            .stats-bar {
-                border-radius: 18px;
-                padding: 14px 20px;
+            /* 🍎 數據列寬裕留白 */
+            .stats-bar { 
+                border-radius: 20px; 
+                padding: 20px 28px; 
+                margin: 4px 0 12px 0;
             }
-            .stat-item .val { font-size: 22px; }
-            .stat-item .lbl { font-size: 12px; margin-top: 2px; }
+            .stat-item .val { font-size: 26px; }
+            .stat-item .lbl { font-size: 13px; margin-top: 4px; }
 
-            /* 雙欄主架構 */
+            /* 🍎 雙欄架構間距全開 (gap: 36px) */
             .learn-layout { 
                 display: grid; 
-                grid-template-columns: 600px 1fr; 
-                gap: 26px; 
+                grid-template-columns: 620px 1fr; 
+                gap: 36px; /* 左右欄徹底拉開，告別擁擠 */
                 align-items: start; 
             }
 
-            /* 卡牌微調比例 */
-            .flashcard-container { 
-                height: 400px; 
-            }
-            .card-face {
-                border-radius: 26px;
-                padding: 32px 28px;
-            }
-            .card-prompt-text { font-size: 48px; }
-            .card-prompt-text.long-text { font-size: 34px; }
+            /* 左欄大卡牌與輸入框 */
+            .flashcard-container { height: 410px; }
+            .card-face { border-radius: 28px; padding: 36px 32px; }
+            .card-prompt-text { font-size: 50px; }
+            .card-prompt-text.long-text { font-size: 36px; }
 
-            /* 🍎 電腦版輸入框黃金比例強化 */
-            .action-area { gap: 10px; margin-top: 4px; }
-            .input-group { gap: 10px; }
+            /* 🍎 輸入框與按鈕間距加寬加高 */
+            .action-area { 
+                gap: 14px; 
+                margin-top: 14px; 
+            }
+            .input-group { gap: 14px; }
             .card-input { 
-                padding: 16px 20px; 
-                font-size: 16px; 
-                border-radius: 16px; 
-                background: var(--card-bg);
+                padding: 18px 24px; 
+                font-size: 17px; 
+                border-radius: 18px; 
+                background: var(--card-bg); 
             }
             .btn-submit { 
-                padding: 0 28px; 
-                font-size: 16px; 
-                border-radius: 16px; 
+                padding: 0 32px; 
+                font-size: 17px; 
+                border-radius: 18px; 
             }
             .btn-action { 
-                padding: 16px; 
-                font-size: 16px; 
-                border-radius: 16px; 
+                padding: 18px; 
+                font-size: 17px; 
+                border-radius: 18px; 
             }
 
-            /* 🍎 成績結算單電腦版優化（消除雙重捲軸，整體一目了然） */
-            .exam-report-card {
-                border-radius: 26px;
-                padding: 28px;
-            }
-            .exam-details-list {
-                max-height: 420px;
-                padding-right: 8px;
-            }
+            /* 成績單寬裕版面 */
+            .exam-report-card { border-radius: 28px; padding: 32px; gap: 20px; }
+            .exam-details-list { max-height: 440px; padding-right: 10px; gap: 14px; }
 
-            /* 🍎 右側儀表板精修 */
+            /* 🍎 右側邊欄間距加開 */
             .desktop-side-panel { 
                 display: flex; 
                 flex-direction: column; 
-                gap: 20px; 
+                gap: 26px; 
                 height: 100%; 
             }
             .side-card { 
                 background: var(--card-bg); 
                 border: 1px solid var(--border-color); 
-                border-radius: 24px; 
-                padding: 22px 24px; 
+                border-radius: 26px; 
+                padding: 26px 28px; 
                 box-shadow: var(--shadow); 
             }
             .side-title { 
-                font-size: 13px; 
+                font-size: 14px; 
                 font-weight: 700; 
                 color: var(--primary); 
-                margin-bottom: 16px; 
+                margin-bottom: 20px; 
                 display: flex; 
                 align-items: center; 
-                gap: 8px; 
-                letter-spacing: 0.5px;
+                gap: 10px; 
+                letter-spacing: 0.6px;
             }
-            .side-title svg {
-                width: 16px;
-                height: 16px;
-                stroke: var(--primary);
-                fill: none;
-                stroke-width: 2.2;
-            }
+            .side-title svg { width: 18px; height: 18px; stroke: var(--primary); fill: none; stroke-width: 2.2; }
 
-            /* 莫蘭迪奢華色系圓餅圖 */
-            .chart-content-box { 
-                display: flex; 
-                align-items: center; 
-                gap: 24px; 
-                padding: 6px 0; 
-            }
-            .chart-donut { 
-                width: 124px; 
-                height: 124px; 
-                border-radius: 50%; 
-                position: relative; 
-                flex-shrink: 0; 
-                display: flex; 
-                align-items: center; 
-                justify-content: center; 
-            }
-            .chart-donut::after { 
-                content: ''; 
-                width: 82px; 
-                height: 82px; 
-                background: var(--card-bg); 
-                border-radius: 50%; 
-                position: absolute; 
-            }
-            .chart-center-info { position: relative; z-index: 2; text-align: center; }
-            .chart-center-val { font-size: 24px; font-weight: 900; color: var(--text-main); line-height: 1.1; font-feature-settings: "tnum"; }
-            .chart-center-lbl { font-size: 10px; color: var(--text-sub); margin-top: 2px; }
+            .chart-content-box { gap: 28px; padding: 10px 0; }
+            .chart-donut { width: 130px; height: 130px; }
+            .chart-donut::after { width: 86px; height: 86px; }
+            .chart-center-val { font-size: 26px; }
 
-            .chart-legend { display: flex; flex-direction: column; gap: 8px; flex: 1; }
-            .legend-item { display: flex; align-items: center; justify-content: space-between; font-size: 13px; font-weight: 600; }
-            .legend-left { display: flex; align-items: center; gap: 8px; }
-            .legend-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
-            .legend-count { color: var(--text-sub); font-size: 12px; font-feature-settings: "tnum"; }
+            .chart-legend { gap: 10px; }
+            .legend-item { font-size: 14px; padding: 2px 0; }
 
-            /* 搜尋框與速查表 */
-            .mini-search-box { 
-                width: 100%; 
-                padding: 12px 16px; 
-                border-radius: 14px; 
-                border: 1px solid var(--border-color); 
-                background: var(--input-bg); 
-                color: var(--text-main); 
-                font-size: 13px; 
-                font-weight: 500;
-                outline: none; 
-                margin-bottom: 12px; 
-            }
-            .mini-list-scroll { 
-                max-height: 220px; 
-                overflow-y: auto; 
-                display: flex; 
-                flex-direction: column; 
-                gap: 6px; 
-                padding-right: 6px;
-            }
-            .mini-list-item { 
-                display: flex; 
-                justify-content: space-between; 
-                align-items: center; 
-                padding: 9px 14px; 
-                background: var(--input-bg); 
-                border-radius: 12px; 
-                font-size: 13px; 
-                transition: background 0.15s;
-            }
-            .mini-list-item:hover {
-                background: rgba(255, 255, 255, 0.08);
-            }
-            .mini-list-item .m-code { font-weight: 800; color: var(--primary); }
-            .mini-list-item .m-cn { color: var(--text-sub); font-size: 12px; }
+            .mini-search-box { padding: 14px 18px; border-radius: 16px; margin-bottom: 14px; font-size: 14px; }
+            .mini-list-scroll { max-height: 230px; gap: 8px; padding-right: 8px; }
+            .mini-list-item { padding: 11px 16px; border-radius: 14px; font-size: 14px; }
 
-            /* 設定與測驗模式置中對齊 */
             #view-quiz .quiz-card, 
             #view-settings .ios-group, 
             #view-settings .ios-group-title { 
-                max-width: 680px; 
+                max-width: 720px; 
                 margin-left: auto; 
                 margin-right: auto; 
                 width: 100%; 
+            }
+
+            /* 🍎 macOS / iPadOS 懸浮膠囊 Dock（移到螢幕最下方中央） */
+            .desktop-dock-nav {
+                position: fixed;
+                bottom: 26px;
+                left: 50%;
+                transform: translateX(-50%);
+                z-index: 1000;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                background: rgba(24, 24, 27, 0.88);
+                backdrop-filter: blur(28px);
+                -webkit-backdrop-filter: blur(28px);
+                padding: 7px 10px;
+                border-radius: 24px;
+                border: 1px solid rgba(255, 255, 255, 0.12);
+                box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
+            }
+            body.light-mode .desktop-dock-nav {
+                background: rgba(255, 255, 255, 0.88);
+                border: 1px solid rgba(0, 0, 0, 0.08);
+                box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+            }
+            .dock-item {
+                border: none;
+                background: transparent;
+                padding: 10px 20px;
+                border-radius: 16px;
+                font-size: 14px;
+                font-weight: 600;
+                color: var(--text-sub);
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                transition: all 0.2s ease;
+            }
+            .dock-item svg {
+                width: 16px;
+                height: 16px;
+                stroke: currentColor;
+                fill: none;
+                stroke-width: 2.2;
+            }
+            .dock-item:hover {
+                color: var(--text-main);
+                background: rgba(255, 255, 255, 0.05);
+            }
+            body.light-mode .dock-item:hover {
+                background: rgba(0, 0, 0, 0.04);
+            }
+            .dock-item.active {
+                background: var(--primary);
+                color: var(--primary-btn-text);
+                box-shadow: 0 4px 14px rgba(200, 168, 110, 0.35);
             }
         }
     </style>
@@ -593,30 +551,11 @@
 <body>
 
 <div class="app-container">
+    <!-- 頂部 Header：徹底解放，寬廣大器 -->
     <header>
         <div class="header-left">
             <img src="silks_logo.png" alt="晶英酒店" class="silks-logo" onerror="this.style.display='none'">
             <div class="app-title">OPERA 卡牌大師</div>
-        </div>
-
-        <!-- 💻 電腦端分段控制導覽（去除所有 Emoji，純黑金向量圖示） -->
-        <div class="desktop-nav">
-            <button class="d-nav-item active" onclick="switchTab('learn', this)">
-                <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-                學習卡片
-            </button>
-            <button class="d-nav-item" onclick="switchTab('quiz', this)">
-                <svg viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
-                考題測驗
-            </button>
-            <button class="d-nav-item" onclick="switchTab('search', this)">
-                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                代碼與分機
-            </button>
-            <button class="d-nav-item" onclick="switchTab('settings', this)">
-                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-                設定
-            </button>
         </div>
 
         <button class="theme-toggle" id="theme-btn" onclick="toggleTheme()">
@@ -667,7 +606,7 @@
                         <div class="exam-score-sub" id="exam-final-eval">滿分 100 分 · 一題 10 分</div>
                     </div>
                     <div class="exam-details-list" id="exam-results-list"></div>
-                    <div style="display: flex; gap: 12px; margin-top: 6px;">
+                    <div style="display: flex; gap: 14px; margin-top: 6px;">
                         <button class="btn-action" onclick="initExam10Session(); nextCard(true);">再測一次 (全新10題)</button>
                         <button class="btn-action" style="background: var(--input-bg); color: var(--text-main);" onclick="changePool('all');">返回自主學習</button>
                     </div>
@@ -682,7 +621,7 @@
                 </div>
             </div>
 
-            <!-- 電腦版右側面板（無 Emoji，全精美 SVG 與莫蘭迪色） -->
+            <!-- 電腦版右側面板 -->
             <div class="desktop-side-panel">
                 <div class="side-card">
                     <div class="side-title">
@@ -821,7 +760,27 @@
     </div>
 </div>
 
-<!-- 手機端底部導覽列 -->
+<!-- 💻 電腦端懸浮膠囊 Dock（macOS / iPadOS 旗艦手感） -->
+<div class="desktop-dock-nav">
+    <button class="dock-item active" onclick="switchTab('learn', this)">
+        <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+        學習卡片
+    </button>
+    <button class="dock-item" onclick="switchTab('quiz', this)">
+        <svg viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+        考題測驗
+    </button>
+    <button class="dock-item" onclick="switchTab('search', this)">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        代碼與分機
+    </button>
+    <button class="dock-item" onclick="switchTab('settings', this)">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        設定
+    </button>
+</div>
+
+<!-- 📱 手機端底部導覽列 -->
 <nav class="nav-bar">
     <button class="nav-item active" onclick="switchTab('learn', this)"><span class="icon">📖</span>學習卡片</button>
     <button class="nav-item" onclick="switchTab('quiz', this)"><span class="icon">📝</span>考題測驗</button>
@@ -965,14 +924,13 @@ const db = [
     { code: "XB", cn: "行軍床", cat: "客房備品", type: "opera" }
 ];
 
-/* 🍎 莫蘭迪奢華色彩配置（與晶英香檳金高度融合） */
 const categoryConfig = {
-    "房態排房": { color: "#6C8EA4" }, // 霧灰藍
-    "客房備品": { color: "#7CA982" }, // 鼠尾草綠
-    "前台禮賓": { color: "#9E829C" }, // 莫蘭迪紫
-    "貴賓客情": { color: "#D4A373" }, // 陶土琥珀
-    "帳務訂房": { color: "#C96A6A" }, // 乾燥玫瑰紅
-    "飯店分機": { color: "#C8A86E" }  // 晶英香檳金
+    "房態排房": { color: "#6C8EA4" },
+    "客房備品": { color: "#7CA982" },
+    "前台禮賓": { color: "#9E829C" },
+    "貴賓客情": { color: "#D4A373" },
+    "帳務訂房": { color: "#C96A6A" },
+    "飯店分機": { color: "#C8A86E" }
 };
 
 let state = {
@@ -1419,17 +1377,66 @@ window.addEventListener('keydown', (e) => {
     }
 });
 
+// 📱 核心修復：強制攔截 iOS Safari 自動捲動
 const typeInput = document.getElementById('type-input');
+let scrollLockInterval = null;
+
+function snapToTop() {
+    if (window.scrollY !== 0 || document.documentElement.scrollTop !== 0 || document.body.scrollTop !== 0) {
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+    }
+}
+
+typeInput.addEventListener('pointerdown', () => {
+    if (window.innerWidth < 860) {
+        document.body.classList.add('keyboard-open');
+        snapToTop();
+    }
+});
+
 typeInput.addEventListener('focus', () => {
     if (window.innerWidth < 860) {
         document.body.classList.add('keyboard-open');
-        window.scrollTo(0, 0);
-        document.body.scrollTop = 0;
+        snapToTop();
+
+        clearInterval(scrollLockInterval);
+        let count = 0;
+        scrollLockInterval = setInterval(() => {
+            snapToTop();
+            count++;
+            if (count > 30) {
+                clearInterval(scrollLockInterval);
+            }
+        }, 20);
     }
 });
+
 typeInput.addEventListener('blur', () => {
+    clearInterval(scrollLockInterval);
     document.body.classList.remove('keyboard-open');
+    snapToTop();
 });
+
+window.addEventListener('scroll', () => {
+    if (document.activeElement === typeInput && window.innerWidth < 860) {
+        snapToTop();
+    }
+}, { passive: true });
+
+if (window.visualViewport) {
+    window.visualViewport.addEventListener('scroll', () => {
+        if (document.activeElement === typeInput && window.innerWidth < 860) {
+            snapToTop();
+        }
+    });
+    window.visualViewport.addEventListener('resize', () => {
+        if (document.activeElement === typeInput && window.innerWidth < 860) {
+            snapToTop();
+        }
+    });
+}
 
 // 2. 考題測驗頁
 let currentQuiz = null;
@@ -1572,13 +1579,13 @@ function renderMiniSearch() {
 
 function switchTab(tab, btn) {
     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-    document.querySelectorAll('.d-nav-item').forEach(i => i.classList.remove('active'));
+    document.querySelectorAll('.dock-item').forEach(i => i.classList.remove('active'));
     document.querySelectorAll('.view-content').forEach(v => v.classList.remove('active'));
 
     const activeIndex = ['learn', 'quiz', 'search', 'settings'].indexOf(tab);
     if (activeIndex > -1) {
         document.querySelectorAll('.nav-item')[activeIndex]?.classList.add('active');
-        document.querySelectorAll('.d-nav-item')[activeIndex]?.classList.add('active');
+        document.querySelectorAll('.dock-item')[activeIndex]?.classList.add('active');
     }
 
     document.getElementById(`view-${tab}`).classList.add('active');

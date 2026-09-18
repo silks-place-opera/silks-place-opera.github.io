@@ -833,40 +833,73 @@ function getPool() {
     return scoped;
 }
 
+/* 🔤 計算 Levenshtein 編輯距離（用來容忍極小輸入誤差，例如打錯字/漏字） */
+function levenshteinDistance(a, b) {
+    const m = a.length, n = b.length;
+    if (m === 0) return n;
+    if (n === 0) return m;
+    const dp = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0));
+    for (let i = 0; i <= m; i++) dp[i][0] = i;
+    for (let j = 0; j <= n; j++) dp[0][j] = j;
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (a[i - 1] === b[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1];
+            } else {
+                dp[i][j] = 1 + Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]);
+            }
+        }
+    }
+    return dp[m][n];
+}
+
+/*
+ * 🎯 判斷「代碼 ➔ 中文」作答是否正確（精準版）
+ * 規則：
+ * 1. 先比對「完全一致」：使用者輸入清理後，等於標準答案全文，或等於去掉括號補充說明後的主要文字。
+ * 2. 若不完全一致，只允許極小誤差（打錯字/漏字），用編輯距離判斷，且容忍度會隨答案長度給極小彈性，
+ *    避免像「行政專案」跟「非行政專案，但可享有行政禮遇」這種完全不同語意卻字面重疊被誤判為正確。
+ * 移除舊版「子字串包含」與「字元集合佔比」規則，因為那會讓答錯的相似字串被誤判為對。
+ */
 function checkChineseMatch(userInput, targetStr) {
     const clean = s => s.toLowerCase().replace(/[\s\-_/，,、。.！!？?（）()]/g, '');
     const u = clean(userInput);
     if (!u || u.length < 1) return false;
 
     const targetFull = clean(targetStr);
-    const targetMain = clean(targetStr.replace(/（.*?）|\(.*?\)/g, ''));
+    const targetMainRaw = targetStr.replace(/（.*?）|\(.*?\)/g, '');
+    const targetMain = clean(targetMainRaw) || targetFull;
 
-    if (targetFull.includes(u) && (u.length >= 2 || targetFull.length <= 2)) return true;
-    if (targetMain && targetMain.includes(u) && (u.length >= 2 || targetMain.length <= 2)) return true;
-    if (u.includes(targetMain) && targetMain.length >= 2) return true;
+    // 1. 完全一致（含括號說明或不含括號說明皆可）
+    if (u === targetFull || u === targetMain) return true;
 
-    let matchCount = 0;
-    let tempTarget = targetFull;
-    for (const char of u) {
-        const idx = tempTarget.indexOf(char);
-        if (idx > -1) {
-            matchCount++;
-            tempTarget = tempTarget.slice(0, idx) + tempTarget.slice(idx + 1);
+    // 2. 極小誤差容忍（僅容忍打錯字/漏字等級的差異，不接受語意不同的字串）
+    const base = targetMain;
+    if (base.length >= 4) {
+        const lenDiff = Math.abs(u.length - base.length);
+        const tolerance = base.length <= 6 ? 1 : (base.length <= 12 ? 2 : 3);
+        if (lenDiff <= tolerance) {
+            const dist = levenshteinDistance(u, base);
+            if (dist <= tolerance) return true;
         }
     }
-
-    const precision = matchCount / u.length;
-    const baseTarget = targetMain.length >= 2 ? targetMain : targetFull;
-    const recall = matchCount / baseTarget.length;
-
-    if (u.length >= 3 && precision >= 0.75 && recall >= 0.6) return true;
-    if (u.length >= 4 && precision >= 0.7 && recall >= 0.5) return true;
 
     return false;
 }
 
-function checkCodeMatch(userInput, targetCode) {
-    const clean = s => s.trim().replace(/[\uFF0A]/g, '*').toUpperCase().replace(/[\s\-_/]/g, '');
+/*
+ * 🎯 判斷「中文 ➔ 代碼／分機」作答是否正確（精準版）
+ * 規則：
+ * 1. 一律先比對「完全一致」：清理空白/破折號/底線後，保留「/」，因為「/」在 OPERA 代碼中是有意義的區隔
+ *    （例如 NC 沒有訂房單 vs N/C 名片；NS 非吸菸房 vs N/S 沒出現的訂房客人），拿掉會撞號。
+ * 2. 只有「飯店分機」(type === 'ext') 才允許「並列/範圍分機」的彈性比對，例如：
+ *    - "3505-3506" 這種數字範圍，打其中一支分機也算對
+ *    - "3236/3237" 這種並列分機，打其中一支也算對
+ *    OPERA 代碼一律不套用這條，避免像「N/C」被單打一個字母「C」就誤判為對。
+ * 3. 含萬用字元 "*"（例如 **777、**333）一律要求完全一致，不做任何寬鬆比對。
+ */
+function checkCodeMatch(userInput, targetCode, type) {
+    const clean = s => s.trim().replace(/[\uFF0A]/g, '*').toUpperCase().replace(/[\s\-_]/g, '');
     const u = clean(userInput);
     const t = clean(targetCode);
     if (!u) return false;
@@ -874,17 +907,22 @@ function checkCodeMatch(userInput, targetCode) {
     if (t.includes('*')) return u === t;
     if (u === t) return true;
 
-    const rawParts = targetCode.split(/[-\/]/).map(p => clean(p));
-    if (rawParts.length === 2 && !isNaN(rawParts[0]) && !isNaN(rawParts[1])) {
-        const start = parseInt(rawParts[0], 10);
-        const end = parseInt(rawParts[1], 10);
-        if (end > start && end - start <= 5) {
-            const userNum = parseInt(u, 10);
-            if (userNum >= start && userNum <= end) return true;
+    // 僅「飯店分機」允許並列/範圍分機的彈性比對，OPERA 代碼一律要求完全一致
+    if (type === 'ext') {
+        const rawParts = targetCode.split(/[-\/]/).map(p => clean(p));
+
+        if (rawParts.length === 2 && !isNaN(rawParts[0]) && !isNaN(rawParts[1])) {
+            const start = parseInt(rawParts[0], 10);
+            const end = parseInt(rawParts[1], 10);
+            if (end > start && end - start <= 5) {
+                const userNum = parseInt(u, 10);
+                if (userNum >= start && userNum <= end) return true;
+            }
         }
+
+        if (rawParts.some(part => part.length >= 2 && part === u)) return true;
     }
 
-    if (rawParts.some(part => part === u)) return true;
     return false;
 }
 
@@ -1007,7 +1045,7 @@ function submitAnswer() {
     if (currentDirection === 'code') {
         isCorrect = checkChineseMatch(val, currentCard.cn);
     } else {
-        isCorrect = checkCodeMatch(val, currentCard.code);
+        isCorrect = checkCodeMatch(val, currentCard.code, currentCard.type);
     }
 
     if (state.poolType === 'exam10') {

@@ -197,7 +197,7 @@
            champagne-gold 重點強調 / iOS 風格 / Floating pill bottom navigation。
            ============================================================ */
         @media (max-width: 859px) {
-            html { -webkit-text-size-adjust: 100%; }
+            html { -webkit-text-size-adjust: 100%; overflow-x: hidden; }
 
             body {
                 min-height: 100dvh;
@@ -205,6 +205,10 @@
                 display: flex;
                 justify-content: center;
                 background-color: var(--bg-color);
+                overflow-x: hidden;
+                /* 手機版只保留 body 這一層主要 scroll container，
+                   卡片/清單本身不設定 overflow，Bottom Tab 用 position:fixed 脫離文件流，
+                   避免出現 Page Scroll -> Card Scroll -> Inner Scroll 的多層滾動 */
             }
             .desktop-sidebar { display: none !important; }
             .desktop-header-bar { display: none !important; }
@@ -234,28 +238,28 @@
 
             /* ---------- 快速數據列（Dashboard 小卡） ---------- */
             .mobile-stats-bar {
-                display: grid;
-                grid-template-columns: repeat(4, 1fr);
+                display: flex;
+                align-items: center;
+                justify-content: center;
                 gap: 4px;
-                background: var(--glass-card);
-                -webkit-backdrop-filter: blur(20px);
-                backdrop-filter: blur(20px);
+                background: var(--chip-bg);
                 border: 1px solid var(--glass-border);
-                border-radius: 22px;
-                padding: 16px 8px;
+                border-radius: 999px;
+                padding: 9px 10px;
                 text-align: center;
-                box-shadow: 0 6px 24px rgba(0, 0, 0, 0.28);
+                box-shadow: none;
             }
-            .mobile-stats-bar > div { padding: 0 2px; position: relative; }
+            .mobile-stats-bar > div { display: flex; align-items: baseline; gap: 4px; padding: 0 10px; position: relative; }
             .mobile-stats-bar > div:not(:last-child)::after {
                 content: '';
                 position: absolute;
-                right: 0; top: 8%;
-                width: 1px; height: 84%;
+                right: 0; top: 50%;
+                transform: translateY(-50%);
+                width: 1px; height: 12px;
                 background: var(--glass-border);
             }
-            .mobile-stats-bar .val { font-weight: 800; font-size: 18px; color: var(--primary); letter-spacing: -0.2px; }
-            .mobile-stats-bar .lbl { font-size: 10.5px; color: var(--text-sub); margin-top: 3px; font-weight: 600; letter-spacing: 0.2px; }
+            .mobile-stats-bar .val { font-weight: 800; font-size: 12.5px; color: var(--primary); letter-spacing: -0.1px; }
+            .mobile-stats-bar .lbl { font-size: 10.5px; color: var(--text-sub); margin-top: 0; font-weight: 600; letter-spacing: 0.1px; }
 
             /* ---------- 頁面標題（沿用電腦版 heading class，手機也顯示簡化版） ---------- */
             .desktop-header-bar.mobile-page-title {
@@ -430,7 +434,22 @@
                 box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45);
                 z-index: 100;
             }
+            .nav-indicator {
+                position: absolute;
+                top: 7px;
+                bottom: 7px;
+                left: 0;
+                width: 25%;
+                border-radius: 999px;
+                background: var(--primary-light);
+                border: 1px solid var(--border-hover);
+                transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1), width 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+                z-index: 0;
+                pointer-events: none;
+            }
             .nav-item {
+                position: relative;
+                z-index: 1;
                 flex: 1;
                 display: flex;
                 flex-direction: column;
@@ -445,11 +464,13 @@
                 cursor: pointer;
                 padding: 8px 4px;
                 border-radius: 999px;
-                transition: color 0.15s, background-color 0.15s;
+                transition: color 0.2s ease;
             }
             .nav-item .icon { display: flex; align-items: center; justify-content: center; }
-            .nav-item .icon svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2.1; }
-            .nav-item.active { color: var(--primary); background: var(--primary-light); }
+            .nav-item .icon svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2.1; transition: transform 0.15s ease, stroke-width 0.2s ease; }
+            .nav-item.active { color: var(--primary); }
+            .nav-item.active .icon svg { stroke-width: 2.4; }
+            .nav-item:active .icon svg { transform: scale(0.86); }
 
             /* ---------- 鍵盤喚起特訓模式（緊湊配置） ---------- */
             body.keyboard-open {
@@ -935,6 +956,7 @@
 
 <!-- 📱 手機端底部導覽列 -->
 <nav class="nav-bar">
+    <div class="nav-indicator" id="nav-indicator"></div>
     <button class="nav-item active" onclick="switchTab('learn', this)">
         <span class="icon"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg></span>
         學習卡片
@@ -1420,6 +1442,52 @@ window.addEventListener('keydown', (e) => {
     }
 });
 
+/*
+ * 📱 P0：手機鍵盤狀態偵測（僅在 <860px 生效，Desktop 完全不受影響）
+ * body.keyboard-open 這組 CSS 規則本來就存在於 mobile media query 裡，
+ * 但先前沒有任何 JS 在切換這個 class，導致鍵盤彈出時畫面沒有進入「答題模式」。
+ * 這裡用兩層偵測：
+ *   1. focus/blur：反應最快，使用者一點下輸入框就立刻切換，不等鍵盤動畫。
+ *   2. visualViewport resize：作為保險，涵蓋 focus 事件因瀏覽器差異沒觸發、
+ *      或鍵盤被手勢/返回鍵關閉但沒觸發 blur 的情況，用視窗高度差判斷鍵盤是否還開著。
+ */
+(function setupMobileKeyboardHandling() {
+    const typeInput = document.getElementById('type-input');
+    if (!typeInput) return;
+
+    const isMobileViewport = () => window.innerWidth < 860;
+
+    const openKeyboardUI = () => {
+        if (!isMobileViewport()) return;
+        document.body.classList.add('keyboard-open');
+    };
+    const closeKeyboardUI = () => {
+        document.body.classList.remove('keyboard-open');
+    };
+
+    typeInput.addEventListener('focus', () => {
+        openKeyboardUI();
+        // iOS 鍵盤彈出動畫期間畫面偶爾會被推移，稍微延遲後把捲動位置校正回頂部
+        setTimeout(() => { window.scrollTo({ top: 0, behavior: 'smooth' }); }, 150);
+    });
+    typeInput.addEventListener('blur', () => {
+        closeKeyboardUI();
+    });
+
+    if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', () => {
+            if (!isMobileViewport()) return;
+            const vv = window.visualViewport;
+            const shrunk = (window.innerHeight - vv.height) > 120; // 鍵盤高度通常遠大於 120px
+            if (shrunk && document.activeElement === typeInput) {
+                openKeyboardUI();
+            } else if (!shrunk) {
+                closeKeyboardUI();
+            }
+        });
+    }
+})();
+
 // 2. 考題測驗頁
 let currentQuiz = null;
 let currentQuizType = 'code2cn';
@@ -1615,7 +1683,20 @@ function switchTab(tab, btn) {
     }
 
     if (tab === 'search') renderSearchList();
+    updateNavIndicator();
 }
+
+/* 📱 P1-4：底部 floating pill nav 的「Active Capsule」平順滑動效果，僅手機生效 */
+function updateNavIndicator() {
+    if (window.innerWidth >= 860) return;
+    const navBar = document.querySelector('.nav-bar');
+    const indicator = document.getElementById('nav-indicator');
+    const activeItem = navBar ? navBar.querySelector('.nav-item.active') : null;
+    if (!navBar || !indicator || !activeItem) return;
+    indicator.style.width = `${activeItem.offsetWidth}px`;
+    indicator.style.transform = `translateX(${activeItem.offsetLeft}px)`;
+}
+window.addEventListener('resize', updateNavIndicator);
 
 function toggleTheme() {
     state.theme = state.theme === 'dark' ? 'light' : 'dark';
@@ -1654,6 +1735,7 @@ nextCard(false);
 nextQuizQuestion();
 renderMiniSearch();
 renderMobileFilterChips();
+updateNavIndicator();
 </script>
 </body>
 </html>

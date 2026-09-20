@@ -620,21 +620,21 @@
 
 <script>
 const rawDb = [
-  ["06 213 6290", "台南晶英酒店人工", "飯店分機", "ext", "Silks Place Tainan Operator (Manual)"], ["06 390 8088", "台南晶英酒店AI", "飯店分機", "ext", "Silks Place Tainan AI Concierge"],
-  ["0930 915 993", "禮賓司公務機", "飯店分機", "ext", "Concierge Mobile Phone"], ["3216", "訂席主任", "飯店分機", "ext", "Catering Supervisor"],
-  ["3156", "大中餐廳訂席", "飯店分機", "ext", "Chinese Restaurant Reservation"], ["3505-3506", "房務部辦事員", "飯店分機", "ext", "Housekeeping Clerk"],
-  ["3400", "資深客務部經理", "飯店分機", "ext", "Senior Front Office Manager"], ["3411", "客務部經理", "飯店分機", "ext", "Front Office Manager"],
-  ["3410", "值班經理", "飯店分機", "ext", "Duty Manager"], ["3409", "櫃檯主任", "飯店分機", "ext", "Front Desk Supervisor"],
-  ["3401", "禮賓司", "飯店分機", "ext", "Concierge"], ["3402-3404", "櫃檯接待", "飯店分機", "ext", "Front Desk Reception"],
-  ["3405", "櫃檯出納", "飯店分機", "ext", "Front Desk Cashier"], ["3424", "禮賓司辦公室", "飯店分機", "ext", "Concierge Office"],
-  ["3425", "代客停車員", "飯店分機", "ext", "Valet Parking"], ["3431", "行政樓層接待", "飯店分機", "ext", "Executive Floor Reception"],
-  ["3432", "行政樓層貴賓廊", "飯店分機", "ext", "Executive Lounge"], ["3461", "健身中心櫃檯", "飯店分機", "ext", "Fitness Center Desk"],
-  ["3225", "水晶廊", "飯店分機", "ext", "Crystal Corridor"], ["3214", "宴會廳秘書", "飯店分機", "ext", "Banquet Secretary"],
-  ["3236/3237", "晶英軒領台", "飯店分機", "ext", "Silks House Host Desk"], ["3212-3213", "RB領台", "飯店分機", "ext", "ROBIN'S Grill Host Desk"],
-  ["3215", "外賣中心", "飯店分機", "ext", "Takeout Center"], ["3600", "人資主任", "飯店分機", "ext", "HR Supervisor"],
-  ["3700", "客房部總監-林竑伸", "飯店分機", "ext", "Director of Rooms"], ["**777", "維修報修", "飯店分機", "ext", "Engineering Maintenance"],
-  ["3902", "安全部辦公室", "飯店分機", "ext", "Security Office"], ["**333", "城市車旅停管中心", "飯店分機", "ext", "City Parking Management Center"],
-  ["3103", "李總秘書 Shelly", "飯店分機", "ext", "Secretary to GM"], ["AC", "空氣清淨機", "客房備品", "opera", "Air Cleaner"],
+  ["06 213 6290", "台南晶英酒店人工", "飯店分機", "ext", ""], ["06 390 8088", "台南晶英酒店AI", "飯店分機", "ext", ""],
+  ["0930 915 993", "禮賓司公務機", "飯店分機", "ext", ""], ["3216", "訂席主任", "飯店分機", "ext", ""],
+  ["3156", "大中餐廳訂席", "飯店分機", "ext", ""], ["3505-3506", "房務部辦事員", "飯店分機", "ext", ""],
+  ["3400", "資深客務部經理", "飯店分機", "ext", ""], ["3411", "客務部經理", "飯店分機", "ext", ""],
+  ["3410", "值班經理", "飯店分機", "ext", ""], ["3409", "櫃檯主任", "飯店分機", "ext", ""],
+  ["3401", "禮賓司", "飯店分機", "ext", ""], ["3402-3404", "櫃檯接待", "飯店分機", "ext", ""],
+  ["3405", "櫃檯出納", "飯店分機", "ext", ""], ["3424", "禮賓司辦公室", "飯店分機", "ext", ""],
+  ["3425", "代客停車員", "飯店分機", "ext", ""], ["3431", "行政樓層接待", "飯店分機", "ext", ""],
+  ["3432", "行政樓層貴賓廊", "飯店分機", "ext", ""], ["3461", "健身中心櫃檯", "飯店分機", "ext", ""],
+  ["3225", "水晶廊", "飯店分機", "ext", ""], ["3214", "宴會廳秘書", "飯店分機", "ext", ""],
+  ["3236/3237", "晶英軒領台", "飯店分機", "ext", ""], ["3212-3213", "RB領台", "飯店分機", "ext", ""],
+  ["3215", "外賣中心", "飯店分機", "ext", ""], ["3600", "人資主任", "飯店分機", "ext", ""],
+  ["3700", "客房部總監-林竑伸", "飯店分機", "ext", ""], ["**777", "維修報修", "飯店分機", "ext", ""],
+  ["3902", "安全部辦公室", "飯店分機", "ext", ""], ["**333", "城市車旅停管中心", "飯店分機", "ext", ""],
+  ["3103", "李總秘書 Shelly", "飯店分機", "ext", ""], ["AC", "空氣清淨機", "客房備品", "opera", "Air Cleaner"],
   ["ADJ", "調整", "帳務訂房", "opera", "Adjustment"], ["AMD", "更改", "帳務訂房", "opera", "Amendment"],
   ["AR", "相鄰房", "房態排房", "opera", "Adjoining Room"], ["AT", "接送（機場到飯店）", "前台禮賓", "opera", "Airport Transfer (Inbound)"],
   ["BAG", "托特包（特殊專案贈送，如新春專案）", "客房備品", "opera", "Tote Bag"], ["BB", "嬰兒澡盆（含小水勺+小板凳）", "客房備品", "opera", "Baby Bath Tub"],
@@ -1303,6 +1303,7 @@ function applyThemeUI() {
     } else {
         document.body.classList.remove('light-mode');
         textEls.forEach(t => t.innerText = '淺色模式');
+        iconEls.forEach(ic => ic.innerHTML = '<circle cx="innerText = '淺色模式');
         iconEls.forEach(ic => ic.innerHTML = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>');
     }
 }
@@ -1323,6 +1324,3 @@ loadState();
 nextCard(false);
 nextQuizQuestion();
 renderMiniSearch();
-</script>
-</body>
-</html>

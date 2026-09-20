@@ -54,7 +54,6 @@
 
         body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; transition: background-color 0.25s ease; }
 
-        /* 通用元件基礎樣式 */
         .silks-logo { height: 36px; width: auto; max-width: 46px; object-fit: contain; display: block; }
         body:not(.light-mode) .silks-logo { filter: brightness(0) invert(1); }
         body.light-mode .silks-logo { filter: none; }
@@ -211,7 +210,6 @@
             .settings-grid-2col { gap: 14px !important; }
             .ios-group { border-radius: 16px !important; }
 
-            /* 解決手機端測驗結算錯題列表滾動卡頓問題：取消巢狀滾動限制，整頁原生絲滑滑動 */
             .exam-report-card { padding: 20px 14px !important; margin-bottom: 24px !important; }
             .exam-details-list {
                 max-height: none !important;
@@ -243,20 +241,6 @@
             .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; border: none; background: none; color: var(--text-sub); font-size: 11px; font-weight: 700; cursor: pointer; }
             .nav-item.active { color: var(--primary); }
             .nav-item .icon { font-size: 18px; }
-
-            body.keyboard-open { position: fixed !important; top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important; overflow: hidden !important; padding-bottom: 0 !important; }
-            body.keyboard-open .main-stage { padding: 6px 12px 0 12px !important; gap: 6px !important; }
-            body.keyboard-open .flashcard-container { height: 140px !important; margin-top: 0 !important; }
-            body.keyboard-open .card-face { padding: 10px 12px !important; border-radius: 16px !important; }
-            body.keyboard-open .card-badge { font-size: 11px !important; padding: 2px 8px !important; border-radius: 8px !important; }
-            body.keyboard-open .card-prompt-text { font-size: 26px !important; line-height: 1.25 !important; }
-            body.keyboard-open .card-prompt-text.long-text { font-size: 18px !important; }
-            body.keyboard-open .card-star { top: 8px !important; right: 10px !important; font-size: 18px !important; }
-            body.keyboard-open .card-face div[style*="font-size: 13px"] { display: none !important; }
-            body.keyboard-open .action-area { gap: 6px !important; }
-            body.keyboard-open .card-input { padding: 12px 14px !important; font-size: 15px !important; border-radius: 14px !important; }
-            body.keyboard-open .btn-submit { padding: 0 18px !important; font-size: 15px !important; border-radius: 14px !important; }
-            body.keyboard-open .nav-bar { display: none !important; }
         }
 
         /* 🖥️ 電腦端專業側邊欄架構 (16:9 黃金比例，>= 860px) */
@@ -474,7 +458,7 @@
                         </div>
                         <div class="exam-details-list" id="exam-results-list"></div>
                         <div style="display: flex; gap: 14px; margin-top: 10px;">
-                            <button class="btn-action" onclick="initExam10Session(); nextCard(true);">再測一次 (全新10題)</button>
+                            <button class="btn-action" onclick="startNewExam10();">再測一次 (全新10題)</button>
                             <button class="btn-action" style="background: var(--input-bg); color: var(--text-main); border: 1px solid var(--border-color);" onclick="changePool('all');">返回自主學習</button>
                         </div>
                     </div>
@@ -707,9 +691,34 @@ let examSession = {
 };
 
 function loadState() {
-    const saved = localStorage.getItem('opera_app_data');
-    if (saved) state = JSON.parse(saved);
+    const defaultState = {
+        favs: [],
+        wrongs: [],
+        stats: { total: 0, correct: 0, streak: 0 },
+        theme: 'dark',
+        poolType: 'all',
+        scope: 'all'
+    };
+    try {
+        const saved = localStorage.getItem('opera_app_data');
+        if (saved) {
+            const parsed = JSON.parse(saved);
+            state = {
+                ...defaultState,
+                ...parsed,
+                stats: { ...defaultState.stats, ...(parsed.stats || {}) },
+                favs: Array.isArray(parsed.favs) ? parsed.favs : [],
+                wrongs: Array.isArray(parsed.wrongs) ? parsed.wrongs : []
+            };
+        } else {
+            state = defaultState;
+        }
+    } catch (e) {
+        console.warn("Storage reset due to parse error:", e);
+        state = defaultState;
+    }
     if (!state.scope) state.scope = 'all';
+    if (!state.poolType) state.poolType = 'all';
     applyThemeUI();
     updateStatsUI();
     updateScopeUI();
@@ -721,10 +730,10 @@ function saveState() {
 }
 
 function updateStatsUI() {
-    const favCount = state.favs.length;
-    const wrongCount = state.wrongs.length;
-    const streakCount = state.stats.streak;
-    const acc = state.stats.total > 0 ? Math.round((state.stats.correct / state.stats.total) * 100) : 0;
+    const favCount = (state.favs && state.favs.length) || 0;
+    const wrongCount = (state.wrongs && state.wrongs.length) || 0;
+    const streakCount = (state.stats && state.stats.streak) || 0;
+    const acc = (state.stats && state.stats.total > 0) ? Math.round((state.stats.correct / state.stats.total) * 100) : 0;
 
     ['st-fav', 'd-st-fav'].forEach(id => { const el = document.getElementById(id); if (el) el.innerText = favCount; });
     ['st-wrong', 'd-st-wrong'].forEach(id => { const el = document.getElementById(id); if (el) el.innerText = wrongCount; });
@@ -746,7 +755,8 @@ function getScopedDatabase() {
 }
 
 function getPool() {
-    const scoped = getScopedDatabase();
+    let scoped = getScopedDatabase();
+    if (!scoped || scoped.length === 0) scoped = db;
     if (state.poolType === 'wrong') {
         const pool = scoped.filter(x => state.wrongs.includes(x.code));
         return pool.length > 0 ? pool : scoped;
@@ -755,7 +765,7 @@ function getPool() {
         const pool = scoped.filter(x => state.favs.includes(x.code));
         return pool.length > 0 ? pool : scoped;
     }
-    return scoped;
+    return scoped.length > 0 ? scoped : db;
 }
 
 function checkChineseMatch(userInput, targetStr) {
@@ -833,8 +843,11 @@ function initExam10Session() {
     if (reportView) reportView.classList.add('hidden');
     if (cardContainer) cardContainer.classList.remove('hidden');
     if (actionArea) actionArea.classList.remove('hidden');
+}
 
-    nextCard(false);
+function startNewExam10() {
+    initExam10Session();
+    nextCard(true);
 }
 
 function nextCard(shouldFocus = false) {
@@ -852,13 +865,13 @@ function nextCard(shouldFocus = false) {
                 showExamResults();
                 return;
             }
-            if (examSession.questions.length === 0) {
+            if (!examSession.questions || examSession.questions.length === 0) {
                 initExam10Session();
             }
-            currentCard = examSession.questions[examSession.currentIndex];
+            currentCard = examSession.questions[examSession.currentIndex] || db[0];
         } else {
             const pool = getPool();
-            currentCard = pool[Math.floor(Math.random() * pool.length)];
+            currentCard = pool[Math.floor(Math.random() * pool.length)] || db[0];
         }
         
         currentDirection = Math.random() < 0.5 ? 'code' : 'cn';
@@ -888,12 +901,12 @@ function nextCard(shouldFocus = false) {
             input.focus();
         }
         isFirstLoad = false;
-    }, 200);
+    }, 180);
 }
 
 function requestNextCard() {
     if (isNextCooldown) return;
-    if (Date.now() - lastSubmitTime < 350) return;
+    if (Date.now() - lastSubmitTime < 300) return;
 
     isNextCooldown = true;
     const btn = document.getElementById('next-card-btn');
@@ -915,10 +928,11 @@ function requestNextCard() {
             }
         }
         nextCard(true);
-    }, 400);
+    }, 280);
 }
 
 function submitAnswer() {
+    if (!currentCard) return;
     const input = document.getElementById('type-input');
     const val = input.value.trim();
     if (!val) return;
@@ -1044,11 +1058,11 @@ let isQuizCooldown = false;
 
 function requestNextQuiz() {
     if (isQuizCooldown) return;
-    if (Date.now() - lastQuizAnswerTime < 350) return;
+    if (Date.now() - lastQuizAnswerTime < 300) return;
 
     isQuizCooldown = true;
     const btn = document.getElementById('quiz-next-btn');
-    btn.innerText = "⏳ 1 秒後進入下一題...";
+    btn.innerText = "⏳ 載入下一題...";
     btn.style.opacity = "0.75";
     btn.style.pointerEvents = "none";
 
@@ -1058,7 +1072,7 @@ function requestNextQuiz() {
         btn.style.pointerEvents = "auto";
         isQuizCooldown = false;
         nextQuizQuestion();
-    }, 1000);
+    }, 600);
 }
 
 window.addEventListener('keydown', (e) => {
@@ -1082,60 +1096,28 @@ window.addEventListener('keydown', (e) => {
 });
 
 const typeInput = document.getElementById('type-input');
-let scrollLockInterval = null;
-
-function snapToTop() {
-    if (window.scrollY !== 0 || document.documentElement.scrollTop !== 0 || document.body.scrollTop !== 0) {
-        window.scrollTo(0, 0);
-        document.documentElement.scrollTop = 0;
-        document.body.scrollTop = 0;
-    }
-}
-
-typeInput.addEventListener('pointerdown', () => {
-    if (window.innerWidth < 860) {
-        document.body.classList.add('keyboard-open');
-        snapToTop();
-    }
-});
-
 typeInput.addEventListener('focus', () => {
     if (window.innerWidth < 860) {
-        document.body.classList.add('keyboard-open');
-        snapToTop();
-
-        clearInterval(scrollLockInterval);
-        let count = 0;
-        scrollLockInterval = setInterval(() => {
-            snapToTop();
-            count++;
-            if (count > 30) {
-                clearInterval(scrollLockInterval);
-            }
-        }, 20);
+        setTimeout(() => {
+            typeInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 150);
     }
 });
 
-typeInput.addEventListener('blur', () => {
-    clearInterval(scrollLockInterval);
-    document.body.classList.remove('keyboard-open');
-    snapToTop();
-});
-
-// 2. 考題測驗頁
 let currentQuiz = null;
 let currentQuizType = 'code2cn';
 
 function nextQuizQuestion() {
     document.getElementById('quiz-next-btn').classList.add('hidden');
     const activeScopedList = getScopedDatabase();
-    currentQuiz = activeScopedList[Math.floor(Math.random() * activeScopedList.length)];
+    currentQuiz = activeScopedList[Math.floor(Math.random() * activeScopedList.length)] || db[0];
     currentQuizType = Math.random() < 0.5 ? 'code2cn' : 'cn2code';
 
     let targetAnswer = "";
     let opts = [];
 
     if (currentQuizType === 'code2cn') {
+        const labelName = currentQuiz.type === 'ext' ? '分機號碼' : '代碼';
         document.getElementById('quiz-title').innerText = `【 ${currentQuiz.code} 】（${currentQuiz.cat}）代表什麼？`;
         targetAnswer = currentQuiz.cn;
         opts = [targetAnswer];
@@ -1197,7 +1179,7 @@ function changeScope(scope) {
     state.scope = scope;
     updateScopeUI();
     saveState();
-    if (state.poolType === 'exam10') initExam10Session();
+    if (state.poolType === 'exam10') startNewExam10();
     else nextCard(false);
     nextQuizQuestion();
 }
@@ -1208,7 +1190,7 @@ function changePool(type) {
     saveState();
 
     if (type === 'exam10') {
-        initExam10Session();
+        startNewExam10();
     } else {
         const reportView = document.getElementById('exam-report-view');
         const cardContainer = document.getElementById('learn-card-container');
@@ -1303,7 +1285,6 @@ function applyThemeUI() {
     } else {
         document.body.classList.remove('light-mode');
         textEls.forEach(t => t.innerText = '淺色模式');
-        iconEls.forEach(ic => ic.innerHTML = '<circle cx="innerText = '淺色模式');
         iconEls.forEach(ic => ic.innerHTML = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>');
     }
 }
@@ -1319,8 +1300,11 @@ function resetAllData() {
     }
 }
 
-// 頁面啟動
+// 頁面安全平穩啟動
 loadState();
 nextCard(false);
 nextQuizQuestion();
 renderMiniSearch();
+</script>
+</body>
+</html>

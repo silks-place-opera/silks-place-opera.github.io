@@ -1739,3 +1739,457 @@ updateNavIndicator();
 </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
+    <title>OPERA 卡牌大師</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="apple-touch-icon.png">
+    <style>
+        :root {
+            --bg-color: #0d0d0e;
+            --sidebar-bg: #141416;
+            --card-bg: #18181b;
+            --input-bg: #222226;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(200, 168, 110, 0.4);
+            --text-main: #ffffff;
+            --text-sub: #8e8e93;
+            --primary: #C8A86E;
+            --primary-light: rgba(200, 168, 110, 0.12);
+            --primary-btn-text: #121212;
+            --accent: #30d158;
+            --danger: #ff453a;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+            --nav-bg: #121212;
+            --ios-icon-bg: #27272a;
+            --ios-icon-stroke: #ffffff;
+        }
+
+        body.light-mode {
+            --bg-color: #f5f5f7;
+            --sidebar-bg: #ffffff;
+            --card-bg: #ffffff;
+            --input-bg: #f0f0f4;
+            --border-color: rgba(0, 0, 0, 0.08);
+            --border-hover: rgba(179, 142, 75, 0.45);
+            --text-main: #18181b;
+            --text-sub: #6c6c70;
+            --primary: #B38E4B;
+            --primary-light: rgba(179, 142, 75, 0.12);
+            --primary-btn-text: #ffffff;
+            --shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+            --nav-bg: #ffffff;
+            --ios-icon-bg: #e5e5ea;
+            --ios-icon-stroke: #1c1c1e;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif; }
+        
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 999px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.28); }
+        body.light-mode ::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.15); }
+
+        body { 
+            background-color: var(--bg-color); 
+            color: var(--text-main); 
+            min-height: 100vh; 
+            transition: background-color 0.25s ease; 
+        }
+
+        /* 📱 手機端排版 (< 860px)：四大頁面寬度嚴格統一 + 代碼分機防溢出 + 頂部簡約融合 + 底部毛玻璃半透明 */
+        @media (max-width: 859px) {
+            html, body {
+                overflow-x: hidden !important;
+                width: 100% !important;
+                max-width: 100vw !important;
+            }
+            body { 
+                min-height: 100dvh; 
+                display: block !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            .desktop-sidebar { display: none !important; }
+            .desktop-header-bar { display: none !important; }
+            .desktop-side-tools { display: none !important; }
+            
+            /* 手機端主容器：四個分頁嚴格統一居中寬度 480px，絕不溢出 */
+            .main-stage {
+                width: 100% !important;
+                max-width: 480px !important;
+                margin: 0 auto !important;
+                padding: 10px 16px calc(80px + env(safe-area-inset-bottom, 16px)) 16px !important;
+                box-sizing: border-box !important;
+                overflow-x: hidden !important;
+                min-height: 100dvh !important;
+                display: flex !important;
+                flex-direction: column !important;
+            }
+            .stage-inner {
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 auto !important;
+                padding: 0 !important;
+                gap: 10px !important;
+                box-sizing: border-box !important;
+            }
+
+            .mobile-header { 
+                display: flex; 
+                justify-content: space-between; 
+                align-items: center; 
+                padding: 4px 2px 6px 2px; 
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            /* 📊 正確率數據欄：改成不那麼明顯的精簡融合視窗 (無厚重邊框/背景，融入背景) */
+            .mobile-stats-bar { 
+                display: grid; 
+                grid-template-columns: repeat(4, 1fr); 
+                gap: 4px; 
+                background: transparent !important; 
+                border: none !important; 
+                box-shadow: none !important; 
+                padding: 2px 0 8px 0 !important; 
+                text-align: center;
+                width: 100%;
+                box-sizing: border-box;
+            }
+            .mobile-stats-bar > div {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                position: relative;
+            }
+            .mobile-stats-bar > div:not(:last-child)::after {
+                content: '';
+                position: absolute;
+                right: 0;
+                top: 20%;
+                height: 60%;
+                width: 1px;
+                background: var(--border-color);
+                opacity: 0.5;
+            }
+            .mobile-stats-bar .val { 
+                font-weight: 800; 
+                font-size: 17px; 
+                color: var(--primary); 
+                line-height: 1.1;
+            }
+            .mobile-stats-bar .lbl { 
+                font-size: 11px; 
+                color: var(--text-sub); 
+                margin-top: 3px; 
+                font-weight: 500;
+            }
+
+            /* 統一四大分頁的容器寬度與盒模型 */
+            .view-content {
+                width: 100% !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+                margin: 0 !important;
+            }
+
+            /* 1. 學習卡片分頁 */
+            .learn-grid-pc { 
+                display: flex !important; 
+                flex-direction: column !important; 
+                gap: 12px !important; 
+                width: 100% !important;
+                box-sizing: border-box !important;
+            }
+            .flashcard-container { 
+                height: clamp(210px, 32vh, 270px) !important; 
+                width: 100% !important;
+                box-sizing: border-box !important;
+            }
+            .card-face { 
+                padding: 18px 14px !important; 
+                border-radius: 22px !important; 
+                width: 100% !important;
+                box-sizing: border-box !important;
+            }
+            .card-prompt-text { font-size: clamp(28px, 8vw, 42px) !important; }
+            .card-prompt-text.long-text { font-size: clamp(20px, 5.5vw, 28px) !important; }
+            .action-area {
+                width: 100% !important;
+                box-sizing: border-box !important;
+            }
+            .input-group {
+                width: 100% !important;
+                box-sizing: border-box !important;
+            }
+            .card-input { 
+                padding: 14px 16px !important; 
+                font-size: 16px !important; 
+                border-radius: 18px !important; 
+                width: auto !important;
+                box-sizing: border-box !important;
+            }
+            .btn-submit { 
+                padding: 0 20px !important; 
+                font-size: 16px !important; 
+                border-radius: 18px !important; 
+                box-sizing: border-box !important;
+            }
+            .btn-action { 
+                padding: 14px !important; 
+                font-size: 16px !important; 
+                border-radius: 18px !important; 
+                width: 100% !important;
+                box-sizing: border-box !important;
+            }
+
+            /* 2. 考題測驗分頁 */
+            .quiz-card {
+                padding: 20px 16px !important;
+                border-radius: 22px !important;
+                width: 100% !important;
+                box-sizing: border-box !important;
+            }
+            .quiz-q {
+                font-size: 18px !important;
+                margin-bottom: 16px !important;
+            }
+            .quiz-opts { 
+                display: flex !important; 
+                flex-direction: column !important; 
+                gap: 10px !important; 
+                width: 100% !important;
+                box-sizing: border-box !important;
+            }
+            .q-opt { 
+                padding: 15px 16px !important; 
+                font-size: 15px !important; 
+                border-radius: 16px !important;
+                width: 100% !important;
+                box-sizing: border-box !important;
+            }
+
+            /* 3. 代碼分機分頁：徹底解決超出可視範圍的問題 */
+            .search-box {
+                width: 100% !important;
+                max-width: 100% !important;
+                padding: 14px 16px !important;
+                font-size: 15px !important;
+                border-radius: 16px !important;
+                box-sizing: border-box !important;
+            }
+            .list-container { 
+                display: flex !important; 
+                flex-direction: column !important; 
+                gap: 8px !important; 
+                width: 100% !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+            }
+            .list-item { 
+                width: 100% !important;
+                max-width: 100% !important;
+                padding: 14px 16px !important; 
+                border-radius: 16px !important; 
+                box-既然您的**電腦版程式碼已經完整運作**，為確保完全不改動到電腦版的排版與功能，**您只需將 `<style>` 標籤中原本的 `/* 📱 手機端排版 (< 860px) */` 到該區塊結束的 `}` 替換為以下 CSS** 即可。
+
+---
+
+### 🛠️ 請替換 `<style>` 內的手機端專用 CSS：
+
+```css
+        /* ============================================================
+           📱 手機端排版 (< 860px)：四大頁面寬度統一 + 防溢出 + 極簡數據列 + 半透明導覽
+           ============================================================ */
+        @media (max-width: 859px) {
+            html, body {
+                overflow-x: hidden !important;
+                width: 100% !important;
+                max-width: 100vw !important;
+            }
+            body { 
+                min-height: 100dvh; 
+                display: block !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            /* 隱藏電腦端專用元件 */
+            .desktop-sidebar, .desktop-header-bar, .desktop-side-tools { display: none !important; }
+            
+            /* 📱 手機主容器：四大分頁嚴格統一鎖定 480px 居中，左右間距一致 */
+            .main-stage {
+                width: 100% !important;
+                max-width: 480px !important;
+                margin: 0 auto !important;
+                padding: 10px 16px calc(85px + env(safe-area-inset-bottom, 16px)) 16px !important;
+                box-sizing: border-box !important;
+                overflow-x: hidden !important;
+                min-height: 100dvh !important;
+                display: flex !important;
+                flex-direction: column !important;
+            }
+            .stage-inner {
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 auto !important;
+                padding: 0 !important;
+                gap: 10px !important;
+                box-sizing: border-box !important;
+            }
+
+            .mobile-header { 
+                display: flex; 
+                justify-content: space-between; 
+                align-items: center; 
+                padding: 4px 2px 6px 2px; 
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            /* 📊 1. 正確率數據列：去除厚重黑底與邊框，改為簡約融入背景的指標 */
+            .mobile-stats-bar { 
+                display: grid; 
+                grid-template-columns: repeat(4, 1fr); 
+                gap: 4px; 
+                background: transparent !important; 
+                border: none !important; 
+                box-shadow: none !important; 
+                padding: 4px 0 8px 0 !important; 
+                text-align: center;
+                width: 100%;
+                box-sizing: border-box;
+            }
+            .mobile-stats-bar > div {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                position: relative;
+            }
+            /* 優雅半透明微弱分隔線 */
+            .mobile-stats-bar > div:not(:last-child)::after {
+                content: '';
+                position: absolute;
+                right: 0;
+                top: 20%;
+                height: 60%;
+                width: 1px;
+                background: var(--border-color);
+                opacity: 0.5;
+            }
+            .mobile-stats-bar .val { 
+                font-weight: 800; 
+                font-size: 17px; 
+                color: var(--primary); 
+                line-height: 1.1;
+            }
+            .mobile-stats-bar .lbl { 
+                font-size: 11px; 
+                color: var(--text-sub); 
+                margin-top: 3px; 
+                font-weight: 500;
+            }
+
+            /* 📐 2. 四大頁面寬度統一與「代碼分機」防溢出盒模型 */
+            .view-content, .learn-grid-pc, .flashcard-container, .card-face, .action-area, .input-group,
+            .quiz-card, .quiz-opts, .q-opt, .search-box, .list-container, .list-item,
+            .settings-grid-2col, .ios-group, .ios-item {
+                width: 100% !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+            }
+
+            .learn-grid-pc, .quiz-opts, .list-container, .settings-grid-2col {
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 12px !important;
+            }
+
+            /* 學習卡片 */
+            .flashcard-container { height: clamp(210px, 32vh, 270px) !important; }
+            .card-face { padding: 18px 14px !important; border-radius: 22px !important; }
+            .card-prompt-text { font-size: clamp(28px, 8vw, 42px) !important; }
+            .card-prompt-text.long-text { font-size: clamp(20px, 5.5vw, 28px) !important; }
+            .card-input { padding: 14px 16px !important; font-size: 16px !important; border-radius: 18px !important; }
+            .btn-submit { padding: 0 20px !important; font-size: 16px !important; border-radius: 18px !important; }
+            .btn-action { padding: 14px !important; font-size: 16px !important; border-radius: 18px !important; }
+
+            /* 考題測驗 */
+            .quiz-card { padding: 20px 16px !important; border-radius: 22px !important; }
+            .quiz-q { font-size: 18px !important; margin-bottom: 16px !important; }
+            .q-opt { padding: 15px 16px !important; font-size: 15px !important; border-radius: 16px !important; }
+
+            /* 代碼分機：解決超出可視範圍 */
+            .search-box { padding: 14px 16px !important; font-size: 15px !important; border-radius: 16px !important; }
+            .list-item { padding: 14px 16px !important; border-radius: 16px !important; }
+            .category-tags, [class*="tag"], [class*="filter"] {
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+                overflow-x: auto !important;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            /* 設定 */
+            .settings-grid-2col { gap: 14px !important; }
+            .ios-group { border-radius: 16px !important; }
+
+            /* 🪟 3. 底部導覽欄：半透明毛玻璃質感 */
+            .nav-bar { 
+                position: fixed !important; 
+                bottom: 0 !important; 
+                left: 50% !important; 
+                transform: translateX(-50%) !important; 
+                width: 100% !important; 
+                max-width: 480px !important; 
+                background: rgba(18, 18, 20, 0.78) !important; 
+                backdrop-filter: blur(20px) saturate(180%) !important;
+                -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+                border-top: 1px solid rgba(255, 255, 255, 0.08) !important; 
+                display: grid !important; 
+                grid-template-columns: repeat(4, 1fr) !important; 
+                padding-top: 8px !important;
+                padding-bottom: calc(14px + env(safe-area-inset-bottom, 12px)) !important; 
+                z-index: 100 !important; 
+                box-sizing: border-box !important;
+            }
+            body.light-mode .nav-bar {
+                background: rgba(255, 255, 255, 0.82) !important;
+                border-top: 1px solid rgba(0, 0, 0, 0.06) !important;
+            }
+            .nav-item { 
+                display: flex; 
+                flex-direction: column; 
+                align-items: center; 
+                gap: 4px; 
+                border: none; 
+                background: none; 
+                color: var(--text-sub); 
+                font-size: 11px; 
+                font-weight: 700; 
+                cursor: pointer; 
+            }
+            .nav-item.active { color: var(--primary); }
+            .nav-item .icon { font-size: 18px; }
+
+            /* 鍵盤防滾動模式 */
+            body.keyboard-open {
+                position: fixed !important;
+                top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important;
+                overflow: hidden !important; padding-bottom: 0 !important;
+            }
+            body.keyboard-open .main-stage { padding: 6px 12px 0 12px !important; gap: 6px !important; }
+            body.keyboard-open .flashcard-container { height: 140px !important; margin-top: 0 !important; }
+            body.keyboard-open .card-face { padding: 10px 12px !important; border-radius: 16px !important; }
+            body.keyboard-open .card-badge { font-size: 11px !important; padding: 2px 8px !important; border-radius: 8px !important; }
+            body.keyboard-open .card-prompt-text { font-size: 26px !important; line-height: 1.25 !important; }
+            body.keyboard-open .card-prompt-text.long-text { font-size: 18px !important; }
+            body.keyboard-open .card-star { top: 8px !important; right: 10px !important; font-size: 18px !important; }
+            body.keyboard-open .card-face div[style*="font-size: 13px"] { display: none !important; }
+            body.keyboard-open .action-area { gap: 6px !important; }
+            body.keyboard-open .card-input { padding: 12px 14px !important; font-size: 15px !important; border-radius: 14px !important; }
+            body.keyboard-open .btn-submit { padding: 0 18px !important; font-size: 15px !important; border-radius: 14px !important; }
+            body.keyboard-open .nav-bar { display: none !important; }

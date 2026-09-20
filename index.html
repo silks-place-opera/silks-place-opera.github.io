@@ -25,15 +25,20 @@
             --nav-bg: #121212;
             --ios-icon-bg: #27272a;
             --ios-icon-stroke: #ffffff;
-        }
+
+            /* 深淺模式切換鈕：無生硬框線 */
             --toggle-bg: rgba(255, 255, 255, 0.06);
             --toggle-border: rgba(255, 255, 255, 0.03);
+
+            /* 手機 IG 懸浮毛玻璃導覽列 (深色) */
             --dock-bg: rgba(24, 24, 27, 0.75);
             --dock-border: rgba(255, 255, 255, 0.12);
             --dock-shadow: 0 16px 40px rgba(0, 0, 0, 0.55), 0 4px 12px rgba(0, 0, 0, 0.25);
             --dock-active-bg: #ffffff;
             --dock-active-color: #0d0d0e;
             --dock-icon-color: #8e8e93;
+        }
+
         body.light-mode {
             --bg-color: #f5f5f7;
             --sidebar-bg: #ffffff;
@@ -50,6 +55,18 @@
             --nav-bg: #ffffff;
             --ios-icon-bg: #e5e5ea;
             --ios-icon-stroke: #1c1c1e;
+
+            /* 深淺模式切換鈕 (淺色) */
+            --toggle-bg: rgba(0, 0, 0, 0.04);
+            --toggle-border: rgba(0, 0, 0, 0.03);
+
+            /* 手機 IG 懸浮毛玻璃導覽列 (淺色) */
+            --dock-bg: rgba(255, 255, 255, 0.82);
+            --dock-border: rgba(255, 255, 255, 0.65);
+            --dock-shadow: 0 12px 36px rgba(0, 0, 0, 0.09), 0 2px 8px rgba(0, 0, 0, 0.03);
+            --dock-active-bg: var(--primary);
+            --dock-active-color: #ffffff;
+            --dock-icon-color: #71717a;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif; }
@@ -66,8 +83,25 @@
         body.light-mode .silks-logo { filter: none; }
         .app-title { font-size: 19px; font-weight: 800; color: var(--text-main); letter-spacing: 0.5px; }
 
-        .theme-toggle { background: var(--card-bg); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 20px; cursor: pointer; color: var(--text-main); font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 8px; transition: 0.2s; }
+        /* 1. 深淺模式切換鈕：柔和無生硬框線 */
+        .theme-toggle { 
+            background: var(--toggle-bg); 
+            border: 1px solid var(--toggle-border); 
+            padding: 7px 14px; 
+            border-radius: 9999px; 
+            cursor: pointer; 
+            color: var(--text-sub); 
+            font-size: 13px; 
+            font-weight: 600; 
+            display: flex; 
+            align-items: center; 
+            gap: 6px; 
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            transition: all 0.2s ease; 
+        }
         .theme-toggle svg { width: 15px; height: 15px; stroke: var(--primary); fill: none; stroke-width: 2.2; }
+        .theme-toggle:active { transform: scale(0.96); opacity: 0.8; }
 
         .view-content { display: none; flex-direction: column; gap: 14px; width: 100%; }
         .view-content.active { display: flex; }
@@ -110,7 +144,7 @@
         .exam-item-top { display: flex; justify-content: space-between; align-items: center; font-weight: 700; }
         .exam-item-badge { font-size: 11px; padding: 3px 8px; border-radius: 8px; font-weight: 800; }
         .exam-item-badge.correct { background: rgba(48, 209, 88, 0.18); color: var(--accent); }
-        .exam-item-badge.wrong { background: rgba(255, 69, 58, 0.18); color: var(--danger); }
+        .exam-item-badge.wrong { background: rgba(255, 69, 58, 0.18); color: var(--danger); border: 1px solid rgba(255, 69, 58, 0.35); }
         .exam-item-row { display: flex; gap: 8px; line-height: 1.4; }
         .exam-item-row .lbl { color: var(--text-sub); min-width: 65px; flex-shrink: 0; }
         .exam-item-row .val { color: var(--text-main); font-weight: 600; }
@@ -153,7 +187,7 @@
                 width: 100% !important;
                 max-width: 480px !important;
                 margin: 0 auto !important;
-                padding: 10px 16px calc(85px + env(safe-area-inset-bottom, 16px)) 16px !important;
+                padding: 10px 16px calc(92px + env(safe-area-inset-bottom, 16px)) 16px !important;
                 box-sizing: border-box !important;
                 overflow-x: hidden !important;
                 min-height: 100dvh !important;
@@ -226,28 +260,70 @@
                 -webkit-overflow-scrolling: touch !important;
             }
 
+            /* 2. Instagram 懸浮毛玻璃動態導航欄 (Floating Glass Dock) */
             .nav-bar { 
                 position: fixed !important; 
-                bottom: 0 !important; 
+                bottom: calc(14px + env(safe-area-inset-bottom, 12px)) !important; 
                 left: 50% !important; 
                 transform: translateX(-50%) !important; 
-                width: 100% !important; 
-                max-width: 480px !important; 
-                background: rgba(18, 18, 20, 0.78) !important; 
-                backdrop-filter: blur(20px) saturate(180%) !important;
-                -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-                border-top: 1px solid rgba(255, 255, 255, 0.08) !important; 
-                display: grid !important; 
-                grid-template-columns: repeat(4, 1fr) !important; 
-                padding-top: 8px !important;
-                padding-bottom: calc(14px + env(safe-area-inset-bottom, 12px)) !important; 
-                z-index: 100 !important; 
+                width: auto !important;
+                max-width: 90% !important; 
+                background: var(--dock-bg) !important; 
+                backdrop-filter: blur(28px) saturate(190%) !important;
+                -webkit-backdrop-filter: blur(28px) saturate(190%) !important;
+                border: 1px solid var(--dock-border) !important;
+                border-radius: 9999px !important;
+                box-shadow: var(--dock-shadow) !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                gap: 8px !important;
+                padding: 6px 10px !important;
+                z-index: 999 !important; 
                 box-sizing: border-box !important; 
             }
-            body.light-mode .nav-bar { background: rgba(255, 255, 255, 0.82) !important; border-top: 1px solid rgba(0, 0, 0, 0.06) !important; }
-            .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; border: none; background: none; color: var(--text-sub); font-size: 11px; font-weight: 700; cursor: pointer; }
-            .nav-item.active { color: var(--primary); }
-            .nav-item .icon { font-size: 18px; }
+
+            .nav-item { 
+                display: flex !important; 
+                align-items: center !important; 
+                justify-content: center !important; 
+                width: 52px !important;
+                height: 44px !important;
+                border: none !important; 
+                background: transparent !important; 
+                color: var(--dock-icon-color) !important; 
+                border-radius: 9999px !important; 
+                cursor: pointer !important; 
+                outline: none !important;
+                transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.25s ease, color 0.25s ease !important;
+            }
+
+            /* IG 點擊時彈性縮放手感微動效 */
+            .nav-item:active { 
+                transform: scale(0.86) !important; 
+            }
+
+            /* Active 狀態：IG 同款膠囊底塊高亮 */
+            .nav-item.active { 
+                background: var(--dock-active-bg) !important; 
+                color: var(--dock-active-color) !important; 
+                box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22) !important;
+            }
+
+            .nav-item svg { 
+                width: 22px !important; 
+                height: 22px !important; 
+                stroke: currentColor !important; 
+                fill: none !important; 
+                stroke-width: 2.1 !important; 
+                stroke-linecap: round !important; 
+                stroke-linejoin: round !important; 
+                transition: stroke-width 0.2s ease, transform 0.2s ease !important;
+            }
+            .nav-item.active svg {
+                stroke-width: 2.4 !important;
+                transform: scale(1.05) !important;
+            }
         }
 
         /* 🖥️ 電腦端專業側邊欄架構 (16:9 黃金比例，>= 860px) */
@@ -601,12 +677,20 @@
     </div>
 </main>
 
-<!-- 📱 手機端底部導覽列 -->
+<!-- 📱 手機端底部導覽列 (Instagram 懸浮毛玻璃動態 UI) -->
 <nav class="nav-bar">
-    <button class="nav-item active" onclick="switchTab('learn', this)"><span class="icon">📖</span>學習卡片</button>
-    <button class="nav-item" onclick="switchTab('quiz', this)"><span class="icon">📝</span>考題測驗</button>
-    <button class="nav-item" onclick="switchTab('search', this)"><span class="icon">🔍</span>代碼分機</button>
-    <button class="nav-item" onclick="switchTab('settings', this)"><span class="icon">⚙️</span>設定</button>
+    <button class="nav-item active" onclick="switchTab('learn', this)" aria-label="學習卡片">
+        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"></rect><line x1="7" y1="8" x2="17" y2="8"></line><line x1="7" y1="12" x2="13" y2="12"></line></svg>
+    </button>
+    <button class="nav-item" onclick="switchTab('quiz', this)" aria-label="考題測驗">
+        <svg viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+    </button>
+    <button class="nav-item" onclick="switchTab('search', this)" aria-label="代碼分機">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+    </button>
+    <button class="nav-item" onclick="switchTab('settings', this)" aria-label="設定">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+    </button>
 </nav>
 
 <script>
@@ -626,58 +710,58 @@ const rawDb = [
   ["3700", "客房部總監-林竑伸", "飯店分機", "ext", ""], ["**777", "維修報修", "飯店分機", "ext", ""],
   ["3902", "安全部辦公室", "飯店分機", "ext", ""], ["**333", "城市車旅停管中心", "飯店分機", "ext", ""],
   ["3103", "李總秘書 Shelly", "飯店分機", "ext", ""], ["AC", "空氣清淨機", "客房備品", "opera", "Air Cleaner"],
-  ["ADJ", "調整", "帳務訂房", "opera", "Adjustment"], ["AMD", "更改", "帳務訂房", "opera", "Amendment"],
-  ["AR", "相鄰房", "房態排房", "opera", "Adjoining Room"], ["AT", "接送（機場到飯店）", "前台禮賓", "opera", "Airport Transfer (Inbound)"],
-  ["BAG", "托特包（特殊專案贈送，如新春專案）", "客房備品", "opera", "Tote Bag"], ["BB", "嬰兒澡盆（含小水勺+小板凳）", "客房備品", "opera", "Baby Bath Tub"],
-  ["BC", "嬰兒床", "客房備品", "opera", "Baby Cot"], ["BEAR", "泰迪熊（特殊專案贈送，熊熊愛上你、新春專案）", "客房備品", "opera", "Teddy Bear"],
-  ["BF", "早餐", "帳務訂房", "opera", "Breakfast"], ["BL", "黑名單", "貴賓客情", "opera", "Blacklist"],
-  ["BT/_", "公司付款", "帳務訂房", "opera", "Bill To Company"], ["CB", "多寶閣（六種點心）", "客房備品", "opera", "Chinese Box (Snack Box)"],
-  ["CFM", "確認", "帳務訂房", "opera", "Confirmation"], ["C/I", "登記入住 16:00", "前台禮賓", "opera", "Check-In"],
-  ["C/O", "登記退房 12:00", "前台禮賓", "opera", "Check-Out"], ["CR", "邊間", "房態排房", "opera", "Corner Room"],
-  ["CSP", "VIP 重要貴賓", "貴賓客情", "opera", "Commercial Special Person (VIP)"], ["CV/_", "收住宿券付款", "帳務訂房", "opera", "Coupon Voucher"],
-  ["DB", "加臥鋪床", "客房備品", "opera", "Day Bed"], ["DCRC", "除非可安排相同條件房型", "房態排房", "opera", "Do Not Change Room unless Condition matches"],
-  ["DCRM", "不可換房", "房態排房", "opera", "Do Not Change Room"], ["DF", "不同樓層", "房態排房", "opera", "Different Floor"],
-  ["DND", "請勿打擾", "前台禮賓", "opera", "Do Not Disturb"], ["DT", "接送（飯店到機場）", "前台禮賓", "opera", "Departure Transfer (Airport)"],
-  ["DURA", "住宿期間（宿期）", "帳務訂房", "opera", "Duration of Stay"], ["DUVET", "單人被", "客房備品", "opera", "Extra Single Duvet"],
-  ["EP", "環保專案（續住不打掃）", "帳務訂房", "opera", "Eco Project"], ["ETA", "預計抵達時間", "前台禮賓", "opera", "Estimated Time of Arrival"],
-  ["ETD", "預計出發時間", "前台禮賓", "opera", "Estimated Time of Departure"], ["ETR", "護送客人至房間", "前台禮賓", "opera", "Escort To Room"],
-  ["EXI", "快速進房，直接護送客人至房間辦理登記", "前台禮賓", "opera", "Express Check-In"], ["EXO", "快速退房", "前台禮賓", "opera", "Express Check-Out"],
-  ["FC", "遠離邊間", "房態排房", "opera", "Far from Corner"], ["FE", "遠離電梯", "房態排房", "opera", "Far from Elevator"],
-  ["FOC", "免費房（用於團體，如16間送1間）", "帳務訂房", "opera", "Free Of Charge"], ["FUG", "強制升等", "房態排房", "opera", "Forced Upgrade"],
-  ["FYI", "轉告同仁事項用語", "前台禮賓", "opera", "For Your Information"], ["GTA", "旅行社保證訂房", "帳務訂房", "opera", "Guaranteed Travel Agent"],
-  ["GTD", "保證訂房", "帳務訂房", "opera", "Guaranteed Reservation"], ["HEAT", "暖氣", "客房備品", "opera", "Heater"],
-  ["HF", "高樓層", "房態排房", "opera", "High Floor"], ["HR", "happy hour", "帳務訂房", "opera", "Happy Hour"],
-  ["IB", "熨斗跟燙板", "客房備品", "opera", "Iron & Board"], ["ID", "身分證/居留證", "前台禮賓", "opera", "Identification"],
-  ["IFM", "告知/通知", "前台禮賓", "opera", "Inform / Information"], ["I/H", "目前住在館內", "前台禮賓", "opera", "In House"],
-  ["IN", "相通的房間", "房態排房", "opera", "Interconnecting Rooms"], ["INCO", "查無此人", "前台禮賓", "opera", "Incognito (Unknown Person)"],
-  ["INV", "發票", "帳務訂房", "opera", "Invoice"], ["KID", "兒童拖鞋", "客房備品", "opera", "Kids Slippers"],
-  ["KL", "嬰兒肥皂", "客房備品", "opera", "Kids Soap"], ["L&F", "遺失物", "前台禮賓", "opera", "Lost and Found"],
-  ["Latex Pillow", "乳膠枕", "客房備品", "opera", "Latex Pillow"], ["LF", "低樓層", "房態排房", "opera", "Low Floor"],
-  ["M/C", "晨喚", "前台禮賓", "opera", "Morning Call"], ["M&G", "請值班經理出來向客人打招呼", "前台禮賓", "opera", "Meet and Greet"],
-  ["MM", "桌上型放大款化妝鏡", "客房備品", "opera", "Makeup Mirror"], ["MOD", "駐館主管（通常僅周末/連假配置經理以上）", "前台禮賓", "opera", "Manager On Duty"],
-  ["NC", "沒有訂房單", "帳務訂房", "opera", "No Confirmation"], ["N/C", "名片", "前台禮賓", "opera", "Name Card"],
-  ["NE", "靠近電梯", "房態排房", "opera", "Near Elevator"], ["NS", "非吸菸房", "房態排房", "opera", "Non-Smoking"],
-  ["N/S", "沒有出現的訂房客人", "帳務訂房", "opera", "No Show"], ["O/A", "客人自付款項", "帳務訂房", "opera", "Own Account"],
-  ["OOO", "當日無法販售之房間", "房態排房", "opera", "Out Of Order"], ["OOS", "今日可售，但要晚一點", "房態排房", "opera", "Out Of Service"],
-  ["P/B", "（誰）要幫該房客付款", "帳務訂房", "opera", "Paid By"], ["P/F", "幫（誰）付款", "帳務訂房", "opera", "Pay For"],
-  ["PKG", "專案贈禮", "帳務訂房", "opera", "Package Amenity"], ["PS", "求婚/蜜月佈置（含天鵝毛巾，玫瑰花瓣鋪床）", "客房備品", "opera", "Propose Setup"],
-  ["PV", "公園景觀", "房態排房", "opera", "Park View"], ["QQ", "館內其他消費單據", "帳務訂房", "opera", "Questionable Charges"],
-  ["QR", "安靜房", "房態排房", "opera", "Quiet Room"], ["RC/_", "旅行社結帳/OTA", "帳務訂房", "opera", "Room Charge (OTA / Agency)"],
-  ["RED", "紅酒", "客房備品", "opera", "Red Wine"], ["RQ", "要求", "前台禮賓", "opera", "Request"],
-  ["RV#", "訂房編號", "帳務訂房", "opera", "Reservation Number"], ["SAL", "浴鹽", "客房備品", "opera", "Bath Salts"],
-  ["SBF", "行政樓層早餐", "帳務訂房", "opera", "Silks Lounge Breakfast"], ["SCRN", "房客指接聽指定人士的來電", "貴賓客情", "opera", "Screen Calls"],
-  ["SF", "同樓層", "房態排房", "opera", "Same Floor"], ["SJ", "記者", "貴賓客情", "opera", "Special Journalist"],
-  ["SL", "行政專案", "帳務訂房", "opera", "Silks Lounge Package"], ["SMK", "有吸菸習慣的客人（全館禁菸）", "貴賓客情", "opera", "Smoker"],
-  ["SP", "回流客，6-12次", "貴賓客情", "opera", "Special Guest (Frequent 6-12)"], ["SPS", "回流客，12次以上", "貴賓客情", "opera", "Super Special Guest (Frequent 12+)"],
-  ["SR", "非行政專案，但可享有行政禮遇", "貴賓客情", "opera", "Special Right / Courtesy"], ["SSP", "極敏感客人", "貴賓客情", "opera", "Super Sensitive Person"],
-  ["S/W", "同住登記", "帳務訂房", "opera", "Share With"], ["SZ", "消毒鍋", "客房備品", "opera", "Sterilizer"],
-  ["TB", "塌塌米床", "客房備品", "opera", "Tatami Bed"], ["TD", "開夜床服務", "客房備品", "opera", "Turndown Service"],
-  ["TEA", "烏龍茶葉罐", "客房備品", "opera", "Oolong Tea Canister"], ["TF", "物品轉交", "前台禮賓", "opera", "Transfer / Pass Over"],
-  ["TI", "同業", "貴賓客情", "opera", "Travel Industry"], ["TKS", "票券", "帳務訂房", "opera", "Tickets"],
-  ["VI", "房間已完成，可入住", "房態排房", "opera", "Vacant Inspected"], ["VC", "房間已清潔，待查房，不可入住", "房態排房", "opera", "Vacant Clean"],
-  ["VD", "髒房尚不可入住", "房態排房", "opera", "Vacant Dirty"], ["VP", "待修繕", "房態排房", "opera", "Vacant Pick-up"],
-  ["W/L", "候補名單", "帳務訂房", "opera", "Waiting List"], ["WR", "囍房佈置（含天鵝毛巾、房門囍字、水12瓶）", "客房備品", "opera", "Wedding Room Setup"],
-  ["XB", "行軍床", "客房備品", "opera", "Extra Bed"]
+  ["ADJ", "調整", "帳務訂房", "opera", "Adjustment"], ["AMD", "更改", "帳務訂房", "opera", "Amend"],
+  ["AR", "相鄰房", "房態排房", "opera", "Adjoining Room"], ["AT", "接送（機場到飯店）", "前台禮賓", "opera", "Arrival Transfer"],
+  ["BAG", "托特包（特殊專案贈送，如新春專案）", "客房備品", "opera", ""], ["BB", "嬰兒澡盆（含小水勺+小板凳）", "客房備品", "opera", "Baby Bathtub"],
+  ["BC", "嬰兒床", "客房備品", "opera", "Baby Cot"], ["BEAR", "泰迪熊（特殊專案贈送，熊熊愛上你、新春專案）", "客房備品", "opera", ""],
+  ["BF", "早餐", "帳務訂房", "opera", "Breakfast"], ["BL", "黑名單", "貴賓客情", "opera", "Black  Listed"],
+  ["BT/_", "公司付款", "帳務訂房", "opera", "Bill to Company"], ["CB", "多寶閣（六種點心）", "客房備品", "opera", "Curio Box"],
+  ["CFM", "確認", "帳務訂房", "opera", "Confirm"], ["C/I", "登記入住 16:00", "前台禮賓", "opera", "Check In"],
+  ["C/O", "登記退房 12:00", "前台禮賓", "opera", "Check Out"], ["CR", "邊間", "房態排房", "opera", "Corner Room"],
+  ["CSP", "VIP 重要貴賓", "貴賓客情", "opera", "Most Important Guest"], ["CV/_", "收住宿券付款", "帳務訂房", "opera", "Collect Voucher"],
+  ["DA", "Diptyque備品（行政樓層每晚房價超過$8000才提供，已無提供）", "客房備品", "opera", "Diptyque Amenity"], ["DB", "加臥鋪床", "客房備品", "opera", "Day Bed"],
+  ["DCRC", "除非可安排相同條件房型", "房態排房", "opera", "Do Not Change Room"], ["DCRM", "不可換房", "房態排房", "opera", "Do Not Change Room / Superblock"],
+  ["DF", "不同樓層", "房態排房", "opera", "Different Floor"], ["DND", "請勿打擾", "前台禮賓", "opera", "Do Not Disturb"],
+  ["DT", "接送（飯店到機場）", "前台禮賓", "opera", "Departure Transportation"], ["DURA", "住宿期間（宿期）", "帳務訂房", "opera", "Duration"],
+  ["DUVET", "單人被", "客房備品", "opera", ""], ["EP", "環保專案（續住不打掃）", "帳務訂房", "opera", "Environmental Protection Package"],
+  ["ETA", "預計抵達時間", "前台禮賓", "opera", "Estimated Time of Arrival"], ["ETD", "預計出發時間", "前台禮賓", "opera", "Estimated Time of Departure"],
+  ["ETR", "護送客人至房間", "前台禮賓", "opera", "Escort To Room"], ["EXI", "快速進房，直接護送客人至房間辦理登記", "前台禮賓", "opera", "Express Check In"],
+  ["EXO", "快速退房", "前台禮賓", "opera", "Express Check Out"], ["FC", "遠離邊間", "房態排房", "opera", "Far away Corner"],
+  ["FE", "遠離電梯", "房態排房", "opera", "Far away from Elevator"], ["FOC", "免費房（用於團體，如16間送1間）", "帳務訂房", "opera", "Free of Charge"],
+  ["FUG", "強制升等", "房態排房", "opera", "Force Upgrade"], ["FYI", "轉告同仁事項用語", "前台禮賓", "opera", "For Your Information"],
+  ["GTA", "旅行社保證訂房", "帳務訂房", "opera", "Guarantee by Travel Agent"], ["GTD", "保證訂房", "帳務訂房", "opera", "Guaranteed"],
+  ["HEAT", "暖氣", "客房備品", "opera", "Heater"], ["HF", "高樓層", "房態排房", "opera", "High Floor"],
+  ["HR", "happy hour", "帳務訂房", "opera", "Happy Hour"], ["IB", "熨斗跟燙板", "客房備品", "opera", "Iron & Iron Board"],
+  ["ID", "身分證/居留證", "前台禮賓", "opera", "Identification Card"], ["IFM", "告知/通知", "前台禮賓", "opera", "Inform"],
+  ["I/H", "目前住在館內", "前台禮賓", "opera", "In House"], ["IN", "相通的房間", "房態排房", "opera", "Interconnecting Room"],
+  ["INCO", "查無此人", "前台禮賓", "opera", "Incognito"], ["INV", "發票", "帳務訂房", "opera", "Invoice"],
+  ["KID", "兒童拖鞋", "客房備品", "opera", "Kids Amenities"], ["KL", "嬰兒肥皂", "客房備品", "opera", "KLORANE"],
+  ["L&F", "遺失物", "前台禮賓", "opera", "Lost and Found"], ["Latex Pillow", "乳膠枕", "客房備品", "opera", ""],
+  ["LF", "低樓層", "房態排房", "opera", "Low Floor"], ["M/C", "晨喚", "前台禮賓", "opera", "Morning Call"],
+  ["M&G", "請值班經理出來向客人打招呼", "前台禮賓", "opera", "Meet & Greet by DM"], ["MM", "桌上型放大款化妝鏡", "客房備品", "opera", "Makeup Mirror"],
+  ["MOD", "駐館主管（通常僅周末/連假配置經理以上）", "前台禮賓", "opera", "Manager on Duty"], ["NC", "沒有訂房單", "帳務訂房", "opera", "No Correspondence"],
+  ["N/C", "名片", "前台禮賓", "opera", "Name Card"], ["NE", "靠近電梯", "房態排房", "opera", "Near Elevator"],
+  ["NS", "非吸菸房", "房態排房", "opera", "Non Smoking"], ["N/S", "沒有出現的訂房客人", "帳務訂房", "opera", "No Show"],
+  ["O/A", "客人自付款項", "帳務訂房", "opera", "Guest Own Account"], ["OOO", "當日無法販售之房間", "房態排房", "opera", "Out of Order"],
+  ["OOS", "今日可售，但要晚一點", "房態排房", "opera", "Out of Service"], ["P/B", "（誰）要幫該房客付款", "帳務訂房", "opera", "Pay By"],
+  ["P/F", "幫（誰）付款", "帳務訂房", "opera", "Pay For"], ["PKG", "專案贈禮", "帳務訂房", "opera", "Package Gift"],
+  ["PS", "求婚/蜜月佈置（含天鵝毛巾，玫瑰花瓣鋪床）", "客房備品", "opera", "Proposal Setup"], ["PV", "公園景觀", "房態排房", "opera", "Park View"],
+  ["QQ", "館內其他消費單據", "帳務訂房", "opera", "All Outlet Check Requests"], ["QR", "安靜房", "房態排房", "opera", "Quiet Room"],
+  ["RC/_", "旅行社結帳/OTA", "帳務訂房", "opera", "RM Bill to Travel Agent"], ["RED", "紅酒", "客房備品", "opera", "House Red Wine"],
+  ["RQ", "要求", "前台禮賓", "opera", "Request"], ["RV#", "訂房編號", "帳務訂房", "opera", "Reservation Number"],
+  ["SAL", "浴鹽", "客房備品", "opera", "Beth Salt"], ["SBF", "行政樓層早餐", "帳務訂房", "opera", "Silks Lounge Breakfast"],
+  ["SCRN", "房客指接聽指定人士的來電", "貴賓客情", "opera", "Screen Call"], ["SF", "同樓層", "房態排房", "opera", "Same Floor"],
+  ["SJ", "記者", "貴賓客情", "opera", "Journalist"], ["SL", "行政專案", "帳務訂房", "opera", "Silks Lounge PKG"],
+  ["SMK", "有吸菸習慣的客人（全館禁菸）", "貴賓客情", "opera", "Smoker"], ["SP", "回流客，6-12次", "貴賓客情", "opera", "Special Guest"],
+  ["SPS", "回流客，12次以上", "貴賓客情", "opera", "Very Special Guest"], ["SR", "非行政專案，但可享有行政禮遇", "貴賓客情", "opera", "Silks Resident"],
+  ["SSP", "極敏感客人", "貴賓客情", "opera", "Very Sensitive Guest"], ["S/W", "同住登記", "帳務訂房", "opera", "Share With"],
+  ["SZ", "消毒鍋", "客房備品", "opera", "Sterilizer"], ["TB", "塌塌米床", "客房備品", "opera", "Tatami Bed"],
+  ["TD", "開夜床服務", "客房備品", "opera", "Turn Down Service"], ["TEA", "烏龍茶葉罐", "客房備品", "opera", "Oolong Tea Gift"],
+  ["TF", "物品轉交", "前台禮賓", "opera", "Transfer For"], ["TI", "同業", "貴賓客情", "opera", "Travel Industry / Airline / Hotel Staff"],
+  ["TKS", "票券", "帳務訂房", "opera", ""], ["VI", "房間已完成，可入住", "房態排房", "opera", "Vacant Inspected"],
+  ["VC", "房間已清潔，待查房，不可入住", "房態排房", "opera", "Vacant Clean"], ["VD", "髒房尚不可入住", "房態排房", "opera", "Vacant Dirty"],
+  ["VP", "待修繕", "房態排房", "opera", "Vacant Pickup"], ["W/L", "候補名單", "帳務訂房", "opera", "Waiting List"],
+  ["WR", "囍房佈置（含天鵝毛巾、房門囍字、水12瓶）", "客房備品", "opera", "Wedding Room Setup"], ["XB", "行軍床", "客房備品", "opera", "Extra Bed"]
 ];
 const db = rawDb.map(([code, cn, cat, type, en]) => ({ code, cn, cat, type, en: en || '' }));
 

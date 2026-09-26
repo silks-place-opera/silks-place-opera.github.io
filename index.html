@@ -28,6 +28,7 @@
             --accent: #30d158;
             --danger: #ff453a;
 
+
             --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
 
             --nav-bg: #121212;
@@ -625,6 +626,22 @@
             font-weight: 600;
         }
 
+        .room-code-mark {
+            display: inline;
+            padding: 0;
+            border: 0;
+            border-radius: 0;
+            background: transparent;
+            color: var(--primary);
+            font: inherit;
+            line-height: inherit;
+            white-space: normal;
+        }
+
+        .room-code-mark strong {
+            font-weight: 900;
+        }
+
         .exam-item-row .user-ans.correct {
             color: var(--accent);
             font-weight: 700;
@@ -751,6 +768,9 @@
             color: var(--text-main);
 
             margin-top: 3px;
+
+            white-space: pre-line;
+            line-height: 1.5;
         }
 
         .list-item-cat {
@@ -1868,6 +1888,8 @@
                 color: var(--text-sub);
 
                 font-size: 12px;
+                white-space: pre-line;
+                line-height: 1.4;
             }
 
             /* =========================================================
@@ -3245,7 +3267,7 @@
    Database
    ================================================================ */
 
-const rawDb = [
+const sharedRawDb = [
   ["06 213 6290", "台南晶英酒店人工", "飯店手機", "ext", ""],
   ["06 390 8088", "台南晶英酒店AI", "飯店手機", "ext", ""],
   ["0930 915 993", "禮賓司公務機", "飯店手機", "ext", ""],
@@ -3380,99 +3402,285 @@ const rawDb = [
   ["VP", "待修繕", "房態排房", "opera", "Vacant Pickup"],
   ["W/L", "候補名單", "帳務訂房", "opera", "Waiting List"],
   ["WR", "囍房佈置（含天鵝毛巾、房門囍字、水12瓶）", "客房備品", "opera", "Wedding Room Setup"],
-  ["XB", "行軍床", "客房備品", "opera", "Extra Bed"],
+  ["XB", "行軍床", "客房備品", "opera", "Extra Bed"]
+];
 
- ["DK", "海東客房（一大床/12坪）", "一般房型", "room", "Deluxe King"],
-  ["DF", "海東家庭客房（兩中床/12坪）", "一般房型", "room", "Deluxe Family"],
-  ["HW", "海東雙床客房（兩小床/12坪/可加一張DB）", "一般房型", "room", "Holly Wood Twin"],
-  ["JK", "小西門套房（一大床/16坪）", "一般房型", "room", "Junior Suite King"],
-  ["JF", "小西門家庭套房（兩中床/16坪/可加一張DB或一張XB）", "一般房型", "room", "Junior Suite Family"],
-  ["JKF", "小西門和洋套房（一大床/16坪/可加一張TB-T）", "一般房型", "room", "Junior Suite King Family"],
-  ["CS", "府城套房（一大床/22坪/可加兩張TB-HW或一張TB-T）", "一般房型", "room", "Corner Suite"],
-  ["EDK", "行政海東客房一大床（12-14F/12坪）", "行政房型", "room", "Executive Deluxe King"],
-  ["EDF", "行政海東家庭客房兩中床（12-14F/12坪）", "行政房型", "room", "Executive Deluxe Family"],
-  ["EJK", "行政小西門套房一大床（12-14F/16坪）", "行政房型", "room", "Executive Junior Suite King"],
-  ["EJF", "行政小西門家庭套房兩中床（12-14F/16坪）", "行政房型", "room", "Executive Junior Suite Family"],
-  ["EJKF", "行政小西門和洋套房（12-14F/16坪）", "行政房型", "room", "Executive Junior Suite King Family"],
-  ["ECS", "行政府城套房一大床（12-14F/22坪）", "行政房型", "room", "Executive Corner Suite"],
-  ["HT", "無障礙房（609、909、1209/全館唯一無浴缸房型）", "特殊房型", "room", "Handicapped Room"],
+const sharedDb = sharedRawDb.map(
+    ([code, cn, cat, type, en]) => ({ code, cn, cat, type, en: en || '' })
+);
 
-  /* 新增精選房型實務知識問答 */
-  ["全館客房總數？", "255間（一般樓層202間、行政樓層54間）", "房型知識", "room", "Total Rooms: 255"],
-  ["一般樓層是幾樓？", "5-11樓", "房型知識", "room", "Regular Floors: 5-11F"],
-  ["行政樓層是幾樓？", "12-14樓", "房型知識", "room", "Executive Floors: 12-14F"],
-  ["一大床尺寸？", "180*200cm", "房型知識", "room", "King Bed: 180*200cm"],
-  ["兩中床尺寸（每張）？", "150*200cm", "房型知識", "room", "Family Bed: 150*200cm"],
-  ["兩小床尺寸（每張）？", "120*200cm", "房型知識", "room", "Twin Bed: 120*200cm"],
-  ["小熊房房號有哪些？", "1111、1117、1120、1121、1124、1125", "房型知識", "room", "Teddy Bear Rooms"],
-  ["無障礙房房號？", "609、909、1209", "房型知識", "room", "Accessible Rooms 609, 909, 1209"],
-  ["機房房號？", "512", "房型知識", "room", "Machine Room 512"],
-  ["李總房間號碼？", "812", "房型知識", "room", "General Manager Room 812"],
-  ["哪個房型沒有浴缸？", "HT無障礙房，全館其餘房型皆有浴缸", "房型知識", "room", "No Bathtub: HT Only"],
-  ["府城套房可加床選項？", "兩張TB-HW或一張TB-T", "房型知識", "room", "CS Extra Bed: 2 TB-HW or 1 TB-T"],
-  ["小西門家庭套房可加床選項？", "一張DB或一張XB", "房型知識", "room", "JF Extra Bed: 1 DB or 1 XB"],
-  ["小西門和洋套房可加床選項？", "一張TB-T", "房型知識", "room", "JKF Extra Bed: 1 TB-T"],
-  ["海東雙床客房可加床選項？", "一張DB", "房型知識", "room", "HW Extra Bed: 1 DB"],
 
-  /* ---------------- 館內餐廳與設施資訊 (restaurant) ---------------- */
-  ["RB", "Robin's 牛排館/鐵板燒 (1F)", "館內餐廳", "restaurant", "Robin's Grill & Teppanyaki"],
-  ["SH", "晶英軒 (2F)", "館內餐廳", "restaurant", "Silks House"],
-  ["GH", "水晶廊 (4F)", "館內餐廳", "restaurant", "Glass House"],
-  ["SL", "晶英貴賓廊 (14F)", "館內餐廳", "restaurant", "Silks Lounge"],
-  ["無隅", "無隅 Infinity (1F/週一、二公休)", "館內餐廳", "restaurant", "Infinity"],
+/* ================================================================
+   Room-type structured data
+   Single source of truth for the search-screen room reference cards
+   and quiz facts (坪數/英文/中文/床型/加床...). Executive-floor rows
+   mirror the relevant base-floor rules confirmed by the user.
+   ================================================================ */
 
-  /* 新增精選餐廳實務時段問答 */
+const roomTypes = [
+    { code: 'DK',   en: 'Deluxe King',                      cn: '海東客房',         ping: 12, bed: '一大床（180×200cm）',     addBed: '可加一張 DB（Day Bed）' },
+    { code: 'DF',   en: 'Deluxe Family',                     cn: '海東家庭客房',     ping: 12, bed: '兩中床（每張150×200cm）', addBed: '可加一張 DB（Day Bed）' },
+    { code: 'HW',   en: 'Holly Wood',                        cn: '海東雙床客房',     ping: 12, bed: '兩小床（每張120×200cm）', addBed: '可加一張 DB（Day Bed）' },
+    { code: 'JK',   en: 'Junior Suite King',                 cn: '小西門套房',       ping: 16, bed: '一大床（180×200cm）',     addBed: '可加一張 DB（Day Bed）和一張 XB（Extra Bed），合計最多兩張' },
+    { code: 'JF',   en: 'Junior Suite Family',                cn: '小西門家庭套房',   ping: 16, bed: '兩中床（每張150×200cm）', addBed: '可加一張 DB（Day Bed）和一張 XB（Extra Bed），合計最多兩張' },
+    { code: 'JKF',  en: 'Junior Suite King Family',           cn: '小西門和洋套房',   ping: 16, bed: '一大床（180×200cm）',     addBed: '可加一張 TB-T（塌塌米床）' },
+    { code: 'CS',   en: 'Corner Suite',                       cn: '府城套房',         ping: 22, bed: '一大床（180×200cm）',     addBed: '可加兩張 TB-HW 或一張 TB-T' },
+    { code: 'EDK',  en: 'Executive Deluxe King',              cn: '行政海東客房',     ping: 12, bed: '一大床（180×200cm）',     addBed: '可加一張 DB（Day Bed）' },
+    { code: 'EDF',  en: 'Executive Deluxe Family',            cn: '行政海東家庭客房', ping: 12, bed: '兩中床（每張150×200cm）', addBed: '可加一張 DB（Day Bed）' },
+    { code: 'EJK',  en: 'Executive Junior Suite King',        cn: '行政小西門套房',   ping: 16, bed: '一大床（180×200cm）',     addBed: '可加一張 DB（Day Bed）和一張 XB（Extra Bed），合計最多兩張' },
+    { code: 'EJF',  en: 'Executive Junior Suite Family',      cn: '行政小西門家庭套房', ping: 16, bed: '兩中床（每張150×200cm）', addBed: '可加一張 DB（Day Bed）和一張 XB（Extra Bed），合計最多兩張' },
+    { code: 'EJKF', en: 'Executive Junior Suite King Family', cn: '行政小西門和洋套房', ping: 16, bed: '一大床（180×200cm）',     addBed: '可加一張 TB-T（比照小西門和洋套房規則）' },
+    { code: 'ECS',  en: 'Executive Corner Suite',             cn: '行政府城套房',     ping: 22, bed: '一大床（180×200cm）',     addBed: '可加兩張 TB-HW 或一張 TB-T（比照府城套房規則）' },
+    { code: 'HT',   en: '',                                   cn: '無障礙房',         ping: null, bed: '', addBed: '' }
+];
+
+function roomCodeMarkHtml(code) {
+    return '<span class="room-code-mark" data-code="' + code + '"><strong>' + code + '</strong></span>';
+}
+
+function roomTypeSummaryLine(code) {
+    const room = roomTypes.find(rt => rt.code === code);
+    if (!room) return '';
+    const shortBed = room.bed.replace(/\s*[（(].*$/u, '').trim();
+    const english = room.en || '';
+    return room.cn + '：' + shortBed + (english ? ' ' + english : '') +
+        ' ' + roomCodeMarkHtml(code);
+}
+
+function buildRoomTypeQuizRows(rt) {
+    const rows = [];
+
+    if (rt.ping !== null) {
+        rows.push([rt.code + '是幾坪？', rt.ping + '坪', '房型知識', 'roomfact', '', rt.code]);
+    }
+    if (rt.en) {
+        rows.push([rt.code + '英文全稱是？', rt.en, '房型知識', 'roomfact', '', rt.code]);
+    }
+    rows.push([rt.code + '中文名稱是？', rt.cn, '房型知識', 'roomfact', '', rt.code]);
+    if (rt.bed) {
+        rows.push([rt.code + '房型床型配置？', rt.bed, '房型知識', 'roomfact', '', rt.code]);
+    }
+    if (rt.addBed) {
+        rows.push([rt.code + '可加床選項？', rt.addBed, '房型知識', 'roomfact', '', rt.code]);
+    }
+    if (rt.en) {
+        rows.push([rt.cn + '的英文全稱是？', rt.en, '房型知識', 'roomfact', '', rt.code]);
+    }
+    rows.push([rt.cn + '的房型代碼是？', rt.code, '房型知識', 'roomfact', '', rt.code]);
+
+    return rows;
+}
+
+const roomTypeGeneratedRows = roomTypes.flatMap(buildRoomTypeQuizRows);
+
+// Original bare "代碼→完整中文說明" cards, kept alongside the atomic
+// facts above for holistic recall practice.
+const roomTypeBareRows = roomTypes
+    .filter(rt => rt.code !== 'HT')
+    .map(rt => {
+        const pingTxt = rt.ping ? '，' + rt.ping + '坪' : '';
+        return [rt.code, rt.cn + '（' + rt.bed + pingTxt + '）', '房型代碼', 'room', rt.en, rt.code];
+    });
+
+
+const roomGeneralFactRows = [
+  ["全館客房總數？", "255間", "房型知識", "roomfact", ""],
+  ["一般樓層是幾樓？", "5-11樓", "房型知識", "roomfact", ""],
+  ["行政樓層是幾樓？", "12-14樓", "房型知識", "roomfact", ""],
+  ["一大床尺寸？", "180*200cm", "房型知識", "roomfact", ""],
+  ["兩中床尺寸（每張）？", "150*200cm", "房型知識", "roomfact", ""],
+  ["兩小床尺寸（每張）？", "120*200cm", "房型知識", "roomfact", ""],
+  ["小熊房房號有哪些？", "1111、1117、1120、1121、1124、1125", "房型知識", "roomfact", ""],
+  ["無障礙房房號？", "609、909、1209", "房型知識", "roomfact", ""],
+  ["機房房號？", "512", "房型知識", "roomfact", ""],
+  ["李總房間號碼？", "812", "房型知識", "roomfact", ""],
+  ["哪個房型沒有浴缸？", "HT無障礙房", "房型知識", "roomfact", ""]
+];
+
+
+/* ================================================================
+   Restaurant / facility quiz facts (hand-authored: each outlet's
+   hours differ enough that a generic template would either miss
+   details or force awkward filler). Only Robin's牛排館／Robin's
+   鐵板燒／晶英軒(SH)／水晶廊(GH) have an explicit abbreviation in
+   the source PDF, so only those get 縮寫⇄全稱⇄中文 questions.
+   "Robin's" is already an English brand name, so no separate
+   "英文全稱" question is generated for the two Robin's outlets.
+   Note: the source PDF spells 水晶廊's English name "Gless House";
+   retain that spelling consistently in the quiz and search reference.
+   ================================================================ */
+
+const restaurantQuizRows = [
   ["Robin's牛排館早餐時段？", "06:30-10:30", "Robin's牛排館", "restaurant", ""],
   ["Robin's牛排館午餐/悠享時段？", "12:00-17:00", "Robin's牛排館", "restaurant", ""],
   ["Robin's牛排館晚餐時段？", "18:00-22:00", "Robin's牛排館", "restaurant", ""],
   ["Robin's牛排館午餐最後點餐？", "14:00", "Robin's牛排館", "restaurant", ""],
   ["Robin's牛排館悠享最後點餐？", "15:00", "Robin's牛排館", "restaurant", ""],
   ["Robin's牛排館晚餐最後點餐？", "21:00", "Robin's牛排館", "restaurant", ""],
+  ["Robin's牛排館的縮寫是？", "RB", "Robin's牛排館", "restaurant", ""],
+
   ["Robin's鐵板燒午餐時段？", "12:00-15:00", "Robin's鐵板燒", "restaurant", ""],
   ["Robin's鐵板燒午餐最後點餐？", "13:30", "Robin's鐵板燒", "restaurant", ""],
   ["Robin's鐵板燒晚餐時段？", "18:00-22:00", "Robin's鐵板燒", "restaurant", ""],
   ["Robin's鐵板燒晚餐最後點餐？", "20:30", "Robin's鐵板燒", "restaurant", ""],
+  ["Robin's鐵板燒的縮寫是？", "RB", "Robin's鐵板燒", "restaurant", ""],
+
   ["無隅Infinity午餐時段？", "12:00-15:00", "無隅Infinity", "restaurant", ""],
   ["無隅Infinity晚餐時段？", "18:00-22:00", "無隅Infinity", "restaurant", ""],
   ["無隅Infinity公休日？", "週一、週二", "無隅Infinity", "restaurant", ""],
+
   ["外賣中心營業時間？", "10:00-21:00", "外賣中心", "restaurant", ""],
   ["外賣中心優惠時段？", "20:00後打折", "外賣中心", "restaurant", ""],
+
   ["茶薈T-Bar營業時間？", "10:00-18:00", "茶薈T-Bar", "restaurant", ""],
+
   ["晶英軒午餐時段？", "12:00-14:30", "晶英軒Silks House", "restaurant", ""],
   ["晶英軒午餐最後點餐？", "14:00", "晶英軒Silks House", "restaurant", ""],
   ["晶英軒晚餐時段？", "18:00-21:30", "晶英軒Silks House", "restaurant", ""],
   ["晶英軒晚餐最後點餐？", "21:00", "晶英軒Silks House", "restaurant", ""],
+  ["晶英軒的縮寫是？", "SH", "晶英軒Silks House", "restaurant", ""],
+  ["晶英軒的英文全稱是？", "Silks House", "晶英軒Silks House", "restaurant", ""],
+  ["SH全稱是什麼？", "Silks House", "晶英軒Silks House", "restaurant", ""],
+  ["SH中文是什麼意思？", "晶英軒", "晶英軒Silks House", "restaurant", ""],
+
   ["親迎閣營業時間？", "10:00-20:00", "親迎閣Wedding House", "restaurant", ""],
+
   ["府城茶樓第一時段？", "06:30-08:30", "府城茶樓", "restaurant", ""],
   ["府城茶樓第二時段？", "09:00-11:00", "府城茶樓", "restaurant", ""],
   ["府城茶樓第三時段？", "11:30-13:30", "府城茶樓", "restaurant", ""],
   ["府城茶樓最後點餐規則？", "各時段結束前30分鐘（08:00、10:30、13:00）", "府城茶樓", "restaurant", ""],
-  ["水晶廊營業時間？", "17:00-00:00", "水晶廊Glass House", "restaurant", ""],
-  ["水晶廊最後點餐？", "22:30", "水晶廊Glass House", "restaurant", ""],
+  ["府城茶樓第一時段最後點餐？", "08:00", "府城茶樓", "restaurant", ""],
+  ["府城茶樓第二時段最後點餐？", "10:30", "府城茶樓", "restaurant", ""],
+  ["府城茶樓第三時段最後點餐？", "13:00", "府城茶樓", "restaurant", ""],
+
+  ["水晶廊營業時間？", "17:00-00:00", "水晶廊Gless House", "restaurant", ""],
+  ["水晶廊最後點餐？", "22:30", "水晶廊Gless House", "restaurant", ""],
+  ["水晶廊的縮寫是？", "GH", "水晶廊Gless House", "restaurant", ""],
+  ["水晶廊的英文全稱是？", "Gless House", "水晶廊Gless House", "restaurant", ""],
+  ["GH全稱是什麼？", "Gless House", "水晶廊Gless House", "restaurant", ""],
+  ["GH中文是什麼意思？", "水晶廊", "水晶廊Gless House", "restaurant", ""],
+  ["GH營業時間？", "17:00-00:00", "水晶廊Gless House", "restaurant", ""],
+  ["GH最後點餐時間？", "22:30", "水晶廊Gless House", "restaurant", ""],
+
   ["館內設施開放時間？", "06:30-22:00", "館內設施", "restaurant", ""],
   ["館內設施最後入場？", "21:30", "館內設施", "restaurant", ""],
   ["泳池水質維護時間？", "12:00-13:00關閉", "館內設施", "restaurant", ""],
+
   ["行政酒廊開放時間？", "06:30-22:00", "行政酒廊Silks Lounge", "restaurant", ""],
   ["行政酒廊早餐時段？", "07:30-10:30", "行政酒廊Silks Lounge", "restaurant", ""],
   ["行政酒廊早餐備註？", "共4種套餐，需提前預訂", "行政酒廊Silks Lounge", "restaurant", ""],
   ["SL房型在酒廊的待遇？", "免費使用空間，附茶/果汁/餅乾", "行政酒廊Silks Lounge", "restaurant", ""],
   ["非SL房型在酒廊的待遇？", "低消一杯軟性飲料", "行政酒廊Silks Lounge", "restaurant", ""],
   ["行政酒廊酒精供應規則？", "20:00前無酒精，20:00-22:00供應(Happy Hour)", "行政酒廊Silks Lounge", "restaurant", ""],
-  ["餐廳消費滿抵規則？", "當日滿$1,000折1小時，可加購$50/小時", "停車資訊", "restaurant", ""]
+
+  ["餐廳消費滿額停車折抵規則？", "當日滿$1,000折1小時，可加購$50/小時", "停車資訊", "restaurant", ""]
 ];
 
-const db = rawDb.map(
-    ([code, cn, cat, type, en]) => ({
+
+/* ================================================================
+   QUIZ / FLASHCARD database — everything above, combined.
+   This is what learning cards, the 4-choice quiz, exam10, the
+   wrong-book and favorites all draw from.
+   ================================================================ */
+
+const quizRawDb = [
+    ...sharedRawDb,
+    ...roomTypeBareRows,
+    ...roomTypeGeneratedRows,
+    ...roomGeneralFactRows,
+    ...restaurantQuizRows
+];
+
+const quizDb = quizRawDb.map(
+    ([code, cn, cat, type, en, roomCode]) => ({
         code,
         cn,
         cat,
         type,
-        en: en || ''
+        en: en || '',
+        roomCode: roomCode || (type === 'room' ? code : ''),
+        roomName: type === 'room'
+            ? (roomTypes.find(rt => rt.code === code)?.cn || '')
+            : ''
     })
 );
 
+
+/* ================================================================
+   SEARCH database — OPERA/分機 (unchanged) plus full reference cards
+   for room types and restaurants, split into topic sections. Room
+   details are generated from roomTypes so the reference and quiz data
+   stay aligned. These are for
+   lookup only and are never drawn into the quiz/flashcard pool.
+   ================================================================ */
+
+const roomRefRows = [
+  ["館內房型｜總覽", "全館共 255 間客房", "房型資訊", "room-ref", ""],
+  ["館內房型｜一般樓層 12坪", [
+    "【一般樓層 5-11F】", "12坪",
+    roomTypeSummaryLine('DK'), roomTypeSummaryLine('DF'), roomTypeSummaryLine('HW'),
+    "（可加一張 DB）"
+  ].join('\n'), "房型資訊", "room-ref", ""],
+  ["館內房型｜一般樓層 16坪", [
+    "【一般樓層 5-11F】", "16坪",
+    roomTypeSummaryLine('JK'), roomTypeSummaryLine('JF'),
+    "（可加一張 DB 和一張 XB，最多兩張）",
+    roomTypeSummaryLine('JKF'),
+    "（可加一張 TB-T）"
+  ].join('\n'), "房型資訊", "room-ref", ""],
+  ["館內房型｜一般樓層 22坪", [
+    "【一般樓層 5-11F】", "22坪",
+    roomTypeSummaryLine('CS'),
+    "（可加兩張 TB-HW 或一張 TB-T）",
+    "", "小熊房：R-1111 R-1117 R-1120 R-1121 R-1124 R-1125"
+  ].join('\n'), "房型資訊", "room-ref", ""],
+  ["館內房型｜行政樓層 12-14F", [
+    "【行政樓層 12-14F】（全部在前面加 Executive）",
+    "行政海東客房：" + roomCodeMarkHtml('EDK') + "／" + roomCodeMarkHtml('EDF'),
+    "行政小西門套房：" + roomCodeMarkHtml('EJK') + "／" + roomCodeMarkHtml('EJF'),
+    "行政小西門和洋套房：" + roomCodeMarkHtml('EJKF'),
+    "行政府城套房：" + roomCodeMarkHtml('ECS')
+  ].join('\n'), "房型資訊", "room-ref", ""],
+  ["館內房型｜浴缸與特殊房號", [
+    "房型浴缸：只有 " + roomCodeMarkHtml('HT') + " 無障礙房沒有浴缸，其餘房型都有",
+    "無障礙房房號：609、909、1209",
+    "機房：512",
+    "李總房間：812"
+  ].join('\n'), "房型資訊", "room-ref", ""]
+];
+
+const restaurantRefRows = [
+  ["1F Robin's 牛排館(RB)", "06:30-10:30 / 12:00-17:00 / 18:00-22:00\n最後點餐：午餐 14:00 /悠享 15:00 /晚餐 21:00", "餐廳資訊", "restaurant-ref", ""],
+  ["1F Robin's 鐵板燒(RB)", "12:00-15:00 / 18:00-22:00\n最後點餐：午餐 13:30 /晚餐 20:30", "餐廳資訊", "restaurant-ref", ""],
+  ["1F 無隅 Infinity", "12:00-15:00\n18:00-22:00（週一、二公休）", "餐廳資訊", "restaurant-ref", ""],
+  ["1F 外賣中心(灶腳)", "10:00-21:00（20:00 後打折）", "餐廳資訊", "restaurant-ref", ""],
+  ["1F 茶薈 T-Bar", "10:00-18:00", "餐廳資訊", "restaurant-ref", ""],
+  ["2F 晶英軒 Silks House (SH)", "12:00-14:30 / 18:00-21:30\n最後點餐：午餐 14:00 / 晚餐 21:00", "餐廳資訊", "restaurant-ref", ""],
+  ["2F 親迎閣 Wedding House", "10:00-20:00", "餐廳資訊", "restaurant-ref", ""],
+  ["2F/4F 府城茶樓", "06:30-08:30 / 09:00-11:00 / 11:30-13:30\n最後點餐 各時段前 30 分：08:00 / 10:30 / 13:00", "餐廳資訊", "restaurant-ref", ""],
+  ["4F 水晶廊 Gless House (GH)", "17:00-00:00\n最後點餐：22:30", "餐廳資訊", "restaurant-ref", ""],
+  ["4F 館內設施（泳池/健身房/遊戲室）", "06:30-22:00（最後入場 21:30）", "餐廳資訊", "restaurant-ref", ""],
+  ["14F 晶英貴賓廊 Silks Lounge", "06:30-22:00\nSL 早餐：07:30-10:30\n早餐套餐：4 種套餐需提前預訂\nSL 房型：免費使用空間 +茶/果汁/餅乾\n非 SL 房型：低消一杯軟性飲料\n酒精供應：20:00 前無酒精，酒精僅 20:00-22:00 供應（Happy Hour）", "餐廳資訊", "restaurant-ref", ""],
+  ["館內餐廳｜補充說明", "【4F 泳池】：12:00-13:00 水質維護關閉\n【1F 無隅】：全館唯一標示週一、週二公休\n【停車折抵】：餐廳當日滿 $1,000 折 1 小時，額外加購$50 /小時", "餐廳資訊", "restaurant-ref", ""]
+];
+
+const searchRawDb = [
+    ...sharedRawDb,
+    ...roomRefRows,
+    ...restaurantRefRows
+];
+
+const searchDb = searchRawDb.map(
+    ([code, cn, cat, type, en]) => ({ code, cn, cat, type, en: en || '' })
+);
+
+
 /* ================================================================
    Domain helpers (direction control + duplicate-code disambiguation)
+   Duplicate detection is scoped to quizDb, since that's the only
+   place bare short codes (like the "DF" collision) are used as
+   flashcard/quiz prompts; searchDb entries all use long, already
+   unique header text so no disambiguation is needed there.
    ================================================================ */
 
 const ONEWAY_TYPES = ['room', 'roomfact', 'restaurant'];
@@ -3486,7 +3694,7 @@ function normalizeCodeKey(c) {
 }
 
 const codeKeyCounts = {};
-db.forEach(x => {
+quizDb.forEach(x => {
     const k = normalizeCodeKey(x.code);
     codeKeyCounts[k] = (codeKeyCounts[k] || 0) + 1;
 });
@@ -3551,7 +3759,7 @@ function migrateLegacyKeys(list) {
         // Legacy bare-code entry from before room/restaurant data existed.
         // Prefer opera/ext matches first (that's all that could have been
         // saved historically), fall back to any match.
-        const candidates = db.filter(
+        const candidates = quizDb.filter(
             x => normalizeCodeKey(x.code) === normalizeCodeKey(k)
         );
 
@@ -3795,26 +4003,26 @@ function updateScopeUI() {
 function getScopedDatabase() {
 
     if (state.scope === 'opera')
-        return db.filter(
+        return quizDb.filter(
             x => x.type === 'opera'
         );
 
     if (state.scope === 'ext')
-        return db.filter(
+        return quizDb.filter(
             x => x.type === 'ext'
         );
 
     if (state.scope === 'room')
-        return db.filter(
+        return quizDb.filter(
             x => x.type === 'room' || x.type === 'roomfact'
         );
 
     if (state.scope === 'restaurant')
-        return db.filter(
+        return quizDb.filter(
             x => x.type === 'restaurant'
         );
 
-    return db;
+    return quizDb;
 }
 
 
@@ -3827,7 +4035,7 @@ function getPool() {
         !scoped ||
         scoped.length === 0
     ) {
-        scoped = db;
+        scoped = quizDb;
     }
 
 
@@ -3865,7 +4073,7 @@ function getPool() {
 
     return scoped.length > 0
         ? scoped
-        : db;
+        : quizDb;
 }
 
 
@@ -3878,210 +4086,65 @@ function checkChineseMatch(
     targetStr
 ) {
 
-    const clean = s =>
-        s.toLowerCase()
-            .replace(
-                /[\s\-_/，,、。.！!？?（）()]/g,
-                ''
-            );
+    const u = normalizeAnswerText(userInput);
+    const target = normalizeAnswerText(targetStr);
+
+    return Boolean(u) && u === target;
+}
 
 
-    const u = clean(userInput);
+function normalizeAnswerText(value) {
 
-    if (!u || u.length < 1)
-        return false;
-
-
-    const targetFull =
-        clean(targetStr);
-
-    const targetMain =
-        clean(
-            targetStr.replace(
-                /（.*?）|\(.*?\)/g,
-                ''
-            )
-        );
+    return String(value ?? '')
+        .normalize('NFKC')
+        .toLowerCase()
+        .replace(/[*＊×✕✖]/g, 'x')
+        .replace(/\s+/gu, '')
+        .replace(/\p{P}/gu, '');
+}
 
 
-    if (
-        targetFull.includes(u) &&
-        (
-            u.length >= 2 ||
-            targetFull.length <= 2
-        )
-    )
-        return true;
+function normalizeCodeText(value) {
 
-
-    if (
-        targetMain &&
-        targetMain.includes(u) &&
-        (
-            u.length >= 2 ||
-            targetMain.length <= 2
-        )
-    )
-        return true;
-
-
-    if (
-        u.includes(targetMain) &&
-        targetMain.length >= 2
-    )
-        return true;
-
-
-    let matchCount = 0;
-
-    let tempTarget =
-        targetFull;
-
-
-    for (const char of u) {
-
-        const idx =
-            tempTarget.indexOf(char);
-
-        if (idx > -1) {
-
-            matchCount++;
-
-            tempTarget =
-                tempTarget.slice(
-                    0,
-                    idx
-                ) +
-                tempTarget.slice(
-                    idx + 1
-                );
-        }
-    }
-
-
-    const precision =
-        matchCount / u.length;
-
-    const baseTarget =
-        targetMain.length >= 2
-            ? targetMain
-            : targetFull;
-
-    const recall =
-        matchCount /
-        baseTarget.length;
-
-
-    if (
-        u.length >= 3 &&
-        precision >= 0.75 &&
-        recall >= 0.6
-    )
-        return true;
-
-
-    if (
-        u.length >= 4 &&
-        precision >= 0.7 &&
-        recall >= 0.5
-    )
-        return true;
-
-
-    return false;
+    return String(value ?? '')
+        .normalize('NFKC')
+        .toUpperCase()
+        .replace(/[＊﹡]/g, '*')
+        .replace(/\*/g, '\uE000')
+        .replace(/\s+/gu, '')
+        .replace(/\p{P}/gu, '')
+        .replace(/\uE000/g, '*');
 }
 
 
 function checkCodeMatch(
     userInput,
-    targetCode
+    targetCode,
+    targetType
 ) {
 
-    const clean = s =>
-        s
-            .trim()
-            .replace(
-                /[\uFF0A]/g,
-                '*'
-            )
-            .toUpperCase()
-            .replace(
-                /[\s\-_/]/g,
-                ''
-            );
-
-
-    const u =
-        clean(userInput);
-
-    const t =
-        clean(targetCode);
+    const u = normalizeCodeText(userInput);
+    const t = normalizeCodeText(targetCode);
 
 
     if (!u)
         return false;
 
 
-    if (t.includes('*'))
-        return u === t;
-
-
     if (u === t)
         return true;
 
 
-    const rawParts =
-        targetCode
-            .split(/[-\/]/)
-            .map(
-                p => clean(p)
-            );
-
-
-    if (
-        rawParts.length === 2 &&
-        !isNaN(rawParts[0]) &&
-        !isNaN(rawParts[1])
-    ) {
-
-        const start =
-            parseInt(
-                rawParts[0],
-                10
-            );
-
-        const end =
-            parseInt(
-                rawParts[1],
-                10
-            );
-
-        if (
-            end > start &&
-            end - start <= 5
-        ) {
-
-            const userNum =
-                parseInt(
-                    u,
-                    10
-                );
-
-            if (
-                userNum >= start &&
-                userNum <= end
-            )
-                return true;
-        }
+    // Multiple slash-separated extensions are explicit alternatives;
+    // each complete listed extension is valid. OPERA codes keep their
+    // full code and never accept a slash-delimited fragment.
+    if (targetType === 'ext' && /[\/／]/.test(String(targetCode))) {
+        return String(targetCode)
+            .split(/[\/／]/)
+            .map(normalizeCodeText)
+            .filter(Boolean)
+            .includes(u);
     }
-
-
-    if (
-        rawParts.some(
-            part => part === u
-        )
-    )
-        return true;
 
 
     return false;
@@ -4092,14 +4155,10 @@ function checkCodeMatch(
    Fact Matching (time ranges / room-number lists)
    ================================================================
 
-   checkChineseMatch's character-multiset comparison is great for free
-   text, but it is NOT safe for short numeric/time strings: two
-   different time ranges like "06:30-10:30" and "18:00-22:00" share so
-   many of the same digits/colons that the generic matcher can score a
-   completely wrong time as "correct". checkFactMatch is used only for
-   the new 房型代碼 / 房型知識 / 餐廳資訊 entries to guard against that,
-   while every original OPERA/分機 card keeps using checkChineseMatch
-   exactly as before.
+   Time ranges and room-number lists use structured comparisons so
+   equivalent formatting can be accepted without allowing missing,
+   extra, reordered time, or extra list values. Other answers use exact
+   normalized text comparison; no partial or fuzzy matches are allowed.
    ================================================================ */
 
 function extractTimeTokensStrict(s) {
@@ -4139,62 +4198,182 @@ function sameTokenSet(a, b) {
 }
 
 function extractNumberTokens(s) {
-    return (s.match(/\d{2,4}/g) || []);
+    return (String(s ?? '').match(/\d+/g) || []);
 }
 
-function checkFactMatch(userInput, target) {
+function splitTrailingOptionalUnit(value) {
+    const normalized = normalizeAnswerText(value);
+    const units = [
+        ['間客房', 'room-count'], ['間房', 'room-count'], ['房間', 'room-count'],
+        ['客房', 'room-count'], ['間', 'room-count'], ['坪', 'ping'],
+        ['公分', 'cm'], ['厘米', 'cm'], ['cm', 'cm'], ['mm', 'mm'],
+        ['樓', 'floor'], ['層', 'floor'], ['f', 'floor'],
+        ['號', 'room-number'], ['張', 'count'], ['小時', 'hours'],
+        ['分鐘', 'minutes'], ['分', 'minutes'], ['秒', 'seconds'],
+        ['人', 'count'], ['個', 'count'], ['杯', 'count'], ['份', 'count'],
+        ['種', 'count'], ['元', 'currency']
+    ].sort((a, b) => b[0].length - a[0].length);
 
-    const u = (userInput || '').trim();
-
-    if (!u) return false;
-
-    // Time-range / specific-time answers: compare the actual time
-    // values, not raw character overlap.
-    if (target.includes(':')) {
-
-        const targetTokens = extractTimeTokensStrict(target);
-
-        if (targetTokens.length > 0) {
-
-            const userTokens =
-                extractTimeTokensLenient(u);
-
-            return sameTokenSet(
-                targetTokens,
-                userTokens
-            );
+    for (const [suffix, canonical] of units) {
+        if (normalized.endsWith(suffix)) {
+            return { body: normalized.slice(0, -suffix.length), unit: canonical };
         }
     }
 
-    // Room-number style lists (e.g. "1111、1117、1120..."): compare
-    // as an order-independent set of numbers rather than raw text.
-    const targetNums = extractNumberTokens(target);
+    return { body: normalized, unit: '' };
+}
 
-    const chineseHeavy =
-        (
-            target
-                .replace(/[0-9、,，\s]/g, '')
-                .match(/[\u4e00-\u9fa5]/g) || []
-        ).length;
+function numericRemaindersMatch(target, userInput) {
+    const targetParts = splitTrailingOptionalUnit(
+        String(target).replace(/\d+/g, '')
+    );
+    const userParts = splitTrailingOptionalUnit(
+        String(userInput).replace(/\d+/g, '')
+    );
 
-    if (targetNums.length >= 2 && chineseHeavy <= 2) {
+    if (targetParts.body !== userParts.body) return false;
+    if (targetParts.unit === userParts.unit) return true;
 
-        const userNums =
-            extractNumberTokens(u);
+    return !targetParts.unit || !userParts.unit;
+}
 
-        const tset = new Set(targetNums);
-        const uset = new Set(userNums);
+function parseNumericRange(value) {
+    const normalized = String(value ?? '')
+        .normalize('NFKC')
+        .toLowerCase()
+        .replace(/\s+/gu, '');
+    const match = normalized.match(/^(\d+)(?:-|[\u2013\u2014~\uff5e\u301c\u81f3\u5230])(\d+)([a-z\u4e00-\u9fff]*)$/u);
+    if (!match) return null;
 
-        if (tset.size === 0) return false;
+    const unit = match[3];
+    const canonicalUnit = /^(?:f|樓|層)$/u.test(unit) ? 'floor' : unit;
+    return { start: String(BigInt(match[1])), end: String(BigInt(match[2])), unit: canonicalUnit };
+}
 
-        return [...tset].every(
-            n => uset.has(n)
-        );
+function parseDimension(value) {
+    const normalized = String(value ?? '')
+        .normalize('NFKC')
+        .toLowerCase()
+        .replace(/[\u00d7\u2715\u2716\uff0a*]/g, 'x')
+        .replace(/\s+/gu, '');
+    const match = normalized.match(/^(\d+)x(\d+)(cm|公分|厘米|mm)?$/u);
+    if (!match) return null;
+
+    const unit = match[3] || '';
+    const canonicalUnit = /^(?:cm|公分|厘米)$/u.test(unit) ? 'cm' : unit;
+    return {
+        width: String(BigInt(match[1])),
+        length: String(BigInt(match[2])),
+        unit: canonicalUnit
+    };
+}
+
+function bedTypeOnlyTarget(value) {
+    const match = String(value ?? '')
+        .normalize('NFKC')
+        .match(/^\s*(一大床|兩中床|兩小床)\s*[(（]\s*(?:每張)?\s*\d+\s*[×x*]\s*\d+\s*(?:cm|公分|厘米)?\s*[)）]\s*$/iu);
+    return match ? match[1] : '';
+}
+
+function checkFactMatch(userInput, target) {
+    const u = String(userInput ?? '').trim();
+    const t = String(target ?? '').trim();
+    if (!u || !t) return false;
+
+    if (checkChineseMatch(u, t)) return true;
+
+    const bedTypeOnly = bedTypeOnlyTarget(t);
+    if (bedTypeOnly && checkChineseMatch(u, bedTypeOnly)) return true;
+
+    if (t.includes(':')) {
+        const targetTokens = extractTimeTokensStrict(t);
+        if (targetTokens.length > 0) {
+            const targetCanonical = targetTokens.map(normalizeTimeToken);
+            const userCanonical = extractTimeTokensLenient(u).map(normalizeTimeToken);
+            if (
+                targetCanonical.length !== userCanonical.length ||
+                !targetCanonical.every((token, index) => token === userCanonical[index])
+            ) return false;
+
+            const targetRest = normalizeAnswerText(
+                removeTimeTokens(normalizeTimeRangeSeparators(t))
+            );
+            const userRest = normalizeAnswerText(
+                removeTimeTokens(normalizeTimeRangeSeparators(u))
+            );
+            return targetRest === userRest;
+        }
     }
 
-    // Everything else (plain Chinese descriptions, short numbers like
-    // "512" or "255間") keeps using the original tolerant matcher.
-    return checkChineseMatch(u, target);
+    const targetDimension = parseDimension(t);
+    if (targetDimension) {
+        const userDimension = parseDimension(u);
+        return Boolean(userDimension) &&
+            targetDimension.width === userDimension.width &&
+            targetDimension.length === userDimension.length &&
+            (!targetDimension.unit || !userDimension.unit || targetDimension.unit === userDimension.unit);
+    }
+
+    const targetRange = parseNumericRange(t);
+    if (targetRange) {
+        const userRange = parseNumericRange(u);
+        return Boolean(userRange) &&
+            targetRange.start === userRange.start &&
+            targetRange.end === userRange.end &&
+            (!targetRange.unit || !userRange.unit || targetRange.unit === userRange.unit);
+    }
+
+    const targetNumbers = extractNumberTokens(t);
+    const userNumbers = extractNumberTokens(u);
+    if (targetNumbers.length === 0) return false;
+
+    const targetRemainder = normalizeAnswerText(t.replace(/\d+/g, ''));
+    if (targetNumbers.length >= 2 && !targetRemainder) {
+        const targetSet = targetNumbers.map(n => String(BigInt(n)));
+        const userSet = userNumbers.map(n => String(BigInt(n)));
+        if (!sameTokenSet(targetSet, userSet)) return false;
+        return numericRemaindersMatch(t, u);
+    }
+
+    if (
+        targetNumbers.length !== userNumbers.length ||
+        !targetNumbers.every((number, index) => BigInt(number) === BigInt(userNumbers[index]))
+    ) return false;
+
+    return numericRemaindersMatch(t, u);
+}
+
+
+function normalizeTimeToken(token) {
+
+    const parts = String(token).split(':');
+    return `${parseInt(parts[0], 10)}:${parts[1]}`;
+}
+
+
+function normalizeTimeRangeSeparators(value) {
+
+    return String(value).replace(
+        /(\d{1,2}:?\d{2})\s*[-–—~～〜至到]\s*(?=\d{1,2}:?\d{2})/g,
+        '$1-'
+    );
+}
+
+
+function removeTimeTokens(value) {
+
+    return String(value)
+        .replace(/\d{1,2}:?\d{2}(?!\d)/g, '');
+}
+
+
+function checkRoomTypeMatch(userInput, item) {
+
+    if (!item || item.type !== 'room' || !item.roomName)
+        return false;
+
+    return checkChineseMatch(userInput, item.roomName) ||
+        checkFactMatch(userInput, item.cn);
 }
 
 
@@ -4348,7 +4527,7 @@ function nextCard(
             currentCard =
                 examSession.questions[
                     examSession.currentIndex
-                ] || db[0];
+                ] || quizDb[0];
 
         } else {
 
@@ -4361,7 +4540,7 @@ function nextCard(
                         Math.random() *
                         pool.length
                     )
-                ] || db[0];
+                ] || quizDb[0];
         }
 
 
@@ -4628,11 +4807,15 @@ function submitAnswer() {
             currentCard.type === 'restaurant'
         ) {
 
-            isCorrect =
-                checkFactMatch(
-                    val,
-                    currentCard.cn
-                );
+            if (currentCard.type === 'room') {
+                isCorrect = checkRoomTypeMatch(val, currentCard);
+            } else {
+                isCorrect =
+                    checkFactMatch(
+                        val,
+                        currentCard.cn
+                    );
+            }
 
         } else {
 
@@ -4648,7 +4831,8 @@ function submitAnswer() {
         isCorrect =
             checkCodeMatch(
                 val,
-                currentCard.code
+                currentCard.code,
+                currentCard.type
             );
     }
 
@@ -4922,6 +5106,11 @@ function showExamResults() {
                     ? item.card.cn
                     : getDisplayCode(item.card);
 
+            const roomCodeLabel =
+                item.card.roomCode
+                    ? roomCodeMarkHtml(item.card.roomCode)
+                    : '';
+
 
             div.innerHTML = `
 
@@ -4958,6 +5147,17 @@ function showExamResults() {
                     </span>
 
                 </div>
+
+                ${
+                    roomCodeLabel
+                        ? `
+                            <div class="exam-item-row">
+                                <span class="lbl">房型標記：</span>
+                                <span class="val">${roomCodeLabel}</span>
+                            </div>
+                        `
+                        : ''
+                }
 
                 ${
                     item.card.en
@@ -5081,6 +5281,39 @@ function toggleFav(e) {
 let lastQuizAnswerTime = 0;
 
 let isQuizCooldown = false;
+
+
+function buildQuizOptions(targetAnswer, answerGetter, activeScopedList, currentType) {
+
+    const collectUniqueAnswers = pool => {
+        const seen = new Set([targetAnswer]);
+        const answers = [];
+
+        pool.forEach(item => {
+            const answer = answerGetter(item);
+            if (answer && !seen.has(answer)) {
+                seen.add(answer);
+                answers.push(answer);
+            }
+        });
+
+        return answers;
+    };
+
+    const sameTypePool = activeScopedList.filter(
+        item => item.type === currentType
+    );
+    const sameTypeAnswers = collectUniqueAnswers(sameTypePool);
+    const allAnswers = collectUniqueAnswers(activeScopedList);
+    const distractorPool = sameTypeAnswers.length >= 3
+        ? sameTypeAnswers
+        : allAnswers;
+    const distractors = [...distractorPool]
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 3);
+
+    return [targetAnswer, ...distractors];
+}
 
 
 function requestNextQuiz() {
@@ -5277,7 +5510,7 @@ function nextQuizQuestion() {
                 Math.random() *
                 activeScopedList.length
             )
-        ] || db[0];
+        ] || quizDb[0];
 
 
     const oneway =
@@ -5292,21 +5525,6 @@ function nextQuizQuestion() {
                     ? 'code2cn'
                     : 'cn2code'
             );
-
-
-    // Prefer distractors from the same domain/type so options stay
-    // plausible (e.g. a restaurant-hours question shouldn't offer an
-    // OPERA abbreviation as a wrong answer). Fall back to the full
-    // scoped list if there aren't enough same-type items.
-    const sameTypePool =
-        activeScopedList.filter(
-            x => x.type === currentQuiz.type
-        );
-
-    const distractorSource =
-        sameTypePool.length >= 4
-            ? sameTypePool
-            : activeScopedList;
 
 
     let targetAnswer = "";
@@ -5343,32 +5561,12 @@ function nextQuizQuestion() {
             currentQuiz.cn;
 
 
-        opts = [
-            targetAnswer
-        ];
-
-
-        while (
-            opts.length < 4 &&
-            opts.length < distractorSource.length
-        ) {
-
-            let rand =
-                distractorSource[
-                    Math.floor(
-                        Math.random() *
-                        distractorSource.length
-                    )
-                ].cn;
-
-
-            if (
-                !opts.includes(rand)
-            ) {
-
-                opts.push(rand);
-            }
-        }
+        opts = buildQuizOptions(
+            targetAnswer,
+            item => item.cn,
+            activeScopedList,
+            currentQuiz.type
+        );
 
     } else {
 
@@ -5390,34 +5588,12 @@ function nextQuizQuestion() {
             getDisplayCode(currentQuiz);
 
 
-        opts = [
-            targetAnswer
-        ];
-
-
-        while (
-            opts.length < 4 &&
-            opts.length < distractorSource.length
-        ) {
-
-            let rand =
-                getDisplayCode(
-                    distractorSource[
-                        Math.floor(
-                            Math.random() *
-                            distractorSource.length
-                        )
-                    ]
-                );
-
-
-            if (
-                !opts.includes(rand)
-            ) {
-
-                opts.push(rand);
-            }
-        }
+        opts = buildQuizOptions(
+            targetAnswer,
+            item => getDisplayCode(item),
+            activeScopedList,
+            currentQuiz.type
+        );
     }
 
 
@@ -5704,13 +5880,13 @@ function renderSearchList() {
 
 
     const filtered =
-        db.filter(
+        searchDb.filter(
             x =>
                 x.code
                     .toLowerCase()
                     .includes(q) ||
 
-                x.cn.includes(q) ||
+                x.cn.toLowerCase().includes(q) ||
 
                 x.cat.includes(q) ||
 
@@ -5811,14 +5987,14 @@ function renderMiniSearch() {
 
 
     const filtered =
-        db
+        searchDb
             .filter(
                 x =>
                     x.code
                         .toLowerCase()
                         .includes(q) ||
 
-                    x.cn.includes(q) ||
+                    x.cn.toLowerCase().includes(q) ||
 
                     x.cat.includes(q) ||
 
@@ -5854,9 +6030,9 @@ function renderMiniSearch() {
                     ${getDisplayCode(x)}
                 </span>
 
-                <span class="m-cn">
+                <div class="m-cn">
                     ${x.cn}
-                </span>
+                </div>
 
             `;
 

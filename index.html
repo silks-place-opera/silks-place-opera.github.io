@@ -34,15 +34,9 @@
             --ios-icon-bg: #27272a;
             --ios-icon-stroke: #ffffff;
 
-            /* =========================================================
-               深淺模式切換鈕：毛玻璃
-               ========================================================= */
             --toggle-bg: rgba(255, 255, 255, 0.10);
             --toggle-border: rgba(255, 255, 255, 0.12);
 
-            /* =========================================================
-               手機 Floating Glass Dock
-               ========================================================= */
             --dock-bg: rgba(24, 24, 27, 0.48);
             --dock-border: rgba(255, 255, 255, 0.14);
 
@@ -55,9 +49,6 @@
             --dock-icon-color: #8e8e93;
         }
 
-        /* =============================================================
-           淺色模式
-           ============================================================= */
         body.light-mode {
             --bg-color: #f5f5f7;
             --sidebar-bg: #ffffff;
@@ -80,11 +71,9 @@
             --ios-icon-bg: #e5e5ea;
             --ios-icon-stroke: #1c1c1e;
 
-            /* 淺色毛玻璃 Toggle */
             --toggle-bg: rgba(255, 255, 255, 0.52);
             --toggle-border: rgba(255, 255, 255, 0.55);
 
-            /* 淺色 Floating Glass Dock */
             --dock-bg: rgba(255, 255, 255, 0.58);
             --dock-border: rgba(255, 255, 255, 0.60);
 
@@ -97,21 +86,12 @@
             --dock-icon-color: #71717a;
         }
 
-        /* =============================================================
-           Global
-           ============================================================= */
         * {
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
             margin: 0;
             padding: 0;
-            font-family:
-                -apple-system,
-                BlinkMacSystemFont,
-                "SF Pro Text",
-                "Segoe UI",
-                Roboto,
-                sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
         }
 
         ::-webkit-scrollbar {
@@ -143,9 +123,6 @@
             transition: background-color 0.25s ease;
         }
 
-        /* =============================================================
-           Logo / title
-           ============================================================= */
         .silks-logo {
             height: 36px;
             width: auto;
@@ -169,59 +146,33 @@
             letter-spacing: 0.5px;
         }
 
-        /* =============================================================
-           Theme Toggle - 真正毛玻璃
-           ============================================================= */
         .theme-toggle {
             position: relative;
             overflow: hidden;
-
             background: var(--toggle-bg);
             border: 1px solid var(--toggle-border);
-
             padding: 7px 14px;
             border-radius: 9999px;
-
             cursor: pointer;
             color: var(--text-sub);
-
             font-size: 13px;
             font-weight: 600;
-
             display: flex;
             align-items: center;
             gap: 6px;
-
-            /* 毛玻璃核心 */
             backdrop-filter: blur(18px) saturate(150%);
             -webkit-backdrop-filter: blur(18px) saturate(150%);
-
-            /* 玻璃立體感 */
-            box-shadow:
-                0 6px 20px rgba(0, 0, 0, 0.18),
-                inset 0 1px 0 rgba(255, 255, 255, 0.12);
-
-            transition:
-                transform 0.2s ease,
-                background-color 0.25s ease,
-                border-color 0.25s ease,
-                box-shadow 0.25s ease;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+            transition: transform 0.2s ease, background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
         }
 
-        /* 玻璃表面高光 */
         .theme-toggle::before {
             content: "";
             position: absolute;
             inset: 0;
             border-radius: inherit;
             pointer-events: none;
-
-            background: linear-gradient(
-                135deg,
-                rgba(255, 255, 255, 0.10),
-                rgba(255, 255, 255, 0.02) 45%,
-                rgba(255, 255, 255, 0.00) 70%
-            );
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.02) 45%, rgba(255, 255, 255, 0.00) 70%);
         }
 
         .theme-toggle > * {
@@ -239,10 +190,7 @@
 
         .theme-toggle:hover {
             border-color: rgba(200, 168, 110, 0.30);
-
-            box-shadow:
-                0 8px 24px rgba(0, 0, 0, 0.22),
-                inset 0 1px 0 rgba(255, 255, 255, 0.16);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.16);
         }
 
         .theme-toggle:active {
@@ -250,9 +198,6 @@
             opacity: 0.9;
         }
 
-        /* =============================================================
-           General Views
-           ============================================================= */
         .view-content {
             display: none;
             flex-direction: column;
@@ -264,9 +209,6 @@
             display: flex;
         }
 
-        /* =============================================================
-           Flashcard
-           ============================================================= */
         .flashcard-container {
             perspective: 1000px;
             width: 100%;
@@ -278,8 +220,7 @@
             height: 100%;
             position: relative;
             transform-style: preserve-3d;
-            transition:
-                transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             border-radius: 24px;
         }
 
@@ -291,21 +232,16 @@
             position: absolute;
             width: 100%;
             height: 100%;
-
             backface-visibility: hidden;
-
             border-radius: 24px;
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-
             padding: 22px 18px;
-
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             align-items: center;
             text-align: center;
-
             box-shadow: var(--shadow);
         }
 
@@ -317,13 +253,10 @@
             position: absolute;
             top: 18px;
             right: 20px;
-
             font-size: 26px;
             color: #404040;
-
             cursor: pointer;
             z-index: 10;
-
             transition: color 0.15s;
         }
 
@@ -334,13 +267,10 @@
         .card-badge {
             font-size: 12px;
             font-weight: 700;
-
             padding: 5px 14px;
             border-radius: 14px;
-
             background: var(--input-bg);
             border: 1px solid var(--border-color);
-
             color: var(--primary);
             letter-spacing: 0.3px;
         }
@@ -349,22 +279,15 @@
             font-weight: 900;
             letter-spacing: 0.5px;
             color: var(--text-main);
-
             margin: auto 0;
-
             line-height: 1.35;
             padding: 0 10px;
-
             word-break: break-word;
         }
 
-        /* =============================================================
-           Result
-           ============================================================= */
         .result-badge {
             font-size: 14px;
             font-weight: 800;
-
             padding: 6px 16px;
             border-radius: 18px;
         }
@@ -382,53 +305,43 @@
         }
 
         .ans-code {
-            font-size: 38px;
+            font-size: 26px;
             font-weight: 900;
-
             color: var(--primary);
             margin-top: 4px;
-
             word-break: break-word;
+            line-height: 1.25;
         }
 
         .ans-en {
-            font-size: 20px;
+            font-size: 16px;
             font-weight: 700;
-
             color: var(--primary);
             opacity: 0.92;
-
             margin-top: 3px;
             letter-spacing: 0.4px;
             line-height: 1.3;
         }
 
         .ans-cn {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
-
             color: var(--text-main);
-
-            margin-top: 4px;
-            line-height: 1.3;
+            margin-top: 6px;
+            line-height: 1.35;
+            word-break: break-word;
         }
 
         .ans-user {
             font-size: 13px;
             color: var(--text-sub);
-
             margin-top: 8px;
-
             background: var(--input-bg);
             padding: 5px 12px;
             border-radius: 10px;
-
             border: 1px solid var(--border-color);
         }
 
-        /* =============================================================
-           Buttons / Input
-           ============================================================= */
         .action-area {
             display: flex;
             flex-direction: column;
@@ -444,16 +357,12 @@
 
         .card-input {
             flex: 1;
-
             border: 1px solid var(--border-color);
             background: var(--input-bg);
             color: var(--text-main);
-
             font-weight: 600;
             outline: none;
-
             transition: 0.2s;
-
             box-shadow: var(--shadow);
         }
 
@@ -464,11 +373,9 @@
         .btn-submit {
             background: var(--primary);
             color: var(--primary-btn-text);
-
             border: none;
             font-weight: 800;
             cursor: pointer;
-
             transition: opacity 0.2s;
         }
 
@@ -479,17 +386,11 @@
         .btn-action {
             background: var(--primary);
             color: var(--primary-btn-text);
-
             font-weight: 800;
-
             border: none;
             width: 100%;
-
             cursor: pointer;
-
-            transition:
-                opacity 0.2s,
-                background-color 0.2s;
+            transition: opacity 0.2s, background-color 0.2s;
         }
 
         .btn-action:active {
@@ -500,19 +401,12 @@
             display: none !important;
         }
 
-        /* =============================================================
-           Exam Report
-           ============================================================= */
         .exam-report-card {
             background: var(--card-bg);
-
             border-radius: 24px;
             border: 1px solid var(--border-color);
-
             padding: 24px 20px;
-
             box-shadow: var(--shadow);
-
             display: flex;
             flex-direction: column;
             gap: 16px;
@@ -520,29 +414,22 @@
 
         .exam-score-header {
             text-align: center;
-
             padding: 10px 0 16px 0;
-
             border-bottom: 1px solid var(--border-color);
         }
 
         .exam-score-title {
             font-size: 13px;
             font-weight: 700;
-
             color: var(--primary);
-
             letter-spacing: 1px;
         }
 
         .exam-score-val {
             font-size: 58px;
             font-weight: 900;
-
             color: var(--text-main);
-
             margin: 6px 0;
-
             line-height: 1;
         }
 
@@ -555,25 +442,19 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
-
             max-height: 400px;
             overflow-y: auto;
-
             padding-right: 4px;
         }
 
         .exam-item-box {
             background: var(--input-bg);
-
             border-radius: 16px;
             padding: 14px 16px;
-
             border: 1px solid var(--border-color);
-
             display: flex;
             flex-direction: column;
             gap: 6px;
-
             font-size: 13px;
         }
 
@@ -581,16 +462,13 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-
             font-weight: 700;
         }
 
         .exam-item-badge {
             font-size: 11px;
             padding: 3px 8px;
-
             border-radius: 8px;
-
             font-weight: 800;
         }
 
@@ -602,21 +480,18 @@
         .exam-item-badge.wrong {
             background: rgba(255, 69, 58, 0.18);
             color: var(--danger);
-
             border: 1px solid rgba(255, 69, 58, 0.35);
         }
 
         .exam-item-row {
             display: flex;
             gap: 8px;
-
             line-height: 1.4;
         }
 
         .exam-item-row .lbl {
             color: var(--text-sub);
-
-            min-width: 65px;
+            min-width: 70px;
             flex-shrink: 0;
         }
 
@@ -635,26 +510,18 @@
             font-weight: 700;
         }
 
-        /* =============================================================
-           Quiz
-           ============================================================= */
         .quiz-card {
             background: var(--card-bg);
-
             border-radius: 22px;
             padding: 22px;
-
             border: 1px solid var(--border-color);
-
             box-shadow: var(--shadow);
         }
 
         .quiz-q {
             font-size: 20px;
             font-weight: 800;
-
             margin-bottom: 20px;
-
             line-height: 1.4;
         }
 
@@ -666,55 +533,39 @@
 
         .q-opt {
             background: var(--input-bg);
-
             border: 1px solid var(--border-color);
-
             padding: 16px 20px;
             border-radius: 18px;
-
             font-weight: 700;
-            font-size: 16px;
-
+            font-size: 15px;
             text-align: left;
-
             cursor: pointer;
-
             color: var(--text-main);
-
             transition: 0.15s;
+            line-height: 1.35;
         }
 
         .q-opt.correct {
             background: rgba(48, 209, 88, 0.2);
-
             border-color: var(--accent);
             color: var(--accent);
         }
 
         .q-opt.wrong {
             background: rgba(255, 69, 58, 0.2);
-
             border-color: var(--danger);
             color: var(--danger);
         }
 
-        /* =============================================================
-           Search
-           ============================================================= */
         .search-box {
             width: 100%;
-
             padding: 16px 20px;
             border-radius: 18px;
-
             border: 1px solid var(--border-color);
-
             background: var(--card-bg);
             color: var(--text-main);
-
             font-size: 16px;
             font-weight: 600;
-
             outline: none;
         }
 
@@ -726,65 +577,51 @@
 
         .list-item {
             background: var(--card-bg);
-
             padding: 16px 20px;
             border-radius: 18px;
-
             border: 1px solid var(--border-color);
-
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 12px;
         }
 
         .list-item-left .code {
             font-weight: 900;
-
-            font-size: 18px;
+            font-size: 17px;
             color: var(--primary);
         }
 
         .list-item-left .cn {
             font-size: 14px;
             font-weight: 700;
-
             color: var(--text-main);
-
-            margin-top: 3px;
+            margin-top: 4px;
+            line-height: 1.35;
         }
 
         .list-item-cat {
             font-size: 11px;
-
-            padding: 3px 8px;
+            padding: 4px 9px;
             border-radius: 8px;
-
             background: var(--input-bg);
             color: var(--text-sub);
-
             font-weight: 700;
+            flex-shrink: 0;
         }
 
-        /* =============================================================
-           iOS Settings
-           ============================================================= */
         .ios-group-title {
             font-size: 13px;
             font-weight: 600;
-
             color: var(--text-sub);
-
             padding: 6px 16px 8px 16px;
         }
 
         .ios-group {
             background: var(--card-bg);
-
             border-radius: 16px;
             overflow: hidden;
-
             margin-bottom: 20px;
-
             border: 1px solid var(--border-color);
         }
 
@@ -792,30 +629,21 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-
             padding: 13px 18px;
-
             cursor: pointer;
             position: relative;
-
             background: var(--card-bg);
-
             transition: background-color 0.15s;
         }
 
         .ios-item:not(:last-child)::after {
             content: '';
-
             position: absolute;
-
             bottom: 0;
             left: 56px;
             right: 0;
-
             height: 1px;
-
             background: var(--border-color);
-
             opacity: 0.6;
         }
 
@@ -832,22 +660,17 @@
         .ios-icon-box {
             width: 32px;
             height: 32px;
-
             border-radius: 8px;
-
             display: flex;
             align-items: center;
             justify-content: center;
-
             background-color: var(--ios-icon-bg);
-
             flex-shrink: 0;
         }
 
         .ios-icon-box svg {
             width: 17px;
             height: 17px;
-
             stroke: var(--ios-icon-stroke);
             fill: none;
             stroke-width: 2.2;
@@ -856,20 +679,15 @@
         .ios-label {
             font-size: 16px;
             font-weight: 600;
-
             color: var(--text-main);
         }
 
         .ios-check {
             font-size: 17px;
             font-weight: 800;
-
             color: var(--primary);
-
             opacity: 0;
-
             transform: scale(0.7);
-
             transition: 0.15s ease;
         }
 
@@ -878,13 +696,8 @@
             transform: scale(1);
         }
 
-        /* =============================================================
-           MOBILE < 860px
-           ============================================================= */
         @media (max-width: 859px) {
-
-            html,
-            body {
+            html, body {
                 overflow-x: hidden !important;
                 width: 100% !important;
                 max-width: 100vw !important;
@@ -892,9 +705,7 @@
 
             body {
                 min-height: 100dvh;
-
                 display: block !important;
-
                 padding: 0 !important;
                 margin: 0 !important;
             }
@@ -905,135 +716,81 @@
                 display: none !important;
             }
 
-            /* =========================================================
-               Mobile Main Stage
-               ========================================================= */
             .main-stage {
                 width: 100% !important;
-
                 max-width: 480px !important;
-
                 margin: 0 auto !important;
-
-                padding:
-                    10px
-                    16px
-                    calc(92px + env(safe-area-inset-bottom, 16px))
-                    16px !important;
-
+                padding: 10px 16px calc(92px + env(safe-area-inset-bottom, 16px)) 16px !important;
                 box-sizing: border-box !important;
-
                 overflow-x: hidden !important;
-
                 min-height: 100dvh !important;
-
                 display: flex !important;
                 flex-direction: column !important;
             }
 
             .stage-inner {
                 width: 100% !important;
-
                 max-width: 100% !important;
-
                 margin: 0 auto !important;
-
                 padding: 0 !important;
-
                 gap: 10px !important;
-
                 box-sizing: border-box !important;
             }
 
-            /* =========================================================
-               Mobile Header
-               ========================================================= */
             .mobile-header {
                 display: flex;
-
                 justify-content: space-between;
                 align-items: center;
-
                 padding: 4px 2px 6px 2px;
-
                 width: 100%;
-
                 box-sizing: border-box;
             }
 
-            /* =========================================================
-               Mobile Stats
-               ========================================================= */
             .mobile-stats-bar {
                 display: grid;
-
                 grid-template-columns: repeat(4, 1fr);
-
                 gap: 4px;
-
                 background: transparent !important;
-
                 border: none !important;
-
                 box-shadow: none !important;
-
                 padding: 4px 0 8px 0 !important;
-
                 text-align: center;
-
                 width: 100%;
-
                 box-sizing: border-box;
             }
 
             .mobile-stats-bar > div {
                 display: flex;
-
                 flex-direction: column;
                 align-items: center;
-
                 position: relative;
             }
 
             .mobile-stats-bar > div:not(:last-child)::after {
                 content: '';
-
                 position: absolute;
-
                 right: 0;
                 top: 20%;
-
                 height: 60%;
                 width: 1px;
-
                 background: var(--border-color);
-
                 opacity: 0.5;
             }
 
             .mobile-stats-bar .val {
                 font-weight: 800;
-
                 font-size: 17px;
-
                 color: var(--primary);
-
                 line-height: 1.1;
             }
 
             .mobile-stats-bar .lbl {
                 font-size: 11px;
-
                 color: var(--text-sub);
-
                 margin-top: 3px;
-
                 font-weight: 500;
             }
 
-            /* =========================================================
-               Mobile Width Normalization
-               ========================================================= */
             .view-content,
             .learn-grid-pc,
             .flashcard-container,
@@ -1050,9 +807,7 @@
             .ios-group,
             .ios-item {
                 width: 100% !important;
-
                 max-width: 100% !important;
-
                 box-sizing: border-box !important;
             }
 
@@ -1061,117 +816,73 @@
             .list-container,
             .settings-grid-2col {
                 display: flex !important;
-
                 flex-direction: column !important;
-
                 gap: 12px !important;
             }
 
-            /* =========================================================
-               Flashcard Mobile
-               ========================================================= */
             .flashcard-container {
-                height: clamp(
-                    210px,
-                    32vh,
-                    270px
-                ) !important;
+                height: clamp(210px, 32vh, 270px) !important;
             }
 
             .ans-en {
-                font-size:
-                    clamp(
-                        14px,
-                        4.2vw,
-                        19px
-                    ) !important;
+                font-size: clamp(14px, 4.2vw, 19px) !important;
             }
 
             .card-face {
                 padding: 18px 14px !important;
-
                 border-radius: 22px !important;
             }
 
             .card-prompt-text {
-                font-size:
-                    clamp(
-                        28px,
-                        8vw,
-                        42px
-                    ) !important;
+                font-size: clamp(22px, 6.8vw, 36px) !important;
             }
 
             .card-prompt-text.long-text {
-                font-size:
-                    clamp(
-                        20px,
-                        5.5vw,
-                        28px
-                    ) !important;
+                font-size: clamp(16px, 4.8vw, 24px) !important;
             }
 
             .card-input {
                 padding: 14px 16px !important;
-
                 font-size: 16px !important;
-
                 border-radius: 18px !important;
             }
 
             .btn-submit {
                 padding: 0 20px !important;
-
                 font-size: 16px !important;
-
                 border-radius: 18px !important;
             }
 
             .btn-action {
                 padding: 14px !important;
-
                 font-size: 16px !important;
-
                 border-radius: 18px !important;
             }
 
-            /* =========================================================
-               Quiz Mobile
-               ========================================================= */
             .quiz-card {
                 padding: 20px 16px !important;
-
                 border-radius: 22px !important;
             }
 
             .quiz-q {
                 font-size: 18px !important;
-
                 margin-bottom: 16px !important;
             }
 
             .q-opt {
                 padding: 15px 16px !important;
-
                 font-size: 15px !important;
-
                 border-radius: 16px !important;
             }
 
-            /* =========================================================
-               Search Mobile
-               ========================================================= */
             .search-box {
                 padding: 14px 16px !important;
-
                 font-size: 15px !important;
-
                 border-radius: 16px !important;
             }
 
             .list-item {
                 padding: 14px 16px !important;
-
                 border-radius: 16px !important;
             }
 
@@ -1179,17 +890,11 @@
             [class*="tag"],
             [class*="filter"] {
                 max-width: 100% !important;
-
                 box-sizing: border-box !important;
-
                 overflow-x: auto !important;
-
                 -webkit-overflow-scrolling: touch;
             }
 
-            /* =========================================================
-               Settings Mobile
-               ========================================================= */
             .settings-grid-2col {
                 gap: 14px !important;
             }
@@ -1198,239 +903,104 @@
                 border-radius: 16px !important;
             }
 
-            /* =========================================================
-               Exam Report Mobile
-               ========================================================= */
             .exam-report-card {
                 padding: 20px 14px !important;
-
                 margin-bottom: 24px !important;
             }
 
             .exam-details-list {
                 max-height: none !important;
-
                 overflow: visible !important;
-
                 padding-right: 0 !important;
-
                 gap: 12px !important;
-
                 -webkit-overflow-scrolling: touch !important;
             }
 
-            /* =========================================================
-               MOBILE FLOATING GLASS DOCK
-               ========================================================= */
             .nav-bar {
                 position: fixed !important;
-
-                bottom:
-                    calc(
-                        14px +
-                        env(
-                            safe-area-inset-bottom,
-                            12px
-                        )
-                    ) !important;
-
+                bottom: calc(14px + env(safe-area-inset-bottom, 12px)) !important;
                 left: 50% !important;
-
                 transform: translateX(-50%) !important;
-
                 width: auto !important;
-
                 max-width: 90% !important;
-
-                /* 半透明玻璃 */
                 background: var(--dock-bg) !important;
-
-                /* 毛玻璃核心 */
-                backdrop-filter:
-                    blur(28px)
-                    saturate(190%) !important;
-
-                -webkit-backdrop-filter:
-                    blur(28px)
-                    saturate(190%) !important;
-
-                border:
-                    1px solid
-                    var(--dock-border) !important;
-
+                backdrop-filter: blur(28px) saturate(190%) !important;
+                -webkit-backdrop-filter: blur(28px) saturate(190%) !important;
+                border: 1px solid var(--dock-border) !important;
                 border-radius: 9999px !important;
-
-                box-shadow:
-                    var(--dock-shadow) !important;
-
+                box-shadow: var(--dock-shadow) !important;
                 display: flex !important;
-
                 align-items: center !important;
-
                 justify-content: center !important;
-
                 gap: 8px !important;
-
                 padding: 6px 10px !important;
-
                 z-index: 999 !important;
-
                 box-sizing: border-box !important;
-
-                /* 避免玻璃表面溢出 */
                 overflow: hidden !important;
             }
 
-            /* =========================================================
-               Dock Glass Highlight
-               ========================================================= */
             .nav-bar::before {
                 content: "";
-
                 position: absolute;
-
                 inset: 0;
-
                 border-radius: inherit;
-
                 pointer-events: none;
-
-                background:
-                    linear-gradient(
-                        180deg,
-                        rgba(255, 255, 255, 0.14) 0%,
-                        rgba(255, 255, 255, 0.05) 35%,
-                        rgba(255, 255, 255, 0.00) 100%
-                    );
-
-                box-shadow:
-                    inset
-                    0 1px 0
-                    rgba(255, 255, 255, 0.14),
-
-                    inset
-                    0 -1px 0
-                    rgba(0, 0, 0, 0.10);
+                background: linear-gradient(180deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.05) 35%, rgba(255, 255, 255, 0.00) 100%);
+                box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), inset 0 -1px 0 rgba(0, 0, 0, 0.10);
             }
 
             .nav-bar > * {
                 position: relative;
-
                 z-index: 1;
             }
 
-            /* =========================================================
-               Navigation Item
-               ========================================================= */
             .nav-item {
                 display: flex !important;
-
                 align-items: center !important;
-
                 justify-content: center !important;
-
                 width: 52px !important;
-
                 height: 44px !important;
-
                 border: none !important;
-
                 background: transparent !important;
-
                 color: var(--dock-icon-color) !important;
-
                 border-radius: 9999px !important;
-
                 cursor: pointer !important;
-
                 outline: none !important;
-
-                transition:
-                    transform
-                    0.18s
-                    cubic-bezier(
-                        0.34,
-                        1.56,
-                        0.64,
-                        1
-                    ),
-
-                    background-color
-                    0.25s
-                    ease,
-
-                    color
-                    0.25s
-                    ease !important;
+                transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.25s ease, color 0.25s ease !important;
             }
 
-            /* =========================================================
-               Tap Animation
-               ========================================================= */
             .nav-item:active {
                 transform: scale(0.86) !important;
             }
 
-            /* =========================================================
-               Active State
-               ========================================================= */
             .nav-item.active {
                 background: var(--dock-active-bg) !important;
-
                 color: var(--dock-active-color) !important;
-
-                box-shadow:
-                    0 4px 14px
-                    rgba(0, 0, 0, 0.22) !important;
+                box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22) !important;
             }
 
-            /* =========================================================
-               Icon
-               ========================================================= */
             .nav-item svg {
                 width: 22px !important;
-
                 height: 22px !important;
-
                 stroke: currentColor !important;
-
                 fill: none !important;
-
                 stroke-width: 2.1 !important;
-
                 stroke-linecap: round !important;
-
                 stroke-linejoin: round !important;
-
-                transition:
-                    stroke-width
-                    0.2s
-                    ease,
-
-                    transform
-                    0.2s
-                    ease !important;
+                transition: stroke-width 0.2s ease, transform 0.2s ease !important;
             }
 
             .nav-item.active svg {
                 stroke-width: 2.4 !important;
-
                 transform: scale(1.05) !important;
             }
         }
 
-        /* =============================================================
-           DESKTOP >= 860px
-           ============================================================= */
         @media (min-width: 860px) {
-
             body {
                 display: flex;
-
                 flex-direction: row;
-
                 min-height: 100vh;
-
                 overflow-x: hidden;
             }
 
@@ -1440,123 +1010,78 @@
                 display: none !important;
             }
 
-            /* =========================================================
-               Desktop Sidebar
-               ========================================================= */
             .desktop-sidebar {
                 width: 280px;
-
                 height: 100vh;
-
                 position: sticky;
-
                 top: 0;
-
                 background: var(--sidebar-bg);
-
                 border-right: 1px solid var(--border-color);
-
                 display: flex;
-
                 flex-direction: column;
-
                 justify-content: space-between;
-
                 padding: 24px 18px;
-
                 flex-shrink: 0;
-
                 z-index: 100;
             }
 
             .sidebar-top {
                 display: flex;
-
                 flex-direction: column;
-
                 gap: 24px;
             }
 
             .sidebar-brand {
                 display: flex;
-
                 align-items: center;
-
                 gap: 12px;
-
                 padding: 0 8px;
             }
 
             .sidebar-brand .silks-logo {
                 height: 38px;
-
                 max-width: 48px;
             }
 
             .sidebar-brand .app-title {
                 font-size: 20px;
-
                 letter-spacing: 0.5px;
             }
 
-            /* =========================================================
-               Sidebar Nav
-               ========================================================= */
             .sidebar-nav {
                 display: flex;
-
                 flex-direction: column;
-
                 gap: 6px;
             }
 
             .side-nav-btn {
                 display: flex;
-
                 align-items: center;
-
                 gap: 12px;
-
                 padding: 12px 16px;
-
                 border-radius: 14px;
-
                 background: transparent;
-
                 border: none;
-
                 color: var(--text-sub);
-
                 font-size: 15px;
-
                 font-weight: 700;
-
                 cursor: pointer;
-
                 transition: all 0.2s ease;
-
                 text-align: left;
-
                 width: 100%;
             }
 
             .side-nav-btn svg {
                 width: 18px;
-
                 height: 18px;
-
                 stroke: currentColor;
-
                 fill: none;
-
                 stroke-width: 2.2;
-
                 flex-shrink: 0;
             }
 
             .side-nav-btn:hover {
                 background: rgba(255, 255, 255, 0.05);
-
                 color: var(--text-main);
             }
 
@@ -1566,154 +1091,93 @@
 
             .side-nav-btn.active {
                 background: var(--primary);
-
                 color: var(--primary-btn-text);
-
-                box-shadow:
-                    0 4px 16px
-                    rgba(200, 168, 110, 0.35);
+                box-shadow: 0 4px 16px rgba(200, 168, 110, 0.35);
             }
 
-            /* =========================================================
-               Sidebar Stats
-               ========================================================= */
             .sidebar-stats-card {
                 background: var(--card-bg);
-
                 border: 1px solid var(--border-color);
-
                 border-radius: 18px;
-
                 padding: 16px;
-
                 display: grid;
-
                 grid-template-columns: 1fr 1fr;
-
                 gap: 12px;
-
                 text-align: center;
             }
 
             .sidebar-stat-item .val {
                 font-size: 22px;
-
                 font-weight: 900;
-
                 color: var(--primary);
             }
 
             .sidebar-stat-item .lbl {
                 font-size: 11px;
-
                 color: var(--text-sub);
-
                 margin-top: 2px;
-
                 font-weight: 700;
             }
 
-            /* =========================================================
-               Sidebar Footer
-               ========================================================= */
             .sidebar-footer {
                 padding-top: 14px;
-
                 border-top: 1px solid var(--border-color);
             }
 
             .sidebar-theme-btn {
                 width: 100%;
-
                 justify-content: center;
-
                 padding: 12px;
-
                 border-radius: 14px;
-
                 font-size: 14px;
-
                 font-weight: 700;
             }
 
-            /* =========================================================
-               Main Stage Desktop
-               ========================================================= */
             .main-stage {
                 flex: 1;
-
                 min-width: 0;
-
                 min-height: 100vh;
-
                 display: flex;
-
                 flex-direction: column;
-
                 padding: 36px 48px;
-
                 overflow-y: auto;
             }
 
             .stage-inner {
                 width: 100%;
-
                 max-width: 1380px;
-
                 margin: 0 auto;
-
                 display: flex;
-
                 flex-direction: column;
-
                 gap: 24px;
             }
 
-            /* =========================================================
-               Desktop Header
-               ========================================================= */
             .desktop-header-bar {
                 display: flex;
-
                 justify-content: space-between;
-
                 align-items: center;
-
                 padding-bottom: 16px;
-
                 border-bottom: 1px solid var(--border-color);
             }
 
             .page-heading {
                 font-size: 26px;
-
                 font-weight: 900;
-
                 color: var(--text-main);
-
                 letter-spacing: -0.3px;
             }
 
             .page-subheading {
                 font-size: 13px;
-
                 color: var(--text-sub);
-
                 margin-top: 4px;
-
                 font-weight: 500;
             }
 
-            /* =========================================================
-               Learning Desktop
-               ========================================================= */
             .learn-grid-pc {
                 display: grid;
-
                 grid-template-columns: 1.15fr 0.85fr;
-
                 gap: 28px;
-
                 align-items: start;
             }
 
@@ -1723,104 +1187,73 @@
 
             .card-face {
                 padding: 46px 40px;
-
                 border-radius: 28px;
             }
 
             .card-prompt-text {
-                font-size: 54px;
+                font-size: 38px;
             }
 
             .card-prompt-text.long-text {
-                font-size: 38px;
+                font-size: 26px;
             }
 
             .action-area {
                 gap: 14px;
-
                 margin-top: 4px;
             }
 
             .card-input {
                 padding: 18px 24px;
-
                 font-size: 18px;
-
                 border-radius: 20px;
             }
 
             .btn-submit {
                 padding: 0 36px;
-
                 font-size: 18px;
-
                 border-radius: 20px;
             }
 
             .btn-action {
                 padding: 18px;
-
                 font-size: 18px;
-
                 border-radius: 20px;
             }
 
-            /* =========================================================
-               Desktop Side Tools
-               ========================================================= */
             .desktop-side-tools {
                 display: flex;
-
                 flex-direction: column;
-
                 gap: 20px;
             }
 
             .side-tool-card {
                 background: var(--card-bg);
-
                 border: 1px solid var(--border-color);
-
                 border-radius: 24px;
-
                 padding: 24px;
-
                 box-shadow: var(--shadow);
             }
 
             .side-tool-title {
                 font-size: 15px;
-
                 font-weight: 800;
-
                 color: var(--primary);
-
                 margin-bottom: 14px;
-
                 display: flex;
-
                 align-items: center;
-
                 gap: 8px;
             }
 
             .mini-search-box {
                 width: 100%;
-
                 padding: 12px 16px;
-
                 border-radius: 14px;
-
                 border: 1px solid var(--border-color);
-
                 background: var(--input-bg);
-
                 color: var(--text-main);
-
                 font-size: 14px;
-
                 outline: none;
-
                 margin-bottom: 12px;
             }
 
@@ -1830,127 +1263,88 @@
 
             .mini-list-scroll {
                 max-height: 250px;
-
                 overflow-y: auto;
-
                 display: flex;
-
                 flex-direction: column;
-
                 gap: 8px;
-
                 padding-right: 4px;
             }
 
             .mini-list-item {
                 display: flex;
-
                 justify-content: space-between;
-
                 align-items: center;
-
                 padding: 10px 14px;
-
                 background: var(--input-bg);
-
                 border-radius: 12px;
-
                 font-size: 13px;
+                gap: 8px;
             }
 
             .mini-list-item .m-code {
                 font-weight: 800;
-
                 color: var(--primary);
+                flex-shrink: 0;
             }
 
             .mini-list-item .m-cn {
                 color: var(--text-sub);
-
                 font-size: 12px;
+                text-align: right;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
             }
 
-            /* =========================================================
-               Desktop Exam
-               ========================================================= */
             .exam-details-list {
                 display: grid;
-
                 grid-template-columns: 1fr 1fr;
-
                 gap: 12px;
-
                 max-height: 520px;
             }
 
-            /* =========================================================
-               Desktop Quiz
-               ========================================================= */
             .quiz-card {
                 padding: 40px;
-
                 border-radius: 28px;
             }
 
             .quiz-q {
                 font-size: 24px;
-
                 margin-bottom: 28px;
             }
 
             .quiz-opts {
                 display: grid;
-
                 grid-template-columns: 1fr 1fr;
-
                 gap: 16px;
             }
 
             .q-opt {
                 padding: 24px 28px;
-
-                font-size: 18px;
-
+                font-size: 17px;
                 border-radius: 20px;
             }
 
-            /* =========================================================
-               Desktop Search
-               ========================================================= */
             .list-container {
                 display: grid;
-
-                grid-template-columns:
-                    repeat(
-                        auto-fill,
-                        minmax(340px, 1fr)
-                    );
-
+                grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
                 gap: 16px;
             }
 
             .list-item {
                 padding: 20px 24px;
-
                 border-radius: 22px;
             }
 
-            /* =========================================================
-               Desktop Settings
-               ========================================================= */
             .settings-grid-2col {
                 display: grid;
-
                 grid-template-columns: 1fr 1fr;
-
                 gap: 28px;
-
                 align-items: start;
             }
 
             .settings-full-width {
                 grid-column: 1 / -1;
-
                 margin-top: 8px;
             }
         }
@@ -1959,1293 +1353,426 @@
 
 <body>
 
-<!-- ================================================================
-     Desktop Sidebar
-     ================================================================ -->
+<!-- Desktop Sidebar -->
 <aside class="desktop-sidebar">
-
     <div class="sidebar-top">
-
         <div class="sidebar-brand">
-
-            <img
-                src="silks_logo.png"
-                alt="晶英酒店"
-                class="silks-logo"
-                onerror="this.style.display='none'"
-            >
-
-            <div class="app-title">
-                OPERA 卡牌大師
-            </div>
-
+            <img src="silks_logo.png" alt="晶英酒店" class="silks-logo" onerror="this.style.display='none'">
+            <div class="app-title">OPERA 卡牌大師</div>
         </div>
 
         <nav class="sidebar-nav">
-
-            <button
-                class="side-nav-btn active"
-                onclick="switchTab('learn', this)"
-            >
+            <button class="side-nav-btn active" onclick="switchTab('learn', this)">
                 <svg viewBox="0 0 24 24">
                     <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
                     <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
                 </svg>
-
                 學習卡片
             </button>
 
-            <button
-                class="side-nav-btn"
-                onclick="switchTab('quiz', this)"
-            >
+            <button class="side-nav-btn" onclick="switchTab('quiz', this)">
                 <svg viewBox="0 0 24 24">
                     <path d="M12 20h9"></path>
                     <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
                 </svg>
-
                 考題測驗
             </button>
 
-            <button
-                class="side-nav-btn"
-                onclick="switchTab('search', this)"
-            >
+            <button class="side-nav-btn" onclick="switchTab('search', this)">
                 <svg viewBox="0 0 24 24">
                     <circle cx="11" cy="11" r="8"></circle>
                     <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                 </svg>
-
-                代碼與分機
+                代碼與館內速查
             </button>
 
-            <button
-                class="side-nav-btn"
-                onclick="switchTab('settings', this)"
-            >
+            <button class="side-nav-btn" onclick="switchTab('settings', this)">
                 <svg viewBox="0 0 24 24">
                     <circle cx="12" cy="12" r="3"></circle>
                     <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
                 </svg>
-
                 設定
             </button>
-
         </nav>
 
         <div class="sidebar-stats-card">
-
             <div class="sidebar-stat-item">
-                <div
-                    class="val"
-                    id="d-st-accuracy"
-                >
-                    0%
-                </div>
-
-                <div class="lbl">
-                    正確率
-                </div>
+                <div class="val" id="d-st-accuracy">0%</div>
+                <div class="lbl">正確率</div>
             </div>
-
             <div class="sidebar-stat-item">
-                <div
-                    class="val"
-                    id="d-st-streak"
-                >
-                    0
-                </div>
-
-                <div class="lbl">
-                    連續答對
-                </div>
+                <div class="val" id="d-st-streak">0</div>
+                <div class="lbl">連續答對</div>
             </div>
-
             <div class="sidebar-stat-item">
-                <div
-                    class="val"
-                    id="d-st-wrong"
-                >
-                    0
-                </div>
-
-                <div class="lbl">
-                    錯題本
-                </div>
+                <div class="val" id="d-st-wrong">0</div>
+                <div class="lbl">錯題本</div>
             </div>
-
             <div class="sidebar-stat-item">
-                <div
-                    class="val"
-                    id="d-st-fav"
-                >
-                    0
-                </div>
-
-                <div class="lbl">
-                    收藏數
-                </div>
+                <div class="val" id="d-st-fav">0</div>
+                <div class="lbl">收藏數</div>
             </div>
-
         </div>
-
     </div>
 
     <div class="sidebar-footer">
-
-        <button
-            class="theme-toggle sidebar-theme-btn"
-            onclick="toggleTheme()"
-        >
-
-            <svg
-                class="theme-icon"
-                viewBox="0 0 24 24"
-            >
+        <button class="theme-toggle sidebar-theme-btn" onclick="toggleTheme()">
+            <svg class="theme-icon" viewBox="0 0 24 24">
                 <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
             </svg>
-
-            <span class="theme-text">
-                深色模式
-            </span>
-
+            <span class="theme-text">深色模式</span>
         </button>
-
     </div>
-
 </aside>
 
-
-<!-- ================================================================
-     Main
-     ================================================================ -->
+<!-- Main -->
 <main class="main-stage">
-
     <div class="stage-inner">
-
-        <!-- =========================================================
-             Mobile Header
-             ========================================================= -->
+        <!-- Mobile Header -->
         <header class="mobile-header">
-
-            <div
-                style="
-                    display:flex;
-                    align-items:center;
-                    gap:8px;
-                "
-            >
-
-                <img
-                    src="silks_logo.png"
-                    alt="晶英酒店"
-                    class="silks-logo"
-                    onerror="this.style.display='none'"
-                >
-
-                <div class="app-title">
-                    OPERA 卡牌大師
-                </div>
-
+            <div style="display:flex; align-items:center; gap:8px;">
+                <img src="silks_logo.png" alt="晶英酒店" class="silks-logo" onerror="this.style.display='none'">
+                <div class="app-title">OPERA 卡牌大師</div>
             </div>
-
-            <button
-                class="theme-toggle"
-                onclick="toggleTheme()"
-            >
-
-                <svg
-                    class="theme-icon"
-                    viewBox="0 0 24 24"
-                >
+            <button class="theme-toggle" onclick="toggleTheme()">
+                <svg class="theme-icon" viewBox="0 0 24 24">
                     <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
                 </svg>
-
-                <span class="theme-text">
-                    深色
-                </span>
-
+                <span class="theme-text">深色</span>
             </button>
-
         </header>
 
-
-        <!-- =========================================================
-             Mobile Stats
-             ========================================================= -->
+        <!-- Mobile Stats -->
         <div class="mobile-stats-bar">
-
             <div>
-                <div
-                    class="val"
-                    id="st-accuracy"
-                >
-                    0%
-                </div>
-
-                <div class="lbl">
-                    正確率
-                </div>
+                <div class="val" id="st-accuracy">0%</div>
+                <div class="lbl">正確率</div>
             </div>
-
             <div>
-                <div
-                    class="val"
-                    id="st-streak"
-                >
-                    0
-                </div>
-
-                <div class="lbl">
-                    連續答對
-                </div>
+                <div class="val" id="st-streak">0</div>
+                <div class="lbl">連續答對</div>
             </div>
-
             <div>
-                <div
-                    class="val"
-                    id="st-wrong"
-                >
-                    0
-                </div>
-
-                <div class="lbl">
-                    錯題本
-                </div>
+                <div class="val" id="st-wrong">0</div>
+                <div class="lbl">錯題本</div>
             </div>
-
             <div>
-                <div
-                    class="val"
-                    id="st-fav"
-                >
-                    0
-                </div>
-
-                <div class="lbl">
-                    收藏數
-                </div>
+                <div class="val" id="st-fav">0</div>
+                <div class="lbl">收藏數</div>
             </div>
-
         </div>
 
-
-        <!-- =========================================================
-             Desktop Header
-             ========================================================= -->
+        <!-- Desktop Header -->
         <div class="desktop-header-bar">
-
             <div>
-
-                <h1
-                    class="page-heading"
-                    id="desktop-page-title"
-                >
-                    學習卡片
-                </h1>
-
-                <p
-                    class="page-subheading"
-                    id="desktop-page-desc"
-                >
-                    台南晶英酒店 OPERA 系統專業代碼與館內分機極速精熟訓練
-                </p>
-
+                <h1 class="page-heading" id="desktop-page-title">學習卡片</h1>
+                <p class="page-subheading" id="desktop-page-desc">台南晶英酒店 OPERA 代碼、分機、餐廳與客房資訊全精熟訓練</p>
             </div>
-
         </div>
 
-
-        <!-- =========================================================
-             1. Learning
-             ========================================================= -->
-        <div
-            id="view-learn"
-            class="view-content active"
-        >
-
+        <!-- 1. Learning -->
+        <div id="view-learn" class="view-content active">
             <div class="learn-grid-pc">
-
-                <!-- Left -->
-                <div
-                    style="
-                        display:flex;
-                        flex-direction:column;
-                        gap:14px;
-                        width:100%;
-                    "
-                >
-
-                    <div
-                        class="flashcard-container"
-                        id="learn-card-container"
-                    >
-
-                        <div
-                            class="flashcard"
-                            id="main-card"
-                        >
-
+                <div style="display:flex; flex-direction:column; gap:14px; width:100%;">
+                    <div class="flashcard-container" id="learn-card-container">
+                        <div class="flashcard" id="main-card">
                             <!-- Front -->
                             <div class="card-face card-front">
-
-                                <span
-                                    class="card-star"
-                                    id="card-star"
-                                    onclick="toggleFav(event)"
-                                >
-                                    ★
-                                </span>
-
-                                <div
-                                    class="card-badge"
-                                    id="card-badge"
-                                >
-                                    隨機出題
-                                </div>
-
-                                <div
-                                    class="card-prompt-text"
-                                    id="card-prompt"
-                                >
-                                    --
-                                </div>
-
-                                <div
-                                    style="
-                                        font-size:13px;
-                                        color:var(--text-sub);
-                                    "
-                                >
-                                    輸入後送出翻轉卡片 👆
-                                </div>
-
+                                <span class="card-star" id="card-star" onclick="toggleFav(event)">★</span>
+                                <div class="card-badge" id="card-badge">隨機出題</div>
+                                <div class="card-prompt-text" id="card-prompt">--</div>
+                                <div style="font-size:13px; color:var(--text-sub);">輸入後送出翻轉卡片 👆</div>
                             </div>
-
 
                             <!-- Back -->
                             <div class="card-face card-back">
-
-                                <div
-                                    class="result-badge"
-                                    id="card-result-badge"
-                                >
-                                    🎉 答對了！
+                                <div class="result-badge" id="card-result-badge">🎉 答對了！</div>
+                                <div style="margin:auto 0; display:flex; flex-direction:column; align-items:center; gap:4px; max-width:92%;">
+                                    <div class="ans-code" id="card-ans-code">VC</div>
+                                    <div class="ans-en" id="card-ans-en">Vacant Clean</div>
+                                    <div class="ans-cn" id="card-ans-cn">房間已清潔，待查房，不可入住</div>
+                                    <div class="ans-user" id="card-ans-user">你的輸入：VC</div>
                                 </div>
-
-                                <div
-                                    style="
-                                        margin:auto 0;
-                                        display:flex;
-                                        flex-direction:column;
-                                        align-items:center;
-                                        gap:3px;
-                                    "
-                                >
-
-                                    <div
-                                        class="ans-code"
-                                        id="card-ans-code"
-                                    >
-                                        VC
-                                    </div>
-
-                                    <div
-                                        class="ans-en"
-                                        id="card-ans-en"
-                                    >
-                                        Vacant Clean
-                                    </div>
-
-                                    <div
-                                        class="ans-cn"
-                                        id="card-ans-cn"
-                                    >
-                                        房間已清潔，待查房，不可入住
-                                    </div>
-
-                                    <div
-                                        class="ans-user"
-                                        id="card-ans-user"
-                                    >
-                                        你的輸入：VC
-                                    </div>
-
-                                </div>
-
-                                <div
-                                    style="
-                                        font-size:13px;
-                                        color:var(--text-sub);
-                                    "
-                                >
-                                    按 Enter 或點擊「下一題」繼續刷題
-                                </div>
-
+                                <div style="font-size:13px; color:var(--text-sub);">按 Enter 或點擊「下一題」繼續刷題</div>
                             </div>
-
                         </div>
-
                     </div>
-
 
                     <!-- Exam report -->
-                    <div
-                        class="exam-report-card hidden"
-                        id="exam-report-view"
-                    >
-
+                    <div class="exam-report-card hidden" id="exam-report-view">
                         <div class="exam-score-header">
-
-                            <div class="exam-score-title">
-                                十題測驗 成績結算
-                            </div>
-
-                            <div
-                                class="exam-score-val"
-                                id="exam-final-score"
-                            >
-                                100
-                            </div>
-
-                            <div
-                                class="exam-score-sub"
-                                id="exam-final-eval"
-                            >
-                                滿分 100 分 · 一題 10 分
-                            </div>
-
+                            <div class="exam-score-title">十題測驗 成績結算</div>
+                            <div class="exam-score-val" id="exam-final-score">100</div>
+                            <div class="exam-score-sub" id="exam-final-eval">滿分 100 分 · 一題 10 分</div>
                         </div>
-
-                        <div
-                            class="exam-details-list"
-                            id="exam-results-list"
-                        ></div>
-
-                        <div
-                            style="
-                                display:flex;
-                                gap:14px;
-                                margin-top:10px;
-                            "
-                        >
-
-                            <button
-                                class="btn-action"
-                                onclick="startNewExam10();"
-                            >
-                                再測一次 (全新10題)
-                            </button>
-
-                            <button
-                                class="btn-action"
-                                style="
-                                    background:var(--input-bg);
-                                    color:var(--text-main);
-                                    border:1px solid var(--border-color);
-                                "
-                                onclick="changePool('all');"
-                            >
-                                返回自主學習
-                            </button>
-
+                        <div class="exam-details-list" id="exam-results-list"></div>
+                        <div style="display:flex; gap:14px; margin-top:10px;">
+                            <button class="btn-action" onclick="startNewExam10();">再測一次 (全新10題)</button>
+                            <button class="btn-action" style="background:var(--input-bg); color:var(--text-main); border:1px solid var(--border-color);" onclick="changePool('all');">返回自主學習</button>
                         </div>
-
                     </div>
-
 
                     <!-- Action -->
-                    <div
-                        class="action-area"
-                        id="learn-action-area"
-                    >
-
-                        <form
-                            id="input-form"
-                            class="input-group"
-                            onsubmit="
-                                event.preventDefault();
-                                submitAnswer();
-                            "
-                        >
-
-                            <input
-                                type="text"
-                                class="card-input"
-                                id="type-input"
-                                placeholder="鍵盤輸入答案後按 Enter 或送出..."
-                                autocomplete="off"
-                                autocorrect="off"
-                                autocapitalize="off"
-                                spellcheck="false"
-                            >
-
-                            <button
-                                type="submit"
-                                class="btn-submit"
-                            >
-                                送出
-                            </button>
-
+                    <div class="action-area" id="learn-action-area">
+                        <form id="input-form" class="input-group" onsubmit="event.preventDefault(); submitAnswer();">
+                            <input type="text" class="card-input" id="type-input" placeholder="鍵盤輸入答案後按 Enter 或送出..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                            <button type="submit" class="btn-submit">送出</button>
                         </form>
-
-                        <button
-                            class="btn-action hidden"
-                            id="next-card-btn"
-                            onclick="requestNextCard()"
-                        >
-                            下一題 ➔ (Enter)
-                        </button>
-
+                        <button class="btn-action hidden" id="next-card-btn" onclick="requestNextCard()">下一題 ➔ (Enter)</button>
                     </div>
-
                 </div>
-
 
                 <!-- Desktop tools -->
                 <div class="desktop-side-tools">
-
                     <div class="side-tool-card">
-
                         <div class="side-tool-title">
-
-                            <svg
-                                style="
-                                    width:17px;
-                                    height:17px;
-                                    stroke:var(--primary);
-                                    fill:none;
-                                    stroke-width:2.2;
-                                "
-                                viewBox="0 0 24 24"
-                            >
-                                <circle
-                                    cx="11"
-                                    cy="11"
-                                    r="8"
-                                ></circle>
-
-                                <line
-                                    x1="21"
-                                    y1="21"
-                                    x2="16.65"
-                                    y2="16.65"
-                                ></line>
+                            <svg style="width:17px; height:17px; stroke:var(--primary); fill:none; stroke-width:2.2;" viewBox="0 0 24 24">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                             </svg>
-
                             邊練邊查 · 速查字典
-
                         </div>
-
-                        <input
-                            type="text"
-                            class="mini-search-box"
-                            id="mini-search"
-                            placeholder="輸入關鍵字或號碼秒查..."
-                            oninput="renderMiniSearch()"
-                        >
-
-                        <div
-                            class="mini-list-scroll"
-                            id="mini-search-list"
-                        ></div>
-
+                        <input type="text" class="mini-search-box" id="mini-search" placeholder="輸入關鍵字或代碼秒查..." oninput="renderMiniSearch()">
+                        <div class="mini-list-scroll" id="mini-search-list"></div>
                     </div>
 
-
-                    <div
-                        class="side-tool-card"
-                        style="
-                            font-size:13px;
-                            line-height:1.6;
-                            color:var(--text-sub);
-                        "
-                    >
-
+                    <div class="side-tool-card" style="font-size:13px; line-height:1.6; color:var(--text-sub);">
                         <div class="side-tool-title">
-
-                            <svg
-                                style="
-                                    width:17px;
-                                    height:17px;
-                                    stroke:var(--primary);
-                                    fill:none;
-                                    stroke-width:2.2;
-                                "
-                                viewBox="0 0 24 24"
-                            >
-                                <polygon
-                                    points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
-                                ></polygon>
+                            <svg style="width:17px; height:17px; stroke:var(--primary); fill:none; stroke-width:2.2;" viewBox="0 0 24 24">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
                             </svg>
-
-                            鍵盤操作捷徑
-
+                            真隨機抽題捷徑
                         </div>
-
-                        <p>
-                            • 輸入答案後直接按
-                            <b style="color:var(--text-main);">
-                                Enter
-                            </b>
-                            即可送出翻牌。
-                        </p>
-
-                        <p>
-                            • 翻牌後再次按下
-                            <b style="color:var(--text-main);">
-                                Enter
-                            </b>
-                            立即前進下一題。
-                        </p>
-
-                        <p>
-                            • 右上方點擊
-                            <b style="color:#f59e0b;">
-                                ★
-                            </b>
-                            可將困難題收錄至收藏題庫。
-                        </p>
-
+                        <p>• 系統已啟用 <b style="color:var(--text-main);">隨機洗牌牌組 (Shuffle Deck)</b>，保證每題均勻輪替，絕不連續重複！</p>
+                        <p>• 輸入答案後直接按 <b style="color:var(--text-main);">Enter</b> 立即翻牌比對。</p>
+                        <p>• 翻牌後再次按 <b style="color:var(--text-main);">Enter</b> 快速載入下一題。</p>
                     </div>
-
                 </div>
-
             </div>
-
         </div>
 
-
-        <!-- =========================================================
-             2. Quiz
-             ========================================================= -->
-        <div
-            id="view-quiz"
-            class="view-content"
-        >
-
+        <!-- 2. Quiz -->
+        <div id="view-quiz" class="view-content">
             <div class="quiz-card">
-
-                <div
-                    class="quiz-q"
-                    id="quiz-title"
-                >
-                    載入中...
-                </div>
-
-                <div
-                    class="quiz-opts"
-                    id="quiz-options"
-                ></div>
-
+                <div class="quiz-q" id="quiz-title">載入中...</div>
+                <div class="quiz-opts" id="quiz-options"></div>
             </div>
-
-            <button
-                class="btn-action hidden"
-                id="quiz-next-btn"
-                onclick="requestNextQuiz()"
-            >
-                下一題 ➔ (Enter)
-            </button>
-
+            <button class="btn-action hidden" id="quiz-next-btn" onclick="requestNextQuiz()">下一題 ➔ (Enter)</button>
         </div>
 
-
-        <!-- =========================================================
-             3. Search
-             ========================================================= -->
-        <div
-            id="view-search"
-            class="view-content"
-        >
-
-            <input
-                type="text"
-                class="search-box"
-                id="search-input"
-                placeholder="🔍 搜尋代碼、分機號碼、中文或部門..."
-                oninput="renderSearchList()"
-            >
-
-            <div
-                class="list-container"
-                id="search-list"
-            ></div>
-
+        <!-- 3. Search -->
+        <div id="view-search" class="view-content">
+            <input type="text" class="search-box" id="search-input" placeholder="🔍 搜尋代碼、分機、餐廳營業規範、房型或關鍵字..." oninput="renderSearchList()">
+            <div class="list-container" id="search-list"></div>
         </div>
 
-
-        <!-- =========================================================
-             4. Settings
-             ========================================================= -->
-        <div
-            id="view-settings"
-            class="view-content"
-        >
-
+        <!-- 4. Settings -->
+        <div id="view-settings" class="view-content">
             <div class="settings-grid-2col">
-
                 <!-- 題庫類型 -->
                 <div>
-
-                    <div class="ios-group-title">
-                        測驗題庫類型
-                    </div>
-
+                    <div class="ios-group-title">測驗題庫類型</div>
                     <div class="ios-group">
-
-                        <div
-                            class="ios-item active"
-                            id="scope-all"
-                            onclick="changeScope('all')"
-                        >
-
+                        <div class="ios-item active" id="scope-all" onclick="changeScope('all')">
                             <div class="ios-item-left">
-
                                 <div class="ios-icon-box">
-
                                     <svg viewBox="0 0 24 24">
-
-                                        <polygon
-                                            points="12 2 2 7 12 12 22 7 12 2"
-                                        ></polygon>
-
-                                        <polyline
-                                            points="2 17 12 22 22 17"
-                                        ></polyline>
-
-                                        <polyline
-                                            points="2 12 12 17 22 12"
-                                        ></polyline>
-
+                                        <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                                        <polyline points="2 17 12 22 22 17"></polyline>
+                                        <polyline points="2 12 12 17 22 12"></polyline>
                                     </svg>
-
                                 </div>
-
-                                <span class="ios-label">
-                                    全選
-                                </span>
-
+                                <span class="ios-label">全選（全部知識庫）</span>
                             </div>
-
-                            <span class="ios-check">
-                                ✓
-                            </span>
-
+                            <span class="ios-check">✓</span>
                         </div>
 
-
-                        <div
-                            class="ios-item"
-                            id="scope-opera"
-                            onclick="changeScope('opera')"
-                        >
-
+                        <div class="ios-item" id="scope-opera" onclick="changeScope('opera')">
                             <div class="ios-item-left">
-
                                 <div class="ios-icon-box">
-
                                     <svg viewBox="0 0 24 24">
-
                                         <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-
                                         <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-
                                     </svg>
-
                                 </div>
-
-                                <span class="ios-label">
-                                    OPERA縮寫
-                                </span>
-
+                                <span class="ios-label">OPERA 縮寫代碼</span>
                             </div>
-
-                            <span class="ios-check">
-                                ✓
-                            </span>
-
+                            <span class="ios-check">✓</span>
                         </div>
 
-
-                        <div
-                            class="ios-item"
-                            id="scope-ext"
-                            onclick="changeScope('ext')"
-                        >
-
+                        <div class="ios-item" id="scope-ext" onclick="changeScope('ext')">
                             <div class="ios-item-left">
-
                                 <div class="ios-icon-box">
-
                                     <svg viewBox="0 0 24 24">
-
                                         <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-
                                     </svg>
-
                                 </div>
-
-                                <span class="ios-label">
-                                    館內分機表
-                                </span>
-
+                                <span class="ios-label">館內分機表</span>
                             </div>
-
-                            <span class="ios-check">
-                                ✓
-                            </span>
-
+                            <span class="ios-check">✓</span>
                         </div>
 
-                        <div
-                            class="ios-item"
-                            id="scope-room"
-                            onclick="changeScope('room')"
-                        >
-
+                        <!-- 館內餐廳資訊 -->
+                        <div class="ios-item" id="scope-restaurant" onclick="changeScope('restaurant')">
                             <div class="ios-item-left">
-
                                 <div class="ios-icon-box">
-
                                     <svg viewBox="0 0 24 24">
-
-                                        <rect x="3" y="10" width="18" height="9" rx="2"></rect>
-                                        <path d="M5 10V7a3 3 0 0 1 3-3h3"></path>
-                                        <line x1="3" y1="15" x2="21" y2="15"></line>
-
+                                        <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+                                        <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+                                        <line x1="6" y1="1" x2="6" y2="4"></line>
+                                        <line x1="10" y1="1" x2="10" y2="4"></line>
+                                        <line x1="14" y1="1" x2="14" y2="4"></line>
                                     </svg>
-
                                 </div>
-
-                                <span class="ios-label">
-                                    館內房型資訊
-                                </span>
-
+                                <span class="ios-label">館內餐廳資訊</span>
                             </div>
-
-                            <span class="ios-check">
-                                ✓
-                            </span>
-
+                            <span class="ios-check">✓</span>
                         </div>
 
-                        <div
-                            class="ios-item"
-                            id="scope-restaurant"
-                            onclick="changeScope('restaurant')"
-                        >
-
+                        <!-- 館內房型資訊 -->
+                        <div class="ios-item" id="scope-room" onclick="changeScope('room')">
                             <div class="ios-item-left">
-
                                 <div class="ios-icon-box">
-
                                     <svg viewBox="0 0 24 24">
-
-                                        <path d="M7 2v7a2 2 0 0 0 4 0V2"></path>
-                                        <path d="M9 9v13"></path>
-                                        <path d="M17 2c-1.2 0-2.5 2-2.5 5.5S15.8 13 17 13s2.5-2 2.5-5.5S18.2 2 17 2z"></path>
-                                        <path d="M17 13v9"></path>
-
+                                        <path d="M3 7v13"></path>
+                                        <path d="M21 7v13"></path>
+                                        <path d="M3 12h18"></path>
+                                        <path d="M7 12V9a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v3"></path>
                                     </svg>
-
                                 </div>
-
-                                <span class="ios-label">
-                                    館內餐廳資訊
-                                </span>
-
+                                <span class="ios-label">館內房型資訊</span>
                             </div>
-
-                            <span class="ios-check">
-                                ✓
-                            </span>
-
+                            <span class="ios-check">✓</span>
                         </div>
-
                     </div>
-
                 </div>
-
 
                 <!-- 測驗範圍 -->
                 <div>
-
-                    <div class="ios-group-title">
-                        測驗範圍篩選
-                    </div>
-
+                    <div class="ios-group-title">測驗範圍篩選</div>
                     <div class="ios-group">
-
-                        <div
-                            class="ios-item active"
-                            id="pool-all"
-                            onclick="changePool('all')"
-                        >
-
+                        <div class="ios-item active" id="pool-all" onclick="changePool('all')">
                             <div class="ios-item-left">
-
                                 <div class="ios-icon-box">
-
                                     <svg viewBox="0 0 24 24">
-
-                                        <circle
-                                            cx="12"
-                                            cy="12"
-                                            r="10"
-                                        ></circle>
-
-                                        <circle
-                                            cx="12"
-                                            cy="12"
-                                            r="6"
-                                        ></circle>
-
-                                        <circle
-                                            cx="12"
-                                            cy="12"
-                                            r="2"
-                                        ></circle>
-
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <circle cx="12" cy="12" r="6"></circle>
+                                        <circle cx="12" cy="12" r="2"></circle>
                                     </svg>
-
                                 </div>
-
-                                <span class="ios-label">
-                                    全選
-                                </span>
-
+                                <span class="ios-label">自主隨機練習</span>
                             </div>
-
-                            <span class="ios-check">
-                                ✓
-                            </span>
-
+                            <span class="ios-check">✓</span>
                         </div>
 
-
-                        <div
-                            class="ios-item"
-                            id="pool-exam10"
-                            onclick="changePool('exam10')"
-                        >
-
+                        <div class="ios-item" id="pool-exam10" onclick="changePool('exam10')">
                             <div class="ios-item-left">
-
                                 <div class="ios-icon-box">
-
                                     <svg viewBox="0 0 24 24">
-
                                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-
                                         <polyline points="14 2 14 8 20 8"></polyline>
-
-                                        <line
-                                            x1="16"
-                                            y1="13"
-                                            x2="8"
-                                            y2="13"
-                                        ></line>
-
-                                        <line
-                                            x1="16"
-                                            y1="17"
-                                            x2="8"
-                                            y2="17"
-                                        ></line>
-
-                                        <polyline
-                                            points="10 9 9 9 8 9"
-                                        ></polyline>
-
+                                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                                        <polyline points="10 9 9 9 8 9"></polyline>
                                     </svg>
-
                                 </div>
-
-                                <span class="ios-label">
-                                    十題測驗
-                                </span>
-
+                                <span class="ios-label">十題模擬測驗</span>
                             </div>
-
-                            <span class="ios-check">
-                                ✓
-                            </span>
-
+                            <span class="ios-check">✓</span>
                         </div>
 
-
-                        <div
-                            class="ios-item"
-                            id="pool-wrong"
-                            onclick="changePool('wrong')"
-                        >
-
+                        <div class="ios-item" id="pool-wrong" onclick="changePool('wrong')">
                             <div class="ios-item-left">
-
                                 <div class="ios-icon-box">
-
                                     <svg viewBox="0 0 24 24">
-
-                                        <circle
-                                            cx="12"
-                                            cy="12"
-                                            r="10"
-                                        ></circle>
-
-                                        <line
-                                            x1="15"
-                                            y1="9"
-                                            x2="9"
-                                            y2="15"
-                                        ></line>
-
-                                        <line
-                                            x1="9"
-                                            y1="9"
-                                            x2="15"
-                                            y2="15"
-                                        ></line>
-
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <line x1="15" y1="9" x2="9" y2="15"></line>
+                                        <line x1="9" y1="9" x2="15" y2="15"></line>
                                     </svg>
-
                                 </div>
-
-                                <span class="ios-label">
-                                    錯題練習
-                                </span>
-
+                                <span class="ios-label">錯題專屬複習</span>
                             </div>
-
-                            <span class="ios-check">
-                                ✓
-                            </span>
-
+                            <span class="ios-check">✓</span>
                         </div>
 
-
-                        <div
-                            class="ios-item"
-                            id="pool-fav"
-                            onclick="changePool('fav')"
-                        >
-
+                        <div class="ios-item" id="pool-fav" onclick="changePool('fav')">
                             <div class="ios-item-left">
-
                                 <div class="ios-icon-box">
-
                                     <svg viewBox="0 0 24 24">
-
-                                        <polygon
-                                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
-                                        ></polygon>
-
+                                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
                                     </svg>
-
                                 </div>
-
-                                <span class="ios-label">
-                                    我的收藏
-                                </span>
-
+                                <span class="ios-label">我的收藏題庫</span>
                             </div>
-
-                            <span class="ios-check">
-                                ✓
-                            </span>
-
+                            <span class="ios-check">✓</span>
                         </div>
-
                     </div>
-
                 </div>
 
-
-                <!-- Data -->
+                <!-- 數據管理 -->
                 <div class="settings-full-width">
-
-                    <div class="ios-group-title">
-                        數據管理
-                    </div>
-
+                    <div class="ios-group-title">數據管理</div>
                     <div class="ios-group">
-
-                        <div
-                            class="ios-item"
-                            onclick="resetAllData()"
-                        >
-
+                        <div class="ios-item" onclick="resetAllData()">
                             <div class="ios-item-left">
-
                                 <div class="ios-icon-box">
-
                                     <svg viewBox="0 0 24 24">
-
-                                        <polyline
-                                            points="3 6 5 6 21 6"
-                                        ></polyline>
-
+                                        <polyline points="3 6 5 6 21 6"></polyline>
                                         <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-
-                                        <line
-                                            x1="10"
-                                            y1="11"
-                                            x2="10"
-                                            y2="17"
-                                        ></line>
-
-                                        <line
-                                            x1="14"
-                                            y1="11"
-                                            x2="14"
-                                            y2="17"
-                                        ></line>
-
+                                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                                        <line x1="14" y1="11" x2="14" y2="17"></line>
                                     </svg>
-
                                 </div>
-
-                                <span
-                                    class="ios-label"
-                                    style="
-                                        color:var(--danger);
-                                        font-weight:700;
-                                    "
-                                >
-                                    清空所有紀錄與錯題本
-                                </span>
-
+                                <span class="ios-label" style="color:var(--danger); font-weight:700;">清空所有紀錄與錯題本</span>
                             </div>
-
                             <span></span>
-
                         </div>
-
                     </div>
-
                 </div>
-
             </div>
-
         </div>
-
     </div>
-
 </main>
 
-
-<!-- ================================================================
-     Mobile Floating Glass Navigation
-     ================================================================ -->
+<!-- Mobile Floating Glass Navigation -->
 <nav class="nav-bar">
-
-    <button
-        class="nav-item active"
-        onclick="switchTab('learn', this)"
-        aria-label="學習卡片"
-    >
-
+    <button class="nav-item active" onclick="switchTab('learn', this)" aria-label="學習卡片">
         <svg viewBox="0 0 24 24">
-
-            <rect
-                x="3"
-                y="4"
-                width="18"
-                height="16"
-                rx="3"
-            ></rect>
-
-            <line
-                x1="7"
-                y1="8"
-                x2="17"
-                y2="8"
-            ></line>
-
-            <line
-                x1="7"
-                y1="12"
-                x2="13"
-                y2="12"
-            ></line>
-
+            <rect x="3" y="4" width="18" height="16" rx="3"></rect>
+            <line x1="7" y1="8" x2="17" y2="8"></line>
+            <line x1="7" y1="12" x2="13" y2="12"></line>
         </svg>
-
     </button>
 
-
-    <button
-        class="nav-item"
-        onclick="switchTab('quiz', this)"
-        aria-label="考題測驗"
-    >
-
+    <button class="nav-item" onclick="switchTab('quiz', this)" aria-label="考題測驗">
         <svg viewBox="0 0 24 24">
-
             <path d="M12 20h9"></path>
-
             <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
-
         </svg>
-
     </button>
 
-
-    <button
-        class="nav-item"
-        onclick="switchTab('search', this)"
-        aria-label="代碼分機"
-    >
-
+    <button class="nav-item" onclick="switchTab('search', this)" aria-label="代碼與速查">
         <svg viewBox="0 0 24 24">
-
-            <circle
-                cx="11"
-                cy="11"
-                r="8"
-            ></circle>
-
-            <line
-                x1="21"
-                y1="21"
-                x2="16.65"
-                y2="16.65"
-            ></line>
-
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
-
     </button>
 
-
-    <button
-        class="nav-item"
-        onclick="switchTab('settings', this)"
-        aria-label="設定"
-    >
-
+    <button class="nav-item" onclick="switchTab('settings', this)" aria-label="設定">
         <svg viewBox="0 0 24 24">
-
-            <circle
-                cx="12"
-                cy="12"
-                r="3"
-            ></circle>
-
+            <circle cx="12" cy="12" r="3"></circle>
             <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-
         </svg>
-
     </button>
-
 </nav>
-
 
 <script>
 /* ================================================================
-   Database
+   Database (全庫擴充)
    ================================================================ */
 
 const rawDb = [
+  /* ---------------- 館內分機與手機 (ext) ---------------- */
   ["06 213 6290", "台南晶英酒店人工", "飯店手機", "ext", ""],
   ["06 390 8088", "台南晶英酒店AI", "飯店手機", "ext", ""],
   ["0930 915 993", "禮賓司公務機", "飯店手機", "ext", ""],
@@ -3276,6 +1803,7 @@ const rawDb = [
   ["**333", "城市車旅停管中心", "飯店分機", "ext", ""],
   ["**777", "維修報修", "飯店分機", "ext", ""],
 
+  /* ---------------- OPERA 縮寫代碼 (opera) ---------------- */
   ["AC", "空氣清淨機", "客房備品", "opera", "Air Cleaner"],
   ["ADJ", "調整", "帳務訂房", "opera", "Adjustment"],
   ["AMD", "更改", "帳務訂房", "opera", "Amend"],
@@ -3286,7 +1814,7 @@ const rawDb = [
   ["BC", "嬰兒床", "客房備品", "opera", "Baby Cot"],
   ["BEAR", "泰迪熊（特殊專案贈送，熊熊愛上你、新春專案）", "客房備品", "opera", ""],
   ["BF", "早餐", "帳務訂房", "opera", "Breakfast"],
-  ["BL", "黑名單", "貴賓客情", "opera", "Black  Listed"],
+  ["BL", "黑名單", "貴賓客情", "opera", "Black Listed"],
   ["BT/_", "公司付款", "帳務訂房", "opera", "Bill to Company"],
   ["CB", "多寶閣（六種點心）", "客房備品", "opera", "Curio Box"],
   ["CFM", "確認", "帳務訂房", "opera", "Confirm"],
@@ -3382,130 +1910,94 @@ const rawDb = [
   ["WR", "囍房佈置（含天鵝毛巾、房門囍字、水12瓶）", "客房備品", "opera", "Wedding Room Setup"],
   ["XB", "行軍床", "客房備品", "opera", "Extra Bed"],
 
-  ["DK", "海東客房（一大床，12坪）", "房型代碼", "room", "Deluxe King"],
-  ["DF", "海東家庭客房（兩中床，12坪）", "房型代碼", "room", "Deluxe Family"],
-  ["HW", "海東雙床客房（兩小床，可加DB，12坪）", "房型代碼", "room", "Holly Wood"],
-  ["JK", "小西門套房（一大床，16坪）", "房型代碼", "room", "Junior Suite King"],
-  ["JF", "小西門家庭套房（兩中床，可加DB/XB，16坪）", "房型代碼", "room", "Junior Suite Family"],
-  ["JKF", "小西門和洋套房（一大床，可加TB-T，16坪）", "房型代碼", "room", "Junior Suite King Family"],
-  ["CS", "府城套房（一大床，可加兩張TB-HW或一張TB-T，22坪）", "房型代碼", "room", "Corner Suite"],
-  ["EDK", "行政海東客房（一大床）", "房型代碼", "room", "Executive Deluxe King"],
-  ["EDF", "行政海東家庭客房（兩中床）", "房型代碼", "room", "Executive Deluxe Family"],
-  ["EJK", "行政小西門套房（一大床）", "房型代碼", "room", "Executive Junior Suite King"],
-  ["EJF", "行政小西門家庭套房（兩中床）", "房型代碼", "room", "Executive Junior Suite Family"],
-  ["EJKF", "行政小西門和洋套房（一大床）", "房型代碼", "room", "Executive Junior Suite King Family"],
-  ["ECS", "行政府城套房（一大床）", "房型代碼", "room", "Executive Corner Suite"],
-  ["HT", "無障礙房（全館僅此房型沒有浴缸）", "房型代碼", "room", "Handicap Room"],
+  /* ---------------- 館內房型代碼與知識 (room) ---------------- */
+  ["DK", "海東客房（一大床/12坪）", "一般房型", "room", "Deluxe King"],
+  ["DF", "海東家庭客房（兩中床/12坪）", "一般房型", "room", "Deluxe Family"],
+  ["HW", "海東雙床客房（兩小床/12坪/可加一張DB）", "一般房型", "room", "Holly Wood Twin"],
+  ["JK", "小西門套房（一大床/16坪）", "一般房型", "room", "Junior Suite King"],
+  ["JF", "小西門家庭套房（兩中床/16坪/可加一張DB或一張XB）", "一般房型", "room", "Junior Suite Family"],
+  ["JKF", "小西門和洋套房（一大床/16坪/可加一張TB-T）", "一般房型", "room", "Junior Suite King Family"],
+  ["CS", "府城套房（一大床/22坪/可加兩張TB-HW或一張TB-T）", "一般房型", "room", "Corner Suite"],
+  ["EDK", "行政海東客房一大床（12-14F/12坪）", "行政房型", "room", "Executive Deluxe King"],
+  ["EDF", "行政海東家庭客房兩中床（12-14F/12坪）", "行政房型", "room", "Executive Deluxe Family"],
+  ["EJK", "行政小西門套房一大床（12-14F/16坪）", "行政房型", "room", "Executive Junior Suite King"],
+  ["EJF", "行政小西門家庭套房兩中床（12-14F/16坪）", "行政房型", "room", "Executive Junior Suite Family"],
+  ["EJKF", "行政小西門和洋套房（12-14F/16坪）", "行政房型", "room", "Executive Junior Suite King Family"],
+  ["ECS", "行政府城套房一大床（12-14F/22坪）", "行政房型", "room", "Executive Corner Suite"],
+  ["HT", "無障礙房（609、909、1209/全館唯一無浴缸房型）", "特殊房型", "room", "Handicapped Room"],
 
-  ["全館客房總數？", "255間（一般樓層202間、行政樓層54間；原始資料加總為256，與255有落差，請以官方公告為準）", "房型知識", "roomfact", ""],
-  ["一般樓層是幾樓？", "5-11樓", "房型知識", "roomfact", ""],
-  ["行政樓層是幾樓？", "12-14樓", "房型知識", "roomfact", ""],
-  ["一大床尺寸？", "180*200cm", "房型知識", "roomfact", ""],
-  ["兩中床尺寸（每張）？", "150*200cm", "房型知識", "roomfact", ""],
-  ["兩小床尺寸（每張）？", "120*200cm", "房型知識", "roomfact", ""],
-  ["小熊房房號有哪些？", "1111、1117、1120、1121、1124、1125", "房型知識", "roomfact", ""],
-  ["無障礙房房號？", "609、909、1209", "房型知識", "roomfact", ""],
-  ["機房房號？", "512", "房型知識", "roomfact", ""],
-  ["李總房間號碼？", "812", "房型知識", "roomfact", ""],
-  ["哪個房型沒有浴缸？", "HT無障礙房，全館其餘房型皆有浴缸", "房型知識", "roomfact", ""],
-  ["府城套房可加床選項？", "兩張TB-HW或一張TB-T", "房型知識", "roomfact", ""],
-  ["小西門家庭套房可加床選項？", "一張DB或一張XB", "房型知識", "roomfact", ""],
-  ["小西門和洋套房可加床選項？", "一張TB-T", "房型知識", "roomfact", ""],
-  ["海東雙床客房可加床選項？", "一張DB", "房型知識", "roomfact", ""],
+  /* 新增精選房型實務知識問答 */
+  ["全館客房總數？", "255間（一般樓層202間、行政樓層54間）", "房型知識", "room", "Total Rooms: 255"],
+  ["一般樓層是幾樓？", "5-11樓", "房型知識", "room", "Regular Floors: 5-11F"],
+  ["行政樓層是幾樓？", "12-14樓", "房型知識", "room", "Executive Floors: 12-14F"],
+  ["一大床尺寸？", "180*200cm", "房型知識", "room", "King Bed: 180*200cm"],
+  ["兩中床尺寸（每張）？", "150*200cm", "房型知識", "room", "Family Bed: 150*200cm"],
+  ["兩小床尺寸（每張）？", "120*200cm", "房型知識", "room", "Twin Bed: 120*200cm"],
+  ["小熊房房號有哪些？", "1111、1117、1120、1121、1124、1125", "房型知識", "room", "Teddy Bear Rooms"],
+  ["無障礙房房號？", "609、909、1209", "房型知識", "room", "Accessible Rooms 609, 909, 1209"],
+  ["機房房號？", "512", "房型知識", "room", "Machine Room 512"],
+  ["李總房間號碼？", "812", "房型知識", "room", "General Manager Room 812"],
+  ["哪個房型沒有浴缸？", "HT無障礙房，全館其餘房型皆有浴缸", "房型知識", "room", "No Bathtub: HT Only"],
+  ["府城套房可加床選項？", "兩張TB-HW或一張TB-T", "房型知識", "room", "CS Extra Bed: 2 TB-HW or 1 TB-T"],
+  ["小西門家庭套房可加床選項？", "一張DB或一張XB", "房型知識", "room", "JF Extra Bed: 1 DB or 1 XB"],
+  ["小西門和洋套房可加床選項？", "一張TB-T", "房型知識", "room", "JKF Extra Bed: 1 TB-T"],
+  ["海東雙床客房可加床選項？", "一張DB", "房型知識", "room", "HW Extra Bed: 1 DB"],
 
+  /* ---------------- 館內餐廳與設施資訊 (restaurant) ---------------- */
+  ["RB", "Robin's 牛排館/鐵板燒 (1F)", "館內餐廳", "restaurant", "Robin's Grill & Teppanyaki"],
+  ["SH", "晶英軒 (2F)", "館內餐廳", "restaurant", "Silks House"],
+  ["GH", "水晶廊 (4F)", "館內餐廳", "restaurant", "Glass House"],
+  ["SL", "晶英貴賓廊 (14F)", "館內餐廳", "restaurant", "Silks Lounge"],
+  ["無隅", "無隅 Infinity (1F/週一、二公休)", "館內餐廳", "restaurant", "Infinity"],
+
+  /* 新增精選餐廳實務時段問答 */
   ["Robin's牛排館早餐時段？", "06:30-10:30", "Robin's牛排館", "restaurant", ""],
   ["Robin's牛排館午餐/悠享時段？", "12:00-17:00", "Robin's牛排館", "restaurant", ""],
   ["Robin's牛排館晚餐時段？", "18:00-22:00", "Robin's牛排館", "restaurant", ""],
   ["Robin's牛排館午餐最後點餐？", "14:00", "Robin's牛排館", "restaurant", ""],
   ["Robin's牛排館悠享最後點餐？", "15:00", "Robin's牛排館", "restaurant", ""],
   ["Robin's牛排館晚餐最後點餐？", "21:00", "Robin's牛排館", "restaurant", ""],
-
   ["Robin's鐵板燒午餐時段？", "12:00-15:00", "Robin's鐵板燒", "restaurant", ""],
   ["Robin's鐵板燒午餐最後點餐？", "13:30", "Robin's鐵板燒", "restaurant", ""],
   ["Robin's鐵板燒晚餐時段？", "18:00-22:00", "Robin's鐵板燒", "restaurant", ""],
   ["Robin's鐵板燒晚餐最後點餐？", "20:30", "Robin's鐵板燒", "restaurant", ""],
-
   ["無隅Infinity午餐時段？", "12:00-15:00", "無隅Infinity", "restaurant", ""],
   ["無隅Infinity晚餐時段？", "18:00-22:00", "無隅Infinity", "restaurant", ""],
   ["無隅Infinity公休日？", "週一、週二", "無隅Infinity", "restaurant", ""],
-
   ["外賣中心營業時間？", "10:00-21:00", "外賣中心", "restaurant", ""],
   ["外賣中心優惠時段？", "20:00後打折", "外賣中心", "restaurant", ""],
-
   ["茶薈T-Bar營業時間？", "10:00-18:00", "茶薈T-Bar", "restaurant", ""],
-
   ["晶英軒午餐時段？", "12:00-14:30", "晶英軒Silks House", "restaurant", ""],
   ["晶英軒午餐最後點餐？", "14:00", "晶英軒Silks House", "restaurant", ""],
   ["晶英軒晚餐時段？", "18:00-21:30", "晶英軒Silks House", "restaurant", ""],
   ["晶英軒晚餐最後點餐？", "21:00", "晶英軒Silks House", "restaurant", ""],
-
   ["親迎閣營業時間？", "10:00-20:00", "親迎閣Wedding House", "restaurant", ""],
-
   ["府城茶樓第一時段？", "06:30-08:30", "府城茶樓", "restaurant", ""],
   ["府城茶樓第二時段？", "09:00-11:00", "府城茶樓", "restaurant", ""],
   ["府城茶樓第三時段？", "11:30-13:30", "府城茶樓", "restaurant", ""],
   ["府城茶樓最後點餐規則？", "各時段結束前30分鐘（08:00、10:30、13:00）", "府城茶樓", "restaurant", ""],
-
   ["水晶廊營業時間？", "17:00-00:00", "水晶廊Glass House", "restaurant", ""],
   ["水晶廊最後點餐？", "22:30", "水晶廊Glass House", "restaurant", ""],
-
   ["館內設施開放時間？", "06:30-22:00", "館內設施", "restaurant", ""],
   ["館內設施最後入場？", "21:30", "館內設施", "restaurant", ""],
   ["泳池水質維護時間？", "12:00-13:00關閉", "館內設施", "restaurant", ""],
-
   ["行政酒廊開放時間？", "06:30-22:00", "行政酒廊Silks Lounge", "restaurant", ""],
   ["行政酒廊早餐時段？", "07:30-10:30", "行政酒廊Silks Lounge", "restaurant", ""],
   ["行政酒廊早餐備註？", "共4種套餐，需提前預訂", "行政酒廊Silks Lounge", "restaurant", ""],
   ["SL房型在酒廊的待遇？", "免費使用空間，附茶/果汁/餅乾", "行政酒廊Silks Lounge", "restaurant", ""],
   ["非SL房型在酒廊的待遇？", "低消一杯軟性飲料", "行政酒廊Silks Lounge", "restaurant", ""],
   ["行政酒廊酒精供應規則？", "20:00前無酒精，20:00-22:00供應(Happy Hour)", "行政酒廊Silks Lounge", "restaurant", ""],
-
-  ["餐廳消費滿額停車折抵規則？", "當日滿$1,000折1小時，可加購$50/小時", "停車資訊", "restaurant", ""]
+  ["餐廳消費滿抵規則？", "當日滿$1,000折1小時，可加購$50/小時", "停車資訊", "restaurant", ""]
 ];
 
-const db = rawDb.map(
-    ([code, cn, cat, type, en]) => ({
-        code,
-        cn,
-        cat,
-        type,
-        en: en || ''
-    })
-);
-
-/* ================================================================
-   Domain helpers (direction control + duplicate-code disambiguation)
-   ================================================================ */
-
-const ONEWAY_TYPES = ['room', 'roomfact', 'restaurant'];
-
-function isOneway(item) {
-    return item && ONEWAY_TYPES.includes(item.type);
-}
-
-function normalizeCodeKey(c) {
-    return String(c).trim().toUpperCase();
-}
-
-const codeKeyCounts = {};
-db.forEach(x => {
-    const k = normalizeCodeKey(x.code);
-    codeKeyCounts[k] = (codeKeyCounts[k] || 0) + 1;
-});
-
-function getDisplayCode(item) {
-    if (!item) return '';
-    const k = normalizeCodeKey(item.code);
-    if (codeKeyCounts[k] > 1) {
-        return `${item.code}（${item.cat}）`;
-    }
-    return item.code;
-}
-
-function itemKey(item) {
-    return `${item.type}::${item.code}`;
-}
-
+const db = rawDb.map(([code, cn, cat, type, en]) => ({
+    code,
+    cn,
+    cat,
+    type,
+    en: en || '',
+    isQuestion: code.endsWith('？') || code.endsWith('?') || code.includes('有哪些')
+}));
 
 /* ================================================================
    State
@@ -3514,19 +2006,15 @@ function itemKey(item) {
 let state = {
     favs: [],
     wrongs: [],
-
     stats: {
         total: 0,
         correct: 0,
         streak: 0
     },
-
     theme: 'dark',
-
     poolType: 'all',
     scope: 'all'
 };
-
 
 let examSession = {
     questions: [],
@@ -3535,2622 +2023,939 @@ let examSession = {
     score: 0
 };
 
+/* 真隨機洗牌牌組與防連續重複佇列 (Recent History Buffer) */
+let shuffledDeck = [];
+let recentCardsHistory = []; // 儲存最近 25 題，避免重複
 
 /* ================================================================
    Load / Save State
    ================================================================ */
 
-function migrateLegacyKeys(list) {
-
-    if (!Array.isArray(list)) return [];
-
-    const migrated = list.map(k => {
-
-        if (typeof k !== 'string') return null;
-
-        if (k.includes('::')) return k;
-
-        // Legacy bare-code entry from before room/restaurant data existed.
-        // Prefer opera/ext matches first (that's all that could have been
-        // saved historically), fall back to any match.
-        const candidates = db.filter(
-            x => normalizeCodeKey(x.code) === normalizeCodeKey(k)
-        );
-
-        if (candidates.length === 0) return null;
-
-        const preferred =
-            candidates.find(x => x.type === 'opera' || x.type === 'ext') ||
-            candidates[0];
-
-        return itemKey(preferred);
-    }).filter(Boolean);
-
-    return Array.from(new Set(migrated));
-}
-
-
 function loadState() {
-
     const defaultState = {
         favs: [],
         wrongs: [],
-
         stats: {
             total: 0,
             correct: 0,
             streak: 0
         },
-
         theme: 'dark',
-
         poolType: 'all',
         scope: 'all'
     };
 
-
     try {
-
-        const saved =
-            localStorage.getItem(
-                'opera_app_data'
-            );
-
+        const saved = localStorage.getItem('opera_app_data');
         if (saved) {
-
-            const parsed =
-                JSON.parse(saved);
-
+            const parsed = JSON.parse(saved);
             state = {
-
                 ...defaultState,
-
                 ...parsed,
-
                 stats: {
                     ...defaultState.stats,
                     ...(parsed.stats || {})
                 },
-
-                favs:
-                    Array.isArray(parsed.favs)
-                        ? parsed.favs
-                        : [],
-
-                wrongs:
-                    Array.isArray(parsed.wrongs)
-                        ? parsed.wrongs
-                        : []
+                favs: Array.isArray(parsed.favs) ? parsed.favs : [],
+                wrongs: Array.isArray(parsed.wrongs) ? parsed.wrongs : []
             };
-
         } else {
-
             state = defaultState;
         }
-
     } catch (e) {
-
-        console.warn(
-            "Storage reset due to parse error:",
-            e
-        );
-
+        console.warn("Storage reset due to parse error:", e);
         state = defaultState;
     }
 
-
-    if (!state.scope)
-        state.scope = 'all';
-
-    if (!state.poolType)
-        state.poolType = 'all';
-
-    // Migrate legacy bare-code fav/wrong keys to type::code keys.
-    // This matters because "DF" now exists in two different domains
-    // (OPERA 房態排房 vs 房型代碼), so a bare code is no longer a
-    // unique identifier.
-    state.favs = migrateLegacyKeys(state.favs);
-    state.wrongs = migrateLegacyKeys(state.wrongs);
-
+    if (!state.scope) state.scope = 'all';
+    if (!state.poolType) state.poolType = 'all';
 
     applyThemeUI();
-
     updateStatsUI();
-
     updateScopeUI();
 }
 
-
 function saveState() {
-
-    localStorage.setItem(
-        'opera_app_data',
-        JSON.stringify(state)
-    );
-
+    localStorage.setItem('opera_app_data', JSON.stringify(state));
     updateStatsUI();
 }
-
 
 /* ================================================================
    Stats UI
    ================================================================ */
 
 function updateStatsUI() {
-
-    const favCount =
-        (state.favs &&
-            state.favs.length) || 0;
-
-    const wrongCount =
-        (state.wrongs &&
-            state.wrongs.length) || 0;
-
-    const streakCount =
-        (state.stats &&
-            state.stats.streak) || 0;
-
-    const acc =
-        (
-            state.stats &&
-            state.stats.total > 0
-        )
-        ? Math.round(
-            (
-                state.stats.correct /
-                state.stats.total
-            ) * 100
-        )
+    const favCount = (state.favs && state.favs.length) || 0;
+    const wrongCount = (state.wrongs && state.wrongs.length) || 0;
+    const streakCount = (state.stats && state.stats.streak) || 0;
+    const acc = (state.stats && state.stats.total > 0)
+        ? Math.round((state.stats.correct / state.stats.total) * 100)
         : 0;
 
+    ['st-fav', 'd-st-fav'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerText = favCount;
+    });
 
-    ['st-fav', 'd-st-fav'].forEach(
-        id => {
+    ['st-wrong', 'd-st-wrong'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerText = wrongCount;
+    });
 
-            const el =
-                document.getElementById(id);
+    ['st-streak', 'd-st-streak'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerText = streakCount;
+    });
 
-            if (el)
-                el.innerText =
-                    favCount;
-        }
-    );
-
-
-    ['st-wrong', 'd-st-wrong'].forEach(
-        id => {
-
-            const el =
-                document.getElementById(id);
-
-            if (el)
-                el.innerText =
-                    wrongCount;
-        }
-    );
-
-
-    ['st-streak', 'd-st-streak'].forEach(
-        id => {
-
-            const el =
-                document.getElementById(id);
-
-            if (el)
-                el.innerText =
-                    streakCount;
-        }
-    );
-
-
-    ['st-accuracy', 'd-st-accuracy'].forEach(
-        id => {
-
-            const el =
-                document.getElementById(id);
-
-            if (el)
-                el.innerText =
-                    `${acc}%`;
-        }
-    );
+    ['st-accuracy', 'd-st-accuracy'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerText = `${acc}%`;
+    });
 }
-
 
 /* ================================================================
    Scope UI
    ================================================================ */
 
 function updateScopeUI() {
+    document.querySelectorAll('[id^="scope-"]').forEach(el => el.classList.remove('active'));
+    document.getElementById(`scope-${state.scope}`)?.classList.add('active');
 
-    document
-        .querySelectorAll('[id^="scope-"]')
-        .forEach(
-            el => el.classList.remove('active')
-        );
-
-    document
-        .getElementById(
-            `scope-${state.scope}`
-        )
-        ?.classList.add('active');
-
-
-    document
-        .querySelectorAll('[id^="pool-"]')
-        .forEach(
-            el => el.classList.remove('active')
-        );
-
-    document
-        .getElementById(
-            `pool-${state.poolType}`
-        )
-        ?.classList.add('active');
+    document.querySelectorAll('[id^="pool-"]').forEach(el => el.classList.remove('active'));
+    document.getElementById(`pool-${state.poolType}`)?.classList.add('active');
 }
-
 
 /* ================================================================
    Database Scope / Pool
    ================================================================ */
 
 function getScopedDatabase() {
-
-    if (state.scope === 'opera')
-        return db.filter(
-            x => x.type === 'opera'
-        );
-
-    if (state.scope === 'ext')
-        return db.filter(
-            x => x.type === 'ext'
-        );
-
-    if (state.scope === 'room')
-        return db.filter(
-            x => x.type === 'room' || x.type === 'roomfact'
-        );
-
-    if (state.scope === 'restaurant')
-        return db.filter(
-            x => x.type === 'restaurant'
-        );
-
+    if (state.scope === 'opera') return db.filter(x => x.type === 'opera');
+    if (state.scope === 'ext') return db.filter(x => x.type === 'ext');
+    if (state.scope === 'restaurant') return db.filter(x => x.type === 'restaurant');
+    if (state.scope === 'room') return db.filter(x => x.type === 'room');
     return db;
 }
 
-
 function getPool() {
-
-    let scoped =
-        getScopedDatabase();
-
-    if (
-        !scoped ||
-        scoped.length === 0
-    ) {
-        scoped = db;
-    }
-
+    let scoped = getScopedDatabase();
+    if (!scoped || scoped.length === 0) scoped = db;
 
     if (state.poolType === 'wrong') {
-
-        const pool =
-            scoped.filter(
-                x =>
-                    state.wrongs.includes(
-                        itemKey(x)
-                    )
-            );
-
-        return pool.length > 0
-            ? pool
-            : scoped;
+        const pool = scoped.filter(x => state.wrongs.includes(x.code));
+        return pool.length > 0 ? pool : scoped;
     }
-
 
     if (state.poolType === 'fav') {
-
-        const pool =
-            scoped.filter(
-                x =>
-                    state.favs.includes(
-                        itemKey(x)
-                    )
-            );
-
-        return pool.length > 0
-            ? pool
-            : scoped;
+        const pool = scoped.filter(x => state.favs.includes(x.code));
+        return pool.length > 0 ? pool : scoped;
     }
 
-
-    return scoped.length > 0
-        ? scoped
-        : db;
+    return scoped.length > 0 ? scoped : db;
 }
 
-
 /* ================================================================
-   Answer Matching
+   True Random Shuffle & Pick Engine (超強隨機防重複引擎)
    ================================================================ */
 
-function checkChineseMatch(
-    userInput,
-    targetStr
-) {
+function drawRandomCard() {
+    const pool = getPool();
+    if (!pool || pool.length === 0) return db[0];
 
-    const clean = s =>
-        s.toLowerCase()
-            .replace(
-                /[\s\-_/，,、。.！!？?（）()]/g,
-                ''
-            );
+    // 如果牌堆空了，重新將 pool 全部洗牌
+    if (shuffledDeck.length === 0) {
+        shuffledDeck = [...pool].sort(() => Math.random() - 0.5);
+    }
 
+    // 嘗試從洗牌牌組中抽取最近未出現過的題目
+    let pickIndex = -1;
+    for (let i = 0; i < shuffledDeck.length; i++) {
+        if (!recentCardsHistory.includes(shuffledDeck[i].code)) {
+            pickIndex = i;
+            break;
+        }
+    }
+
+    // 若都出現過，則直接取第一張
+    if (pickIndex === -1) pickIndex = 0;
+    const card = shuffledDeck.splice(pickIndex, 1)[0];
+
+    // 加入最近歷史記錄
+    recentCardsHistory.push(card.code);
+    const maxHistory = Math.min(25, Math.floor(pool.length * 0.6));
+    if (recentCardsHistory.length > maxHistory) {
+        recentCardsHistory.shift();
+    }
+
+    return card;
+}
+
+/* ================================================================
+   Answer Matching (Fuzzy Matching Engine 彈性智慧容錯比對)
+   ================================================================ */
+
+function checkChineseMatch(userInput, targetStr) {
+    const clean = s => s.toLowerCase()
+        .replace(/[\s\-_/，,、。.！!？?（）()~:：\$]/g, '')
+        .replace(/[xX×]/g, '*')
+        .replace(/星期|禮拜/g, '週');
 
     const u = clean(userInput);
+    if (!u || u.length < 1) return false;
 
-    if (!u || u.length < 1)
-        return false;
+    const targetFull = clean(targetStr);
+    const targetMain = clean(targetStr.replace(/（.*?）|\(.*?\)/g, ''));
 
+    // 尺寸比對
+    if (targetFull.includes('*')) {
+        const uNorm = u.replace(/cm/gi, '');
+        const tNorm = targetFull.replace(/cm/gi, '');
+        if (uNorm === tNorm || u === targetFull) return true;
+    }
 
-    const targetFull =
-        clean(targetStr);
+    // 公休日容錯 (如輸入：週一週二、一二、週一、禮拜一)
+    if (targetFull.includes('週一') && targetFull.includes('週二')) {
+        if ((u.includes('一') && u.includes('二')) || u.includes('週一') || u.includes('週二')) return true;
+    }
 
-    const targetMain =
-        clean(
-            targetStr.replace(
-                /（.*?）|\(.*?\)/g,
-                ''
-            )
-        );
+    // 浴缸題容錯
+    if (targetFull.includes('ht') || targetFull.includes('無障礙')) {
+        if (u.includes('ht') || u.includes('無障礙') || u.includes('沒浴缸')) return true;
+    }
 
+    // 包含匹配
+    if (targetFull.includes(u) && (u.length >= 2 || targetFull.length <= 2)) return true;
+    if (targetMain && targetMain.includes(u) && (u.length >= 2 || targetMain.length <= 2)) return true;
+    if (u.includes(targetMain) && targetMain.length >= 2) return true;
 
-    if (
-        targetFull.includes(u) &&
-        (
-            u.length >= 2 ||
-            targetFull.length <= 2
-        )
-    )
-        return true;
-
-
-    if (
-        targetMain &&
-        targetMain.includes(u) &&
-        (
-            u.length >= 2 ||
-            targetMain.length <= 2
-        )
-    )
-        return true;
-
-
-    if (
-        u.includes(targetMain) &&
-        targetMain.length >= 2
-    )
-        return true;
-
-
+    // 字元重合度打分
     let matchCount = 0;
-
-    let tempTarget =
-        targetFull;
-
-
+    let tempTarget = targetFull;
     for (const char of u) {
-
-        const idx =
-            tempTarget.indexOf(char);
-
+        const idx = tempTarget.indexOf(char);
         if (idx > -1) {
-
             matchCount++;
-
-            tempTarget =
-                tempTarget.slice(
-                    0,
-                    idx
-                ) +
-                tempTarget.slice(
-                    idx + 1
-                );
+            tempTarget = tempTarget.slice(0, idx) + tempTarget.slice(idx + 1);
         }
     }
 
+    const precision = matchCount / u.length;
+    const baseTarget = targetMain.length >= 2 ? targetMain : targetFull;
+    const recall = matchCount / baseTarget.length;
 
-    const precision =
-        matchCount / u.length;
-
-    const baseTarget =
-        targetMain.length >= 2
-            ? targetMain
-            : targetFull;
-
-    const recall =
-        matchCount /
-        baseTarget.length;
-
-
-    if (
-        u.length >= 3 &&
-        precision >= 0.75 &&
-        recall >= 0.6
-    )
-        return true;
-
-
-    if (
-        u.length >= 4 &&
-        precision >= 0.7 &&
-        recall >= 0.5
-    )
-        return true;
-
+    if (u.length >= 3 && precision >= 0.75 && recall >= 0.5) return true;
+    if (u.length >= 4 && precision >= 0.65 && recall >= 0.4) return true;
 
     return false;
 }
 
-
-function checkCodeMatch(
-    userInput,
-    targetCode
-) {
-
-    const clean = s =>
-        s
-            .trim()
-            .replace(
-                /[\uFF0A]/g,
-                '*'
-            )
-            .toUpperCase()
-            .replace(
-                /[\s\-_/]/g,
-                ''
-            );
-
-
-    const u =
-        clean(userInput);
-
-    const t =
-        clean(targetCode);
-
-
-    if (!u)
-        return false;
-
-
-    if (t.includes('*'))
-        return u === t;
-
-
-    if (u === t)
-        return true;
-
-
-    const rawParts =
-        targetCode
-            .split(/[-\/]/)
-            .map(
-                p => clean(p)
-            );
-
-
-    if (
-        rawParts.length === 2 &&
-        !isNaN(rawParts[0]) &&
-        !isNaN(rawParts[1])
-    ) {
-
-        const start =
-            parseInt(
-                rawParts[0],
-                10
-            );
-
-        const end =
-            parseInt(
-                rawParts[1],
-                10
-            );
-
-        if (
-            end > start &&
-            end - start <= 5
-        ) {
-
-            const userNum =
-                parseInt(
-                    u,
-                    10
-                );
-
-            if (
-                userNum >= start &&
-                userNum <= end
-            )
-                return true;
-        }
-    }
-
-
-    if (
-        rawParts.some(
-            part => part === u
-        )
-    )
-        return true;
-
-
-    return false;
-}
-
-
-/* ================================================================
-   Fact Matching (time ranges / room-number lists)
-   ================================================================
-
-   checkChineseMatch's character-multiset comparison is great for free
-   text, but it is NOT safe for short numeric/time strings: two
-   different time ranges like "06:30-10:30" and "18:00-22:00" share so
-   many of the same digits/colons that the generic matcher can score a
-   completely wrong time as "correct". checkFactMatch is used only for
-   the new 房型代碼 / 房型知識 / 餐廳資訊 entries to guard against that,
-   while every original OPERA/分機 card keeps using checkChineseMatch
-   exactly as before.
-   ================================================================ */
-
-function extractTimeTokensStrict(s) {
-
-    const out = [];
-    const re = /(\d{1,2}):(\d{2})/g;
-    let m;
-
-    while ((m = re.exec(s)) !== null) {
-        out.push(parseInt(m[1], 10) + ':' + m[2]);
-    }
-
-    return out;
-}
-
-function extractTimeTokensLenient(s) {
-
-    const out = [];
-    const re = /(\d{1,2}):?(\d{2})(?!\d)/g;
-    let m;
-
-    while ((m = re.exec(s)) !== null) {
-        out.push(parseInt(m[1], 10) + ':' + m[2]);
-    }
-
-    return out;
-}
-
-function sameTokenSet(a, b) {
-
-    if (a.length !== b.length) return false;
-
-    const sa = [...a].sort();
-    const sb = [...b].sort();
-
-    return sa.every((v, i) => v === sb[i]);
-}
-
-function extractNumberTokens(s) {
-    return (s.match(/\d{2,4}/g) || []);
-}
-
-function checkFactMatch(userInput, target) {
-
-    const u = (userInput || '').trim();
+function checkCodeMatch(userInput, targetCode) {
+    const clean = s => s.trim().replace(/[\uFF0A]/g, '*').replace(/[xX×]/g, '*').toUpperCase().replace(/[\s\-_/，,、。.（）():：\$~]/g, '');
+    const u = clean(userInput);
+    const t = clean(targetCode);
 
     if (!u) return false;
 
-    // Time-range / specific-time answers: compare the actual time
-    // values, not raw character overlap.
-    if (target.includes(':')) {
-
-        const targetTokens = extractTimeTokensStrict(target);
-
-        if (targetTokens.length > 0) {
-
-            const userTokens =
-                extractTimeTokensLenient(u);
-
-            return sameTokenSet(
-                targetTokens,
-                userTokens
-            );
-        }
+    // 尺寸比對
+    if (t.includes('*')) {
+        const uNorm = u.replace(/CM$/i, '');
+        const tNorm = t.replace(/CM$/i, '');
+        if (uNorm === tNorm || u === t) return true;
     }
 
-    // Room-number style lists (e.g. "1111、1117、1120..."): compare
-    // as an order-independent set of numbers rather than raw text.
-    const targetNums = extractNumberTokens(target);
+    if (u === t) return true;
 
-    const chineseHeavy =
-        (
-            target
-                .replace(/[0-9、,，\s]/g, '')
-                .match(/[\u4e00-\u9fa5]/g) || []
-        ).length;
+    // 斜線房號 / 多房號比對
+    const rawParts = targetCode.split(/[-\/、,]/).map(p => clean(p));
+    if (rawParts.some(part => part === u || (u.length >= 3 && part.includes(u)))) return true;
 
-    if (targetNums.length >= 2 && chineseHeavy <= 2) {
-
-        const userNums =
-            extractNumberTokens(u);
-
-        const tset = new Set(targetNums);
-        const uset = new Set(userNums);
-
-        if (tset.size === 0) return false;
-
-        return [...tset].every(
-            n => uset.has(n)
-        );
-    }
-
-    // Everything else (plain Chinese descriptions, short numbers like
-    // "512" or "255間") keeps using the original tolerant matcher.
-    return checkChineseMatch(u, target);
+    return false;
 }
-
 
 /* ================================================================
    Learning State
    ================================================================ */
 
 let currentCard = null;
-
 let currentDirection = 'code';
-
 let lastSubmitTime = 0;
-
 let isNextCooldown = false;
-
 let isFirstLoad = true;
-
 
 /* ================================================================
    Exam
    ================================================================ */
 
 function initExam10Session() {
-
-    const scopedList =
-        [
-            ...getScopedDatabase()
-        ]
-        .sort(
-            () =>
-                Math.random() - 0.5
-        );
-
-
-    examSession.questions =
-        scopedList.slice(0, 10);
-
+    const scopedList = [...getScopedDatabase()].sort(() => Math.random() - 0.5);
+    examSession.questions = scopedList.slice(0, 10);
     examSession.currentIndex = 0;
-
     examSession.answers = [];
-
     examSession.score = 0;
 
+    const reportView = document.getElementById('exam-report-view');
+    const cardContainer = document.getElementById('learn-card-container');
+    const actionArea = document.getElementById('learn-action-area');
 
-    const reportView =
-        document.getElementById(
-            'exam-report-view'
-        );
-
-    const cardContainer =
-        document.getElementById(
-            'learn-card-container'
-        );
-
-    const actionArea =
-        document.getElementById(
-            'learn-action-area'
-        );
-
-
-    if (reportView)
-        reportView.classList.add(
-            'hidden'
-        );
-
-    if (cardContainer)
-        cardContainer.classList.remove(
-            'hidden'
-        );
-
-    if (actionArea)
-        actionArea.classList.remove(
-            'hidden'
-        );
+    if (reportView) reportView.classList.add('hidden');
+    if (cardContainer) cardContainer.classList.remove('hidden');
+    if (actionArea) actionArea.classList.remove('hidden');
 }
-
 
 function startNewExam10() {
-
     initExam10Session();
-
     nextCard(true);
 }
-
 
 /* ================================================================
    Next Flashcard
    ================================================================ */
 
-function nextCard(
-    shouldFocus = false
-) {
+function nextCard(shouldFocus = false) {
+    const cardEl = document.getElementById('main-card');
+    cardEl.classList.remove('flipped');
 
-    const cardEl =
-        document.getElementById(
-            'main-card'
-        );
+    document.getElementById('input-form').classList.remove('hidden');
+    document.getElementById('next-card-btn').classList.add('hidden');
 
-    cardEl.classList.remove(
-        'flipped'
-    );
-
-
-    document
-        .getElementById('input-form')
-        .classList.remove(
-            'hidden'
-        );
-
-    document
-        .getElementById('next-card-btn')
-        .classList.add(
-            'hidden'
-        );
-
-
-    const input =
-        document.getElementById(
-            'type-input'
-        );
-
+    const input = document.getElementById('type-input');
     input.value = '';
 
-
     setTimeout(() => {
-
-        if (
-            state.poolType ===
-            'exam10'
-        ) {
-
-            if (
-                examSession.currentIndex >= 10
-            ) {
-
+        if (state.poolType === 'exam10') {
+            if (examSession.currentIndex >= 10) {
                 showExamResults();
-
                 return;
             }
-
-
-            if (
-                !examSession.questions ||
-                examSession.questions.length === 0
-            ) {
-
+            if (!examSession.questions || examSession.questions.length === 0) {
                 initExam10Session();
             }
-
-
-            currentCard =
-                examSession.questions[
-                    examSession.currentIndex
-                ] || db[0];
-
+            currentCard = examSession.questions[examSession.currentIndex] || db[0];
         } else {
-
-            const pool =
-                getPool();
-
-            currentCard =
-                pool[
-                    Math.floor(
-                        Math.random() *
-                        pool.length
-                    )
-                ] || db[0];
+            currentCard = drawRandomCard();
         }
 
-
-        const oneway =
-            isOneway(currentCard);
-
-
-        currentDirection =
-            oneway
-                ? 'code'
-                : (
-                    Math.random() < 0.5
-                        ? 'code'
-                        : 'cn'
-                );
-
-
-        const promptEl =
-            document.getElementById(
-                'card-prompt'
-            );
-
-
-        if (
-            state.poolType ===
-            'exam10'
-        ) {
-
-            document
-                .getElementById(
-                    'card-badge'
-                )
-                .innerText =
-                    `十題測驗 · 第 ${
-                        examSession.currentIndex + 1
-                    } / 10 題 (10分/題)`;
-
-        } else if (oneway) {
-
-            document
-                .getElementById(
-                    'card-badge'
-                )
-                .innerText =
-                    `【${currentCard.cat}】館內知識問答`;
-
+        // 若是問句型題目，固定由問題出題；代碼類則隨機雙向出題
+        if (currentCard.isQuestion) {
+            currentDirection = 'code';
         } else {
-
-            document
-                .getElementById(
-                    'card-badge'
-                )
-                .innerText =
-                    currentDirection === 'code'
-                        ? `【${currentCard.cat}】代碼 ➔ 中文`
-                        : `【${currentCard.cat}】中文 ➔ 代碼`;
+            currentDirection = Math.random() < 0.5 ? 'code' : 'cn';
         }
 
+        const promptEl = document.getElementById('card-prompt');
 
-        if (
-            currentDirection ===
-            'code'
-        ) {
-
-            if (oneway) {
-
-                input.placeholder =
-                    '請輸入答案...';
-
-            } else {
-
-                input.placeholder =
-                    currentCard.type === 'ext'
-                        ? '請輸入單位或部門名稱...'
-                        : '請輸入中文意思...';
-            }
-
-            const promptDisplay =
-                getDisplayCode(currentCard);
-
-            promptEl.innerText =
-                promptDisplay;
-
-            promptEl.className =
-                promptDisplay.length > 12
-                    ? 'card-prompt-text long-text'
-                    : 'card-prompt-text';
-
+        if (state.poolType === 'exam10') {
+            document.getElementById('card-badge').innerText =
+                `十題測驗 · 第 ${examSession.currentIndex + 1} / 10 題 (10分/題)`;
         } else {
-
-            input.placeholder =
-                currentCard.type === 'ext'
-                    ? '請輸入分機號碼（例: 3225, **777）...'
-                    : '請輸入代碼 (例: VC, SSP)...';
-
-            promptEl.innerText =
-                currentCard.cn;
-
-            promptEl.className =
-                currentCard.cn.length > 8
-                    ? 'card-prompt-text long-text'
-                    : 'card-prompt-text';
+            document.getElementById('card-badge').innerText =
+                currentCard.isQuestion
+                    ? `【${currentCard.cat}】實務問答`
+                    : currentDirection === 'code'
+                        ? `【${currentCard.cat}】代碼/項目 ➔ 內容`
+                        : `【${currentCard.cat}】內容 ➔ 代碼/項目`;
         }
 
+        if (currentDirection === 'code') {
+            input.placeholder = currentCard.isQuestion
+                ? '請輸入回答答案或時間房號...'
+                : currentCard.type === 'ext'
+                    ? '請輸入單位或部門名稱...'
+                    : '請輸入中文意思或規範內容...';
+            promptEl.innerText = currentCard.code;
+            promptEl.className = currentCard.code.length > 14 ? 'card-prompt-text long-text' : 'card-prompt-text';
+        } else {
+            input.placeholder = currentCard.type === 'ext'
+                ? '請輸入分機號碼（例: 3225, **777）...'
+                : '請輸入代碼、房號或關鍵數據...';
+            promptEl.innerText = currentCard.cn;
+            promptEl.className = currentCard.cn.length > 12 ? 'card-prompt-text long-text' : 'card-prompt-text';
+        }
 
-        const isFav =
-            state.favs.includes(
-                itemKey(currentCard)
-            );
+        const isFav = state.favs.includes(currentCard.code);
+        document.getElementById('card-star').classList.toggle('active', isFav);
 
-        document
-            .getElementById(
-                'card-star'
-            )
-            .classList.toggle(
-                'active',
-                isFav
-            );
-
-
-        const isDesktop =
-            window.innerWidth >= 860;
-
-
-        if (
-            (
-                isDesktop ||
-                shouldFocus
-            ) &&
-            !isFirstLoad
-        ) {
-
+        const isDesktop = window.innerWidth >= 860;
+        if ((isDesktop || shouldFocus) && !isFirstLoad) {
             input.focus();
         }
-
-
         isFirstLoad = false;
-
     }, 180);
 }
-
 
 /* ================================================================
    Request Next Card
    ================================================================ */
 
 function requestNextCard() {
-
-    if (isNextCooldown)
-        return;
-
-    if (
-        Date.now() -
-        lastSubmitTime <
-        300
-    )
-        return;
-
+    if (isNextCooldown) return;
+    if (Date.now() - lastSubmitTime < 300) return;
 
     isNextCooldown = true;
-
-
-    const btn =
-        document.getElementById(
-            'next-card-btn'
-        );
-
-
-    btn.innerText =
-        "⏳ 載入下一題...";
-
-    btn.style.opacity =
-        "0.75";
-
-    btn.style.pointerEvents =
-        "none";
-
+    const btn = document.getElementById('next-card-btn');
+    btn.innerText = "⏳ 載入下一題...";
+    btn.style.opacity = "0.75";
+    btn.style.pointerEvents = "none";
 
     setTimeout(() => {
+        btn.innerText = "下一題 ➔ (Enter)";
+        btn.style.opacity = "1";
+        btn.style.pointerEvents = "auto";
+        isNextCooldown = false;
 
-        btn.innerText =
-            "下一題 ➔ (Enter)";
-
-        btn.style.opacity =
-            "1";
-
-        btn.style.pointerEvents =
-            "auto";
-
-        isNextCooldown =
-            false;
-
-
-        if (
-            state.poolType ===
-            'exam10'
-        ) {
-
+        if (state.poolType === 'exam10') {
             examSession.currentIndex++;
-
-
-            if (
-                examSession.currentIndex >= 10
-            ) {
-
+            if (examSession.currentIndex >= 10) {
                 showExamResults();
-
                 return;
             }
         }
-
-
         nextCard(true);
-
-    }, 280);
+    }, 250);
 }
-
 
 /* ================================================================
    Submit Answer
    ================================================================ */
 
 function submitAnswer() {
+    if (!currentCard) return;
+    const input = document.getElementById('type-input');
+    const val = input.value.trim();
+    if (!val) return;
 
-    if (!currentCard)
-        return;
-
-
-    const input =
-        document.getElementById(
-            'type-input'
-        );
-
-
-    const val =
-        input.value.trim();
-
-
-    if (!val)
-        return;
-
-
-    lastSubmitTime =
-        Date.now();
-
-
+    lastSubmitTime = Date.now();
     input.blur();
 
-
     state.stats.total++;
-
-
     let isCorrect = false;
 
-
-    if (
-        currentDirection ===
-        'code'
-    ) {
-
-        if (
-            currentCard.type === 'room' ||
-            currentCard.type === 'roomfact' ||
-            currentCard.type === 'restaurant'
-        ) {
-
-            isCorrect =
-                checkFactMatch(
-                    val,
-                    currentCard.cn
-                );
-
-        } else {
-
-            isCorrect =
-                checkChineseMatch(
-                    val,
-                    currentCard.cn
-                );
-        }
-
+    if (currentDirection === 'code') {
+        isCorrect = checkChineseMatch(val, currentCard.cn);
     } else {
-
-        isCorrect =
-            checkCodeMatch(
-                val,
-                currentCard.code
-            );
+        isCorrect = checkCodeMatch(val, currentCard.code);
     }
 
-
-    if (
-        state.poolType ===
-        'exam10'
-    ) {
-
-        if (isCorrect)
-            examSession.score += 10;
-
-
+    if (state.poolType === 'exam10') {
+        if (isCorrect) examSession.score += 10;
         examSession.answers.push({
             card: currentCard,
-            direction:
-                currentDirection,
+            direction: currentDirection,
             userVal: val,
-            isCorrect:
-                isCorrect
+            isCorrect: isCorrect
         });
     }
 
-
-    const key =
-        itemKey(currentCard);
-
-
     if (isCorrect) {
-
         state.stats.correct++;
-
         state.stats.streak++;
-
-
-        const wIdx =
-            state.wrongs.indexOf(
-                key
-            );
-
-
-        if (wIdx > -1)
-            state.wrongs.splice(
-                wIdx,
-                1
-            );
-
+        const wIdx = state.wrongs.indexOf(currentCard.code);
+        if (wIdx > -1) state.wrongs.splice(wIdx, 1);
     } else {
-
         state.stats.streak = 0;
-
-
-        if (
-            !state.wrongs.includes(
-                key
-            )
-        ) {
-
-            state.wrongs.push(
-                key
-            );
+        if (!state.wrongs.includes(currentCard.code)) {
+            state.wrongs.push(currentCard.code);
         }
     }
 
-
     saveState();
 
+    const resBadge = document.getElementById('card-result-badge');
+    resBadge.className = `result-badge ${isCorrect ? 'correct' : 'wrong'}`;
+    resBadge.innerText = isCorrect ? '🎉 答對了！(+10分)' : '❌ 答錯了！(0分)';
 
-    const resBadge =
-        document.getElementById(
-            'card-result-badge'
-        );
+    document.getElementById('card-ans-code').innerText = currentCard.code;
 
-
-    resBadge.className =
-        `result-badge ${
-            isCorrect
-                ? 'correct'
-                : 'wrong'
-        }`;
-
-
-    resBadge.innerText =
-        isCorrect
-            ? '🎉 答對了！(+10分)'
-            : '❌ 答錯了！(0分)';
-
-
-    document
-        .getElementById(
-            'card-ans-code'
-        )
-        .innerText =
-        getDisplayCode(currentCard);
-
-
-    const ansEnEl =
-        document.getElementById(
-            'card-ans-en'
-        );
-
-
+    const ansEnEl = document.getElementById('card-ans-en');
     if (ansEnEl) {
-
-        ansEnEl.innerText =
-            currentCard.en || '';
-
-        ansEnEl.style.display =
-            currentCard.en
-                ? 'block'
-                : 'none';
+        ansEnEl.innerText = currentCard.en || '';
+        ansEnEl.style.display = currentCard.en ? 'block' : 'none';
     }
 
+    document.getElementById('card-ans-cn').innerText = currentCard.cn;
+    document.getElementById('card-ans-user').innerText = `你的回答：${val}`;
+    document.getElementById('main-card').classList.add('flipped');
 
-    document
-        .getElementById(
-            'card-ans-cn'
-        )
-        .innerText =
-        currentCard.cn;
+    document.getElementById('input-form').classList.add('hidden');
+    const nextBtn = document.getElementById('next-card-btn');
 
-
-    document
-        .getElementById(
-            'card-ans-user'
-        )
-        .innerText =
-        `你的回答：${val}`;
-
-
-    document
-        .getElementById(
-            'main-card'
-        )
-        .classList.add(
-            'flipped'
-        );
-
-
-    document
-        .getElementById(
-            'input-form'
-        )
-        .classList.add(
-            'hidden'
-        );
-
-
-    const nextBtn =
-        document.getElementById(
-            'next-card-btn'
-        );
-
-
-    if (
-        state.poolType ===
-        'exam10' &&
-        examSession.currentIndex === 9
-    ) {
-
-        nextBtn.innerText =
-            "查看成績結算 ➔ (Enter)";
-
+    if (state.poolType === 'exam10' && examSession.currentIndex === 9) {
+        nextBtn.innerText = "查看成績結算 ➔ (Enter)";
     } else {
-
-        nextBtn.innerText =
-            "下一題 ➔ (Enter)";
+        nextBtn.innerText = "下一題 ➔ (Enter)";
     }
-
-
-    nextBtn.classList.remove(
-        'hidden'
-    );
+    nextBtn.classList.remove('hidden');
 }
-
 
 /* ================================================================
    Exam Results
    ================================================================ */
 
 function showExamResults() {
+    document.getElementById('learn-card-container').classList.add('hidden');
+    document.getElementById('learn-action-area').classList.add('hidden');
 
-    document
-        .getElementById(
-            'learn-card-container'
-        )
-        .classList.add(
-            'hidden'
-        );
+    const reportView = document.getElementById('exam-report-view');
+    reportView.classList.remove('hidden');
 
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    document
-        .getElementById(
-            'learn-action-area'
-        )
-        .classList.add(
-            'hidden'
-        );
+    document.getElementById('exam-final-score').innerText = examSession.score;
+    const evalText = examSession.score === 100
+        ? "滿分完美！全數正確"
+        : examSession.score >= 80
+            ? "表現優秀！已掌握多數專業知識"
+            : "繼續加油！多複習錯題本";
 
+    document.getElementById('exam-final-eval').innerText = `${evalText}（滿分 100 分 · 一題 10 分）`;
 
-    const reportView =
-        document.getElementById(
-            'exam-report-view'
-        );
-
-
-    reportView.classList.remove(
-        'hidden'
-    );
-
-
-    window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-    });
-
-
-    document
-        .getElementById(
-            'exam-final-score'
-        )
-        .innerText =
-        examSession.score;
-
-
-    const evalText =
-        examSession.score === 100
-            ? "滿分完美！全數正確"
-            : examSession.score >= 80
-                ? "表現優秀！已掌握多數代碼"
-                : "繼續加油！多練習錯題本";
-
-
-    document
-        .getElementById(
-            'exam-final-eval'
-        )
-        .innerText =
-        `${evalText}（滿分 100 分 · 一題 10 分）`;
-
-
-    const listEl =
-        document.getElementById(
-            'exam-results-list'
-        );
-
-
+    const listEl = document.getElementById('exam-results-list');
     listEl.innerHTML = '';
 
+    examSession.answers.forEach((item, idx) => {
+        const div = document.createElement('div');
+        div.className = 'exam-item-box';
 
-    examSession.answers.forEach(
-        (item, idx) => {
+        const qPrompt = item.direction === 'code' ? item.card.code : item.card.cn;
+        const qTarget = item.direction === 'code' ? item.card.cn : item.card.code;
 
-            const div =
-                document.createElement(
-                    'div'
-                );
-
-            div.className =
-                'exam-item-box';
-
-
-            const qPrompt =
-                item.direction === 'code'
-                    ? getDisplayCode(item.card)
-                    : item.card.cn;
-
-
-            const qTarget =
-                item.direction === 'code'
-                    ? item.card.cn
-                    : getDisplayCode(item.card);
-
-
-            div.innerHTML = `
-
-                <div class="exam-item-top">
-
-                    <span>
-                        第 ${idx + 1} 題 · ${item.card.cat}
-                    </span>
-
-                    <span
-                        class="exam-item-badge ${
-                            item.isCorrect
-                                ? 'correct'
-                                : 'wrong'
-                        }"
-                    >
-                        ${
-                            item.isCorrect
-                                ? '+10分 正確'
-                                : '0分 錯誤'
-                        }
-                    </span>
-
-                </div>
-
+        div.innerHTML = `
+            <div class="exam-item-top">
+                <span>第 ${idx + 1} 題 · ${item.card.cat}</span>
+                <span class="exam-item-badge ${item.isCorrect ? 'correct' : 'wrong'}">
+                    ${item.isCorrect ? '+10分 正確' : '0分 錯誤'}
+                </span>
+            </div>
+            <div class="exam-item-row">
+                <span class="lbl">題 目：</span>
+                <span class="val">${qPrompt}</span>
+            </div>
+            ${item.card.en ? `
                 <div class="exam-item-row">
-
-                    <span class="lbl">
-                        題  目：
-                    </span>
-
-                    <span class="val">
-                        ${qPrompt}
-                    </span>
-
+                    <span class="lbl">補充說明：</span>
+                    <span class="val" style="color:var(--primary); font-weight:700;">${item.card.en}</span>
                 </div>
-
-                ${
-                    item.card.en
-                        ? `
-                            <div class="exam-item-row">
-                                <span class="lbl">
-                                    完整單字：
-                                </span>
-
-                                <span
-                                    class="val"
-                                    style="
-                                        color:var(--primary);
-                                        font-weight:700;
-                                    "
-                                >
-                                    ${item.card.en}
-                                </span>
-                            </div>
-                        `
-                        : ''
-                }
-
-                <div class="exam-item-row">
-
-                    <span class="lbl">
-                        你的回答：
-                    </span>
-
-                    <span
-                        class="user-ans ${
-                            item.isCorrect
-                                ? 'correct'
-                                : 'wrong'
-                        }"
-                    >
-                        ${item.userVal}
-                    </span>
-
-                </div>
-
-                <div class="exam-item-row">
-
-                    <span class="lbl">
-                        正確答案：
-                    </span>
-
-                    <span class="val">
-                        ${qTarget}
-                    </span>
-
-                </div>
-
-            `;
-
-
-            listEl.appendChild(div);
-        }
-    );
+            ` : ''}
+            <div class="exam-item-row">
+                <span class="lbl">你的回答：</span>
+                <span class="user-ans ${item.isCorrect ? 'correct' : 'wrong'}">${item.userVal}</span>
+            </div>
+            <div class="exam-item-row">
+                <span class="lbl">正確答案：</span>
+                <span class="val">${qTarget}</span>
+            </div>
+        `;
+        listEl.appendChild(div);
+    });
 }
-
 
 /* ================================================================
    Favorites
    ================================================================ */
 
 function toggleFav(e) {
-
     e.stopPropagation();
+    if (!currentCard) return;
 
-
-    if (!currentCard)
-        return;
-
-
-    const key =
-        itemKey(currentCard);
-
-
-    const idx =
-        state.favs.indexOf(
-            key
-        );
-
-
+    const idx = state.favs.indexOf(currentCard.code);
     if (idx > -1) {
-
-        state.favs.splice(
-            idx,
-            1
-        );
-
+        state.favs.splice(idx, 1);
     } else {
-
-        state.favs.push(
-            key
-        );
+        state.favs.push(currentCard.code);
     }
 
-
     saveState();
-
-
-    document
-        .getElementById(
-            'card-star'
-        )
-        .classList.toggle(
-            'active',
-            state.favs.includes(
-                key
-            )
-        );
+    document.getElementById('card-star').classList.toggle('active', state.favs.includes(currentCard.code));
 }
 
-
 /* ================================================================
-   Quiz
+   Quiz (智慧干擾項選擇題引擎)
    ================================================================ */
 
 let lastQuizAnswerTime = 0;
-
 let isQuizCooldown = false;
-
+let recentQuizHistory = [];
 
 function requestNextQuiz() {
-
-    if (isQuizCooldown)
-        return;
-
-
-    if (
-        Date.now() -
-        lastQuizAnswerTime <
-        300
-    )
-        return;
-
+    if (isQuizCooldown) return;
+    if (Date.now() - lastQuizAnswerTime < 300) return;
 
     isQuizCooldown = true;
-
-
-    const btn =
-        document.getElementById(
-            'quiz-next-btn'
-        );
-
-
-    btn.innerText =
-        "⏳ 載入下一題...";
-
-    btn.style.opacity =
-        "0.75";
-
-    btn.style.pointerEvents =
-        "none";
-
+    const btn = document.getElementById('quiz-next-btn');
+    btn.innerText = "⏳ 載入下一題...";
+    btn.style.opacity = "0.75";
+    btn.style.pointerEvents = "none";
 
     setTimeout(() => {
-
-        btn.innerText =
-            "下一題 ➔ (Enter)";
-
-        btn.style.opacity =
-            "1";
-
-        btn.style.pointerEvents =
-            "auto";
-
-        isQuizCooldown =
-            false;
-
-
+        btn.innerText = "下一題 ➔ (Enter)";
+        btn.style.opacity = "1";
+        btn.style.pointerEvents = "auto";
+        isQuizCooldown = false;
         nextQuizQuestion();
-
-    }, 600);
+    }, 400);
 }
 
+function nextQuizQuestion() {
+    document.getElementById('quiz-next-btn').classList.add('hidden');
+    const activeScopedList = getScopedDatabase();
+
+    // 挑选题目的防重複機制
+    let candidateList = activeScopedList.filter(x => !recentQuizHistory.includes(x.code));
+    if (candidateList.length === 0) {
+        candidateList = activeScopedList;
+        recentQuizHistory = [];
+    }
+
+    currentQuiz = candidateList[Math.floor(Math.random() * candidateList.length)] || activeScopedList[0];
+    recentQuizHistory.push(currentQuiz.code);
+    if (recentQuizHistory.length > 20) recentQuizHistory.shift();
+
+    // 題型方向
+    if (currentQuiz.isQuestion) {
+        currentQuizType = 'code2cn';
+    } else {
+        currentQuizType = Math.random() < 0.5 ? 'code2cn' : 'cn2code';
+    }
+
+    let targetAnswer = "";
+    let opts = [];
+
+    if (currentQuizType === 'code2cn') {
+        document.getElementById('quiz-title').innerText = currentQuiz.isQuestion
+            ? currentQuiz.code
+            : `【 ${currentQuiz.code} 】（${currentQuiz.cat}）代表什麼？`;
+        targetAnswer = currentQuiz.cn;
+        opts = [targetAnswer];
+
+        // 智慧干擾項生成器：判斷答案特徵（時間、房號、代碼、尺寸）優先配對同類干擾項
+        const isTimeFormat = /\d{1,2}:\d{2}/.test(targetAnswer);
+        const isSizeFormat = targetAnswer.includes('*') || targetAnswer.includes('cm');
+
+        let distractorPool = activeScopedList.filter(x => x.cn !== targetAnswer);
+        if (isTimeFormat) {
+            const timePool = distractorPool.filter(x => /\d{1,2}:\d{2}/.test(x.cn));
+            if (timePool.length >= 3) distractorPool = timePool;
+        } else if (isSizeFormat) {
+            const sizePool = distractorPool.filter(x => x.cn.includes('*') || x.cn.includes('cm'));
+            if (sizePool.length >= 3) distractorPool = sizePool;
+        }
+
+        distractorPool.sort(() => Math.random() - 0.5);
+        for (let item of distractorPool) {
+            if (!opts.includes(item.cn)) opts.push(item.cn);
+            if (opts.length >= 4) break;
+        }
+    } else {
+        const labelName = currentQuiz.type === 'ext'
+            ? '分機/電話'
+            : currentQuiz.type === 'room'
+                ? '代碼/規格'
+                : '代碼/項目';
+
+        document.getElementById('quiz-title').innerText =
+            `【 ${currentQuiz.cn} 】（${currentQuiz.cat}）的${labelName}是？`;
+        targetAnswer = currentQuiz.code;
+        opts = [targetAnswer];
+
+        let distractorPool = activeScopedList.filter(x => x.code !== targetAnswer);
+        distractorPool.sort(() => Math.random() - 0.5);
+        for (let item of distractorPool) {
+            if (!opts.includes(item.code)) opts.push(item.code);
+            if (opts.length >= 4) break;
+        }
+    }
+
+    opts.sort(() => Math.random() - 0.5);
+
+    const container = document.getElementById('quiz-options');
+    container.innerHTML = '';
+
+    opts.forEach(o => {
+        const div = document.createElement('div');
+        div.className = 'q-opt';
+        div.innerText = o;
+        div.onclick = () => checkQuiz(div, o, targetAnswer);
+        container.appendChild(div);
+    });
+}
+
+function checkQuiz(btn, selected, target) {
+    const all = document.querySelectorAll('.q-opt');
+    all.forEach(x => x.onclick = null);
+
+    lastQuizAnswerTime = Date.now();
+    state.stats.total++;
+
+    if (selected === target) {
+        btn.classList.add('correct');
+        state.stats.correct++;
+        state.stats.streak++;
+        const wIdx = state.wrongs.indexOf(currentQuiz.code);
+        if (wIdx > -1) state.wrongs.splice(wIdx, 1);
+    } else {
+        btn.classList.add('wrong');
+        state.stats.streak = 0;
+        all.forEach(x => {
+            if (x.innerText === target) x.classList.add('correct');
+        });
+        if (!state.wrongs.includes(currentQuiz.code)) {
+            state.wrongs.push(currentQuiz.code);
+        }
+    }
+
+    saveState();
+    const qBtn = document.getElementById('quiz-next-btn');
+    qBtn.innerText = "下一題 ➔ (Enter)";
+    qBtn.classList.remove('hidden');
+}
 
 /* ================================================================
    Keyboard Enter
    ================================================================ */
 
-window.addEventListener(
-    'keydown',
-    (e) => {
+window.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter') return;
 
-        if (e.key !== 'Enter')
-            return;
+    const nextCardBtn = document.getElementById('next-card-btn');
+    const learnView = document.getElementById('view-learn');
 
-
-        const nextCardBtn =
-            document.getElementById(
-                'next-card-btn'
-            );
-
-
-        const learnView =
-            document.getElementById(
-                'view-learn'
-            );
-
-
-        if (
-            learnView.classList.contains(
-                'active'
-            ) &&
-            !nextCardBtn.classList.contains(
-                'hidden'
-            )
-        ) {
-
-            e.preventDefault();
-
-            requestNextCard();
-
-            return;
-        }
-
-
-        const quizNextBtn =
-            document.getElementById(
-                'quiz-next-btn'
-            );
-
-
-        const quizView =
-            document.getElementById(
-                'view-quiz'
-            );
-
-
-        if (
-            quizView.classList.contains(
-                'active'
-            ) &&
-            !quizNextBtn.classList.contains(
-                'hidden'
-            )
-        ) {
-
-            e.preventDefault();
-
-            requestNextQuiz();
-
-            return;
-        }
-
+    if (learnView.classList.contains('active') && !nextCardBtn.classList.contains('hidden')) {
+        e.preventDefault();
+        requestNextCard();
+        return;
     }
-);
 
+    const quizNextBtn = document.getElementById('quiz-next-btn');
+    const quizView = document.getElementById('view-quiz');
+
+    if (quizView.classList.contains('active') && !quizNextBtn.classList.contains('hidden')) {
+        e.preventDefault();
+        requestNextQuiz();
+        return;
+    }
+});
 
 /* ================================================================
    Mobile Input Focus
    ================================================================ */
 
-const typeInput =
-    document.getElementById(
-        'type-input'
-    );
-
-
-typeInput.addEventListener(
-    'focus',
-    () => {
-
-        if (
-            window.innerWidth <
-            860
-        ) {
-
-            setTimeout(() => {
-
-                typeInput.scrollIntoView({
-                    behavior:
-                        'smooth',
-
-                    block:
-                        'center'
-                });
-
-            }, 150);
-        }
-
+const typeInput = document.getElementById('type-input');
+typeInput.addEventListener('focus', () => {
+    if (window.innerWidth < 860) {
+        setTimeout(() => {
+            typeInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 150);
     }
-);
-
-
-/* ================================================================
-   Quiz State
-   ================================================================ */
-
-let currentQuiz = null;
-
-let currentQuizType =
-    'code2cn';
-
-
-function nextQuizQuestion() {
-
-    document
-        .getElementById(
-            'quiz-next-btn'
-        )
-        .classList.add(
-            'hidden'
-        );
-
-
-    const activeScopedList =
-        getScopedDatabase();
-
-
-    currentQuiz =
-        activeScopedList[
-            Math.floor(
-                Math.random() *
-                activeScopedList.length
-            )
-        ] || db[0];
-
-
-    const oneway =
-        isOneway(currentQuiz);
-
-
-    currentQuizType =
-        oneway
-            ? 'code2cn'
-            : (
-                Math.random() < 0.5
-                    ? 'code2cn'
-                    : 'cn2code'
-            );
-
-
-    // Prefer distractors from the same domain/type so options stay
-    // plausible (e.g. a restaurant-hours question shouldn't offer an
-    // OPERA abbreviation as a wrong answer). Fall back to the full
-    // scoped list if there aren't enough same-type items.
-    const sameTypePool =
-        activeScopedList.filter(
-            x => x.type === currentQuiz.type
-        );
-
-    const distractorSource =
-        sameTypePool.length >= 4
-            ? sameTypePool
-            : activeScopedList;
-
-
-    let targetAnswer = "";
-
-    let opts = [];
-
-
-    if (
-        currentQuizType ===
-        'code2cn'
-    ) {
-
-        if (oneway) {
-
-            document
-                .getElementById(
-                    'quiz-title'
-                )
-                .innerText =
-                `【${currentQuiz.cat}】${getDisplayCode(currentQuiz)}`;
-
-        } else {
-
-            document
-                .getElementById(
-                    'quiz-title'
-                )
-                .innerText =
-                `【 ${getDisplayCode(currentQuiz)} 】（${currentQuiz.cat}）代表什麼？`;
-        }
-
-
-        targetAnswer =
-            currentQuiz.cn;
-
-
-        opts = [
-            targetAnswer
-        ];
-
-
-        while (
-            opts.length < 4 &&
-            opts.length < distractorSource.length
-        ) {
-
-            let rand =
-                distractorSource[
-                    Math.floor(
-                        Math.random() *
-                        distractorSource.length
-                    )
-                ].cn;
-
-
-            if (
-                !opts.includes(rand)
-            ) {
-
-                opts.push(rand);
-            }
-        }
-
-    } else {
-
-        const labelName =
-            currentQuiz.type === 'ext'
-                ? '分機/電話'
-                : '代碼';
-
-
-        document
-            .getElementById(
-                'quiz-title'
-            )
-            .innerText =
-            `【 ${currentQuiz.cn} 】（${currentQuiz.cat}）的${labelName}是？`;
-
-
-        targetAnswer =
-            getDisplayCode(currentQuiz);
-
-
-        opts = [
-            targetAnswer
-        ];
-
-
-        while (
-            opts.length < 4 &&
-            opts.length < distractorSource.length
-        ) {
-
-            let rand =
-                getDisplayCode(
-                    distractorSource[
-                        Math.floor(
-                            Math.random() *
-                            distractorSource.length
-                        )
-                    ]
-                );
-
-
-            if (
-                !opts.includes(rand)
-            ) {
-
-                opts.push(rand);
-            }
-        }
-    }
-
-
-    opts.sort(
-        () =>
-            Math.random() - 0.5
-    );
-
-
-    const container =
-        document.getElementById(
-            'quiz-options'
-        );
-
-
-    container.innerHTML = '';
-
-
-    opts.forEach(
-        o => {
-
-            const div =
-                document.createElement(
-                    'div'
-                );
-
-
-            div.className =
-                'q-opt';
-
-
-            div.innerText =
-                o;
-
-
-            div.onclick =
-                () =>
-                    checkQuiz(
-                        div,
-                        o,
-                        targetAnswer
-                    );
-
-
-            container.appendChild(div);
-        }
-    );
-}
-
-
-/* ================================================================
-   Quiz Check
-   ================================================================ */
-
-function checkQuiz(
-    btn,
-    selected,
-    target
-) {
-
-    const all =
-        document.querySelectorAll(
-            '.q-opt'
-        );
-
-
-    all.forEach(
-        x =>
-            x.onclick = null
-    );
-
-
-    lastQuizAnswerTime =
-        Date.now();
-
-
-    state.stats.total++;
-
-
-    const key =
-        itemKey(currentQuiz);
-
-
-    if (
-        selected === target
-    ) {
-
-        btn.classList.add(
-            'correct'
-        );
-
-
-        state.stats.correct++;
-
-        state.stats.streak++;
-
-
-        const wIdx =
-            state.wrongs.indexOf(
-                key
-            );
-
-
-        if (wIdx > -1)
-            state.wrongs.splice(
-                wIdx,
-                1
-            );
-
-    } else {
-
-        btn.classList.add(
-            'wrong'
-        );
-
-
-        state.stats.streak = 0;
-
-
-        all.forEach(
-            x => {
-
-                if (
-                    x.innerText ===
-                    target
-                ) {
-
-                    x.classList.add(
-                        'correct'
-                    );
-                }
-
-            }
-        );
-
-
-        if (
-            !state.wrongs.includes(
-                key
-            )
-        ) {
-
-            state.wrongs.push(
-                key
-            );
-        }
-    }
-
-
-    saveState();
-
-
-    const qBtn =
-        document.getElementById(
-            'quiz-next-btn'
-        );
-
-
-    qBtn.innerText =
-        "下一題 ➔ (Enter)";
-
-
-    qBtn.classList.remove(
-        'hidden'
-    );
-}
-
+});
 
 /* ================================================================
    Change Scope
    ================================================================ */
 
 function changeScope(scope) {
-
-    state.scope =
-        scope;
-
+    state.scope = scope;
+    shuffledDeck = []; // 切換題庫時重置洗牌牌組
+    recentCardsHistory = [];
+    recentQuizHistory = [];
 
     updateScopeUI();
-
     saveState();
 
-
-    if (
-        state.poolType ===
-        'exam10'
-    ) {
-
+    if (state.poolType === 'exam10') {
         startNewExam10();
-
     } else {
-
         nextCard(false);
     }
-
-
     nextQuizQuestion();
 }
-
 
 /* ================================================================
    Change Pool
    ================================================================ */
 
 function changePool(type) {
-
-    state.poolType =
-        type;
-
+    state.poolType = type;
+    shuffledDeck = []; // 重設牌組
+    recentCardsHistory = [];
 
     updateScopeUI();
-
     saveState();
 
-
-    if (
-        type ===
-        'exam10'
-    ) {
-
+    if (type === 'exam10') {
         startNewExam10();
-
     } else {
+        const reportView = document.getElementById('exam-report-view');
+        const cardContainer = document.getElementById('learn-card-container');
+        const actionArea = document.getElementById('learn-action-area');
 
-        const reportView =
-            document.getElementById(
-                'exam-report-view'
-            );
-
-        const cardContainer =
-            document.getElementById(
-                'learn-card-container'
-            );
-
-        const actionArea =
-            document.getElementById(
-                'learn-action-area'
-            );
-
-
-        if (reportView)
-            reportView.classList.add(
-                'hidden'
-            );
-
-        if (cardContainer)
-            cardContainer.classList.remove(
-                'hidden'
-            );
-
-        if (actionArea)
-            actionArea.classList.remove(
-                'hidden'
-            );
-
+        if (reportView) reportView.classList.add('hidden');
+        if (cardContainer) cardContainer.classList.remove('hidden');
+        if (actionArea) actionArea.classList.remove('hidden');
 
         nextCard(false);
     }
 }
-
 
 /* ================================================================
    Search
    ================================================================ */
 
 function renderSearchList() {
-
-    const q =
-        document
-            .getElementById(
-                'search-input'
-            )
-            .value
-            .toLowerCase();
-
-
-    const container =
-        document.getElementById(
-            'search-list'
-        );
-
-
+    const q = document.getElementById('search-input').value.toLowerCase();
+    const container = document.getElementById('search-list');
     container.innerHTML = '';
 
-
-    const filtered =
-        db.filter(
-            x =>
-                x.code
-                    .toLowerCase()
-                    .includes(q) ||
-
-                x.cn.includes(q) ||
-
-                x.cat.includes(q) ||
-
-                (
-                    x.en &&
-                    x.en
-                        .toLowerCase()
-                        .includes(q)
-                )
-        );
-
-
-    filtered.forEach(
-        x => {
-
-            const div =
-                document.createElement(
-                    'div'
-                );
-
-
-            div.className =
-                'list-item';
-
-
-            div.innerHTML = `
-
-                <div class="list-item-left">
-
-                    <div class="code">
-
-                        ${getDisplayCode(x)}
-
-                        ${
-                            x.en
-                                ? `
-                                    <span
-                                        style="
-                                            font-size:13px;
-                                            font-weight:600;
-                                            color:var(--text-sub);
-                                            opacity:0.85;
-                                        "
-                                    >
-                                        (${x.en})
-                                    </span>
-                                `
-                                : ''
-                        }
-
-                    </div>
-
-                    <div class="cn">
-                        ${x.cn}
-                    </div>
-
-                </div>
-
-                <div class="list-item-cat">
-                    ${x.cat}
-                </div>
-
-            `;
-
-
-            container.appendChild(div);
-        }
+    const filtered = db.filter(x =>
+        x.code.toLowerCase().includes(q) ||
+        x.cn.toLowerCase().includes(q) ||
+        x.cat.toLowerCase().includes(q) ||
+        (x.en && x.en.toLowerCase().includes(q))
     );
+
+    filtered.forEach(x => {
+        const div = document.createElement('div');
+        div.className = 'list-item';
+        div.innerHTML = `
+            <div class="list-item-left">
+                <div class="code">
+                    ${x.code}
+                    ${x.en ? `<span style="font-size:13px; font-weight:600; color:var(--text-sub); opacity:0.85;">(${x.en})</span>` : ''}
+                </div>
+                <div class="cn">${x.cn}</div>
+            </div>
+            <div class="list-item-cat">${x.cat}</div>
+        `;
+        container.appendChild(div);
+    });
 }
-
-
-/* ================================================================
-   Mini Search
-   ================================================================ */
 
 function renderMiniSearch() {
-
-    const q =
-        (
-            document.getElementById(
-                'mini-search'
-            )?.value || ''
-        )
-        .toLowerCase();
-
-
-    const container =
-        document.getElementById(
-            'mini-search-list'
-        );
-
-
-    if (!container)
-        return;
-
-
+    const q = (document.getElementById('mini-search')?.value || '').toLowerCase();
+    const container = document.getElementById('mini-search-list');
+    if (!container) return;
     container.innerHTML = '';
 
+    const filtered = db.filter(x =>
+        x.code.toLowerCase().includes(q) ||
+        x.cn.toLowerCase().includes(q) ||
+        x.cat.toLowerCase().includes(q) ||
+        (x.en && x.en.toLowerCase().includes(q))
+    ).slice(0, 15);
 
-    const filtered =
-        db
-            .filter(
-                x =>
-                    x.code
-                        .toLowerCase()
-                        .includes(q) ||
-
-                    x.cn.includes(q) ||
-
-                    x.cat.includes(q) ||
-
-                    (
-                        x.en &&
-                        x.en
-                            .toLowerCase()
-                            .includes(q)
-                    )
-            )
-            .slice(
-                0,
-                15
-            );
-
-
-    filtered.forEach(
-        x => {
-
-            const div =
-                document.createElement(
-                    'div'
-                );
-
-
-            div.className =
-                'mini-list-item';
-
-
-            div.innerHTML = `
-
-                <span class="m-code">
-                    ${getDisplayCode(x)}
-                </span>
-
-                <span class="m-cn">
-                    ${x.cn}
-                </span>
-
-            `;
-
-
-            container.appendChild(div);
-        }
-    );
+    filtered.forEach(x => {
+        const div = document.createElement('div');
+        div.className = 'mini-list-item';
+        div.innerHTML = `
+            <span class="m-code">${x.code}</span>
+            <span class="m-cn">${x.cn}</span>
+        `;
+        container.appendChild(div);
+    });
 }
-
 
 /* ================================================================
    Switch Tab
    ================================================================ */
 
-function switchTab(
-    tab,
-    btn
-) {
+function switchTab(tab, btn) {
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    document.querySelectorAll('.side-nav-btn').forEach(i => i.classList.remove('active'));
+    document.querySelectorAll('.view-content').forEach(v => v.classList.remove('active'));
 
-    document
-        .querySelectorAll('.nav-item')
-        .forEach(
-            i =>
-                i.classList.remove(
-                    'active'
-                )
-        );
-
-
-    document
-        .querySelectorAll('.side-nav-btn')
-        .forEach(
-            i =>
-                i.classList.remove(
-                    'active'
-                )
-        );
-
-
-    document
-        .querySelectorAll('.view-content')
-        .forEach(
-            v =>
-                v.classList.remove(
-                    'active'
-                )
-        );
-
-
-    const activeIndex =
-        [
-            'learn',
-            'quiz',
-            'search',
-            'settings'
-        ].indexOf(tab);
-
-
+    const activeIndex = ['learn', 'quiz', 'search', 'settings'].indexOf(tab);
     if (activeIndex > -1) {
-
-        document
-            .querySelectorAll('.nav-item')
-            [
-                activeIndex
-            ]
-            ?.classList.add(
-                'active'
-            );
-
-
-        document
-            .querySelectorAll('.side-nav-btn')
-            [
-                activeIndex
-            ]
-            ?.classList.add(
-                'active'
-            );
+        document.querySelectorAll('.nav-item')[activeIndex]?.classList.add('active');
+        document.querySelectorAll('.side-nav-btn')[activeIndex]?.classList.add('active');
     }
 
-
-    document
-        .getElementById(
-            `view-${tab}`
-        )
-        .classList.add(
-            'active'
-        );
-
+    document.getElementById(`view-${tab}`).classList.add('active');
 
     const titleMap = {
-
-        'learn': [
-            '學習卡片',
-            '台南晶英酒店 OPERA 系統專業代碼與館內分機極速精熟訓練'
-        ],
-
-        'quiz': [
-            '考題測驗',
-            '全真模擬四選一快速測驗，檢驗即時反應力與代碼記憶度'
-        ],
-
-        'search': [
-            '代碼與分機',
-            '飯店各部門代碼與館內專屬分機全庫極速檢索查詢'
-        ],
-
-        'settings': [
-            '系統設定',
-            '自訂測驗範圍、專案類別與個人答題歷史數據管理'
-        ]
+        'learn': ['學習卡片', '台南晶英酒店 OPERA 代碼、分機、餐廳與客房資訊全精熟訓練'],
+        'quiz': ['考題測驗', '全真模擬四選一快速測驗，檢驗即時反應力與知識記憶度'],
+        'search': ['代碼與館內速查', '全館代碼、各單位分機、餐廳規範與房型資訊秒查字典'],
+        'settings': ['系統設定', '自訂測驗題庫範圍、知識類別與個人答題歷史數據管理']
     };
 
-
     if (titleMap[tab]) {
-
-        const tEl =
-            document.getElementById(
-                'desktop-page-title'
-            );
-
-        const dEl =
-            document.getElementById(
-                'desktop-page-desc'
-            );
-
-
-        if (tEl)
-            tEl.innerText =
-                titleMap[tab][0];
-
-
-        if (dEl)
-            dEl.innerText =
-                titleMap[tab][1];
+        const tEl = document.getElementById('desktop-page-title');
+        const dEl = document.getElementById('desktop-page-desc');
+        if (tEl) tEl.innerText = titleMap[tab][0];
+        if (dEl) dEl.innerText = titleMap[tab];
     }
 
-
-    if (tab === 'search')
-        renderSearchList();
+    if (tab === 'search') renderSearchList();
 }
-
 
 /* ================================================================
    Theme
    ================================================================ */
 
 function toggleTheme() {
-
-    state.theme =
-        state.theme === 'dark'
-            ? 'light'
-            : 'dark';
-
-
+    state.theme = state.theme === 'dark' ? 'light' : 'dark';
     applyThemeUI();
-
     saveState();
 }
 
-
 function applyThemeUI() {
+    const textEls = document.querySelectorAll('.theme-text');
+    const iconEls = document.querySelectorAll('.theme-icon');
 
-    const textEls =
-        document.querySelectorAll(
-            '.theme-text'
-        );
-
-
-    const iconEls =
-        document.querySelectorAll(
-            '.theme-icon'
-        );
-
-
-    if (
-        state.theme ===
-        'light'
-    ) {
-
-        document.body.classList.add(
-            'light-mode'
-        );
-
-
-        textEls.forEach(
-            t =>
-                t.innerText =
-                    '深色模式'
-        );
-
-
-        iconEls.forEach(
-            ic =>
-                ic.innerHTML = `
-                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                `
-        );
-
+    if (state.theme === 'light') {
+        document.body.classList.add('light-mode');
+        textEls.forEach(t => t.innerText = '深色模式');
+        iconEls.forEach(ic => ic.innerHTML = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>`);
     } else {
-
-        document.body.classList.remove(
-            'light-mode'
-        );
-
-
-        textEls.forEach(
-            t =>
-                t.innerText =
-                    '淺色模式'
-        );
-
-
-        iconEls.forEach(
-            ic =>
-                ic.innerHTML = `
-                    <circle cx="12" cy="12" r="5"></circle>
-                    <line x1="12" y1="1" x2="12" y2="3"></line>
-                    <line x1="12" y1="21" x2="12" y2="23"></line>
-                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                    <line x1="1" y1="12" x2="3" y2="12"></line>
-                    <line x1="21" y1="12" x2="23" y2="12"></line>
-                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                `
-        );
+        document.body.classList.remove('light-mode');
+        textEls.forEach(t => t.innerText = '淺色模式');
+        iconEls.forEach(ic => ic.innerHTML = `
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        `);
     }
 }
-
 
 /* ================================================================
    Reset Data
    ================================================================ */
 
 function resetAllData() {
-
-    if (
-        confirm(
-            "確定要重置所有紀錄與錯題本嗎？"
-        )
-    ) {
-
-        localStorage.removeItem(
-            'opera_app_data'
-        );
-
-
+    if (confirm("確定要重置所有紀錄與錯題本嗎？")) {
+        localStorage.removeItem('opera_app_data');
+        state = {
+            favs: [],
+            wrongs:？")) {
+        localStorage.removeItem('opera_app_data');
         state = {
             favs: [],
             wrongs: [],
-
-            stats: {
-                total: 0,
-                correct: 0,
-                streak: 0
-            },
-
+            stats: { total: 0, correct: 0, streak: 0 },
             theme: 'dark',
-
             poolType: 'all',
             scope: 'all'
         };
-
+        shuffledDeck = [];
+        recentCardsHistory = [];
+        recentQuizHistory = [];
 
         saveState();
-
         applyThemeUI();
-
-
-        alert(
-            "資料已重置！"
-        );
-
-
+        alert("資料已重置！");
         location.reload();
     }
 }
-
 
 /* ================================================================
    Initial
    ================================================================ */
 
 loadState();
-
 nextCard(false);
-
-nextQuizQuestion();
-
-renderMiniSearch();
-</script>
-
-</body>
-</html>
+next

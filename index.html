@@ -237,6 +237,10 @@
         .btn-submit { background: var(--primary); color: var(--primary-btn-text); border: none; font-weight: 800; cursor: pointer; transition: opacity 0.2s; }
         .btn-action { background: var(--primary); color: var(--primary-btn-text); font-weight: 800; border: none; width: 100%; cursor: pointer; transition: opacity 0.2s, background-color 0.2s; }
         .hidden { display: none !important; }
+        /* 修正手機版行動裝置選單：.nav-item 在手機版媒體查詢中用了 display:flex !important，
+           會跟 .hidden 的 !important 打平手，導致後台管理按鈕即使未登入管理員也會顯示、可點擊。
+           這條規則靠更高的選擇器優先度（兩個 class）強制蓋掉，確保隱藏一定生效。 */
+        .nav-item.hidden, .side-nav-btn.hidden { display: none !important; }
 
         /* Exam Report */
         .exam-report-card { background: var(--card-bg); border-radius: 24px; border: 1px solid var(--border-color); padding: 24px 20px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 16px; }
@@ -1479,6 +1483,21 @@ function renderAdminList() {
     const container = document.getElementById('admin-list');
     if (!container) return;
     container.innerHTML = '';
+
+    // 分類統計卡：隨時可核對目前題庫各分類筆數是否正常，避免同步時讀錯格卻沒發現
+    const validTypes = ['ext', 'opera', 'room', 'restaurant'];
+    const typeLabels = { ext: '分機表', opera: 'OPERA縮寫', room: '客房資訊', restaurant: '餐廳資訊' };
+    const statDiv = document.createElement('div');
+    statDiv.style.cssText = 'display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px;';
+    statDiv.innerHTML = validTypes.map(t => {
+        const cnt = db.filter(x => x.type === t).length;
+        return `<div style="flex:1; min-width:90px; background:var(--input-bg); border:1px solid var(--border-color); border-radius:10px; padding:8px 10px; text-align:center;">
+            <div style="font-size:18px; font-weight:800; color:var(--primary);">${cnt}</div>
+            <div style="font-size:11px; color:var(--text-sub); margin-top:2px;">${typeLabels[t]}</div>
+        </div>`;
+    }).join('');
+    container.appendChild(statDiv);
+
     db.forEach((item, idx) => {
         const div = document.createElement('div');
         div.style.cssText = 'background:var(--input-bg); border:1px solid var(--border-color); border-radius:12px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center;';
@@ -1486,6 +1505,7 @@ function renderAdminList() {
         container.appendChild(div);
     });
 }
+
 
 function switchTab(tab, btn) {
     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
@@ -1560,13 +1580,43 @@ async function syncFromCloud() {
         const res = await fetch(apiUrl);
         const json = await res.json();
         if (json.status === 'success' && Array.isArray(json.data) && json.data.length > 0) {
-            db = normalizeDb(json.data);
+            // 欄位驗證：確保每一筆都有代碼、中文說明，且分類是四種已知類型之一，
+            // 避免試算表欄位錯位（讀錯格）時把壞資料直接混入題庫。
+            const validTypes = ['ext', 'opera', 'room', 'restaurant'];
+            const cleanRows = [];
+            const badRows = [];
+            json.data.forEach(row => {
+                if (row && row.code && row.cn && validTypes.includes(row.type)) {
+                    cleanRows.push(row);
+                } else {
+                    badRows.push(row);
+                }
+            });
+
+            if (cleanRows.length === 0) {
+                alert('⚠️ 同步中止：試算表回傳的資料欄位格式不正確（代碼/中文/分類可能讀錯格），請檢查 Google Apps Script 的欄位對應，本次未套用任何資料。');
+                statusTxt.innerText = '狀態：資料格式異常，已取消套用';
+                return;
+            }
+
+            db = normalizeDb(cleanRows);
             localStorage.setItem('opera_custom_db', JSON.stringify({ version: DB_VERSION, data: db }));
             renderAdminList();
             renderSearchList();
             renderMiniSearch();
-            statusTxt.innerText = `狀態：已同步 4 個工作表（共 ${db.length} 筆）`;
-            alert(`🎉 成功同步！已從試算表載入 ${db.length} 筆資料！`);
+
+            const countLine = validTypes.map(t => `${t}: ${db.filter(x => x.type === t).length}`).join(' / ');
+            statusTxt.innerText = `狀態：已同步 4 個工作表（共 ${db.length} 筆，${countLine}）`;
+
+            let msg = `🎉 成功同步！共載入 ${db.length} 筆資料\n\n分類統計（請核對是否符合試算表各分頁筆數）：\n` +
+                validTypes.map(t => `・${t}：${db.filter(x => x.type === t).length} 筆`).join('\n');
+            if (badRows.length > 0) {
+                msg += `\n\n⚠️ 另有 ${badRows.length} 筆資料因欄位缺漏或分類異常已被自動略過、未加入題庫，建議回試算表檢查該幾列。`;
+            }
+            alert(msg);
+        } else {
+            alert('同步失敗：伺服器回傳格式不正確或無資料。');
+            statusTxt.innerText = '狀態：同步失敗';
         }
     } catch(e) {
         alert('同步出錯：' + e);

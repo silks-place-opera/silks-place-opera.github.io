@@ -51,11 +51,9 @@
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif; }
         body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; transition: background-color 0.25s ease; }
-        
-        /* 避免鍵盤彈起時 Dock 遮擋輸入 */
         body.keyboard-open .nav-bar { display: none !important; }
 
-        /* Lock Screen Modal */
+        /* Lock Screen */
         #auth-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(20px); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; }
         .auth-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 28px; width: 100%; max-width: 380px; padding: 32px 24px; text-align: center; box-shadow: var(--shadow); }
         .auth-title { font-size: 22px; font-weight: 800; color: var(--primary); margin-bottom: 8px; }
@@ -64,27 +62,23 @@
         .pin-input:focus { border-color: var(--primary); }
         .pin-btn { width: 100%; padding: 16px; border-radius: 16px; border: none; background: var(--primary); color: var(--primary-btn-text); font-size: 16px; font-weight: 800; cursor: pointer; }
 
-        /* App Layout */
-        .app-title { font-size: 18px; font-weight: 800; color: var(--text-main); }
-        .role-tag { font-size: 11px; padding: 3px 8px; border-radius: 8px; font-weight: 700; background: var(--primary-light); color: var(--primary); }
-
         .view-content { display: none; flex-direction: column; gap: 14px; width: 100%; }
         .view-content.active { display: flex; }
 
         /* Flashcard */
         .flashcard-container { perspective: 1000px; width: 100%; cursor: pointer; }
-        .flashcard { width: 100%; min-height: 250px; position: relative; transform-style: preserve-3d; transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 24px; }
+        .flashcard { width: 100%; min-height: 280px; position: relative; transform-style: preserve-3d; transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 24px; }
         .flashcard.flipped { transform: rotateY(180deg); }
         .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 24px; background: var(--card-bg); border: 1px solid var(--border-color); padding: 24px 20px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; text-align: center; box-shadow: var(--shadow); }
         .card-back { transform: rotateY(180deg); }
         .card-star { position: absolute; top: 18px; right: 20px; font-size: 24px; color: #404040; cursor: pointer; z-index: 10; }
         .card-star.active { color: #f59e0b; }
         .card-badge { font-size: 12px; font-weight: 700; padding: 5px 14px; border-radius: 14px; background: var(--input-bg); border: 1px solid var(--border-color); color: var(--primary); }
-        .card-prompt-text { font-weight: 900; color: var(--text-main); margin: auto 0; line-height: 1.35; padding: 0 10px; word-break: break-word; font-size: clamp(24px, 6vw, 36px); }
+        .card-prompt-text { font-weight: 900; color: var(--text-main); margin: auto 0; line-height: 1.35; padding: 0 10px; word-break: break-word; font-size: clamp(24px, 5.5vw, 38px); }
         .card-subtext { font-size: 13px; color: var(--text-sub); }
 
         .ans-code { font-size: 32px; font-weight: 900; color: var(--primary); }
-        .ans-cn { font-size: 18px; font-weight: 700; color: var(--text-main); margin-top: 6px; white-space: pre-line; line-height: 1.4; }
+        .ans-cn { font-size: 17px; font-weight: 700; color: var(--text-main); margin-top: 6px; white-space: pre-line; line-height: 1.45; }
         .ans-en { font-size: 14px; color: var(--text-sub); margin-top: 4px; }
 
         /* Actions */
@@ -95,7 +89,7 @@
         .btn-submit { background: var(--primary); color: var(--primary-btn-text); border: none; font-weight: 800; padding: 0 20px; border-radius: 16px; cursor: pointer; }
         .btn-action { background: var(--primary); color: var(--primary-btn-text); font-weight: 800; border: none; width: 100%; padding: 15px; border-radius: 16px; cursor: pointer; font-size: 15px; }
 
-        /* Self-Assessment buttons for Flip Mode */
+        /* Self Eval */
         .self-eval-group { display: flex; gap: 10px; width: 100%; }
         .btn-eval-know { flex: 1; background: rgba(48, 209, 88, 0.2); border: 1px solid var(--accent); color: var(--accent); padding: 14px; border-radius: 16px; font-weight: 800; cursor: pointer; }
         .btn-eval-forget { flex: 1; background: rgba(255, 69, 58, 0.2); border: 1px solid var(--danger); color: var(--danger); padding: 14px; border-radius: 16px; font-weight: 800; cursor: pointer; }
@@ -116,24 +110,47 @@
         .list-item-left .cn { font-size: 14px; font-weight: 600; color: var(--text-main); margin-top: 3px; white-space: pre-line; line-height: 1.4; }
         .list-item-cat { font-size: 11px; padding: 3px 8px; border-radius: 8px; background: var(--input-bg); color: var(--text-sub); }
 
-        /* Admin backend view */
+        /* Admin */
         .admin-box { background: var(--card-bg); border-radius: 20px; padding: 20px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 14px; }
         .sync-banner { background: var(--primary-light); border: 1px solid var(--border-hover); border-radius: 16px; padding: 16px; display: flex; justify-content: space-between; align-items: center; }
-        .admin-table-item { background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 14px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; }
 
-        /* Floating Nav Dock */
-        .nav-bar { position: fixed; bottom: calc(14px + env(safe-area-inset-bottom, 12px)); left: 50%; transform: translateX(-50%); background: var(--dock-bg); backdrop-filter: blur(28px); border: 1px solid var(--dock-border); border-radius: 9999px; box-shadow: var(--dock-shadow); display: flex; align-items: center; gap: 6px; padding: 6px 10px; z-index: 999; }
-        .nav-item { display: flex; align-items: center; justify-content: center; width: 48px; height: 42px; border: none; background: transparent; color: var(--dock-icon-color); border-radius: 9999px; cursor: pointer; outline: none; }
-        .nav-item.active { background: var(--dock-active-bg); color: var(--dock-active-color); }
-        .nav-item svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2.2; }
+        /* Desktop Sidebar & Media Queries */
+        @media (max-width: 859px) {
+            .desktop-sidebar, .desktop-header-bar, .desktop-side-tools { display: none !important; }
+            .main-stage { width: 100%; max-width: 520px; margin: 0 auto; padding: 16px 16px 100px 16px; }
+            .nav-bar { position: fixed; bottom: calc(14px + env(safe-area-inset-bottom, 12px)); left: 50%; transform: translateX(-50%); background: var(--dock-bg); backdrop-filter: blur(28px); border: 1px solid var(--dock-border); border-radius: 9999px; box-shadow: var(--dock-shadow); display: flex; align-items: center; gap: 6px; padding: 6px 10px; z-index: 999; }
+            .nav-item { display: flex; align-items: center; justify-content: center; width: 48px; height: 42px; border: none; background: transparent; color: var(--dock-icon-color); border-radius: 9999px; cursor: pointer; outline: none; }
+            .nav-item.active { background: var(--dock-active-bg); color: var(--dock-active-color); }
+            .nav-item svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2.2; }
+        }
 
-        .main-stage { width: 100%; max-width: 600px; margin: 0 auto; padding: 16px 16px 100px 16px; }
+        @media (min-width: 860px) {
+            body { display: flex; flex-direction: row; min-height: 100vh; }
+            .nav-bar, .mobile-header-bar { display: none !important; }
+            .desktop-sidebar { width: 280px; height: 100vh; position: sticky; top: 0; background: var(--sidebar-bg); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; justify-content: space-between; padding: 24px 18px; flex-shrink: 0; z-index: 100; }
+            .sidebar-top { display: flex; flex-direction: column; gap: 24px; }
+            .sidebar-brand { display: flex; align-items: center; gap: 12px; padding: 0 8px; }
+            .sidebar-brand .app-title { font-size: 20px; font-weight: 800; color: var(--primary); letter-spacing: 0.5px; }
+            .sidebar-nav { display: flex; flex-direction: column; gap: 6px; }
+            .side-nav-btn { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 14px; background: transparent; border: none; color: var(--text-sub); font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; text-align: left; width: 100%; }
+            .side-nav-btn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2.2; }
+            .side-nav-btn:hover { background: rgba(255, 255, 255, 0.05); color: var(--text-main); }
+            .side-nav-btn.active { background: var(--primary); color: var(--primary-btn-text); }
+            .sidebar-stats-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 18px; padding: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; text-align: center; }
+            .sidebar-stat-item .val { font-size: 20px; font-weight: 900; color: var(--primary); }
+            .sidebar-stat-item .lbl { font-size: 11px; color: var(--text-sub); margin-top: 2px; }
+            .main-stage { flex: 1; min-height: 100vh; padding: 36px 48px; overflow-y: auto; max-width: 1280px; }
+            .learn-grid-pc { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 28px; align-items: start; }
+            .desktop-side-tools { display: flex; flex-direction: column; gap: 20px; }
+            .side-tool-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 20px; padding: 20px; box-shadow: var(--shadow); }
+            .side-tool-title { font-size: 14px; font-weight: 800; color: var(--primary); margin-bottom: 12px; }
+        }
         .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-<!-- 雙重密碼驗證彈窗 -->
+<!-- 雙重通行碼驗證 -->
 <div id="auth-modal">
     <div class="auth-card">
         <div class="auth-title">台南晶英 禮賓司萬事通</div>
@@ -143,47 +160,105 @@
     </div>
 </div>
 
-<main class="main-stage">
-    <header style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-        <div>
+<!-- 電腦版側邊欄 -->
+<aside class="desktop-sidebar">
+    <div class="sidebar-top">
+        <div class="sidebar-brand">
             <div class="app-title">禮賓司萬事通</div>
-            <span class="role-tag" id="user-role-label">學員練習中</span>
+        </div>
+        <nav class="sidebar-nav">
+            <button class="side-nav-btn active" onclick="switchTab('learn', this)">
+                <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                學習卡片
+            </button>
+            <button class="side-nav-btn" onclick="switchTab('quiz', this)">
+                <svg viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                考題測驗
+            </button>
+            <button class="side-nav-btn" onclick="switchTab('search', this)">
+                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                代碼與分機
+            </button>
+            <button class="side-nav-btn" onclick="switchTab('settings', this)">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                系統設定
+            </button>
+            <button class="side-nav-btn hidden" id="d-nav-admin-btn" onclick="switchTab('admin', this)">
+                <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 14.93V17a1 1 0 0 1-2 0v-.07A7.002 7.002 0 0 1 5.07 11H5a1 1 0 0 1 0-2h.07A7.002 7.002 0 0 1 11 5.07V5a1 1 0 0 1 2 0v.07A7.002 7.002 0 0 1 18.93 11H19a1 1 0 0 1 0 2h-.07A7.002 7.002 0 0 1 13 16.93z"></path></svg>
+                後台管理
+            </button>
+        </nav>
+        <div class="sidebar-stats-card">
+            <div class="sidebar-stat-item"><div class="val" id="d-st-acc">0%</div><div class="lbl">正確率</div></div>
+            <div class="sidebar-stat-item"><div class="val" id="d-st-streak">0</div><div class="lbl">連續答對</div></div>
+            <div class="sidebar-stat-item"><div class="val" id="d-st-wrong">0</div><div class="lbl">錯題本</div></div>
+            <div class="sidebar-stat-item"><div class="val" id="d-st-fav">0</div><div class="lbl">收藏數</div></div>
+        </div>
+    </div>
+    <button class="side-nav-btn" onclick="toggleTheme()" style="justify-content:center;">🌓 切換外觀風格</button>
+</aside>
+
+<!-- 主舞台 -->
+<main class="main-stage">
+    <div class="mobile-header-bar" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <div>
+            <div class="app-title" style="font-size:20px; font-weight:800;">禮賓司萬事通</div>
+            <span id="role-tag-m" style="font-size:11px; padding:3px 8px; border-radius:8px; background:var(--primary-light); color:var(--primary); font-weight:700;">同仁練習模式</span>
         </div>
         <button onclick="toggleTheme()" style="background:var(--input-bg); border:1px solid var(--border-color); color:var(--text-sub); padding:6px 12px; border-radius:20px; font-size:12px; cursor:pointer;">切換外觀</button>
-    </header>
+    </div>
 
     <!-- 1. 學習卡片 -->
     <div id="view-learn" class="view-content active">
-        <div class="flashcard-container" onclick="flipCurrentCard()">
-            <div class="flashcard" id="main-card">
-                <div class="card-face card-front">
-                    <span class="card-star" id="card-star" onclick="toggleFav(event)">★</span>
-                    <div class="card-badge" id="card-badge">隨機出題</div>
-                    <div class="card-prompt-text" id="card-prompt">載入中...</div>
-                    <div class="card-subtext" id="card-mode-hint">輸入答案後按 Enter 翻牌 👆</div>
+        <div class="learn-grid-pc">
+            <div style="display:flex; flex-direction:column; gap:14px; width:100%;">
+                <div class="flashcard-container" onclick="flipCurrentCard()">
+                    <div class="flashcard" id="main-card">
+                        <div class="card-face card-front">
+                            <span class="card-star" id="card-star" onclick="toggleFav(event)">★</span>
+                            <div class="card-badge" id="card-badge">隨機出題</div>
+                            <div class="card-prompt-text" id="card-prompt">載入中...</div>
+                            <div class="card-subtext" id="card-mode-hint">輸入答案後按 Enter 翻牌 👆</div>
+                        </div>
+                        <div class="card-face card-back">
+                            <div class="ans-code" id="card-ans-code">--</div>
+                            <div class="ans-cn" id="card-ans-cn">--</div>
+                            <div class="ans-en" id="card-ans-en"></div>
+                            <div class="card-subtext" style="margin-top:auto;">點擊下方按鈕繼續</div>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-face card-back">
-                    <div class="ans-code" id="card-ans-code">--</div>
-                    <div class="ans-cn" id="card-ans-cn">--</div>
-                    <div class="ans-en" id="card-ans-en"></div>
-                    <div class="card-subtext" style="margin-top:auto;">點擊下方按鈕繼續</div>
+
+                <!-- 模式 A：鍵盤打字 -->
+                <div class="action-area" id="type-action-area">
+                    <form class="input-group" onsubmit="event.preventDefault(); submitAnswer();">
+                        <input type="text" class="card-input" id="type-input" placeholder="輸入答案後按 Enter..." autocomplete="off">
+                        <button type="submit" class="btn-submit">送出</button>
+                    </form>
+                    <button class="btn-action hidden" id="next-card-btn" onclick="nextCard()">下一題 ➔ (Enter)</button>
+                </div>
+
+                <!-- 模式 B：翻牌自評 -->
+                <div class="self-eval-group hidden" id="flip-eval-area">
+                    <button class="btn-eval-know" onclick="recordSelfEval(true)">👍 已熟練掌握</button>
+                    <button class="btn-eval-forget" onclick="recordSelfEval(false)">🔁 還不熟，再加強</button>
                 </div>
             </div>
-        </div>
 
-        <!-- 模式 A：打字作答區（短答案） -->
-        <div class="action-area" id="type-action-area">
-            <form class="input-group" onsubmit="event.preventDefault(); submitAnswer();">
-                <input type="text" class="card-input" id="type-input" placeholder="輸入答案後按 Enter..." autocomplete="off">
-                <button type="submit" class="btn-submit">送出</button>
-            </form>
-            <button class="btn-action hidden" id="next-card-btn" onclick="nextCard()">下一題 ➔</button>
-        </div>
-
-        <!-- 模式 B：翻牌自評區（長文本/SOP/營業時間） -->
-        <div class="self-eval-group hidden" id="flip-eval-area">
-            <button class="btn-eval-know" onclick="recordSelfEval(true)">👍 已熟練掌握</button>
-            <button class="btn-eval-forget" onclick="recordSelfEval(false)">🔁 還不熟，再加強</button>
+            <!-- 電腦版右側邊欄輔助小工具 -->
+            <div class="desktop-side-tools">
+                <div class="side-tool-card">
+                    <div class="side-tool-title">🔍 邊練邊查 · 速查字典</div>
+                    <input type="text" class="search-box" id="pc-mini-search" placeholder="輸入關鍵字秒查..." oninput="renderMiniSearch()" style="padding:10px 14px; font-size:13px; margin-bottom:10px;">
+                    <div id="pc-mini-list" style="max-height:220px; overflow-y:auto; display:flex; flex-direction:column; gap:6px;"></div>
+                </div>
+                <div class="side-tool-card" style="font-size:13px; line-height:1.6; color:var(--text-sub);">
+                    <div class="side-tool-title">⌨️ 鍵盤快捷鍵指南</div>
+                    <p>• 短答案打字後直接按 <b>Enter</b> 即可送出翻牌。</p>
+                    <p>• 翻牌後再次按 <b>Enter</b> 立即前往下一題。</p>
+                    <p>• 遇到長文本自動切換為翻牌模式，免去繁瑣輸入。</p>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -205,110 +280,258 @@
     <!-- 4. 設定 -->
     <div id="view-settings" class="view-content">
         <div class="admin-box">
-            <h3 style="font-size:16px; color:var(--primary);">題庫範圍過濾</h3>
+            <h3 style="font-size:16px; color:var(--primary);">測驗題庫範圍</h3>
             <div style="display:flex; flex-direction:column; gap:8px;">
-                <button class="btn-action" style="background:var(--input-bg); color:var(--text-main);" onclick="setScope('all')">全選題庫</button>
-                <button class="btn-action" style="background:var(--input-bg); color:var(--text-main);" onclick="setScope('opera')">OPERA 代碼</button>
-                <button class="btn-action" style="background:var(--input-bg); color:var(--text-main);" onclick="setScope('ext')">分機與電話</button>
-                <button class="btn-action" style="background:var(--input-bg); color:var(--text-main);" onclick="setScope('room')">房型規格</button>
-                <button class="btn-action" style="background:var(--input-bg); color:var(--text-main);" onclick="setScope('restaurant')">餐廳與設施</button>
+                <button class="btn-action" style="background:var(--input-bg); color:var(--text-main);" onclick="setScope('all')">全選題庫（包含全館所有資料）</button>
+                <button class="btn-action" style="background:var(--input-bg); color:var(--text-main);" onclick="setScope('opera')">OPERA 代碼專區</button>
+                <button class="btn-action" style="background:var(--input-bg); color:var(--text-main);" onclick="setScope('ext')">分機與電話專區</button>
+                <button class="btn-action" style="background:var(--input-bg); color:var(--text-main);" onclick="setScope('room')">客房與房型專區</button>
+                <button class="btn-action" style="background:var(--input-bg); color:var(--text-main);" onclick="setScope('restaurant')">餐廳時段與設施專區</button>
             </div>
             <hr style="border:none; border-top:1px solid var(--border-color); margin:10px 0;">
-            <button class="btn-action" style="background:var(--input-bg); color:var(--danger);" onclick="resetStats()">清除作答統計與錯題本</button>
-            <button class="btn-action" style="background:transparent; border:1px solid var(--border-color); color:var(--text-sub);" onclick="reLogin()">重新輸入通行碼</button>
+            <button class="btn-action" style="background:var(--input-bg); color:var(--danger);" onclick="resetStats()">清除統計與錯題本</button>
+            <button class="btn-action" style="background:transparent; border:1px solid var(--border-color); color:var(--text-sub);" onclick="reLogin()">切換身分（輸入通行碼）</button>
         </div>
     </div>
 
-    <!-- 5. 主管專屬後台（僅密碼 9999 可見） -->
+    <!-- 5. 主管專屬後台 -->
     <div id="view-admin" class="view-content">
         <div class="admin-box">
             <div class="sync-banner">
                 <div>
-                    <b style="color:var(--text-main); font-size:15px;">Google 試算表同步</b>
+                    <b style="color:var(--text-main); font-size:15px;">Google 試算表四分頁同步</b>
                     <div style="font-size:12px; color:var(--text-sub); margin-top:2px;" id="sync-status-txt">狀態：本機資料庫</div>
                 </div>
                 <button onclick="syncFromCloud()" style="background:var(--primary); border:none; padding:8px 14px; border-radius:12px; font-weight:800; cursor:pointer;">立即抓取</button>
             </div>
-
             <div style="display:flex; flex-direction:column; gap:6px;">
                 <label style="font-size:12px; color:var(--text-sub);">Google Apps Script Web API 網址：</label>
                 <input type="text" id="api-url-input" class="search-box" placeholder="貼上 https://script.google.com/macros/s/.../exec" onchange="saveApiUrl()">
             </div>
-
             <div style="display:flex; gap:8px;">
-                <button class="btn-action" onclick="pushToCloud()">推送本機資料至 Google 試算表</button>
-                <button class="btn-action" style="background:var(--input-bg); color:var(--text-main);" onclick="openAddModal()">＋ 新增一筆</button>
+                <button class="btn-action" onclick="pushToCloud()">推送本機資料至 Google 試算表（自動分流4個分頁）</button>
             </div>
-
             <div class="list-container" id="admin-list" style="margin-top:10px; max-height:400px; overflow-y:auto;"></div>
         </div>
     </div>
 </main>
 
-<!-- 手機底部 Floating Dock -->
+<!-- 手機端浮動導覽列 -->
 <nav class="nav-bar">
-    <button class="nav-item active" onclick="switchTab('learn', this)" title="卡片"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"></rect><line x1="7" y1="8" x2="17" y2="8"></line><line x1="7" y1="12" x2="13" y2="12"></line></svg></button>
-    <button class="nav-item" onclick="switchTab('quiz', this)" title="測驗"><svg viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></button>
-    <button class="nav-item" onclick="switchTab('search', this)" title="速查"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button>
-    <button class="nav-item" onclick="switchTab('settings', this)" title="設定"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button>
-    <button class="nav-item hidden" id="nav-admin-btn" onclick="switchTab('admin', this)" title="管理"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 14.93V17a1 1 0 0 1-2 0v-.07A7.002 7.002 0 0 1 5.07 11H5a1 1 0 0 1 0-2h.07A7.002 7.002 0 0 1 11 5.07V5a1 1 0 0 1 2 0v.07A7.002 7.002 0 0 1 18.93 11H19a1 1 0 0 1 0 2h-.07A7.002 7.002 0 0 1 13 16.93z"></path></svg></button>
+    <button class="nav-item active" onclick="switchTab('learn', this)"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"></rect><line x1="7" y1="8" x2="17" y2="8"></line><line x1="7" y1="12" x2="13" y2="12"></line></svg></button>
+    <button class="nav-item" onclick="switchTab('quiz', this)"><svg viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></button>
+    <button class="nav-item" onclick="switchTab('search', this)"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button>
+    <button class="nav-item" onclick="switchTab('settings', this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button>
+    <button class="nav-item hidden" id="m-nav-admin-btn" onclick="switchTab('admin', this)"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 14.93V17a1 1 0 0 1-2 0v-.07A7.002 7.002 0 0 1 5.07 11H5a1 1 0 0 1 0-2h.07A7.002 7.002 0 0 1 11 5.07V5a1 1 0 0 1 2 0v.07A7.002 7.002 0 0 1 18.93 11H19a1 1 0 0 1 0 2h-.07A7.002 7.002 0 0 1 13 16.93z"></path></svg></button>
 </nav>
 
 <script>
-// 基礎本機資料庫（自帶台南晶英完整內容，自動判斷 input_mode）
-const initialBaseDb = [
-  { code: "VC", cn: "房間已清潔，待查房，不可入住", cat: "房態排房", type: "opera", en: "Vacant Clean", input_mode: "type" },
-  { code: "VI", cn: "房間已完成，可入住", cat: "房態排房", type: "opera", en: "Vacant Inspected", input_mode: "type" },
-  { code: "VD", cn: "髒房尚不可入住", cat: "房態排房", type: "opera", en: "Vacant Dirty", input_mode: "type" },
-  { code: "VP", cn: "待修繕", cat: "房態排房", type: "opera", en: "Vacant Pickup", input_mode: "type" },
-  { code: "OOO", cn: "當日無法販售之房間", cat: "房態排房", type: "opera", en: "Out of Order", input_mode: "type" },
-  { code: "OOS", cn: "今日可售，但要晚一點", cat: "房態排房", type: "opera", en: "Out of Service", input_mode: "type" },
-  { code: "CSP", cn: "VIP 重要貴賓", cat: "貴賓客情", type: "opera", en: "Most Important Guest", input_mode: "type" },
-  { code: "SP", cn: "回流客，6-12次", cat: "貴賓客情", type: "opera", en: "Special Guest", input_mode: "type" },
-  { code: "SPS", cn: "回流客，12次以上", cat: "貴賓客情", type: "opera", en: "Very Special Guest", input_mode: "type" },
-  { code: "3401", cn: "禮賓司", cat: "飯店分機", type: "ext", en: "", input_mode: "type" },
-  { code: "3424", cn: "禮賓司辦公室", cat: "飯店分機", type: "ext", en: "", input_mode: "type" },
-  { code: "3425", cn: "代客停車員", cat: "飯店分機", type: "ext", en: "", input_mode: "type" },
-  { code: "3225", cn: "水晶廊", cat: "飯店分機", type: "ext", en: "", input_mode: "type" },
-  { code: "3410", cn: "值班經理", cat: "飯店分機", type: "ext", en: "", input_mode: "type" },
-  { code: "0930 915 993", cn: "禮賓司公務機", cat: "飯店手機", type: "ext", en: "", input_mode: "type" },
-  { code: "全館客房總數？", cn: "255間", cat: "房型知識", type: "room", en: "", input_mode: "type" },
-  { code: "一般樓層是幾樓？", cn: "5-11樓", cat: "房型知識", type: "room", en: "", input_mode: "type" },
-  { code: "行政樓層是幾樓？", cn: "12-14樓", cat: "房型知識", type: "room", en: "", input_mode: "type" },
-  { code: "一大床尺寸？", cn: "180*200cm", cat: "房型知識", type: "room", en: "", input_mode: "type" },
-  { code: "小熊房房號有哪些？", cn: "1111、1117、1120、1121、1124、1125", cat: "房型知識", type: "room", en: "", input_mode: "flip" },
-  { code: "Robin's牛排館營業時段？", cn: "早餐 06:30-10:30\n午餐 12:00-17:00\n晚餐 18:00-22:00", cat: "館內餐廳", type: "restaurant", en: "RB", input_mode: "flip" },
-  { code: "水晶廊最後點餐時間？", cn: "營業時間 17:00-00:00\n最後點餐 22:30", cat: "館內餐廳", type: "restaurant", en: "GH", input_mode: "flip" },
-  { code: "行政酒廊酒精供應規則？", cn: "20:00前無酒精，僅 20:00-22:00 (Happy Hour) 供應酒精飲品", cat: "館內餐廳", type: "restaurant", en: "SL", input_mode: "flip" }
+// 全量完整資料庫（150+ 筆資料全數收錄）
+const fullOriginalDb = [
+  // 1. 分機與電話表 (ext)
+  ["06 213 6290", "台南晶英酒店人工", "飯店手機", "ext", ""],
+  ["06 390 8088", "台南晶英酒店AI", "飯店手機", "ext", ""],
+  ["0930 915 993", "禮賓司公務機", "飯店手機", "ext", ""],
+  ["3103", "李總秘書 Shelly", "飯店分機", "ext", ""],
+  ["3126", "訂席主任-吳典彥Betty", "飯店分機", "ext", ""],
+  ["3156", "大中餐廳訂席-黃意珊Sandy", "飯店分機", "ext", ""],
+  ["3212/3213", "RB領台", "飯店分機", "ext", ""],
+  ["3214", "宴會廳秘書-丁若雅Rita", "飯店分機", "ext", ""],
+  ["3215", "外賣中心", "飯店分機", "ext", ""],
+  ["3225", "水晶廊", "飯店分機", "ext", ""],
+  ["3236/3237", "晶英軒領台", "飯店分機", "ext", ""],
+  ["3400", "資深客務部經理-郭芳辰Sharon", "飯店分機", "ext", ""],
+  ["3401", "禮賓司", "飯店分機", "ext", ""],
+  ["3402/3403/3404", "櫃檯接待", "飯店分機", "ext", ""],
+  ["3405", "櫃檯出納", "飯店分機", "ext", ""],
+  ["3409", "櫃檯主任", "飯店分機", "ext", ""],
+  ["3410", "值班經理", "飯店分機", "ext", ""],
+  ["3411", "客務部經理-楊仕榮Alex", "飯店分機", "ext", ""],
+  ["3424", "禮賓司辦公室", "飯店分機", "ext", ""],
+  ["3425", "代客停車員", "飯店分機", "ext", ""],
+  ["3431", "行政樓層接待", "飯店分機", "ext", ""],
+  ["3432", "行政樓層貴賓廊", "飯店分機", "ext", ""],
+  ["3461", "健身中心櫃檯", "飯店分機", "ext", ""],
+  ["3505/3506", "房務部辦事員", "飯店分機", "ext", ""],
+  ["3600", "人資主任-蔡雅慧Fanny", "飯店分機", "ext", ""],
+  ["3700", "客房部總監-林竑伸Jason", "飯店分機", "ext", ""],
+  ["3902", "安全部辦公室", "飯店分機", "ext", ""],
+  ["**333", "城市車旅停管中心", "飯店分機", "ext", ""],
+  ["**777", "維修報修", "飯店分機", "ext", ""],
+
+  // 2. OPERA 代碼 (opera)
+  ["AC", "空氣清淨機", "客房備品", "opera", "Air Cleaner"],
+  ["ADJ", "調整", "帳務訂房", "opera", "Adjustment"],
+  ["AMD", "更改", "帳務訂房", "opera", "Amend"],
+  ["AR", "相鄰房", "房態排房", "opera", "Adjoining Room"],
+  ["AT", "接送（機場到飯店）", "前台禮賓", "opera", "Arrival Transfer"],
+  ["BAG", "托特包（特殊專案贈送）", "客房備品", "opera", ""],
+  ["BB", "嬰兒澡盆（含小水勺+小板凳）", "客房備品", "opera", "Baby Bathtub"],
+  ["BC", "嬰兒床", "客房備品", "opera", "Baby Cot"],
+  ["BEAR", "泰迪熊（特殊專案贈送）", "客房備品", "opera", ""],
+  ["BF", "早餐", "帳務訂房", "opera", "Breakfast"],
+  ["BL", "黑名單", "貴賓客情", "opera", "Black Listed"],
+  ["BT/_", "公司付款", "帳務訂房", "opera", "Bill to Company"],
+  ["CB", "多寶閣（六種點心）", "客房備品", "opera", "Curio Box"],
+  ["CFM", "確認", "帳務訂房", "opera", "Confirm"],
+  ["C/I", "登記入住 16:00", "前台禮賓", "opera", "Check In"],
+  ["C/O", "登記退房 12:00", "前台禮賓", "opera", "Check Out"],
+  ["CR", "邊間", "房態排房", "opera", "Corner Room"],
+  ["CSP", "VIP 重要貴賓", "貴賓客情", "opera", "Most Important Guest"],
+  ["CV/_", "收住宿券付款", "帳務訂房", "opera", "Collect Voucher"],
+  ["DB", "加臥鋪床", "客房備品", "opera", "Day Bed"],
+  ["DCRC", "除非可安排相同條件房型", "房態排房", "opera", "Do Not Change Room"],
+  ["DCRM", "不可換房", "房態排房", "opera", "Do Not Change Room / Superblock"],
+  ["DF", "不同樓層", "房態排房", "opera", "Different Floor"],
+  ["DND", "請勿打擾", "前台禮賓", "opera", "Do Not Disturb"],
+  ["DT", "接送（飯店到機場）", "前台禮賓", "opera", "Departure Transportation"],
+  ["DURA", "住宿期間（宿期）", "帳務訂房", "opera", "Duration"],
+  ["DUVET", "單人被", "客房備品", "opera", ""],
+  ["EP", "環保專案（續住不打掃）", "帳務訂房", "opera", "Environmental Protection Package"],
+  ["ETA", "預計抵達時間", "前台禮賓", "opera", "Estimated Time of Arrival"],
+  ["ETD", "預計出發時間", "前台禮賓", "opera", "Estimated Time of Departure"],
+  ["ETR", "護送客人至房間", "前台禮賓", "opera", "Escort To Room"],
+  ["EXI", "快速進房，護送至房間辦理", "前台禮賓", "opera", "Express Check In"],
+  ["EXO", "快速退房", "前台禮賓", "opera", "Express Check Out"],
+  ["FC", "遠離邊間", "房態排房", "opera", "Far away Corner"],
+  ["FE", "遠離電梯", "房態排房", "opera", "Far away from Elevator"],
+  ["FOC", "免費房（團體16送1）", "帳務訂房", "opera", "Free of Charge"],
+  ["FUG", "強制升等", "房態排房", "opera", "Force Upgrade"],
+  ["FYI", "轉告同仁事項用語", "前台禮賓", "opera", "For Your Information"],
+  ["GTA", "旅行社保證訂房", "帳務訂房", "opera", "Guarantee by Travel Agent"],
+  ["GTD", "保證訂房", "帳務訂房", "opera", "Guaranteed"],
+  ["HEAT", "暖氣", "客房備品", "opera", "Heater"],
+  ["HF", "高樓層", "房態排房", "opera", "High Floor"],
+  ["HR", "Happy Hour", "帳務訂房", "opera", "Happy Hour"],
+  ["IB", "熨斗跟燙板", "客房備品", "opera", "Iron & Iron Board"],
+  ["ID", "身分證/居留證", "前台禮賓", "opera", "Identification Card"],
+  ["IFM", "告知/通知", "前台禮賓", "opera", "Inform"],
+  ["I/H", "目前住在館內", "前台禮賓", "opera", "In House"],
+  ["IN", "相通的房間", "房態排房", "opera", "Interconnecting Room"],
+  ["INCO", "查無此人", "前台禮賓", "opera", "Incognito"],
+  ["INV", "發票", "帳務訂房", "opera", "Invoice"],
+  ["KID", "兒童拖鞋", "客房備品", "opera", "Kids Amenities"],
+  ["KL", "嬰兒肥皂", "客房備品", "opera", "KLORANE"],
+  ["L&F", "遺失物", "前台禮賓", "opera", "Lost and Found"],
+  ["Latex Pillow", "乳膠枕", "客房備品", "opera", ""],
+  ["LF", "低樓層", "房態排房", "opera", "Low Floor"],
+  ["M/C", "晨喚", "前台禮賓", "opera", "Morning Call"],
+  ["M&G", "請值班經理向客人打招呼", "前台禮賓", "opera", "Meet & Greet by DM"],
+  ["MM", "桌上型放大化妝鏡", "客房備品", "opera", "Makeup Mirror"],
+  ["MOD", "駐館主管", "前台禮賓", "opera", "Manager on Duty"],
+  ["NC", "沒有訂房單", "帳務訂房", "opera", "No Correspondence"],
+  ["N/C", "名片", "前台禮賓", "opera", "Name Card"],
+  ["NE", "靠近電梯", "房態排房", "opera", "Near Elevator"],
+  ["NS", "非吸菸房", "房態排房", "opera", "Non Smoking"],
+  ["N/S", "沒有出現的訂房客人", "帳務訂房", "opera", "No Show"],
+  ["O/A", "客人自付款項", "帳務訂房", "opera", "Guest Own Account"],
+  ["OOO", "當日無法販售之房間", "房態排房", "opera", "Out of Order"],
+  ["OOS", "今日可售，但要晚一點", "房態排房", "opera", "Out of Service"],
+  ["P/B", "（誰）要幫該房客付款", "帳務訂房", "opera", "Pay By"],
+  ["P/F", "幫（誰）付款", "帳務訂房", "opera", "Pay For"],
+  ["PKG", "專案贈禮", "帳務訂房", "opera", "Package Gift"],
+  ["PS", "求婚/蜜月佈置（含天鵝毛巾、花瓣）", "客房備品", "opera", "Proposal Setup"],
+  ["PV", "公園景觀", "房態排房", "opera", "Park View"],
+  ["QQ", "館內其他消費單據", "帳務訂房", "opera", "All Outlet Check Requests"],
+  ["QR", "安靜房", "房態排房", "opera", "Quiet Room"],
+  ["RC/_", "旅行社結帳/OTA", "帳務訂房", "opera", "RM Bill to Travel Agent"],
+  ["RED", "紅酒", "客房備品", "opera", "House Red Wine"],
+  ["RQ", "要求", "前台禮賓", "opera", "Request"],
+  ["RV#", "訂房編號", "帳務訂房", "opera", "Reservation Number"],
+  ["SAL", "浴鹽", "客房備品", "opera", "Beth Salt"],
+  ["SBF", "行政樓層早餐", "帳務訂房", "opera", "Silks Lounge Breakfast"],
+  ["SCRN", "指接聽指定人士的來電", "貴賓客情", "opera", "Screen Call"],
+  ["SF", "同樓層", "房態排房", "opera", "Same Floor"],
+  ["SJ", "記者", "貴賓客情", "opera", "Journalist"],
+  ["SL", "行政專案", "帳務訂房", "opera", "Silks Lounge PKG"],
+  ["SMK", "有吸菸習慣的客人", "貴賓客情", "opera", "Smoker"],
+  ["SP", "回流客，6-12次", "貴賓客情", "opera", "Special Guest"],
+  ["SPS", "回流客，12次以上", "貴賓客情", "opera", "Very Special Guest"],
+  ["SR", "非行政專案但享行政禮遇", "貴賓客情", "opera", "Silks Resident"],
+  ["SSP", "極敏感客人", "貴賓客情", "opera", "Very Sensitive Guest"],
+  ["S/W", "同住登記", "帳務訂房", "opera", "Share With"],
+  ["SZ", "消毒鍋", "客房備品", "opera", "Sterilizer"],
+  ["TB", "塌塌米床", "客房備品", "opera", "Tatami Bed"],
+  ["TD", "開夜床服務", "客房備品", "opera", "Turn Down Service"],
+  ["TEA", "烏龍茶葉罐", "客房備品", "opera", "Oolong Tea Gift"],
+  ["TF", "物品轉交", "客房備品", "opera", "Transfer For"],
+  ["TI", "同業", "貴賓客情", "opera", "Travel Industry"],
+  ["TKS", "票券", "帳務訂房", "opera", ""],
+  ["VI", "房間已完成，可入住", "房態排房", "opera", "Vacant Inspected"],
+  ["VC", "房間已清潔，待查房，不可入住", "房態排房", "opera", "Vacant Clean"],
+  ["VD", "髒房尚不可入住", "房態排房", "opera", "Vacant Dirty"],
+  ["VP", "待修繕", "房態排房", "opera", "Vacant Pickup"],
+  ["W/L", "候補名單", "帳務訂房", "opera", "Waiting List"],
+  ["WR", "囍房佈置（天鵝毛巾、門囍、水12瓶）", "客房備品", "opera", "Wedding Room Setup"],
+  ["XB", "行軍床", "客房備品", "opera", "Extra Bed"],
+
+  // 3. 客房與房型資訊 (room)
+  ["DK", "海東客房（一大床 180×200cm，12坪）", "房型規格", "room", "Deluxe King"],
+  ["DF", "海東家庭客房（兩中床 每張150×200cm，12坪）", "房型規格", "room", "Deluxe Family"],
+  ["HW", "海東雙床客房（兩小床 每張120×200cm，12坪）", "房型規格", "room", "Holly Wood"],
+  ["JK", "小西門套房（一大床 180×200cm，16坪）", "房型規格", "room", "Junior Suite King"],
+  ["JF", "小西門家庭套房（兩中床 每張150×200cm，16坪）", "房型規格", "room", "Junior Suite Family"],
+  ["JKF", "小西門和洋套房（一大床 180×200cm，16坪，可加TB-T）", "房型規格", "room", "Junior Suite King Family"],
+  ["CS", "府城套房（一大床 180×200cm，22坪）", "房型規格", "room", "Corner Suite"],
+  ["全館客房總數？", "255間", "房型知識", "room", ""],
+  ["一般樓層是幾樓？", "5-11樓", "房型知識", "room", ""],
+  ["行政樓層是幾樓？", "12-14樓", "房型知識", "room", ""],
+  ["一大床尺寸？", "180*200cm", "房型知識", "room", ""],
+  ["兩中床尺寸（每張）？", "150*200cm", "房型知識", "room", ""],
+  ["兩小床尺寸（每張）？", "120*200cm", "房型知識", "room", ""],
+  ["小熊房房號有哪些？", "1111、1117、1120、1121、1124、1125", "房型知識", "room", ""],
+  ["無障礙房房號？", "609、909、1209", "房型知識", "room", ""],
+  ["機房房號？", "512", "房型知識", "room", ""],
+  ["李總房間號碼？", "812", "房型知識", "room", ""],
+  ["哪個房型沒有浴缸？", "HT無障礙房（其餘房型皆有浴缸）", "房型知識", "room", ""],
+
+  // 4. 餐廳與設施 (restaurant)
+  ["Robin's牛排館營業時段？", "早餐 06:30-10:30\n午餐 12:00-17:00\n晚餐 18:00-22:00", "館內餐廳", "restaurant", "RB"],
+  ["Robin's牛排館最後點餐？", "午餐 14:00 / 悠享 15:00 / 晚餐 21:00", "館內餐廳", "restaurant", "RB"],
+  ["Robin's鐵板燒營業時段？", "午餐 12:00-15:00\n晚餐 18:00-22:00", "館內餐廳", "restaurant", "RB"],
+  ["Robin's鐵板燒最後點餐？", "午餐 13:30 / 晚餐 20:30", "館內餐廳", "restaurant", "RB"],
+  ["無隅Infinity營業時段與公休？", "12:00-15:00 / 18:00-22:00\n固定週一、週二公休", "館內餐廳", "restaurant", ""],
+  ["外賣中心營業時間？", "10:00-21:00（20:00後打折）", "館內餐廳", "restaurant", ""],
+  ["茶薈T-Bar營業時間？", "10:00-18:00", "館內餐廳", "restaurant", ""],
+  ["晶英軒營業時段？", "午餐 12:00-14:30\n晚餐 18:00-21:30", "館內餐廳", "restaurant", "SH"],
+  ["晶英軒最後點餐？", "午餐 14:00 / 晚餐 21:00", "館內餐廳", "restaurant", "SH"],
+  ["府城茶樓營業時段？", "第一時段 06:30-08:30\n第二時段 09:00-11:00\n第三時段 11:30-13:30", "館內餐廳", "restaurant", ""],
+  ["府城茶樓最後點餐規則？", "各時段結束前30分鐘（08:00、10:30、13:00）", "館內餐廳", "restaurant", ""],
+  ["水晶廊營業時間與最後點餐？", "營業時間 17:00-00:00\n最後點餐 22:30", "館內餐廳", "restaurant", "GH"],
+  ["4F館內設施開放時間？", "06:30-22:00（最後入場 21:30）\n泳池 12:00-13:00 水質維護關閉", "館內設施", "restaurant", ""],
+  ["行政酒廊開放時間與早餐？", "全天 06:30-22:00\n早餐 07:30-10:30 (需預訂)", "館內餐廳", "restaurant", "SL"],
+  ["行政酒廊酒精供應規則？", "20:00前無酒精，僅 20:00-22:00 (Happy Hour) 供應酒精飲品", "館內餐廳", "restaurant", "SL"],
+  ["餐廳消費滿額停車折抵？", "當日滿$1,000折1小時，額外加購$50/小時", "停車資訊", "restaurant", ""]
 ];
 
 let appDb = [];
-let userRole = 'staff'; // 'staff' 或 'admin'
+let userRole = 'staff';
 let currentCard = null;
 let currentScope = 'all';
+let stats = { total: 0, correct: 0, streak: 0 };
 let favs = JSON.parse(localStorage.getItem('concierge_favs') || '[]');
 let wrongs = JSON.parse(localStorage.getItem('concierge_wrongs') || '[]');
 let apiUrl = localStorage.getItem('concierge_api_url') || '';
 
-// 登入驗證
 function checkAuthPin() {
     const pin = document.getElementById('pin-input').value.trim();
     if (pin === '9999') {
         userRole = 'admin';
-        document.getElementById('user-role-label').innerText = '主管管理員';
-        document.getElementById('user-role-label').style.background = 'rgba(48, 209, 88, 0.18)';
-        document.getElementById('user-role-label').style.color = '#30d158';
-        document.getElementById('nav-admin-btn').classList.remove('hidden');
+        document.getElementById('role-tag-m').innerText = '主管管理員';
+        document.getElementById('role-tag-m').style.color = '#30d158';
+        document.getElementById('d-nav-admin-btn').classList.remove('hidden');
+        document.getElementById('m-nav-admin-btn').classList.remove('hidden');
         document.getElementById('auth-modal').style.display = 'none';
         initApp();
     } else if (pin === '1688') {
         userRole = 'staff';
-        document.getElementById('user-role-label').innerText = '同仁練習';
-        document.getElementById('nav-admin-btn').classList.add('hidden');
+        document.getElementById('role-tag-m').innerText = '同仁練習模式';
+        document.getElementById('d-nav-admin-btn').classList.add('hidden');
+        document.getElementById('m-nav-admin-btn').classList.add('hidden');
         document.getElementById('auth-modal').style.display = 'none';
         initApp();
     } else {
-        alert('通行碼錯誤，請確認（同仁: 1688 ｜ 主管: 9999）');
+        alert('通行碼錯誤！（同仁: 1688 ｜ 主管: 9999）');
     }
 }
 
@@ -318,29 +541,44 @@ function reLogin() {
 }
 
 function initApp() {
-    const saved = localStorage.getItem('concierge_db');
+    const saved = localStorage.getItem('concierge_full_db');
     if (saved) {
-        try { appDb = JSON.parse(saved); } catch(e) { appDb = initialBaseDb; }
+        try { appDb = JSON.parse(saved); } catch(e) { appDb = convertRaw(fullOriginalDb); }
     } else {
-        appDb = initialBaseDb;
+        appDb = convertRaw(fullOriginalDb);
     }
     document.getElementById('api-url-input').value = apiUrl;
     nextCard();
     nextQuizQuestion();
     renderSearchList();
+    renderMiniSearch();
+    updateStatsUI();
     if (userRole === 'admin') renderAdminList();
 }
 
-function saveLocalDb() {
-    localStorage.setItem('concierge_db', JSON.stringify(appDb));
+function convertRaw(rawList) {
+    return rawList.map(r => ({
+        code: r[0],
+        cn: r,
+        cat: r,
+        type: r[3],
+        en: r[4] || '',
+        input_mode: (r.length > 15 || r[0].includes('？') || r[0].includes('時段') || r[0].includes('哪些')) ? 'flip' : 'type'
+    }));
 }
 
-// 監聽鍵盤避免遮擋
-const typeInput = document.getElementById('type-input');
-typeInput.addEventListener('focus', () => document.body.classList.add('keyboard-open'));
-typeInput.addEventListener('blur', () => document.body.classList.remove('keyboard-open'));
+function saveLocalDb() {
+    localStorage.setItem('concierge_full_db', JSON.stringify(appDb));
+}
 
-// 卡片學習邏輯（短答案打字＋長文本翻牌自評）
+function updateStatsUI() {
+    const acc = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
+    document.getElementById('d-st-acc').innerText = `${acc}%`;
+    document.getElementById('d-st-streak').innerText = stats.streak;
+    document.getElementById('d-st-wrong').innerText = wrongs.length;
+    document.getElementById('d-st-fav').innerText = favs.length;
+}
+
 function getFilteredPool() {
     let pool = appDb;
     if (currentScope !== 'all') {
@@ -359,12 +597,11 @@ function nextCard() {
     document.getElementById('card-badge').innerText = `【${currentCard.cat}】`;
     document.getElementById('card-ans-code').innerText = currentCard.code;
     document.getElementById('card-ans-cn').innerText = currentCard.cn;
-    document.getElementById('card-ans-en').innerText = currentCard.en || '';
+    document.getElementById('card-ans-en').innerText = currentCard.en ? `(${currentCard.en})` : '';
 
     const isFav = favs.includes(currentCard.code);
     document.getElementById('card-star').classList.toggle('active', isFav);
 
-    // 判斷第 2 點：打字題 vs 翻卡題
     const isFlip = currentCard.input_mode === 'flip' || currentCard.cn.length > 15;
     if (isFlip) {
         document.getElementById('type-action-area').classList.add('hidden');
@@ -377,6 +614,7 @@ function nextCard() {
         document.getElementById('next-card-btn').classList.add('hidden');
         document.getElementById('type-input').style.display = 'block';
         document.getElementById('card-mode-hint').innerText = '輸入答案後按 Enter 翻牌 👆';
+        if (window.innerWidth >= 860) document.getElementById('type-input').focus();
     }
 }
 
@@ -384,11 +622,10 @@ function flipCurrentCard() {
     document.getElementById('main-card').classList.toggle('flipped');
 }
 
-// 短答案打字提交
 function submitAnswer() {
     const val = document.getElementById('type-input').value.trim();
     if (!val) return;
-    
+    stats.total++;
     const isCorrect = (val.toLowerCase() === currentCard.cn.toLowerCase()) || 
                       (val.toLowerCase() === currentCard.code.toLowerCase());
     
@@ -396,22 +633,30 @@ function submitAnswer() {
     document.getElementById('next-card-btn').classList.remove('hidden');
     document.getElementById('type-input').style.display = 'none';
 
-    if (!isCorrect) {
-        if (!wrongs.includes(currentCard.code)) wrongs.push(currentCard.code);
-    } else {
+    if (isCorrect) {
+        stats.correct++;
+        stats.streak++;
         wrongs = wrongs.filter(x => x !== currentCard.code);
+    } else {
+        stats.streak = 0;
+        if (!wrongs.includes(currentCard.code)) wrongs.push(currentCard.code);
     }
     localStorage.setItem('concierge_wrongs', JSON.stringify(wrongs));
+    updateStatsUI();
 }
 
-// 翻牌自評（已掌握 / 加強）
 function recordSelfEval(known) {
-    if (!known) {
-        if (!wrongs.includes(currentCard.code)) wrongs.push(currentCard.code);
-    } else {
+    stats.total++;
+    if (known) {
+        stats.correct++;
+        stats.streak++;
         wrongs = wrongs.filter(x => x !== currentCard.code);
+    } else {
+        stats.streak = 0;
+        if (!wrongs.includes(currentCard.code)) wrongs.push(currentCard.code);
     }
     localStorage.setItem('concierge_wrongs', JSON.stringify(wrongs));
+    updateStatsUI();
     nextCard();
 }
 
@@ -423,9 +668,9 @@ function toggleFav(e) {
     else favs.push(currentCard.code);
     localStorage.setItem('concierge_favs', JSON.stringify(favs));
     document.getElementById('card-star').classList.toggle('active', favs.includes(currentCard.code));
+    updateStatsUI();
 }
 
-// 四選一測驗
 function nextQuizQuestion() {
     const pool = getFilteredPool();
     const q = pool[Math.floor(Math.random() * pool.length)];
@@ -459,7 +704,6 @@ function nextQuizQuestion() {
     });
 }
 
-// 速查搜尋
 function renderSearchList() {
     const q = document.getElementById('search-input').value.toLowerCase();
     const container = document.getElementById('search-list');
@@ -473,11 +717,26 @@ function renderSearchList() {
     });
 }
 
-// 切換頁籤
+function renderMiniSearch() {
+    const q = (document.getElementById('pc-mini-search')?.value || '').toLowerCase();
+    const container = document.getElementById('pc-mini-list');
+    if (!container) return;
+    container.innerHTML = '';
+    const filtered = appDb.filter(x => x.code.toLowerCase().includes(q) || x.cn.toLowerCase().includes(q)).slice(0, 8);
+    filtered.forEach(x => {
+        const div = document.createElement('div');
+        div.style.cssText = 'background:var(--input-bg); border-radius:10px; padding:8px 12px; font-size:12px; display:flex; justify-content:space-between; align-items:center;';
+        div.innerHTML = `<b style="color:var(--primary);">${x.code}</b><span style="color:var(--text-sub); margin-left:8px; text-overflow:ellipsis; overflow:hidden; white-space:nowrap; max-width:180px;">${x.cn}</span>`;
+        container.appendChild(div);
+    });
+}
+
 function switchTab(tab, btn) {
     document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.side-nav-btn').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('.view-content').forEach(el => el.classList.remove('active'));
-    btn.classList.add('active');
+    
+    if (btn) btn.classList.add('active');
     document.getElementById(`view-${tab}`).classList.add('active');
     if (tab === 'search') renderSearchList();
     if (tab === 'admin') renderAdminList();
@@ -485,21 +744,21 @@ function switchTab(tab, btn) {
 
 function setScope(scope) {
     currentScope = scope;
-    alert(`已切換題庫範圍為：${scope}`);
+    alert(`已切換範圍：${scope}`);
     nextCard();
     nextQuizQuestion();
 }
 
 function resetStats() {
-    if (confirm('確定要清空作答歷史與錯題本嗎？')) {
-        favs = []; wrongs = [];
+    if (confirm('確定清空個人紀錄嗎？')) {
+        favs = []; wrongs = []; stats = { total: 0, correct: 0, streak: 0 };
         localStorage.removeItem('concierge_favs');
         localStorage.removeItem('concierge_wrongs');
-        alert('已清空完畢！');
+        updateStatsUI();
+        alert('已重置！');
     }
 }
 
-// 主管後台與 Google 試算表雲端同步
 function saveApiUrl() {
     apiUrl = document.getElementById('api-url-input').value.trim();
     localStorage.setItem('concierge_api_url', apiUrl);
@@ -510,36 +769,14 @@ function renderAdminList() {
     container.innerHTML = '';
     appDb.forEach((item, idx) => {
         const div = document.createElement('div');
-        div.className = 'admin-table-item';
-        div.innerHTML = `<div><b>${item.code}</b><div style="font-size:12px;color:var(--text-sub);">${item.cn}</div></div><button onclick="deleteItem(${idx})" style="background:var(--danger);color:#fff;border:none;padding:4px 8px;border-radius:8px;font-size:12px;cursor:pointer;">刪除</button>`;
+        div.style.cssText = 'background:var(--input-bg); border:1px solid var(--border-color); border-radius:12px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center;';
+        div.innerHTML = `<div><b style="color:var(--primary);">${item.code}</b> <span style="font-size:11px;color:var(--text-sub);">[${item.cat}]</span><div style="font-size:12px;color:var(--text-main); margin-top:2px;">${item.cn}</div></div>`;
         container.appendChild(div);
     });
 }
 
-function deleteItem(idx) {
-    if (confirm(`確定要刪除「${appDb[idx].code}」嗎？`)) {
-        appDb.splice(idx, 1);
-        saveLocalDb();
-        renderAdminList();
-    }
-}
-
-function openAddModal() {
-    const code = prompt('請輸入代碼或題目名稱（如 DK, 3215 或 營業時間）：');
-    if (!code) return;
-    const cn = prompt('請輸入中文意思或規範答案：');
-    if (!cn) return;
-    const cat = prompt('請輸入分類（如 房態排房、飯店分機、館內餐廳）：') || '一般';
-    const isLong = cn.length > 15;
-    appDb.unshift({ code, cn, cat, type: 'opera', en: '', input_mode: isLong ? 'flip' : 'type' });
-    saveLocalDb();
-    renderAdminList();
-    alert('新增成功！');
-}
-
-// 雲端同步功能
 async function syncFromCloud() {
-    if (!apiUrl) return alert('請先填入 Google Apps Script 網頁應用程式網址！');
+    if (!apiUrl) return alert('請先填入 Google Apps Script 網址！');
     const statusTxt = document.getElementById('sync-status-txt');
     statusTxt.innerText = '狀態：正在從雲端抓取...';
     try {
@@ -549,39 +786,55 @@ async function syncFromCloud() {
             appDb = json.data;
             saveLocalDb();
             renderAdminList();
-            statusTxt.innerText = `狀態：已與雲端同步（共 ${appDb.length} 筆）`;
-            alert('同步成功！');
-        } else {
-            alert('雲端試算表尚無資料或格式不符');
+            renderSearchList();
+            statusTxt.innerText = `狀態：已同步 4 個工作表（共 ${appDb.length} 筆）`;
+            alert(`🎉 成功同步！已從試算表載入 ${appDb.length} 筆資料！`);
         }
     } catch(e) {
-        alert('連線失敗，請檢查網址或權限設定：' + e);
+        alert('同步出錯：' + e);
         statusTxt.innerText = '狀態：連線失敗';
     }
 }
 
 async function pushToCloud() {
-    if (!apiUrl) return alert('請先填入 Google Apps Script 網頁應用程式網址！');
-    if (!confirm('確定要將手機目前的題庫完整覆寫至 Google 試算表嗎？')) return;
+    if (!apiUrl) return alert('請先填入 Google Apps Script 網址！');
+    if (!confirm(`確定要將目前的 ${appDb.length} 筆完整題庫自動分類寫入 Google 試算表（OPERA縮寫、分機表、客房資訊、餐廳資訊 4 個分頁）嗎？`)) return;
+    
+    const statusTxt = document.getElementById('sync-status-txt');
+    statusTxt.innerText = '狀態：正在分流寫入 4 個工作表...';
+
     try {
         const res = await fetch(apiUrl, {
             method: 'POST',
-            body: JSON.stringify({ adminPin: '9999', action: 'sync_all', items: appDb })
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({ adminPin: '9999', items: appDb })
         });
         const json = await res.json();
         if (json.status === 'success') {
-            alert(`成功推送 ${json.count} 筆資料至 Google 試算表！`);
+            alert(`🎉 成功分流寫入 ${json.count} 筆資料至 Google 試算表！\n請回試算表重新整理查看 4 個工作表！`);
+            statusTxt.innerText = `狀態：已成功寫入 4 個工作表（共 ${json.count} 筆）`;
         } else {
             alert('推送失敗：' + json.message);
         }
     } catch(e) {
         alert('推送出錯：' + e);
+        statusTxt.innerText = '狀態：推送出錯';
     }
 }
 
 function toggleTheme() {
     document.body.classList.toggle('light-mode');
 }
+
+// 監聽鍵盤 Enter
+window.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        const nextCardBtn = document.getElementById('next-card-btn');
+        if (!nextCardBtn.classList.contains('hidden')) {
+            nextCard();
+        }
+    }
+});
 </script>
 </body>
 </html>

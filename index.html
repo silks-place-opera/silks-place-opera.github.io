@@ -910,11 +910,8 @@ let lastQuizAnswerTime = 0;
 let isQuizCooldown = false;
 let currentQuiz = null;
 let currentQuizType = 'code2cn';
-// 直接將你的專屬 API 網址內建為預設值，手機電腦不用再手動輸入！
-const DEFAULT_API_URL = "https://script.google.com/macros/s/AKfycbyoiNiSEnc0J_J7kdyXXGU_z6EuDFO4iSPAFRRHpJCzQTC4melibDB6jHqMsBMYWJ5f/exec";
-let apiUrl = localStorage.getItem('concierge_api_url') || DEFAULT_API_URL;
+let apiUrl = localStorage.getItem('concierge_api_url') || '';
 
-// 預設通行碼（若雲端有更新，會被雲端即時覆蓋）
 let authConfig = JSON.parse(localStorage.getItem('concierge_auth_pins') || '{"staffPin":"1688","adminPin":"9999"}');
 
 let state = {
@@ -980,64 +977,16 @@ function initApp() {
     renderMiniSearch();
     renderSearchList();
     if (userRole === 'admin') renderAdminList();
-
-    fetchCloudConfigSilently();
 }
 
-// 儲存新密碼：同時儲存到本地，並【即時推送到 Google 試算表雲端】！
-async function saveNewPins() {
+function saveNewPins() {
     const sPin = document.getElementById('cfg-staff-pin').value.trim();
     const aPin = document.getElementById('cfg-admin-pin').value.trim();
     if (!sPin || !aPin) return alert('通行碼不得為空！');
-
     authConfig.staffPin = sPin;
     authConfig.adminPin = aPin;
     localStorage.setItem('concierge_auth_pins', JSON.stringify(authConfig));
-
-    // 自動同步到雲端試算表
-    try {
-        const res = await fetch(apiUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify({ action: 'update_pins', staffPin: sPin, adminPin: aPin })
-        });
-        const json = await res.json();
-        if (json.status === 'success') {
-            alert(`🎉 密碼已更新並同步至雲端！\n同仁密碼改為：${sPin}\n主管密碼改為：${aPin}\n所有同仁的手機重新整理後都會立即同步！`);
-        } else {
-            alert('本地已更新，但雲端同步失敗：' + json.message);
-        }
-    } catch(e) {
-        alert('本地已更新，但連線雲端失敗（請檢查網路）：' + e);
-    }
-}
-
-// 每次 App 啟動時，自動到雲端檢查有沒有最新的密碼與題庫！
-async function fetchCloudConfigSilently() {
-    if (!apiUrl) return;
-    try {
-        const res = await fetch(apiUrl);
-        const json = await res.json();
-        if (json.status === 'success') {
-            // 同步雲端最新密碼
-            if (json.pins && json.pins.staffPin) {
-                authConfig = json.pins;
-                localStorage.setItem('concierge_auth_pins', JSON.stringify(authConfig));
-                document.getElementById('cfg-staff-pin').value = authConfig.staffPin;
-                document.getElementById('cfg-admin-pin').value = authConfig.adminPin;
-            }
-            // 同步雲端題庫
-            if (Array.isArray(json.data) && json.data.length > 0) {
-                db = json.data;
-                localStorage.setItem('opera_custom_db', JSON.stringify(db));
-                renderAdminList();
-                renderSearchList();
-                renderMiniSearch();
-            }
-        }
-    } catch(e) {
-        console.log("離線或背景同步跳過:", e);
-    }
+    alert('🎉 通行碼已成功更新！');
 }
 
 function loadState() {

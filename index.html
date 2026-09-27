@@ -959,13 +959,31 @@ function reLogin() {
     setTimeout(() => document.getElementById('pin-input').focus(), 100);
 }
 
+// 資料庫版本：每次 fullDatabase 內容有結構性調整（新增分類、修正欄位）時遞增，
+// 讓瀏覽器內舊的雲端同步快取自動失效，不會蓋掉最新資料。
+const DB_VERSION = 2;
+
+// 幫每筆資料補上唯一 id（type+code），避免不同分類但代碼相同（如 OPERA的DF、房型的DF）
+// 互相覆蓋收藏 / 錯題紀錄。
+function normalizeDb(arr) {
+    return (arr || []).map(item => ({
+        ...item,
+        id: item.id || `${item.type}_${item.code}`
+    }));
+}
+
 function initApp() {
     loadState();
-    const saved = localStorage.getItem('opera_custom_db');
-    if (saved) {
-        try { db = JSON.parse(saved); } catch(e) { db = fullDatabase; }
+    let saved = null;
+    try { saved = JSON.parse(localStorage.getItem('opera_custom_db')); } catch(e) { saved = null; }
+
+    if (saved && saved.version === DB_VERSION && Array.isArray(saved.data) && saved.data.length > 0) {
+        // 版本相符的雲端同步快取，才使用它
+        db = normalizeDb(saved.data);
     } else {
-        db = fullDatabase;
+        // 沒有快取，或快取是舊版本（可能來自更新前的測試同步）一律改用最新內建資料庫
+        db = normalizeDb(fullDatabase);
+        localStorage.removeItem('opera_custom_db');
     }
 
     document.getElementById('api-url-input').value = apiUrl;
@@ -1052,11 +1070,11 @@ function getPool() {
     if (!scoped || scoped.length === 0) scoped = db;
 
     if (state.poolType === 'wrong') {
-        const pool = scoped.filter(x => state.wrongs.includes(x.code));
+        const pool = scoped.filter(x => state.wrongs.includes(x.id));
         return pool.length > 0 ? pool : scoped;
     }
     if (state.poolType === 'fav') {
-        const pool = scoped.filter(x => state.favs.includes(x.code));
+        const pool = scoped.filter(x => state.favs.includes(x.id));
         return pool.length > 0 ? pool : scoped;
     }
     return scoped.length > 0 ? scoped : db;
@@ -1173,7 +1191,7 @@ function nextCard(shouldFocus = false) {
             promptEl.className = currentCard.cn.length > 8 ? 'card-prompt-text long-text' : 'card-prompt-text';
         }
 
-        const isFav = state.favs.includes(currentCard.code);
+        const isFav = state.favs.includes(currentCard.id);
         document.getElementById('card-star').classList.toggle('active', isFav);
 
         const isDesktop = window.innerWidth >= 860;
@@ -1241,11 +1259,11 @@ function submitAnswer() {
     if (isCorrect) {
         state.stats.correct++;
         state.stats.streak++;
-        const wIdx = state.wrongs.indexOf(currentCard.code);
+        const wIdx = state.wrongs.indexOf(currentCard.id);
         if (wIdx > -1) state.wrongs.splice(wIdx, 1);
     } else {
         state.stats.streak = 0;
-        if (!state.wrongs.includes(currentCard.code)) state.wrongs.push(currentCard.code);
+        if (!state.wrongs.includes(currentCard.id)) state.wrongs.push(currentCard.id);
     }
 
     saveState();
@@ -1310,11 +1328,11 @@ function showExamResults() {
 function toggleFav(e) {
     e.stopPropagation();
     if (!currentCard) return;
-    const idx = state.favs.indexOf(currentCard.code);
+    const idx = state.favs.indexOf(currentCard.id);
     if (idx > -1) state.favs.splice(idx, 1);
-    else state.favs.push(currentCard.code);
+    else state.favs.push(currentCard.id);
     saveState();
-    document.getElementById('card-star').classList.toggle('active', state.favs.includes(currentCard.code));
+    document.getElementById('card-star').classList.toggle('active', state.favs.includes(currentCard.id));
 }
 
 function requestNextQuiz() {
@@ -1387,13 +1405,13 @@ function checkQuiz(btn, selected, target) {
         btn.classList.add('correct');
         state.stats.correct++;
         state.stats.streak++;
-        const wIdx = state.wrongs.indexOf(currentQuiz.code);
+        const wIdx = state.wrongs.indexOf(currentQuiz.id);
         if (wIdx > -1) state.wrongs.splice(wIdx, 1);
     } else {
         btn.classList.add('wrong');
         state.stats.streak = 0;
         document.querySelectorAll('.q-opt').forEach(x => { if (x.innerText === target) x.classList.add('correct'); });
-        if (!state.wrongs.includes(currentQuiz.code)) state.wrongs.push(currentQuiz.code);
+        if (!state.wrongs.includes(currentQuiz.id)) state.wrongs.push(currentQuiz.id);
     }
     saveState();
     const qBtn = document.getElementById('quiz-next-btn');
@@ -1542,8 +1560,8 @@ async function syncFromCloud() {
         const res = await fetch(apiUrl);
         const json = await res.json();
         if (json.status === 'success' && Array.isArray(json.data) && json.data.length > 0) {
-            db = json.data;
-            localStorage.setItem('opera_custom_db', JSON.stringify(db));
+            db = normalizeDb(json.data);
+            localStorage.setItem('opera_custom_db', JSON.stringify({ version: DB_VERSION, data: db }));
             renderAdminList();
             renderSearchList();
             renderMiniSearch();

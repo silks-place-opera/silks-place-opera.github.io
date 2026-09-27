@@ -53,14 +53,15 @@
         body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; transition: background-color 0.25s ease; }
         body.keyboard-open .nav-bar { display: none !important; }
 
-        /* Lock Screen */
-        #auth-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(20px); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .auth-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 28px; width: 100%; max-width: 380px; padding: 32px 24px; text-align: center; box-shadow: var(--shadow); }
+        /* Lock Screen Modal */
+        #auth-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.88); backdrop-filter: blur(25px); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .auth-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 28px; width: 100%; max-width: 380px; padding: 36px 26px; text-align: center; box-shadow: var(--shadow); }
         .auth-title { font-size: 22px; font-weight: 800; color: var(--primary); margin-bottom: 8px; }
         .auth-desc { font-size: 13px; color: var(--text-sub); margin-bottom: 24px; line-height: 1.5; }
-        .pin-input { width: 100%; padding: 16px; border-radius: 16px; border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-main); font-size: 22px; text-align: center; letter-spacing: 6px; font-weight: 800; margin-bottom: 16px; outline: none; }
+        .pin-input { width: 100%; padding: 16px; border-radius: 16px; border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-main); font-size: 24px; text-align: center; letter-spacing: 6px; font-weight: 800; margin-bottom: 16px; outline: none; transition: border-color 0.2s; }
         .pin-input:focus { border-color: var(--primary); }
-        .pin-btn { width: 100%; padding: 16px; border-radius: 16px; border: none; background: var(--primary); color: var(--primary-btn-text); font-size: 16px; font-weight: 800; cursor: pointer; }
+        .pin-btn { width: 100%; padding: 16px; border-radius: 16px; border: none; background: var(--primary); color: var(--primary-btn-text); font-size: 16px; font-weight: 800; cursor: pointer; transition: opacity 0.2s; }
+        .pin-btn:active { opacity: 0.85; }
 
         .view-content { display: none; flex-direction: column; gap: 14px; width: 100%; }
         .view-content.active { display: flex; }
@@ -89,7 +90,7 @@
         .btn-submit { background: var(--primary); color: var(--primary-btn-text); border: none; font-weight: 800; padding: 0 20px; border-radius: 16px; cursor: pointer; }
         .btn-action { background: var(--primary); color: var(--primary-btn-text); font-weight: 800; border: none; width: 100%; padding: 15px; border-radius: 16px; cursor: pointer; font-size: 15px; }
 
-        /* Self Eval */
+        /* Self-Assessment Buttons */
         .self-eval-group { display: flex; gap: 10px; width: 100%; }
         .btn-eval-know { flex: 1; background: rgba(48, 209, 88, 0.2); border: 1px solid var(--accent); color: var(--accent); padding: 14px; border-radius: 16px; font-weight: 800; cursor: pointer; }
         .btn-eval-forget { flex: 1; background: rgba(255, 69, 58, 0.2); border: 1px solid var(--danger); color: var(--danger); padding: 14px; border-radius: 16px; font-weight: 800; cursor: pointer; }
@@ -110,11 +111,12 @@
         .list-item-left .cn { font-size: 14px; font-weight: 600; color: var(--text-main); margin-top: 3px; white-space: pre-line; line-height: 1.4; }
         .list-item-cat { font-size: 11px; padding: 3px 8px; border-radius: 8px; background: var(--input-bg); color: var(--text-sub); }
 
-        /* Admin */
+        /* Admin & Passwords */
         .admin-box { background: var(--card-bg); border-radius: 20px; padding: 20px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 14px; }
         .sync-banner { background: var(--primary-light); border: 1px solid var(--border-hover); border-radius: 16px; padding: 16px; display: flex; justify-content: space-between; align-items: center; }
+        .pin-setting-group { background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
 
-        /* Desktop Sidebar & Media Queries */
+        /* Media Queries */
         @media (max-width: 859px) {
             .desktop-sidebar, .desktop-header-bar, .desktop-side-tools { display: none !important; }
             .main-stage { width: 100%; max-width: 520px; margin: 0 auto; padding: 16px 16px 100px 16px; }
@@ -150,13 +152,15 @@
 </head>
 <body>
 
-<!-- 雙重通行碼驗證 -->
+<!-- 密碼驗證彈窗（已完全移除明文密碼，支援按 Enter 立即解鎖） -->
 <div id="auth-modal">
     <div class="auth-card">
         <div class="auth-title">台南晶英 禮賓司萬事通</div>
-        <div class="auth-desc">請輸入授權通行碼<br>（同仁練習：1688 ｜ 主管管理：9999）</div>
-        <input type="password" id="pin-input" class="pin-input" maxlength="6" placeholder="••••" autocomplete="off">
-        <button class="pin-btn" onclick="checkAuthPin()">解鎖進入</button>
+        <div class="auth-desc">請輸入授權通行碼以進入系統</div>
+        <form onsubmit="event.preventDefault(); checkAuthPin();">
+            <input type="password" id="pin-input" class="pin-input" maxlength="12" placeholder="••••" autocomplete="off" autofocus>
+            <button type="submit" class="pin-btn">解鎖進入 (Enter)</button>
+        </form>
     </div>
 </div>
 
@@ -311,7 +315,25 @@
             <div style="display:flex; gap:8px;">
                 <button class="btn-action" onclick="pushToCloud()">推送本機資料至 Google 試算表（自動分流4個分頁）</button>
             </div>
-            <div class="list-container" id="admin-list" style="margin-top:10px; max-height:400px; overflow-y:auto;"></div>
+
+            <!-- 主管專屬通行碼管理 -->
+            <div class="pin-setting-group">
+                <b style="color:var(--primary); font-size:15px;">🔐 通行碼安全管理（主管自訂）</b>
+                <div style="font-size:12px; color:var(--text-sub);">在此自訂通行碼後，登入視窗不會顯示任何提示，同仁無法窺探。</div>
+                <div style="display:flex; flex-direction:column; gap:8px; margin-top:6px;">
+                    <div>
+                        <label style="font-size:12px; color:var(--text-sub);">同仁練習密碼：</label>
+                        <input type="text" id="cfg-staff-pin" class="search-box" style="padding:10px 14px; margin-top:4px;">
+                    </div>
+                    <div>
+                        <label style="font-size:12px; color:var(--text-sub);">主管管理密碼：</label>
+                        <input type="text" id="cfg-admin-pin" class="search-box" style="padding:10px 14px; margin-top:4px;">
+                    </div>
+                    <button class="btn-action" onclick="saveNewPins()" style="margin-top:4px;">儲存新密碼設定</button>
+                </div>
+            </div>
+
+            <div class="list-container" id="admin-list" style="margin-top:10px; max-height:350px; overflow-y:auto;"></div>
         </div>
     </div>
 </main>
@@ -326,7 +348,7 @@
 </nav>
 
 <script>
-// 全量完整資料庫（150+ 筆資料全數收錄）
+// 全量完整題庫（150+ 筆資料全數收錄）
 const fullOriginalDb = [
   // 1. 分機與電話表 (ext)
   ["06 213 6290", "台南晶英酒店人工", "飯店手機", "ext", ""],
@@ -513,9 +535,14 @@ let favs = JSON.parse(localStorage.getItem('concierge_favs') || '[]');
 let wrongs = JSON.parse(localStorage.getItem('concierge_wrongs') || '[]');
 let apiUrl = localStorage.getItem('concierge_api_url') || '';
 
+// 通行碼配置（支援主管後台動態修改）
+let authConfig = JSON.parse(localStorage.getItem('concierge_auth_pins') || '{"staffPin":"1688","adminPin":"9999"}');
+
 function checkAuthPin() {
     const pin = document.getElementById('pin-input').value.trim();
-    if (pin === '9999') {
+    if (!pin) return;
+    
+    if (pin === authConfig.adminPin) {
         userRole = 'admin';
         document.getElementById('role-tag-m').innerText = '主管管理員';
         document.getElementById('role-tag-m').style.color = '#30d158';
@@ -523,7 +550,7 @@ function checkAuthPin() {
         document.getElementById('m-nav-admin-btn').classList.remove('hidden');
         document.getElementById('auth-modal').style.display = 'none';
         initApp();
-    } else if (pin === '1688') {
+    } else if (pin === authConfig.staffPin) {
         userRole = 'staff';
         document.getElementById('role-tag-m').innerText = '同仁練習模式';
         document.getElementById('d-nav-admin-btn').classList.add('hidden');
@@ -531,13 +558,15 @@ function checkAuthPin() {
         document.getElementById('auth-modal').style.display = 'none';
         initApp();
     } else {
-        alert('通行碼錯誤！（同仁: 1688 ｜ 主管: 9999）');
+        alert('通行碼錯誤，請重新輸入！');
+        document.getElementById('pin-input').value = '';
     }
 }
 
 function reLogin() {
     document.getElementById('pin-input').value = '';
     document.getElementById('auth-modal').style.display = 'flex';
+    setTimeout(() => document.getElementById('pin-input').focus(), 100);
 }
 
 function initApp() {
@@ -548,6 +577,8 @@ function initApp() {
         appDb = convertRaw(fullOriginalDb);
     }
     document.getElementById('api-url-input').value = apiUrl;
+    document.getElementById('cfg-staff-pin').value = authConfig.staffPin;
+    document.getElementById('cfg-admin-pin').value = authConfig.adminPin;
     nextCard();
     nextQuizQuestion();
     renderSearchList();
@@ -556,12 +587,22 @@ function initApp() {
     if (userRole === 'admin') renderAdminList();
 }
 
+function saveNewPins() {
+    const sPin = document.getElementById('cfg-staff-pin').value.trim();
+    const aPin = document.getElementById('cfg-admin-pin').value.trim();
+    if (!sPin || !aPin) return alert('通行碼不得為空！');
+    authConfig.staffPin = sPin;
+    authConfig.adminPin = aPin;
+    localStorage.setItem('concierge_auth_pins', JSON.stringify(authConfig));
+    alert('🎉 通行碼已成功更新！請妥善保管新密碼。');
+}
+
 function convertRaw(rawList) {
     return rawList.map(r => ({
         code: r[0],
         cn: r,
         cat: r,
-        type: r[3],
+        type: r,
         en: r[4] || '',
         input_mode: (r.length > 15 || r[0].includes('？') || r[0].includes('時段') || r[0].includes('哪些')) ? 'flip' : 'type'
     }));
@@ -807,7 +848,7 @@ async function pushToCloud() {
         const res = await fetch(apiUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify({ adminPin: '9999', items: appDb })
+            body: JSON.stringify({ adminPin: authConfig.adminPin, items: appDb })
         });
         const json = await res.json();
         if (json.status === 'success') {
@@ -826,7 +867,7 @@ function toggleTheme() {
     document.body.classList.toggle('light-mode');
 }
 
-// 監聽鍵盤 Enter
+// 鍵盤 Enter 監聽
 window.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
         const nextCardBtn = document.getElementById('next-card-btn');

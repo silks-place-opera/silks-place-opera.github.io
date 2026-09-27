@@ -677,13 +677,18 @@
                     <label style="font-size:12px; color:var(--text-sub);">Google Apps Script Web API 網址：</label>
                     <input type="text" id="api-url-input" class="search-box" placeholder="貼上 https://script.google.com/macros/s/.../exec" onchange="saveApiUrl()">
                 </div>
-                
+
+                <div style="display:flex; flex-direction:column; gap:6px;">
+                    <label style="font-size:12px; color:var(--text-sub);">雲端寫入金鑰（需與 Apps Script 內的 ADMIN_SECRET 相同，跟下方的通行碼是兩回事）：</label>
+                    <input type="text" id="cloud-secret-input" class="search-box" placeholder="例如 9999" onchange="saveCloudSecret()">
+                </div>
+
                 <button class="btn-action" onclick="pushToCloud()">推送本機資料至 Google 試算表（自動分流4個分頁）</button>
 
                 <!-- 通行碼管理 -->
                 <div style="background:var(--input-bg); border:1px solid var(--border-color); border-radius:16px; padding:16px; display:flex; flex-direction:column; gap:10px; margin-top:6px;">
                     <b style="color:var(--primary); font-size:15px;">🔐 通行碼安全管理（主管自訂）</b>
-                    <div style="font-size:12px; color:var(--text-sub);">在此自訂通行碼後，登入視窗不會顯示任何提示，同仁無法窺探。</div>
+                    <div style="font-size:12px; color:var(--text-sub);">在此自訂通行碼後，登入視窗不會顯示任何提示，同仁無法窺探。設定好雲端寫入金鑰後，這裡按下「儲存」會自動同步到雲端，其他裝置按「立即抓取」就能拿到一致的通行碼。</div>
                     <div>
                         <label style="font-size:12px; color:var(--text-sub);">同仁練習密碼：</label>
                         <input type="text" id="cfg-staff-pin" class="search-box" style="padding:10px 14px; margin-top:4px;">
@@ -915,6 +920,10 @@ let isQuizCooldown = false;
 let currentQuiz = null;
 let currentQuizType = 'code2cn';
 let apiUrl = localStorage.getItem('concierge_api_url') || '';
+// 雲端寫入金鑰：專門用來授權「推送資料/同步通行碼」寫入 Google 試算表，
+// 跟下面 staffPin/adminPin（App 登入用的通行碼）是分開的兩件事，
+// 這樣以後改登入密碼不會連帶讓雲端推送失敗。
+let cloudSecret = localStorage.getItem('concierge_cloud_secret') || '';
 
 let authConfig = JSON.parse(localStorage.getItem('concierge_auth_pins') || '{"staffPin":"1688","adminPin":"9999"}');
 
@@ -935,10 +944,25 @@ let examSession = {
 };
 
 // 通行碼檢查（Enter 秒解鎖）
-function checkAuthPin() {
+async function checkAuthPin() {
     const pin = document.getElementById('pin-input').value.trim();
     if (!pin) return;
-    
+
+    // 每次登入前先偷偷跟雲端要一次最新的通行碼設定（讀取不用金鑰，失敗也不影響用本機密碼登入）。
+    // 這樣即使另一台裝置剛改過密碼，只要這台裝置能上網，登入當下就會自動拿到最新密碼。
+    if (apiUrl) {
+        try {
+            const res = await fetch(apiUrl);
+            const json = await res.json();
+            if (json && json.status === 'success' && json.auth && (json.auth.staffPin || json.auth.adminPin)) {
+                authConfig = { ...authConfig, ...json.auth };
+                localStorage.setItem('concierge_auth_pins', JSON.stringify(authConfig));
+            }
+        } catch (e) {
+            // 離線或連線失敗時安靜略過，改用本機既有的通行碼繼續比對
+        }
+    }
+
     if (pin === authConfig.adminPin) {
         userRole = 'admin';
         document.getElementById('d-nav-admin-btn').classList.remove('hidden');
@@ -991,6 +1015,7 @@ function initApp() {
     }
 
     document.getElementById('api-url-input').value = apiUrl;
+    document.getElementById('cloud-secret-input').value = cloudSecret;
     document.getElementById('cfg-staff-pin').value = authConfig.staffPin;
     document.getElementById('cfg-admin-pin').value = authConfig.adminPin;
 
@@ -1001,6 +1026,11 @@ function initApp() {
     if (userRole === 'admin') renderAdminList();
 }
 
+function saveCloudSecret() {
+    cloudSecret = document.getElementById('cloud-secret-input').value.trim();
+    localStorage.setItem('concierge_cloud_secret', cloudSecret);
+}
+
 function saveNewPins() {
     const sPin = document.getElementById('cfg-staff-pin').value.trim();
     const aPin = document.getElementById('cfg-admin-pin').value.trim();
@@ -1008,7 +1038,30 @@ function saveNewPins() {
     authConfig.staffPin = sPin;
     authConfig.adminPin = aPin;
     localStorage.setItem('concierge_auth_pins', JSON.stringify(authConfig));
-    alert('🎉 通行碼已成功更新！');
+
+    if (apiUrl && cloudSecret) {
+        pushAuthToCloud();
+    } else {
+        alert('🎉 通行碼已更新（僅本機）！\n尚未設定「Google Apps Script 網址」與「雲端寫入金鑰」，其他裝置不會自動拿到新密碼，需要各自手動設定或按「立即抓取」。');
+    }
+}
+
+async function pushAuthToCloud() {
+    try {
+        const res = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({ adminPin: cloudSecret, authOnly: true, auth: authConfig })
+        });
+        const json = await res.json();
+        if (json.status === 'success') {
+            alert('🎉 通行碼已更新，並同步到雲端！\n其他裝置只要按「立即抓取」，就會拿到一致的通行碼。');
+        } else {
+            alert('通行碼已在本機更新，但雲端同步失敗：' + json.message + '\n（請確認「雲端寫入金鑰」跟 Apps Script 裡的 ADMIN_SECRET 是否一致）');
+        }
+    } catch(e) {
+        alert('通行碼已在本機更新，但雲端同步連線失敗：' + e);
+    }
 }
 
 function loadState() {
@@ -1605,11 +1658,27 @@ async function syncFromCloud() {
             renderSearchList();
             renderMiniSearch();
 
+            // 一併拉回雲端的通行碼設定，這樣「立即抓取」除了同步題庫，也能讓這台裝置
+            // 拿到跟其他裝置一致的同仁/主管密碼。
+            let authSynced = false;
+            if (json.auth && (json.auth.staffPin || json.auth.adminPin)) {
+                authConfig = { ...authConfig, ...json.auth };
+                localStorage.setItem('concierge_auth_pins', JSON.stringify(authConfig));
+                const sEl = document.getElementById('cfg-staff-pin');
+                const aEl = document.getElementById('cfg-admin-pin');
+                if (sEl) sEl.value = authConfig.staffPin;
+                if (aEl) aEl.value = authConfig.adminPin;
+                authSynced = true;
+            }
+
             const countLine = validTypes.map(t => `${t}: ${db.filter(x => x.type === t).length}`).join(' / ');
-            statusTxt.innerText = `狀態：已同步 4 個工作表（共 ${db.length} 筆，${countLine}）`;
+            statusTxt.innerText = `狀態：已同步 4 個工作表（共 ${db.length} 筆，${countLine}）${authSynced ? '，通行碼已一併更新' : ''}`;
 
             let msg = `🎉 成功同步！共載入 ${db.length} 筆資料\n\n分類統計（請核對是否符合試算表各分頁筆數）：\n` +
                 validTypes.map(t => `・${t}：${db.filter(x => x.type === t).length} 筆`).join('\n');
+            if (authSynced) {
+                msg += `\n\n🔑 通行碼設定也已從雲端同步（跟試算表「設定」分頁一致）。`;
+            }
             if (badRows.length > 0) {
                 msg += `\n\n⚠️ 另有 ${badRows.length} 筆資料因欄位缺漏或分類異常已被自動略過、未加入題庫，建議回試算表檢查該幾列。`;
             }
@@ -1626,6 +1695,7 @@ async function syncFromCloud() {
 
 async function pushToCloud() {
     if (!apiUrl) return alert('請先填入 Google Apps Script 網址！');
+    if (!cloudSecret) return alert('請先在上方設定「雲端寫入金鑰」（需跟 Apps Script 裡的 ADMIN_SECRET 一致）！');
     if (!confirm(`確定要將目前的 ${db.length} 筆完整題庫自動分類寫入 Google 試算表（OPERA縮寫、分機表、客房資訊、餐廳資訊 4 個分頁）嗎？`)) return;
     
     const statusTxt = document.getElementById('sync-status-txt');
@@ -1635,7 +1705,7 @@ async function pushToCloud() {
         const res = await fetch(apiUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify({ adminPin: authConfig.adminPin, items: db })
+            body: JSON.stringify({ adminPin: cloudSecret, items: db })
         });
         const json = await res.json();
         if (json.status === 'success') {

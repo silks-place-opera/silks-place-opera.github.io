@@ -1474,6 +1474,8 @@ function switchTab(tab, btn) {
     document.querySelectorAll('.side-nav-btn').forEach(i => i.classList.remove('active'));
     document.querySelectorAll('.view-content').forEach(v => v.classList.remove('active'));
 
+    const tabIndex = ['learn', 'quiz', 'search', 'settings', 'admin'].indexOf(tab);active'));
+
     const tabIndex = ['learn', 'quiz', 'search', 'settings', 'admin'].indexOf(tab);
     if (tabIndex > -1) {
         document.querySelectorAll('.nav-item')[tabIndex]?.classList.add('active');
@@ -1499,118 +1501,3 @@ function switchTab(tab, btn) {
 }
 
 function toggleTheme() {
-    state.theme = state.theme === 'dark' ? 'light' : 'dark';
-    applyThemeUI();
-    saveState();
-}
-
-function applyThemeUI() {
-    const textEls = document.querySelectorAll('.theme-text');
-    const iconEls = document.querySelectorAll('.theme-icon');
-    if (state.theme === 'light') {
-        document.body.classList.add('light-mode');
-        textEls.forEach(t => t.innerText = '深色模式');
-        iconEls.forEach(ic => ic.innerHTML = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>`);
-    } else {
-        document.body.classList.remove('light-mode');
-        textEls.forEach(t => t.innerText = '淺色模式');
-        iconEls.forEach(ic => ic.innerHTML = `<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>`);
-    }
-}
-
-function resetAllData() {
-    if (confirm("確定要重置所有紀錄與錯題本嗎？")) {
-        localStorage.removeItem('opera_app_data');
-        state = { favs: [], wrongs: [], stats: { total: 0, correct: 0, streak: 0 }, theme: 'dark', poolType: 'all', scope: 'all' };
-        saveState();
-        applyThemeUI();
-        alert("資料已重置！");
-        location.reload();
-    }
-}
-
-function saveApiUrl() {
-    apiUrl = document.getElementById('api-url-input').value.trim();
-    localStorage.setItem('concierge_api_url', apiUrl);
-}
-
-async function syncFromCloud() {
-    if (!apiUrl) return alert('請先填入 Google Apps Script 網址！');
-    const statusTxt = document.getElementById('sync-status-txt');
-    statusTxt.innerText = '狀態：正在從雲端抓取...';
-    try {
-        const res = await fetch(apiUrl);
-        const json = await res.json();
-        if (json.status === 'success' && Array.isArray(json.data) && json.data.length > 0) {
-            db = json.data;
-            localStorage.setItem('opera_custom_db', JSON.stringify(db));
-            renderAdminList();
-            renderSearchList();
-            renderMiniSearch();
-            statusTxt.innerText = `狀態：已同步 4 個工作表（共 ${db.length} 筆）`;
-            alert(`🎉 成功同步！已從試算表載入 ${db.length} 筆資料！`);
-        }
-    } catch(e) {
-        alert('同步出錯：' + e);
-        statusTxt.innerText = '狀態：連線失敗';
-    }
-}
-
-async function pushToCloud() {
-    if (!apiUrl) return alert('請先填入 Google Apps Script 網址！');
-    if (!confirm(`確定要將目前的 ${db.length} 筆完整題庫自動分類寫入 Google 試算表（OPERA縮寫、分機表、客房資訊、餐廳資訊 4 個分頁）嗎？`)) return;
-    
-    const statusTxt = document.getElementById('sync-status-txt');
-    statusTxt.innerText = '狀態：正在分流寫入 4 個工作表...';
-
-    try {
-        const res = await fetch(apiUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify({ adminPin: authConfig.adminPin, items: db })
-        });
-        const json = await res.json();
-        if (json.status === 'success') {
-            alert(`🎉 成功分流寫入 ${json.count} 筆資料至 Google 試算表！\n請回試算表重新整理查看 4 個工作表！`);
-            statusTxt.innerText = `狀態：已成功寫入 4 個工作表（共 ${json.count} 筆）`;
-        } else {
-            alert('推送失敗：' + json.message);
-        }
-    } catch(e) {
-        alert('推送出錯：' + e);
-        statusTxt.innerText = '狀態：推送出錯';
-    }
-}
-
-// 監聽鍵盤 Enter
-window.addEventListener('keydown', (e) => {
-    if (e.key !== 'Enter') return;
-    const nextCardBtn = document.getElementById('next-card-btn');
-    const learnView = document.getElementById('view-learn');
-    if (learnView.classList.contains('active') && !nextCardBtn.classList.contains('hidden')) {
-        e.preventDefault();
-        requestNextCard();
-        return;
-    }
-    const quizNextBtn = document.getElementById('quiz-next-btn');
-    const quizView = document.getElementById('view-quiz');
-    if (quizView.classList.contains('active') && !quizNextBtn.classList.contains('hidden')) {
-        e.preventDefault();
-        requestNextQuiz();
-        return;
-    }
-});
-
-// 行動端鍵盤輸入滾動
-typeInput = document.getElementById('type-input');
-typeInput.addEventListener('focus', () => {
-    if (window.innerWidth < 860) {
-        setTimeout(() => { typeInput.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 150);
-    }
-});
-
-// 啟動應用
-initApp();
-</script>
-</body>
-</html>

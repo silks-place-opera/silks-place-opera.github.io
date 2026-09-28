@@ -919,7 +919,16 @@ let lastQuizAnswerTime = 0;
 let isQuizCooldown = false;
 let currentQuiz = null;
 let currentQuizType = 'code2cn';
-let apiUrl = localStorage.getItem('concierge_api_url') || '';
+// 【只需要填一次】把部署好的 Apps Script 網址（結尾 /exec）貼在下面引號裡，
+// 之後同仁點連結進來，就會自動連上雲端，不用每台裝置各自設定。
+// 這個網址只能「讀取」，寫入仍需要「雲端寫入金鑰」（金鑰不要寫在這裡）。
+const DEFAULT_API_URL = '';
+let apiUrl = localStorage.getItem('concierge_api_url') || DEFAULT_API_URL;
+
+function cloudGetUrl(pin) {
+    if (!apiUrl) return '';
+    return pin ? apiUrl + (apiUrl.includes('?') ? '&' : '?') + 'pin=' + encodeURIComponent(pin) : apiUrl;
+}
 // 雲端寫入金鑰：專門用來授權「推送資料/同步通行碼」寫入 Google 試算表，
 // 跟下面 staffPin/adminPin（App 登入用的通行碼）是分開的兩件事，
 // 這樣以後改登入密碼不會連帶讓雲端推送失敗。
@@ -948,28 +957,34 @@ async function checkAuthPin() {
     const pin = document.getElementById('pin-input').value.trim();
     if (!pin) return;
 
-    // 每次登入前先偷偷跟雲端要一次最新的通行碼設定（讀取不用金鑰，失敗也不影響用本機密碼登入）。
-    // 這樣即使另一台裝置剛改過密碼，只要這台裝置能上網，登入當下就會自動拿到最新密碼。
+    // 把輸入的通行碼交給雲端驗證（密碼不會在網路上被整包下載，只回傳「你是誰」）。
+    // 驗證成功就順便更新本機備份，離線時仍可用最近一次驗證過的密碼登入。
+    let cloudRole = null;
     if (apiUrl) {
         try {
-            const res = await fetch(apiUrl);
+            const res = await fetch(cloudGetUrl(pin));
             const json = await res.json();
-            if (json && json.status === 'success' && json.auth && (json.auth.staffPin || json.auth.adminPin)) {
-                authConfig = { ...authConfig, ...json.auth };
-                localStorage.setItem('concierge_auth_pins', JSON.stringify(authConfig));
-            }
+            if (json && json.status === 'success' && json.role) cloudRole = json.role;
         } catch (e) {
-            // 離線或連線失敗時安靜略過，改用本機既有的通行碼繼續比對
+            // 離線或連線失敗：安靜略過，改用本機備份的通行碼比對
         }
     }
+    let role = cloudRole;
+    if (!role) {
+        // 雲端有回應但判定 none → 一律拒絕；雲端連不上才退回本機比對
+        if (pin === authConfig.adminPin) role = 'admin';
+        else if (pin === authConfig.staffPin) role = 'staff';
+    }
+    if (cloudRole === 'admin') { authConfig.adminPin = pin; localStorage.setItem('concierge_auth_pins', JSON.stringify(authConfig)); }
+    if (cloudRole === 'staff') { authConfig.staffPin = pin; localStorage.setItem('concierge_auth_pins', JSON.stringify(authConfig)); }
 
-    if (pin === authConfig.adminPin) {
+    if (role === 'admin') {
         userRole = 'admin';
         document.getElementById('d-nav-admin-btn').classList.remove('hidden');
         document.getElementById('m-nav-admin-btn').classList.remove('hidden');
         document.getElementById('auth-modal').style.display = 'none';
         initApp();
-    } else if (pin === authConfig.staffPin) {
+    } else if (role === 'staff') {
         userRole = 'staff';
         document.getElementById('d-nav-admin-btn').classList.add('hidden');
         document.getElementById('m-nav-admin-btn').classList.add('hidden');
@@ -1630,7 +1645,7 @@ async function syncFromCloud() {
     const statusTxt = document.getElementById('sync-status-txt');
     statusTxt.innerText = '狀態：正在從雲端抓取...';
     try {
-        const res = await fetch(apiUrl);
+        const res = await fetch(cloudGetUrl(authConfig.adminPin));
         const json = await res.json();
         if (json.status === 'success' && Array.isArray(json.data) && json.data.length > 0) {
             // 欄位驗證：確保每一筆都有代碼、中文說明，且分類是四種已知類型之一，
@@ -1749,6 +1764,28 @@ typeInput.addEventListener('focus', () => {
 
 // 啟動應用
 initApp();
+
+// 開啟頁面時自動在背景同步最新題庫（不跳視窗；失敗就沿用本機資料）。
+// 同仁只要點連結進來，就會自動拿到試算表的最新內容。
+async function autoSyncOnLoad() {
+    if (!apiUrl) return;
+    try {
+        const res = await fetch(cloudGetUrl());
+        const json = await res.json();
+        if (json.status !== 'success' || !Array.isArray(json.data)) return;
+        const validTypes = ['ext', 'opera', 'room', 'restaurant'];
+        const clean = json.data.filter(r => r && r.code && r.cn && validTypes.includes(r.type));
+        if (clean.length === 0) return;
+        db = normalizeDb(clean);
+        localStorage.setItem('opera_custom_db', JSON.stringify({ version: DB_VERSION, data: db }));
+        nextCard(false);
+        nextQuizQuestion();
+        renderMiniSearch();
+        renderSearchList();
+        if (userRole === 'admin') renderAdminList();
+    } catch (e) { /* 離線時靜默略過 */ }
+}
+autoSyncOnLoad();
 </script>
 </body>
 </html>

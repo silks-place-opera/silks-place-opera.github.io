@@ -672,7 +672,7 @@
                     </div>
                     <button onclick="syncFromCloud()" style="background:var(--primary); border:none; padding:8px 14px; border-radius:12px; font-weight:800; cursor:pointer;">立即抓取</button>
                 </div>
-
+                
                 <div style="display:flex; flex-direction:column; gap:6px;">
                     <label style="font-size:12px; color:var(--text-sub);">Google Apps Script Web API 網址：</label>
                     <input type="text" id="api-url-input" class="search-box" placeholder="貼上 https://script.google.com/macros/s/.../exec" onchange="saveApiUrl()">
@@ -919,7 +919,6 @@ let lastQuizAnswerTime = 0;
 let isQuizCooldown = false;
 let currentQuiz = null;
 let currentQuizType = 'code2cn';
-let apiUrl = localStorage.getItem('concierge_api_url') || '';
 // 【只需要填一次】把部署好的 Apps Script 網址（結尾 /exec）貼在下面引號裡，
 // 之後同仁點連結進來，就會自動連上雲端，不用每台裝置各自設定。
 // 這個網址只能「讀取」，寫入仍需要「雲端寫入金鑰」（金鑰不要寫在這裡）。
@@ -958,23 +957,15 @@ async function checkAuthPin() {
     const pin = document.getElementById('pin-input').value.trim();
     if (!pin) return;
 
-    // 每次登入前先偷偷跟雲端要一次最新的通行碼設定（讀取不用金鑰，失敗也不影響用本機密碼登入）。
-    // 這樣即使另一台裝置剛改過密碼，只要這台裝置能上網，登入當下就會自動拿到最新密碼。
     // 把輸入的通行碼交給雲端驗證（密碼不會在網路上被整包下載，只回傳「你是誰」）。
     // 驗證成功就順便更新本機備份，離線時仍可用最近一次驗證過的密碼登入。
     let cloudRole = null;
     if (apiUrl) {
         try {
-            const res = await fetch(apiUrl);
             const res = await fetch(cloudGetUrl(pin));
             const json = await res.json();
-            if (json && json.status === 'success' && json.auth && (json.auth.staffPin || json.auth.adminPin)) {
-                authConfig = { ...authConfig, ...json.auth };
-                localStorage.setItem('concierge_auth_pins', JSON.stringify(authConfig));
-            }
             if (json && json.status === 'success' && json.role) cloudRole = json.role;
         } catch (e) {
-            // 離線或連線失敗時安靜略過，改用本機既有的通行碼繼續比對
             // 離線或連線失敗：安靜略過，改用本機備份的通行碼比對
         }
     }
@@ -987,14 +978,12 @@ async function checkAuthPin() {
     if (cloudRole === 'admin') { authConfig.adminPin = pin; localStorage.setItem('concierge_auth_pins', JSON.stringify(authConfig)); }
     if (cloudRole === 'staff') { authConfig.staffPin = pin; localStorage.setItem('concierge_auth_pins', JSON.stringify(authConfig)); }
 
-    if (pin === authConfig.adminPin) {
     if (role === 'admin') {
         userRole = 'admin';
         document.getElementById('d-nav-admin-btn').classList.remove('hidden');
         document.getElementById('m-nav-admin-btn').classList.remove('hidden');
         document.getElementById('auth-modal').style.display = 'none';
         initApp();
-    } else if (pin === authConfig.staffPin) {
     } else if (role === 'staff') {
         userRole = 'staff';
         document.getElementById('d-nav-admin-btn').classList.add('hidden');
@@ -1656,7 +1645,6 @@ async function syncFromCloud() {
     const statusTxt = document.getElementById('sync-status-txt');
     statusTxt.innerText = '狀態：正在從雲端抓取...';
     try {
-        const res = await fetch(apiUrl);
         const res = await fetch(cloudGetUrl(authConfig.adminPin));
         const json = await res.json();
         if (json.status === 'success' && Array.isArray(json.data) && json.data.length > 0) {
@@ -1724,7 +1712,7 @@ async function pushToCloud() {
     if (!apiUrl) return alert('請先填入 Google Apps Script 網址！');
     if (!cloudSecret) return alert('請先在上方設定「雲端寫入金鑰」（需跟 Apps Script 裡的 ADMIN_SECRET 一致）！');
     if (!confirm(`確定要將目前的 ${db.length} 筆完整題庫自動分類寫入 Google 試算表（OPERA縮寫、分機表、客房資訊、餐廳資訊 4 個分頁）嗎？`)) return;
-
+    
     const statusTxt = document.getElementById('sync-status-txt');
     statusTxt.innerText = '狀態：正在分流寫入 4 個工作表...';
 
@@ -1800,5 +1788,4 @@ async function autoSyncOnLoad() {
 autoSyncOnLoad();
 </script>
 </body>
-</html>
 </html>

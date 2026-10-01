@@ -49,139 +49,605 @@
             --dock-icon-color: #8e8e93;
         }
 
-        body.light-theme {
+        body.light-mode {
             --bg-color: #f5f5f7;
             --sidebar-bg: #ffffff;
             --card-bg: #ffffff;
-            --input-bg: #ebebed;
+            --input-bg: #f0f0f4;
 
             --border-color: rgba(0, 0, 0, 0.08);
-            --border-hover: rgba(179, 142, 75, 0.6);
+            --border-hover: rgba(179, 142, 75, 0.45);
 
-            --text-main: #1d1d1f;
-            --text-sub: #6e6e73;
+            --text-main: #18181b;
+            --text-sub: #6c6c70;
 
             --primary: #B38E4B;
-            --primary-light: rgba(179, 142, 75, 0.14);
+            --primary-light: rgba(179, 142, 75, 0.12);
             --primary-btn-text: #ffffff;
 
-            --accent: #28cd41;
-            --danger: #ff3b30;
-
-            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
 
             --nav-bg: #ffffff;
             --ios-icon-bg: #e5e5ea;
-            --ios-icon-stroke: #1d1d1f;
+            --ios-icon-stroke: #1c1c1e;
 
-            --toggle-bg: rgba(0, 0, 0, 0.06);
-            --toggle-border: rgba(0, 0, 0, 0.08);
+            --toggle-bg: rgba(255, 255, 255, 0.52);
+            --toggle-border: rgba(255, 255, 255, 0.55);
 
-            --dock-bg: rgba(255, 255, 255, 0.65);
-            --dock-border: rgba(0, 0, 0, 0.10);
+            --dock-bg: rgba(255, 255, 255, 0.58);
+            --dock-border: rgba(255, 255, 255, 0.60);
 
             --dock-shadow:
-                0 16px 40px rgba(0, 0, 0, 0.12),
-                0 4px 12px rgba(0, 0, 0, 0.06);
+                0 12px 36px rgba(0, 0, 0, 0.10),
+                0 2px 8px rgba(0, 0, 0, 0.04);
 
-            --dock-active-bg: #1d1d1f;
+            --dock-active-bg: var(--primary);
             --dock-active-color: #ffffff;
-            --dock-icon-color: #86868b;
+            --dock-icon-color: #71717a;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+        }
 
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); z-index: 99999; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .modal-overlay.hidden { display: none !important; }
-        .modal-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 20px; padding: 28px 24px; width: 100%; max-width: 360px; box-shadow: var(--shadow); text-align: center; }
-        .modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; text-align: left; }
-        .modal-head b { font-size: 17px; color: var(--text-main); }
-        .modal-close { font-size: 18px; color: var(--text-sub); cursor: pointer; padding: 4px 8px; border-radius: 8px; }
-        .modal-close:hover { background: var(--input-bg); color: var(--text-main); }
-        .modal-field { margin-bottom: 14px; text-align: left; }
-        .modal-label { display: block; font-size: 12px; font-weight: 700; color: var(--text-sub); margin-bottom: 6px; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 999px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.28); }
+        body.light-mode ::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.15); }
 
-        .auth-logo { width: 64px; height: 64px; margin: 0 auto 16px; background: var(--primary-light); border: 1px solid var(--border-hover); border-radius: 18px; display: flex; align-items: center; justify-content: center; color: var(--primary); }
-        .auth-logo svg { width: 34px; height: 34px; stroke-width: 2.2; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; }
-        .auth-title { font-size: 20px; font-weight: 800; margin-bottom: 6px; letter-spacing: 0.5px; }
-        .auth-desc { font-size: 13px; color: var(--text-sub); margin-bottom: 22px; line-height: 1.4; }
-        .pin-input { width: 100%; height: 50px; background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 14px; color: var(--text-main); font-size: 22px; font-weight: 800; text-align: center; letter-spacing: 8px; margin-bottom: 16px; outline: none; transition: border-color 0.2s; }
-        .pin-input:focus { border-color: var(--primary); }
-        .pin-submit-btn { width: 100%; height: 46px; background: var(--primary); color: var(--primary-btn-text); border: none; border-radius: 14px; font-size: 15px; font-weight: 800; cursor: pointer; transition: opacity 0.2s; }
-        .pin-submit-btn:hover { opacity: 0.9; }
-        .auth-status { font-size: 12px; margin-top: 12px; min-height: 18px; }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            transition: background-color 0.25s ease;
+        }
+
+        /* 密碼驗證彈窗 */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .auth-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 32px 24px;
+            width: 100%;
+            max-width: 340px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .auth-icon-wrap {
+            width: 56px;
+            height: 56px;
+            background: var(--primary-light);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+        }
+
+        .auth-title {
+            font-size: 19px;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        .auth-desc {
+            font-size: 13px;
+            color: var(--text-sub);
+            margin-bottom: 22px;
+            line-height: 1.4;
+        }
+
+        .pin-input {
+            width: 100%;
+            height: 48px;
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            color: var(--text-main);
+            font-size: 22px;
+            font-weight: 800;
+            text-align: center;
+            letter-spacing: 6px;
+            margin-bottom: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .pin-input:focus {
+            border-color: var(--primary);
+        }
+
+        .pin-submit-btn {
+            width: 100%;
+            height: 46px;
+            background: var(--primary);
+            color: var(--primary-btn-text);
+            border: none;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .pin-submit-btn:hover {
+            opacity: 0.9;
+        }
+
+        .auth-status {
+            font-size: 12px;
+            margin-top: 10px;
+            min-height: 16px;
+        }
         .auth-status.error { color: var(--danger); font-weight: 700; }
         .auth-status.info { color: var(--primary); font-weight: 600; }
 
-        .app-layout { display: flex; width: 100%; min-height: 100vh; }
-        .desktop-sidebar { display: none; width: 260px; background: var(--sidebar-bg); border-right: 1px solid var(--border-color); padding: 28px 18px; flex-direction: column; justify-content: space-between; flex-shrink: 0; }
-        .desktop-brand { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; padding-left: 6px; }
-        .desktop-brand-icon { width: 38px; height: 38px; background: var(--primary-light); border: 1px solid var(--border-hover); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--primary); flex-shrink: 0; }
-        .desktop-brand-icon svg { width: 22px; height: 22px; stroke-width: 2.2; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; }
-        .desktop-brand-text h1 { font-size: 16px; font-weight: 800; letter-spacing: 0.5px; }
-        .desktop-brand-text p { font-size: 11px; color: var(--text-sub); }
+        /* 桌面版外框與側邊欄 */
+        .app-layout {
+            display: flex;
+            min-height: 100vh;
+        }
 
-        .side-nav-list { display: flex; flex-direction: column; gap: 6px; }
-        .side-nav-btn { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 12px; background: transparent; border: 1px solid transparent; color: var(--text-sub); font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s; width: 100%; text-align: left; }
-        .side-nav-btn svg { width: 19px; height: 19px; stroke-width: 2.2; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; }
-        .side-nav-btn:hover { background: var(--input-bg); color: var(--text-main); }
-        .side-nav-btn.active { background: var(--primary-light); border-color: var(--border-hover); color: var(--primary); }
+        .desktop-sidebar {
+            display: none;
+            width: 250px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            padding: 28px 18px;
+            flex-direction: column;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
 
-        .desktop-stats-card { background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 14px; padding: 14px; }
-        .d-st-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 12px; color: var(--text-sub); }
-        .d-st-row b { color: var(--primary); }
+        .desktop-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 28px;
+            padding-left: 6px;
+        }
 
-        .main-content { flex: 1; display: flex; flex-direction: column; padding: 20px 16px 100px; max-width: 640px; margin: 0 auto; width: 100%; }
-        .desktop-header { display: none; margin-bottom: 20px; }
-        .desktop-page-title { font-size: 24px; font-weight: 800; letter-spacing: 0.5px; }
-        .desktop-page-desc { font-size: 13px; color: var(--text-sub); margin-top: 4px; }
+        .desktop-brand-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--primary-light);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 18px;
+            font-weight: 900;
+            border: 1px solid var(--border-hover);
+        }
 
-        .mobile-header { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
-        .stats-bar { display: flex; justify-content: space-between; background: var(--card-bg); padding: 12px 16px; border-radius: 16px; border: 1px solid var(--border-color); }
-        .stat-item { display: flex; flex-direction: column; align-items: center; }
-        .stat-val { font-size: 16px; font-weight: 800; color: var(--primary); }
-        .stat-lbl { font-size: 11px; color: var(--text-sub); margin-top: 2px; }
+        .desktop-brand-text h1 {
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
 
-        .toggle-group { display: flex; background: var(--toggle-bg); border: 1px solid var(--toggle-border); border-radius: 14px; padding: 3px; gap: 3px; overflow-x: auto; }
-        .toggle-btn { flex: 1; min-width: 58px; padding: 7px 4px; border-radius: 11px; border: none; background: transparent; color: var(--text-sub); font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.2s; text-align: center; white-space: nowrap; }
-        .toggle-btn.active { background: var(--card-bg); color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+        .desktop-brand-text p {
+            font-size: 11px;
+            color: var(--text-sub);
+        }
 
-        .view-content { display: none; flex-direction: column; gap: 16px; }
-        .view-content.active { display: flex; }
+        .side-nav-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
 
-        .card-container { perspective: 1000px; height: 260px; width: 100%; position: relative; }
-        .card { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 24px; box-shadow: var(--shadow); cursor: pointer; }
-        .card.flipped { transform: rotateY(180deg); }
-        .card-face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 24px; padding: 24px; display: flex; flex-direction: column; justify-content: space-between; border: 1px solid var(--border-color); background: var(--card-bg); }
-        .card-back { transform: rotateY(180deg); background: var(--card-bg); border-color: var(--primary); }
-        .card-top { display: flex; justify-content: space-between; align-items: center; }
-        .badge { font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 20px; background: var(--primary-light); color: var(--primary); border: 1px solid var(--border-hover); }
-        .star-btn { background: none; border: none; font-size: 20px; color: var(--text-sub); cursor: pointer; }
-        .star-btn.active { color: var(--primary); }
-        .card-center { flex: 1; display: flex; align-items: center; justify-content: center; text-align: center; }
-        .card-prompt-text { font-size: 32px; font-weight: 900; letter-spacing: 1px; color: var(--text-main); word-break: break-all; }
-        .card-prompt-text.long-text { font-size: 22px; line-height: 1.35; }
-        .card-sub { font-size: 13px; color: var(--text-sub); }
-        .result-badge { font-size: 12px; font-weight: 800; padding: 4px 10px; border-radius: 20px; }
-        .result-badge.correct { background: rgba(48, 209, 88, 0.15); color: var(--accent); }
-        .result-badge.wrong { background: rgba(255, 69, 58, 0.15); color: var(--danger); }
-        .card-ans-title { font-size: 26px; font-weight: 900; color: var(--primary); margin-bottom: 4px; word-break: break-all; }
-        .card-ans-desc { font-size: 14px; color: var(--text-main); font-weight: 600; line-height: 1.4; word-break: break-all; }
-        .card-ans-user { font-size: 12px; color: var(--text-sub); margin-top: 8px; }
+        .side-nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            border-radius: 12px;
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-sub);
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+            text-align: left;
+        }
 
-        .action-area { display: flex; flex-direction: column; gap: 10px; }
-        .input-box { display: flex; gap: 8px; width: 100%; }
-        .type-input { flex: 1; height: 50px; background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 0 16px; font-size: 15px; color: var(--text-main); outline: none; }
-        .type-input:focus { border-color: var(--primary); }
-        .submit-btn { width: 78px; height: 50px; background: var(--primary); border: none; border-radius: 16px; color: var(--primary-btn-text); font-weight: 800; font-size: 15px; cursor: pointer; }
-        .next-btn { width: 100%; height: 50px; background: var(--primary); border: none; border-radius: 16px; color: var(--primary-btn-text); font-weight: 800; font-size: 15px; cursor: pointer; }
+        .side-nav-btn:hover {
+            background: var(--input-bg);
+            color: var(--text-main);
+        }
 
-        .exam-report-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 22px; padding: 22px; }
-        .exam-score-big { font-size: 48px; font-weight: 900; color: var(--primary); }
-        .exam-results-list { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
-        .exam-item-box { background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 14px; padding: 12px; }
-        .exam-item-top { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 12px; color: var(--text-sub); }
+        .side-nav-btn.active {
+            background: var(--primary-light);
+            border-color: var(--border-hover);
+            color: var(--primary);
+        }
+
+        .side-nav-btn svg {
+            width: 19px;
+            height: 19px;
+            stroke-width: 2.2;
+            fill: none;
+            stroke: currentColor;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .desktop-stats-card {
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 14px;
+        }
+
+        .d-st-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 12px;
+            color: var(--text-sub);
+        }
+
+        .d-st-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .d-st-row b {
+            color: var(--primary);
+        }
+
+        /* 主要內容區域 */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 16px 100px;
+            max-width: 640px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .desktop-header {
+            display: none;
+            margin-bottom: 20px;
+        }
+
+        .desktop-page-title {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        .desktop-page-desc {
+            font-size: 13px;
+            color: var(--text-sub);
+            margin-top: 4px;
+        }
+
+        .mobile-header {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: space-between;
+            background: var(--card-bg);
+            padding: 12px 16px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .stat-val {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .stat-lbl {
+            font-size: 11px;
+            color: var(--text-sub);
+            margin-top: 2px;
+        }
+
+        /* 模式切換按鈕組 */
+        .toggle-group {
+            display: flex;
+            background: var(--toggle-bg);
+            border: 1px solid var(--toggle-border);
+            border-radius: 14px;
+            padding: 3px;
+            gap: 3px;
+            overflow-x: auto;
+        }
+
+        .toggle-btn {
+            flex: 1;
+            min-width: 58px;
+            padding: 7px 4px;
+            border-radius: 11px;
+            border: none;
+            background: transparent;
+            color: var(--text-sub);
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .toggle-btn.active {
+            background: var(--card-bg);
+            color: var(--primary);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        /* 內容視圖切換 */
+        .view-content {
+            display: none;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .view-content.active {
+            display: flex;
+        }
+
+        /* 卡片設計 */
+        .card-container {
+            perspective: 1000px;
+            height: 250px;
+            width: 100%;
+        }
+
+        .card {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+        }
+
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            inset: 0;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            border-radius: 24px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+            background: var(--card-bg);
+            border-color: var(--primary);
+        }
+
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .badge {
+            font-size: 11px;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: var(--primary-light);
+            color: var(--primary);
+            border: 1px solid var(--border-hover);
+        }
+
+        .star-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: var(--text-sub);
+            cursor: pointer;
+        }
+
+        .star-btn.active {
+            color: var(--primary);
+        }
+
+        .card-center {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .card-prompt-text {
+            font-size: 32px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            color: var(--text-main);
+            word-break: break-all;
+        }
+
+        .card-prompt-text.long-text {
+            font-size: 22px;
+            line-height: 1.35;
+        }
+
+        .card-sub {
+            font-size: 13px;
+            color: var(--text-sub);
+        }
+
+        .result-badge {
+            font-size: 12px;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        .result-badge.correct {
+            background: rgba(48, 209, 88, 0.15);
+            color: var(--accent);
+        }
+
+        .result-badge.wrong {
+            background: rgba(255, 69, 58, 0.15);
+            color: var(--danger);
+        }
+
+        .card-ans-title {
+            font-size: 26px;
+            font-weight: 900;
+            color: var(--primary);
+            margin-bottom: 4px;
+            word-break: break-all;
+        }
+
+        .card-ans-desc {
+            font-size: 14px;
+            color: var(--text-main);
+            font-weight: 600;
+            line-height: 1.4;
+            word-break: break-all;
+        }
+
+        .card-ans-user {
+            font-size: 12px;
+            color: var(--text-sub);
+            margin-top: 8px;
+        }
+
+        /* 作答區域 */
+        .action-area {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .input-box {
+            display: flex;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .type-input {
+            flex: 1;
+            height: 50px;
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 0 16px;
+            font-size: 15px;
+            color: var(--text-main);
+            outline: none;
+        }
+
+        .type-input:focus {
+            border-color: var(--primary);
+        }
+
+        .submit-btn {
+            width: 78px;
+            height: 50px;
+            background: var(--primary);
+            border: none;
+            border-radius: 16px;
+            color: var(--primary-btn-text);
+            font-weight: 800;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .next-btn {
+            width: 100%;
+            height: 50px;
+            background: var(--primary);
+            border: none;
+            border-radius: 16px;
+            color: var(--primary-btn-text);
+            font-weight: 800;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        /* 十題測驗結算畫面 */
+        .exam-report-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 22px;
+            padding: 22px;
+        }
+
+        .exam-score-big {
+            font-size: 48px;
+            font-weight: 900;
+            color: var(--primary);
+        }
+
+        .exam-results-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .exam-item-box {
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 12px;
+        }
+
+        .exam-item-top {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-size: 12px;
+            color: var(--text-sub);
+        }
+
         .exam-item-badge.correct { color: var(--accent); font-weight: 800; }
         .exam-item-badge.wrong { color: var(--danger); font-weight: 800; }
         .exam-item-row { font-size: 13px; margin-bottom: 4px; line-height: 1.4; word-break: break-all; }
@@ -190,99 +656,486 @@
         .exam-item-row .user-ans.correct { color: var(--accent); font-weight: 700; }
         .exam-item-row .user-ans.wrong { color: var(--danger); font-weight: 700; text-decoration: line-through; }
 
-        .search-box { position: relative; width: 100%; }
-        .search-input { width: 100%; height: 46px; background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 14px; padding: 0 16px 0 40px; font-size: 14px; color: var(--text-main); outline: none; }
-        .search-input:focus { border-color: var(--primary); }
-        .search-icon { position: absolute; left: 14px; top: 14px; color: var(--text-sub); }
-        .list-container { display: flex; flex-direction: column; gap: 8px; }
-        .list-item { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 14px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; }
-        .list-item-left .code { font-size: 15px; font-weight: 800; color: var(--primary); }
-        .list-item-left .cn { font-size: 13px; color: var(--text-main); margin-top: 2px; }
-        .list-item-cat { font-size: 11px; color: var(--text-sub); }
+        /* 查詢列表 */
+        .search-box {
+            position: relative;
+            width: 100%;
+        }
 
-        .quiz-card { background: var(--card-bg); border-radius: 22px; padding: 22px; border: 1px solid var(--border-color); }
-        .quiz-q { font-size: 20px; font-weight: 800; margin-bottom: 20px; line-height: 1.4; }
-        .quiz-opts { display: flex; flex-direction: column; gap: 10px; }
-        .q-opt { background: var(--input-bg); border: 1px solid var(--border-color); padding: 15px 16px; border-radius: 14px; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s; word-break: break-all; }
-        .q-opt:hover { border-color: var(--primary); }
-        .q-opt.correct { background: rgba(48, 209, 88, 0.15); border-color: var(--accent); color: var(--accent); }
-        .q-opt.wrong { background: rgba(255, 69, 58, 0.15); border-color: var(--danger); color: var(--danger); }
+        .search-input {
+            width: 100%;
+            height: 46px;
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 0 16px 0 40px;
+            font-size: 14px;
+            color: var(--text-main);
+            outline: none;
+        }
 
-        .admin-box { background: var(--card-bg); border-radius: 20px; padding: 22px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 16px; }
-        .admin-sync-section { background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
-        .sync-banner { display: flex; justify-content: space-between; align-items: center; }
-        .sync-btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .sync-action-card-btn { display: flex; align-items: center; gap: 10px; padding: 12px; border-radius: 12px; background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-main); cursor: pointer; transition: all 0.2s; text-align: left; }
-        .sync-action-card-btn:hover { border-color: var(--primary); transform: translateY(-1px); }
+        .search-input:focus {
+            border-color: var(--primary);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 14px;
+            color: var(--text-sub);
+        }
+
+        .list-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .list-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .list-item-left .code {
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .list-item-left .cn {
+            font-size: 13px;
+            color: var(--text-main);
+            margin-top: 2px;
+        }
+
+        .list-item-cat {
+            font-size: 11px;
+            color: var(--text-sub);
+        }
+
+        /* 考題測驗 */
+        .quiz-card {
+            background: var(--card-bg);
+            border-radius: 22px;
+            padding: 22px;
+            border: 1px solid var(--border-color);
+        }
+
+        .quiz-q {
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .quiz-opts {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .q-opt {
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            padding: 15px 16px;
+            border-radius: 14px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            word-break: break-all;
+        }
+
+        .q-opt:hover {
+            border-color: var(--primary);
+        }
+
+        .q-opt.correct {
+            background: rgba(48, 209, 88, 0.15);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .q-opt.wrong {
+            background: rgba(255, 69, 58, 0.15);
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+
+        /* 後台管理頁面樣式 */
+        .admin-box {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 22px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* 一、同步功能按鈕卡片（完全移除 API 網址設定區塊） */
+        .admin-sync-section {
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .sync-banner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .sync-btn-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .sync-action-card-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            border-radius: 12px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+        }
+        .sync-action-card-btn:hover {
+            border-color: var(--primary);
+            transform: translateY(-1px);
+        }
         .sync-btn-icon { font-size: 24px; flex-shrink: 0; }
         .sync-btn-content { display: flex; flex-direction: column; gap: 3px; }
         .sync-btn-main { font-size: 14px; font-weight: 800; color: var(--primary); }
         .sync-btn-sub { font-size: 11px; color: var(--text-sub); }
 
-        .pwd-card-container { background: #141416; border: 1px solid rgba(200, 168, 110, 0.35); border-radius: 16px; padding: 18px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35); }
-        body.light-theme .pwd-card-container { background: #ffffff; border-color: rgba(179, 142, 75, 0.4); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06); }
-        .pwd-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-        .pwd-card-title { font-size: 15px; font-weight: 800; color: var(--primary); }
-        .pwd-role-tabs { display: flex; background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 2px; gap: 2px; }
-        .pwd-tab-btn { padding: 5px 10px; border-radius: 8px; border: none; background: transparent; color: var(--text-sub); font-size: 11px; font-weight: 700; cursor: pointer; }
-        .pwd-tab-btn.active { background: var(--card-bg); color: var(--primary); font-weight: 800; }
-        .pwd-close-btn { background: none; border: none; color: var(--text-sub); font-size: 16px; cursor: pointer; padding: 4px; }
-        .pwd-card-body { display: flex; flex-direction: column; gap: 10px; }
-        .pwd-field-group { display: flex; flex-direction: column; gap: 4px; }
-        .pwd-field-label { font-size: 11px; font-weight: 700; color: var(--text-sub); }
-        .pwd-field-input { height: 42px; background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 0 12px; font-size: 13px; color: var(--text-main); outline: none; }
+        /* 二、更改密碼安全卡片（遵循圖二設計風格） */
+        .pwd-card-container {
+            background: #141416;
+            border: 1px solid rgba(200, 168, 110, 0.35);
+            border-radius: 16px;
+            padding: 18px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+        }
+        body.light-mode .pwd-card-container {
+            background: #ffffff;
+            border-color: rgba(179, 142, 75, 0.4);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+        }
+        .pwd-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+        .pwd-card-title {
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: 0.5px;
+        }
+        .pwd-role-tabs {
+            display: flex;
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 2px;
+            gap: 2px;
+        }
+        .pwd-tab-btn {
+            padding: 5px 10px;
+            border-radius: 8px;
+            border: none;
+            background: transparent;
+            color: var(--text-sub);
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .pwd-tab-btn.active {
+            background: var(--card-bg);
+            color: var(--primary);
+            font-weight: 800;
+        }
+        .pwd-close-btn {
+            background: none;
+            border: none;
+            color: var(--text-sub);
+            font-size: 16px;
+            cursor: pointer;
+            padding: 4px;
+            line-height: 1;
+        }
+        .pwd-close-btn:hover { color: var(--text-main); }
+        .pwd-card-body {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .pwd-field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .pwd-field-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-sub);
+        }
+        .pwd-field-input {
+            height: 42px;
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 0 12px;
+            font-size: 13px;
+            color: var(--text-main);
+            outline: none;
+            transition: border-color 0.2s;
+        }
         .pwd-field-input:focus { border-color: var(--primary); }
-        .pwd-card-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(255, 255, 255, 0.08); }
-        .pwd-btn-cancel { padding: 8px 16px; border-radius: 10px; background: transparent; border: 1px solid var(--border-color); color: var(--text-sub); font-size: 12px; font-weight: 700; cursor: pointer; }
-        .pwd-btn-submit { padding: 8px 18px; border-radius: 10px; background: var(--primary); border: none; color: var(--primary-btn-text); font-size: 12px; font-weight: 800; cursor: pointer; }
+        .pwd-card-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .pwd-btn-cancel {
+            padding: 8px 16px;
+            border-radius: 10px;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-sub);
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .pwd-btn-submit {
+            padding: 8px 18px;
+            border-radius: 10px;
+            background: var(--primary);
+            border: none;
+            color: var(--primary-btn-text);
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
         .pwd-btn-submit:hover { opacity: 0.9; }
 
-        .admin-stats-and-add-row { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 12px; margin-top: 4px; align-items: stretch; }
-        @media (max-width: 600px) { .admin-stats-and-add-row { grid-template-columns: 1fr !important; } }
-        .admin-stat-pills-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
-        .admin-stat-pill { background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 10px; text-align: center; display: flex; flex-direction: column; justify-content: center; }
+        /* 四、後台題庫統計與「＋」按鈕區域（配合圖三紅圈位置） */
+        .admin-stats-and-add-row {
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            gap: 12px;
+            margin-top: 4px;
+            align-items: stretch;
+        }
+        .admin-stat-pills-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+        .admin-stat-pill {
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 10px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
         .stat-pill-val { font-size: 20px; font-weight: 900; color: var(--primary); line-height: 1.1; }
         .stat-pill-lbl { font-size: 11px; color: var(--text-sub); margin-top: 3px; font-weight: 600; }
 
-        .admin-action-btns-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .admin-add-quiz-btn { background: rgba(200, 168, 110, 0.07); border: 2px dashed rgba(200, 168, 110, 0.45); border-radius: 14px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 10px 8px; transition: all 0.2s ease; }
-        .admin-add-quiz-btn:hover { background: rgba(200, 168, 110, 0.15); border-color: var(--primary); transform: translateY(-1px); }
-        .add-plus-symbol { font-size: 32px; font-weight: 900; color: var(--primary); line-height: 1; }
-        .add-btn-caption { font-size: 13px; font-weight: 800; color: var(--primary); letter-spacing: 0.5px; }
+        /* 圖三圈起來的「＋」新增題庫按鈕 */
+        .admin-add-quiz-btn {
+            background: rgba(200, 168, 110, 0.07);
+            border: 2px dashed rgba(200, 168, 110, 0.45);
+            border-radius: 14px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            padding: 12px;
+            transition: all 0.2s ease;
+        }
+        .admin-add-quiz-btn:hover {
+            background: rgba(200, 168, 110, 0.15);
+            border-color: var(--primary);
+            transform: translateY(-1px);
+        }
+        .add-plus-symbol {
+            font-size: 32px;
+            font-weight: 900;
+            color: var(--primary);
+            line-height: 1;
+        }
+        .add-btn-caption {
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: 0.5px;
+        }
 
-        .admin-del-quiz-btn { background: rgba(255, 69, 58, 0.07); border: 2px dashed rgba(255, 69, 58, 0.45); border-radius: 14px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 10px 8px; transition: all 0.2s ease; }
-        .admin-del-quiz-btn:hover { background: rgba(255, 69, 58, 0.16); border-color: var(--danger); transform: translateY(-1px); }
-        .del-bin-symbol { font-size: 26px; line-height: 1; }
-        .del-btn-caption { font-size: 13px; font-weight: 800; color: var(--danger); letter-spacing: 0.5px; }
+        /* 題庫清單表頭與快速新增 FAB */
+        .admin-list-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 6px;
+        }
+        .add-quiz-fab {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--primary-light);
+            border: 1px solid var(--border-hover);
+            color: var(--primary);
+            font-size: 18px;
+            font-weight: 900;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .add-quiz-fab:hover {
+            background: var(--primary);
+            color: var(--primary-btn-text);
+            transform: scale(1.05);
+        }
 
-        .admin-list-head { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; }
-        .add-quiz-fab { width: 32px; height: 32px; border-radius: 50%; background: var(--primary-light); border: 1px solid var(--border-hover); color: var(--primary); font-size: 18px; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
-        .add-quiz-fab:hover { background: var(--primary); color: var(--primary-btn-text); transform: scale(1.05); }
-        .del-quiz-fab { width: 32px; height: 32px; border-radius: 50%; background: rgba(255, 69, 58, 0.12); border: 1px solid var(--danger); color: var(--danger); font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
-        .del-quiz-fab:hover { background: var(--danger); color: #ffffff; transform: scale(1.05); }
+        /* 設定頁面 */
+        .settings-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
 
-        .admin-item-del-btn { background: rgba(255, 69, 58, 0.12); border: 1px solid rgba(255, 69, 58, 0.35); color: var(--danger); padding: 5px 11px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; flex-shrink: 0; transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 4px; }
-        .admin-item-del-btn:hover { background: var(--danger); color: #ffffff; border-color: var(--danger); }
+        .settings-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
 
-        .settings-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 14px; }
-        .settings-row { display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid var(--border-color); }
-        .settings-row:last-child { border-bottom: none; padding-bottom: 0; }
-        .settings-btn { padding: 8px 14px; border-radius: 12px; background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-main); font-size: 13px; font-weight: 700; cursor: pointer; }
-        .settings-btn.danger { color: var(--danger); border-color: rgba(255, 69, 58, 0.3); }
+        .settings-row:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
 
-        .nav-bar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: calc(100% - 32px); max-width: 380px; height: 60px; background: var(--dock-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--dock-border); border-radius: 30px; display: flex; justify-content: space-around; align-items: center; box-shadow: var(--dock-shadow); z-index: 1000; padding: 0 10px; }
-        .nav-item { background: transparent; border: none; color: var(--dock-icon-color); width: 44px; height: 44px; border-radius: 22px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
-        .nav-item svg { width: 22px; height: 22px; stroke-width: 2.2; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; }
-        .nav-item.active { background: var(--dock-active-bg); color: var(--dock-active-color); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); }
-        .nav-item.hidden { display: none !important; }
+        .settings-btn {
+            padding: 8px 14px;
+            border-radius: 12px;
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .settings-btn.danger {
+            color: var(--danger);
+            border-color: rgba(255, 69, 58, 0.3);
+        }
+
+        /* 行動端 Dock 浮動導覽列 */
+        .nav-bar {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 32px);
+            max-width: 380px;
+            height: 60px;
+            background: var(--dock-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--dock-border);
+            border-radius: 30px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: var(--dock-shadow);
+            z-index: 1000;
+            padding: 0 10px;
+        }
+
+        .nav-item {
+            background: transparent;
+            border: none;
+            color: var(--dock-icon-color);
+            width: 44px;
+            height: 44px;
+            border-radius: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-item svg {
+            width: 22px;
+            height: 22px;
+            stroke-width: 2.2;
+            fill: none;
+            stroke: currentColor;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .nav-item.active {
+            background: var(--dock-active-bg);
+            color: var(--dock-active-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-item.hidden {
+            display: none !important;
+        }
+
+        .hidden { display: none !important; }
 
         @media (min-width: 860px) {
             .nav-bar { display: none !important; }
             .desktop-sidebar { display: flex; }
             .desktop-header { display: block; }
             .mobile-header { display: none; }
-            .main-content { padding: 36px 36px 40px; max-width: 860px; }
-            .action-area { max-width: 540px; margin: 0 auto; width: 100%; }
+            .main-content {
+                padding: 36px 36px 40px;
+                max-width: 860px;
+            }
+            .action-area {
+                max-width: 540px;
+                margin: 0 auto;
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -290,29 +1143,34 @@
 
 <!-- 登入通行碼彈窗 -->
 <div id="auth-modal" class="modal-overlay">
-    <div class="modal-card">
-        <div class="auth-logo">
-            <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+    <div class="auth-card">
+        <div class="auth-icon-wrap">
+            <svg viewBox="0 0 24 24" width="28" height="28" stroke="var(--primary)" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
         </div>
-        <h2 class="auth-title">OPERA 卡牌大師</h2>
-        <p class="auth-desc">請輸入同仁練習或主管管理通行碼</p>
-        <input type="password" id="pin-input" class="pin-input" maxlength="8" placeholder="••••" autofocus>
-        <button type="button" id="pin-submit-btn" class="pin-submit-btn" onclick="checkAuthPin()">開始練習</button>
-        <div id="auth-status" class="auth-status"></div>
+        <div class="auth-title">請輸入通行碼</div>
+        <div class="auth-desc">同仁請輸入練習碼，主管請輸入管理碼</div>
+        <input type="password" id="pin-input" class="pin-input" placeholder="••••" maxlength="8" autocomplete="off" autofocus>
+        <button type="button" class="pin-submit-btn" id="pin-submit-btn" onclick="checkAuthPin()">確認登入</button>
+        <div class="auth-status" id="auth-status"></div>
     </div>
 </div>
 
 <div class="app-layout">
-    <!-- 桌機側邊導覽列 -->
+    <!-- 桌機側邊欄 -->
     <aside class="desktop-sidebar">
         <div>
             <div class="desktop-brand">
                 <div class="desktop-brand-icon">
-                    <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
                 </div>
                 <div class="desktop-brand-text">
                     <h1>OPERA 卡牌大師</h1>
-                    <p>專業飯店營運練習系統</p>
+                    <p>台南晶英客務部專業培訓</p>
                 </div>
             </div>
 
@@ -341,22 +1199,22 @@
         </div>
 
         <div class="desktop-stats-card">
-            <div class="d-st-row"><span>總正確率</span><b id="d-st-accuracy">0%</b></div>
-            <div class="d-st-row"><span>連續答對</span><b id="d-st-streak">0</b></div>
-            <div class="d-st-row"><span>錯題收錄</span><b id="d-st-wrong">0</b></div>
-            <div class="d-st-row"><span>收藏卡片</span><b id="d-st-fav">0</b></div>
+            <div class="d-st-row"><span>答對率</span><b id="d-st-accuracy">0%</b></div>
+            <div class="d-st-row"><span>連對數</span><b id="d-st-streak">0</b></div>
+            <div class="d-st-row"><span>待複習錯題</span><b id="d-st-wrong">0</b></div>
+            <div class="d-st-row"><span>已收藏卡片</span><b id="d-st-fav">0</b></div>
         </div>
     </aside>
 
-    <!-- 主要操作區域 -->
+    <!-- 主要操作區 -->
     <main class="main-content">
-        <!-- 桌機上方標題 -->
+        <!-- 桌機頂部標題列 -->
         <header class="desktop-header">
             <h2 class="desktop-page-title" id="desktop-page-title">學習卡片</h2>
-            <p class="desktop-page-desc" id="desktop-page-desc">翻轉卡片、輸入拼寫，強化記憶</p>
+            <p class="desktop-page-desc" id="desktop-page-desc">翻轉卡片、拼寫記憶，扎實掌握飯店專業知識</p>
         </header>
 
-        <!-- 手機頂部數據列 -->
+        <!-- 行動端頂部數據條 -->
         <div class="mobile-header">
             <div class="stats-bar">
                 <div class="stat-item"><span class="stat-val" id="st-accuracy">0%</span><span class="stat-lbl">答對率</span></div>
@@ -366,9 +1224,8 @@
             </div>
         </div>
 
-        <!-- 1. 學習卡片頁面 -->
+        <!-- 1. 學習卡片分頁 -->
         <div id="view-learn" class="view-content active">
-            <!-- 範圍與模式切換器 -->
             <div class="toggle-group" style="margin-bottom:2px;">
                 <button type="button" class="toggle-btn active" id="scope-all" onclick="changeScope('all')">全部</button>
                 <button type="button" class="toggle-btn" id="scope-opera" onclick="changeScope('opera')">OPERA縮寫</button>
@@ -384,12 +1241,11 @@
                 <button type="button" class="toggle-btn" id="pool-exam10" onclick="changePool('exam10')">十題測驗</button>
             </div>
 
-            <!-- 卡片本體 -->
             <div class="card-container" id="learn-card-container">
                 <div class="card" id="main-card">
                     <div class="card-face card-front">
                         <div class="card-top">
-                            <span class="badge" id="card-badge">OPERA縮寫</span>
+                            <span class="badge" id="card-badge">OPERA代碼</span>
                             <button type="button" class="star-btn" id="card-star" onclick="toggleFav(event)">★</button>
                         </div>
                         <div class="card-center">
@@ -423,7 +1279,6 @@
                 <div class="exam-results-list" id="exam-results-list"></div>
             </div>
 
-            <!-- 作答輸入區 -->
             <div class="action-area" id="learn-action-area">
                 <form class="input-box" id="input-form" onsubmit="event.preventDefault(); submitAnswer();">
                     <input type="text" id="type-input" class="type-input" placeholder="請輸入答案或中文..." autocomplete="off">
@@ -432,14 +1287,13 @@
                 <button type="button" id="next-card-btn" class="next-btn hidden" onclick="requestNextCard()">下一題 ➔ (Enter)</button>
             </div>
 
-            <!-- 學習分頁底部迷你查詢 -->
             <div class="mini-search-card" style="margin-top:12px; background:var(--card-bg); border:1px solid var(--border-color); border-radius:18px; padding:14px;">
                 <input type="text" id="mini-search" class="pwd-field-input" style="width:100%;" placeholder="🔍 快速檢索題庫代碼／分機..." oninput="renderMiniSearch()">
                 <div id="mini-search-list" style="margin-top:10px; max-height:160px; overflow-y:auto; display:flex; flex-direction:column; gap:6px;"></div>
             </div>
         </div>
 
-        <!-- 2. 考題測驗頁面 -->
+        <!-- 2. 考題測驗分頁 -->
         <div id="view-quiz" class="view-content">
             <div class="quiz-card">
                 <div class="quiz-q" id="quiz-title">測驗載入中...</div>
@@ -448,7 +1302,7 @@
             </div>
         </div>
 
-        <!-- 3. 代碼分機搜尋頁面 -->
+        <!-- 3. 代碼分機分頁 -->
         <div id="view-search" class="view-content">
             <div class="search-box">
                 <span class="search-icon">🔍</span>
@@ -457,12 +1311,12 @@
             <div class="list-container" id="search-list"></div>
         </div>
 
-        <!-- 4. 設定頁面 -->
+        <!-- 4. 系統設定分頁 -->
         <div id="view-settings" class="view-content">
             <div class="settings-card">
                 <div class="settings-row">
                     <div>
-                        <b style="color:var(--text-main); font-size:14px;">介面視覺主題</b>
+                        <b style="color:var(--text-main); font-size:14px;">深淺主題外觀</b>
                         <div style="font-size:12px; color:var(--text-sub); margin-top:2px;" id="theme-toggle-status">深色專業模式</div>
                     </div>
                     <button type="button" class="settings-btn" onclick="toggleTheme()">切換主題</button>
@@ -487,12 +1341,12 @@
         <!-- 5. 主管管理後台 -->
         <div id="view-admin" class="view-content">
             <div class="admin-box">
-                <!-- 試算表同步按鈕 -->
+                <!-- 試算表同步按鈕（已完全移除 API 網址相關設定） -->
                 <div class="admin-sync-section">
                     <div class="sync-banner">
                         <div>
                             <b style="color:var(--text-main); font-size:15px;">Google 試算表同步</b>
-                            <div style="font-size:12px; color:var(--text-sub); margin-top:2px;" id="sync-status-txt">狀態：Google 試算表為唯一題庫來源</div>
+                            <div style="font-size:12px; color:var(--text-sub); margin-top:2px;" id="sync-status-txt">狀態：本機資料庫</div>
                         </div>
                     </div>
 
@@ -514,7 +1368,7 @@
                     </div>
                 </div>
 
-                <!-- 密碼安全管理 -->
+                <!-- 密碼安全管理（遵循圖二視覺風格） -->
                 <div class="pwd-card-container">
                     <div class="pwd-card-header">
                         <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
@@ -550,7 +1404,7 @@
                     </div>
                 </div>
 
-                <!-- 題庫數據統計與主管管理功能（＋ 新增題目 / 🗑 移除題目） -->
+                <!-- 主管管理題庫操作按鈕群：＋ 新增題目 與 － 移除題目 -->
                 <div class="admin-stats-and-add-row">
                     <div class="admin-stat-pills-grid">
                         <div class="admin-stat-pill">
@@ -571,15 +1425,15 @@
                         </div>
                     </div>
 
-                    <!-- 主管管理功能群：＋ 新增題目 與 🗑 移除題目 -->
-                    <div class="admin-action-btns-grid">
-                        <button type="button" class="admin-add-quiz-btn" onclick="openAddQuizModal()" title="主管新增題庫題目">
-                            <span class="add-plus-symbol">＋</span>
+                    <!-- 主管管理題庫操作按鈕群：＋ 新增題目 與 － 移除題目 -->
+                    <div style="display:flex; flex-direction:column; gap:8px;">
+                        <button type="button" class="admin-add-quiz-btn" style="flex:1; padding:8px;" onclick="openAddQuizModal()" title="主管新增題庫項目">
+                            <span class="add-plus-symbol" style="font-size:24px;">＋</span>
                             <span class="add-btn-caption">新增題目</span>
                         </button>
-                        <button type="button" class="admin-del-quiz-btn" onclick="openDeleteQuizModal()" title="主管移除題庫題目">
-                            <span class="del-bin-symbol">🗑</span>
-                            <span class="del-btn-caption">移除題目</span>
+                        <button type="button" class="admin-add-quiz-btn" style="flex:1; padding:8px; border-color:rgba(255, 69, 58, 0.4); background:rgba(255, 69, 58, 0.06);" onclick="openDeleteQuizModal()" title="主管移除題庫項目">
+                            <span class="add-plus-symbol" style="font-size:24px; color:var(--danger);">－</span>
+                            <span class="add-btn-caption" style="color:var(--danger);">移除題目</span>
                         </button>
                     </div>
                 </div>
@@ -587,9 +1441,9 @@
                 <!-- 題庫總覽表頭 -->
                 <div class="admin-list-head">
                     <b style="color:var(--text-main); font-size:15px;" id="admin-list-total-lbl">題庫總覽</b>
-                    <div style="display:flex; gap:8px;">
+                    <div style="display:flex; gap:6px;">
                         <button type="button" class="add-quiz-fab" onclick="openAddQuizModal()" title="新增題庫項目">＋</button>
-                        <button type="button" class="del-quiz-fab" onclick="openDeleteQuizModal()" title="移除題庫項目">🗑</button>
+                        <button type="button" class="add-quiz-fab" style="border-color:rgba(255, 69, 58, 0.4); color:var(--danger); background:rgba(255, 69, 58, 0.1);" onclick="openDeleteQuizModal()" title="移除題庫項目">－</button>
                     </div>
                 </div>
                 <div class="list-container" id="admin-list" style="margin-top:2px; max-height:360px; overflow-y:auto;"></div>
@@ -597,27 +1451,33 @@
         </div>
     </div>
 
-    <!-- 新增題庫項目彈窗（依照四大分頁專屬欄位動態填寫） -->
+    <!-- 新增題庫項目彈窗（完全沿用原版 Modal 元件與設計，欄位配合新版 Google 試算表格式） -->
     <div id="add-quiz-modal" class="modal-overlay hidden">
         <div class="modal-card">
             <div class="modal-head">
-                <div style="display:flex; align-items:center; gap:8px;">
-                    <span style="font-size:20px; color:var(--primary);">＋</span>
-                    <b>新增題庫項目</b>
-                </div>
+                <b>新增題庫項目</b>
                 <span class="modal-close" onclick="closeAddQuizModal()">✕</span>
             </div>
             <div class="modal-field">
-                <label class="modal-label">選擇題庫分頁</label>
-                <select id="new-item-type" class="pwd-field-input" onchange="updateAddModalFields()">
+                <label class="modal-label">題庫分類</label>
+                <select id="new-item-type" class="pwd-field-input" onchange="onAddTypeChange()">
                     <option value="opera">OPERA縮寫</option>
                     <option value="ext">分機表</option>
                     <option value="room">客房資訊</option>
                     <option value="restaurant">餐廳資訊</option>
                 </select>
             </div>
-            <div id="add-modal-dynamic-fields">
-                <!-- 動態依所選分類渲染輸入欄位 -->
+            <div class="modal-field" id="modal-field-wrap-1">
+                <label class="modal-label" id="modal-label-1">中文意思 *</label>
+                <input type="text" id="new-item-1" class="pwd-field-input" placeholder="例如: 請勿打擾">
+            </div>
+            <div class="modal-field" id="modal-field-wrap-2">
+                <label class="modal-label" id="modal-label-2">縮寫 *</label>
+                <input type="text" id="new-item-2" class="pwd-field-input" placeholder="例如: DND">
+            </div>
+            <div class="modal-field" id="modal-field-wrap-3">
+                <label class="modal-label" id="modal-label-3">補充說明</label>
+                <input type="text" id="new-item-3" class="pwd-field-input" placeholder="例如: Do Not Disturb（選填）">
             </div>
             <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:10px; padding-top:12px; border-top:1px solid rgba(255,255,255,0.08);">
                 <button type="button" class="pwd-btn-cancel" onclick="closeAddQuizModal()">取消</button>
@@ -626,20 +1486,15 @@
         </div>
     </div>
 
-    <!-- 移除題庫項目彈窗（包含防誤刪確認流程） -->
+    <!-- 移除題庫項目彈窗（完全沿用原版 Modal 樣式） -->
     <div id="delete-quiz-modal" class="modal-overlay hidden">
-        <div class="modal-card" style="max-width:520px;">
+        <div class="modal-card">
             <div class="modal-head">
-                <div style="display:flex; align-items:center; gap:8px;">
-                    <span style="font-size:20px;">🗑</span>
-                    <b style="color:var(--danger); font-size:16px;">移除題庫項目</b>
-                </div>
+                <b style="color:var(--danger);">移除題庫項目</b>
                 <span class="modal-close" onclick="closeDeleteQuizModal()">✕</span>
             </div>
-            <div style="font-size:13px; color:var(--text-sub); margin-bottom:12px; line-height:1.4;">
-                選擇要移除的題目。移除前會顯示確認步驟，確認後從系統與 Google 試算表同步永久移除。
-            </div>
-            <div style="display:grid; grid-template-columns:1fr 1.5fr; gap:8px; margin-bottom:12px;">
+            <div class="modal-field">
+                <label class="modal-label">篩選分類</label>
                 <select id="del-filter-type" class="pwd-field-input" onchange="renderDeleteList()">
                     <option value="all">全部分類</option>
                     <option value="opera">OPERA縮寫</option>
@@ -647,11 +1502,16 @@
                     <option value="room">客房資訊</option>
                     <option value="restaurant">餐廳資訊</option>
                 </select>
-                <input type="text" id="del-search-input" class="pwd-field-input" placeholder="🔍 關鍵字即時搜尋..." oninput="renderDeleteList()">
             </div>
-            <div id="delete-modal-list" style="max-height:300px; overflow-y:auto; display:flex; flex-direction:column; gap:8px;">
+            <div class="modal-field">
+                <label class="modal-label">搜尋關鍵字</label>
+                <input type="text" id="del-search-input" class="pwd-field-input" placeholder="輸入題目或縮寫搜尋..." oninput="renderDeleteList()">
             </div>
-            <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:12px; padding-top:12px; border-top:1px solid rgba(255,255,255,0.08);">
+            <div class="modal-field">
+                <label class="modal-label">選擇項目（點擊右側按鈕進行移除）</label>
+                <div id="delete-modal-list" style="max-height:220px; overflow-y:auto; display:flex; flex-direction:column; gap:6px;"></div>
+            </div>
+            <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:10px; padding-top:12px; border-top:1px solid rgba(255,255,255,0.08);">
                 <button type="button" class="pwd-btn-cancel" onclick="closeDeleteQuizModal()">關閉</button>
             </div>
         </div>
@@ -669,16 +1529,13 @@
 
 <script>
 /* ================================================================
-   OPERA 卡牌大師 — 核心應用程式邏輯
-   【架構原則】：Google 試算表為唯一資料來源（Single Source of Truth），
-   本 HTML 絕不硬編碼任何題目資料。所有題庫均由 Google Apps Script 雲端同步。
+   Google 試算表為唯一資料來源（Single Source of Truth），本體不硬編碼任何題目
    ================================================================ */
 
-// 執行階段全域變數（由 Google 試算表同步載入，初始為空）
 let db = [];
 let userRole = 'staff';
 let currentCard = null;
-let currentDirection = 'prompt';
+let currentDirection = 'code';
 let lastSubmitTime = 0;
 let isNextCooldown = false;
 let isFirstLoad = true;
@@ -687,22 +1544,21 @@ let isQuizCooldown = false;
 let currentQuiz = null;
 let currentQuizType = 'code2cn';
 
-// Google Apps Script Web API 網址
-const DEFAULT_API_URL = 'https://script.google.com/macros/s/AKfycby4KSBo1sphWrRrFA4ZD4Fl8GtLTtrVbsTe_ihc1b634g5iqxzcqOKbT4LwWU0I5xkm4w/exec';
+// 已部署之 Google Apps Script Web API 網址（鎖定直接生效，不需使用者手動輸入）
+const DEFAULT_API_URL = 'https://script.google.com/macros/s/AKfycyb4KSBo1sphWrRrFA4ZD4Fl8GtLTtrVbsTe_ihc1b634g5iqxzcqOKbT4LwWU0I5xkm4w/exec';
 let apiUrl = localStorage.getItem('concierge_api_url') || DEFAULT_API_URL;
 
-// 雲端寫入金鑰（預設 9999）
+// 雲端寫入金鑰（需與 Apps Script 中的 ADMIN_SECRET 一致，預設 9999）
 const DEFAULT_CLOUD_SECRET = '9999';
 let cloudSecret = localStorage.getItem('concierge_cloud_secret') || DEFAULT_CLOUD_SECRET;
 
-// 雲端 GET 網址輔助函式
 function cloudGetUrl(pin) {
     if (!apiUrl) return '';
     const sep = apiUrl.includes('?') ? '&' : '?';
     return pin ? `${apiUrl}${sep}pin=${encodeURIComponent(pin)}` : apiUrl;
 }
 
-// 通行碼設定
+// 練習用同仁通行碼 / 主管管理通行碼
 let authConfig = JSON.parse(localStorage.getItem('concierge_auth_pins') || '{"staffPin":"1688","adminPin":"9999"}');
 
 let state = {
@@ -720,104 +1576,10 @@ let examSession = {
     score: 0
 };
 
-let currentPwdTargetRole = 'staff';
+let currentPwdTargetRole = 'staff'; // 'staff' | 'admin'
 
 /* ================================================================
-   資料架構輔助函式（對齊四大分頁新欄位結構）
-   1. OPERA縮寫：中文意思、縮寫、補充說明
-   2. 分機表：分機&電話號碼、單位、部門人員
-   3. 客房資訊：問題、答案、補充
-   4. 餐廳資訊：問題、答案、補充
-   ================================================================ */
-
-function getItemPrompt(item) {
-    if (!item) return '';
-    if (item.type === 'opera') return item['縮寫'] || item.code || '';
-    if (item.type === 'ext') return item['分機&電話號碼'] || item.code || '';
-    if (item.type === 'room') return item['問題'] || item.code || '';
-    if (item.type === 'restaurant') return item['問題'] || item.code || '';
-    return item['問題'] || item['縮寫'] || item['分機&電話號碼'] || item.code || '';
-}
-
-function getItemAnswer(item) {
-    if (!item) return '';
-    if (item.type === 'opera') return item['中文意思'] || item.cn || '';
-    if (item.type === 'ext') return item['部門人員'] || item.cn || '';
-    if (item.type === 'room') return item['答案'] || item.cn || '';
-    if (item.type === 'restaurant') return item['答案'] || item.cn || '';
-    return item['答案'] || item['中文意思'] || item['部門人員'] || item.cn || '';
-}
-
-function getItemCategory(item) {
-    if (!item) return '';
-    if (item.type === 'opera') return 'OPERA縮寫';
-    if (item.type === 'ext') return item['單位'] || item.cat || '分機表';
-    if (item.type === 'room') return '客房資訊';
-    if (item.type === 'restaurant') return '餐廳資訊';
-    return item.cat || item.type || '';
-}
-
-function getItemExtra(item) {
-    if (!item) return '';
-    if (item.type === 'opera') return item['補充說明'] || item.en || '';
-    if (item.type === 'ext') return '';
-    if (item.type === 'room') return item['補充'] || item.en || '';
-    if (item.type === 'restaurant') return item['補充'] || item.en || '';
-    return item.en || '';
-}
-
-function escapeHtml(str) {
-    if (!str) return '';
-    return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-}
-
-// 正規化資料：支援新版中文欄位與舊版欄位相容轉換，並維護別名確保既有功能無縫運行
-function normalizeDb(arr) {
-    return (arr || []).map((item, idx) => {
-        const type = item.type || 'opera';
-        let norm = { type };
-
-        if (type === 'opera') {
-            norm['中文意思'] = String(item['中文意思'] !== undefined ? item['中文意思'] : (item.cn || '')).trim();
-            norm['縮寫'] = String(item['縮寫'] !== undefined ? item['縮寫'] : (item.code || '')).trim();
-            norm['補充說明'] = String(item['補充說明'] !== undefined ? item['補充說明'] : (item.en || '')).trim();
-            norm.id = item.id || `opera_${norm['縮寫'] || idx}`;
-        } else if (type === 'ext') {
-            norm['分機&電話號碼'] = String(item['分機&電話號碼'] !== undefined ? item['分機&電話號碼'] : (item.code || '')).trim();
-            norm['單位'] = String(item['單位'] !== undefined ? item['單位'] : (item.cat || '飯店分機')).trim();
-            norm['部門人員'] = String(item['部門人員'] !== undefined ? item['部門人員'] : (item.cn || '')).trim();
-            norm.id = item.id || `ext_${norm['分機&電話號碼'] || idx}`;
-        } else if (type === 'room') {
-            norm['問題'] = String(item['問題'] !== undefined ? item['問題'] : (item.code || '')).trim();
-            norm['答案'] = String(item['答案'] !== undefined ? item['答案'] : (item.cn || '')).trim();
-            norm['補充'] = String(item['補充'] !== undefined ? item['補充'] : (item.en || item.cat || '')).trim();
-            norm.id = item.id || `room_${norm['問題'] || idx}`;
-        } else if (type === 'restaurant') {
-            norm['問題'] = String(item['問題'] !== undefined ? item['問題'] : (item.code || '')).trim();
-            norm['答案'] = String(item['答案'] !== undefined ? item['答案'] : (item.cn || '')).trim();
-            norm['補充'] = String(item['補充'] !== undefined ? item['補充'] : (item.en || item.cat || '')).trim();
-            norm.id = item.id || `restaurant_${norm['問題'] || idx}`;
-        } else {
-            norm = { ...item };
-            norm.id = item.id || `item_${idx}`;
-        }
-
-        norm.code = getItemPrompt(norm);
-        norm.cn = getItemAnswer(norm);
-        norm.cat = getItemCategory(norm);
-        norm.en = getItemExtra(norm);
-
-        return norm;
-    });
-}
-
-/* ================================================================
-   一、登入驗證功能
+   一、登入驗證功能（支援極速背景驗證與離線備援）
    ================================================================ */
 
 async function checkAuthPin() {
@@ -845,6 +1607,7 @@ async function checkAuthPin() {
 
     let role = 'none';
 
+    // 優先以 Google Apps Script 雲端比對（帶 ?pin= 只查 2 列設定，0.5秒秒開）
     if (apiUrl) {
         try {
             const url = cloudGetUrl(val);
@@ -858,10 +1621,12 @@ async function checkAuthPin() {
                 }
             }
         } catch(e) {
+            // 離線或被擋時，自動轉入本機比對
             console.warn('雲端驗證失敗，切換為本機驗證:', e);
         }
     }
 
+    // 本機 fallback 比對
     if (role === 'none') {
         if (val === authConfig.adminPin) role = 'admin';
         else if (val === authConfig.staffPin) role = 'staff';
@@ -918,7 +1683,59 @@ function reLogin() {
     setTimeout(() => document.getElementById('pin-input').focus(), 100);
 }
 
+// 資料庫版本標記
 const DB_VERSION = 3;
+
+// 正規化資料：支援 Google 試算表新版四大分頁欄位，同時建立 code/cn/cat/en 屬性，確保原版 UI 100% 正常顯示
+function normalizeDb(arr) {
+    return (arr || []).map((item, idx) => {
+        const type = item.type || 'opera';
+        let norm = { type };
+
+        if (type === 'opera') {
+            norm['中文意思'] = String(item['中文意思'] !== undefined ? item['中文意思'] : (item.cn || '')).trim();
+            norm['縮寫'] = String(item['縮寫'] !== undefined ? item['縮寫'] : (item.code || '')).trim();
+            norm['補充說明'] = String(item['補充說明'] !== undefined ? item['補充說明'] : (item.en || '')).trim();
+            norm.code = norm['縮寫'];
+            norm.cn = norm['中文意思'];
+            norm.cat = item.cat || 'OPERA縮寫';
+            norm.en = norm['補充說明'];
+            norm.id = item.id || `opera_${norm.code || idx}`;
+        } else if (type === 'ext') {
+            norm['分機&電話號碼'] = String(item['分機&電話號碼'] !== undefined ? item['分機&電話號碼'] : (item.code || '')).trim();
+            norm['單位'] = String(item['單位'] !== undefined ? item['單位'] : (item.cat || '飯店分機')).trim();
+            norm['部門人員'] = String(item['部門人員'] !== undefined ? item['部門人員'] : (item.cn || '')).trim();
+            norm.code = norm['分機&電話號碼'];
+            norm.cn = norm['部門人員'];
+            norm.cat = norm['單位'];
+            norm.en = '';
+            norm.id = item.id || `ext_${norm.code || idx}`;
+        } else if (type === 'room') {
+            norm['問題'] = String(item['問題'] !== undefined ? item['問題'] : (item.code || '')).trim();
+            norm['答案'] = String(item['答案'] !== undefined ? item['答案'] : (item.cn || '')).trim();
+            norm['補充'] = String(item['補充'] !== undefined ? item['補充'] : (item.en || item.cat || '')).trim();
+            norm.code = norm['問題'];
+            norm.cn = norm['答案'];
+            norm.cat = item.cat || '客房資訊';
+            norm.en = norm['補充'];
+            norm.id = item.id || `room_${norm.code || idx}`;
+        } else if (type === 'restaurant') {
+            norm['問題'] = String(item['問題'] !== undefined ? item['問題'] : (item.code || '')).trim();
+            norm['答案'] = String(item['答案'] !== undefined ? item['答案'] : (item.cn || '')).trim();
+            norm['補充'] = String(item['補充'] !== undefined ? item['補充'] : (item.en || item.cat || '')).trim();
+            norm.code = norm['問題'];
+            norm.cn = norm['答案'];
+            norm.cat = item.cat || '餐廳資訊';
+            norm.en = norm['補充'];
+            norm.id = item.id || `restaurant_${norm.code || idx}`;
+        } else {
+            norm = { ...item };
+            norm.id = item.id || `item_${idx}`;
+        }
+
+        return norm;
+    });
+}
 
 function initApp() {
     loadState();
@@ -928,27 +1745,28 @@ function initApp() {
     if (saved && Array.isArray(saved.data) && saved.data.length > 0) {
         db = normalizeDb(saved.data);
     } else {
-        db = []; // 絕無寫死題目，完全以 Google 試算表為唯一資料來源
+        db = []; // HTML 完全不儲存題庫，Google 試算表是唯一 Source of Truth
     }
 
     updatePwdFormUI();
-    syncAuthPinsInBackground();
+    syncAuthPinsInBackground(); // 自動在背景同步雲端最新密碼
     nextCard(false);
     nextQuizQuestion();
     renderMiniSearch();
     renderSearchList();
     if (userRole === 'admin') renderAdminList();
 
-    // Google 試算表是唯一資料來源：啟動時自動靜默同步試算表最新題庫
+    // 啟動時自動靜默向 Google 試算表同步最新題目
     if (apiUrl) {
         syncFromCloud(true);
     }
 }
 
 /* ================================================================
-   二、Google 試算表同步功能（唯一的 Source of Truth）
+   二、Google 試算表同步功能（匯入至試算表／匯出至試算表）
    ================================================================ */
 
+// 通用雲端寫入函式（支援 iPhone Safari 跨網域重定向 no-cors 備援，解決 TypeError: Load failed）
 async function postToAppsScript(payload) {
     if (!apiUrl) throw new Error('尚未設定雲端連線網址');
     const bodyStr = JSON.stringify(payload);
@@ -961,6 +1779,7 @@ async function postToAppsScript(payload) {
         const json = await res.json();
         return json;
     } catch (e) {
+        // iPhone (iOS Safari) 專屬相容處理：改用 no-cors 模式保證資料寫入 Google 試算表
         await fetch(apiUrl, {
             method: 'POST',
             mode: 'no-cors',
@@ -971,6 +1790,7 @@ async function postToAppsScript(payload) {
     }
 }
 
+// 自動在背景同步雲端最新密碼（確保手機與電腦的密碼自動保持一致）
 async function syncAuthPinsInBackground() {
     if (!apiUrl) return;
     try {
@@ -986,8 +1806,8 @@ async function syncAuthPinsInBackground() {
 
 async function pushToCloud() {
     if (!apiUrl) return alert('尚未設定雲端連線網址，請聯繫系統管理者。');
-    if (db.length === 0) return alert('目前系統內無題庫資料可匯入。');
-    if (!confirm(`確定要將目前系統中的 ${db.length} 筆資料同步匯入至 Google 試算表（4 個分頁自動分流）嗎？`)) return;
+    if (db.length === 0) return alert('目前本機無資料可匯入試算表。');
+    if (!confirm(`確定要將目前系統／後台中的 ${db.length} 筆資料同步匯入至 Google 試算表（4 個分頁自動分流）嗎？`)) return;
 
     const statusTxt = document.getElementById('sync-status-txt');
     if (statusTxt) statusTxt.innerText = '狀態：正在匯入資料至 Google 試算表...';
@@ -1018,7 +1838,7 @@ async function syncFromCloud(silent = false) {
     try {
         const res = await fetch(apiUrl);
         const json = await res.json();
-        if (json && json.status === 'success' && Array.isArray(json.data)) {
+        if (json && json.status === 'success' && Array.isArray(json.data) && json.data.length > 0) {
             const validTypes = ['ext', 'opera', 'room', 'restaurant'];
             const cleanRows = [];
             json.data.forEach(row => {
@@ -1027,13 +1847,18 @@ async function syncFromCloud(silent = false) {
                 }
             });
 
+            if (cleanRows.length === 0) {
+                if (!silent) alert('⚠️ 試算表回傳資料格式異常，已取消套用。');
+                if (statusTxt) statusTxt.innerText = '狀態：資料格式異常';
+                return;
+            }
+
             db = normalizeDb(cleanRows);
             localStorage.setItem('opera_custom_db', JSON.stringify({ version: DB_VERSION, data: db }));
             renderAdminList();
             renderSearchList();
             renderMiniSearch();
             renderDeleteList();
-            updateStatsUI();
 
             if (json.auth && (json.auth.staffPin || json.auth.adminPin)) {
                 authConfig = { ...authConfig, ...json.auth };
@@ -1045,7 +1870,7 @@ async function syncFromCloud(silent = false) {
             if (statusTxt) statusTxt.innerText = `狀態：已自試算表載入（共 ${db.length} 筆，${countLine}）`;
 
             if (!silent) {
-                let msg = `🎉 成功載入！已從 Google 試算表載入最新資料到本系統（共 ${db.length} 筆）。\n\n` +
+                let msg = `🎉 成功載入！已從 Google 試算表匯出最新資料到本系統（共 ${db.length} 筆）。\n\n` +
                           `・OPERA縮寫：${db.filter(x => x.type === 'opera').length} 筆\n` +
                           `・分機表：${db.filter(x => x.type === 'ext').length} 筆\n` +
                           `・客房資訊：${db.filter(x => x.type === 'room').length} 筆\n` +
@@ -1061,12 +1886,12 @@ async function syncFromCloud(silent = false) {
         }
     } catch(e) {
         if (!silent) alert('載入出錯：' + e);
-        if (statusTxt) statusTxt.innerText = '狀態：連線錯誤';
+        if (statusTxt) statusTxt.innerText = '狀態：連線失敗';
     }
 }
 
 /* ================================================================
-   三、密碼管理功能
+   三、更改密碼安全功能（同步至 Google 試算表「設定」分頁）
    ================================================================ */
 
 function setPwdTargetRole(role) {
@@ -1143,158 +1968,122 @@ async function saveTargetRolePin(pinVal) {
 }
 
 /* ================================================================
-   四、後台題庫管理：新增題目（依照四大分頁欄位填寫，寫入 Google 試算表）
+   四、後台題庫「＋」新增功能與「－」移除功能（直接讀寫 Google 試算表）
    ================================================================ */
+
+function onAddTypeChange() {
+    const type = document.getElementById('new-item-type').value;
+    const l1 = document.getElementById('modal-label-1');
+    const l2 = document.getElementById('modal-label-2');
+    const l3 = document.getElementById('modal-label-3');
+    const i1 = document.getElementById('new-item-1');
+    const i2 = document.getElementById('new-item-2');
+    const i3 = document.getElementById('new-item-3');
+
+    if (type === 'opera') {
+        if (l1) l1.innerText = '中文意思 *';
+        if (i1) i1.placeholder = '例如: 請勿打擾、重要貴賓、開夜床服務';
+        if (l2) l2.innerText = '縮寫 *';
+        if (i2) i2.placeholder = '例如: DND、VIP、TD';
+        if (l3) l3.innerText = '補充說明（選填）';
+        if (i3) i3.placeholder = '例如: Do Not Disturb（選填）';
+    } else if (type === 'ext') {
+        if (l1) l1.innerText = '分機&電話號碼 *';
+        if (i1) i1.placeholder = '例如: 3401、3225、06 213 6290、**777';
+        if (l2) l2.innerText = '單位 *';
+        if (i2) i2.placeholder = '例如: 飯店分機、前台禮賓、客房部';
+        if (l3) l3.innerText = '部門人員 *';
+        if (i3) i3.placeholder = '例如: 禮賓司、值班經理、櫃檯主任';
+    } else if (type === 'room') {
+        if (l1) l1.innerText = '問題 *';
+        if (i1) i1.placeholder = '例如: 全館客房總數？ 或 海東客房(DK)';
+        if (l2) l2.innerText = '答案 *';
+        if (i2) i2.placeholder = '例如: 255間 或 一大床（180*200cm，12坪）';
+        if (l3) l3.innerText = '補充（選填）';
+        if (i3) i3.placeholder = '例如: 一般樓層202間、行政樓層54間（選填）';
+    } else if (type === 'restaurant') {
+        if (l1) l1.innerText = '問題 *';
+        if (i1) i1.placeholder = "例如: Robin's牛排館營業時段？ 或 晶英軒最後點餐？";
+        if (l2) l2.innerText = '答案 *';
+        if (i2) i2.placeholder = '例如: 06:30-10:30 / 12:00-17:00 / 18:00-22:00';
+        if (l3) l3.innerText = '補充（選填）';
+        if (i3) i3.placeholder = '例如: 最後點餐午餐14:00 / 晚餐21:00（選填）';
+    }
+}
 
 function openAddQuizModal() {
     document.getElementById('new-item-type').value = 'opera';
-    updateAddModalFields();
+    document.getElementById('new-item-1').value = '';
+    document.getElementById('new-item-2').value = '';
+    document.getElementById('new-item-3').value = '';
+    onAddTypeChange();
     document.getElementById('add-quiz-modal')?.classList.remove('hidden');
+    setTimeout(() => document.getElementById('new-item-1')?.focus(), 100);
 }
 
 function closeAddQuizModal() {
     document.getElementById('add-quiz-modal')?.classList.add('hidden');
 }
 
-function updateAddModalFields() {
-    const type = document.getElementById('new-item-type').value;
-    const container = document.getElementById('add-modal-dynamic-fields');
-    if (!container) return;
-
-    if (type === 'opera') {
-        container.innerHTML = `
-            <div class="modal-field">
-                <label class="modal-label">中文意思 *（OPERA 縮寫代表之中文意思）</label>
-                <input type="text" id="add-field-opera-cn" class="pwd-field-input" placeholder="例如: 請勿打擾、重要貴賓、開夜床服務">
-            </div>
-            <div class="modal-field">
-                <label class="modal-label">縮寫 *（OPERA 的英文縮寫）</label>
-                <input type="text" id="add-field-opera-abbr" class="pwd-field-input" placeholder="例如: DND、VIP、TD">
-            </div>
-            <div class="modal-field">
-                <label class="modal-label">補充說明（額外補充資訊，選填）</label>
-                <input type="text" id="add-field-opera-note" class="pwd-field-input" placeholder="例如: Do Not Disturb、Turn Down Service">
-            </div>
-        `;
-        setTimeout(() => document.getElementById('add-field-opera-cn')?.focus(), 100);
-    } else if (type === 'ext') {
-        container.innerHTML = `
-            <div class="modal-field">
-                <label class="modal-label">分機&電話號碼 *（分機號碼或電話號碼）</label>
-                <input type="text" id="add-field-ext-phone" class="pwd-field-input" placeholder="例如: 3401、3225、06 213 6290、**777">
-            </div>
-            <div class="modal-field">
-                <label class="modal-label">單位 *（對應單位）</label>
-                <input type="text" id="add-field-ext-unit" class="pwd-field-input" placeholder="例如: 飯店分機、前台禮賓、餐飲部、客房部">
-            </div>
-            <div class="modal-field">
-                <label class="modal-label">部門人員 *（對應的部門人員）</label>
-                <input type="text" id="add-field-ext-staff" class="pwd-field-input" placeholder="例如: 禮賓司、值班經理、客務部經理-楊仕榮Alex">
-            </div>
-        `;
-        setTimeout(() => document.getElementById('add-field-ext-phone')?.focus(), 100);
-    } else if (type === 'room') {
-        container.innerHTML = `
-            <div class="modal-field">
-                <label class="modal-label">問題 *（客房相關問題）</label>
-                <input type="text" id="add-field-room-q" class="pwd-field-input" placeholder="例如: 全館客房總數？ 或 海東客房(DK)">
-            </div>
-            <div class="modal-field">
-                <label class="modal-label">答案 *（問題的正確答案）</label>
-                <input type="text" id="add-field-room-a" class="pwd-field-input" placeholder="例如: 255間 或 一大床（180*200cm，12坪）">
-            </div>
-            <div class="modal-field">
-                <label class="modal-label">補充（額外補充資訊，選填）</label>
-                <input type="text" id="add-field-room-note" class="pwd-field-input" placeholder="例如: 一般樓層202間、行政樓層54間 或 Deluxe King">
-            </div>
-        `;
-        setTimeout(() => document.getElementById('add-field-room-q')?.focus(), 100);
-    } else if (type === 'restaurant') {
-        container.innerHTML = `
-            <div class="modal-field">
-                <label class="modal-label">問題 *（餐廳相關問題）</label>
-                <input type="text" id="add-field-rest-q" class="pwd-field-input" placeholder="例如: Robin's牛排館營業時段？ 或 晶英軒最後點餐？">
-            </div>
-            <div class="modal-field">
-                <label class="modal-label">答案 *（問題的正確答案）</label>
-                <input type="text" id="add-field-rest-a" class="pwd-field-input" placeholder="例如: 12:00-15:00 / 18:00-22:00">
-            </div>
-            <div class="modal-field">
-                <label class="modal-label">補充（額外補充資訊，選填）</label>
-                <input type="text" id="add-field-rest-note" class="pwd-field-input" placeholder="例如: 午餐14:00 / 晚餐21:00 或 RB、SH">
-            </div>
-        `;
-        setTimeout(() => document.getElementById('add-field-rest-q')?.focus(), 100);
-    }
-}
-
 async function saveNewQuizItem() {
     const type = document.getElementById('new-item-type').value;
+    const val1 = (document.getElementById('new-item-1')?.value || '').trim();
+    const val2 = (document.getElementById('new-item-2')?.value || '').trim();
+    const val3 = (document.getElementById('new-item-3')?.value || '').trim();
+
     let newItem = { type };
 
     if (type === 'opera') {
-        const cn = (document.getElementById('add-field-opera-cn')?.value || '').trim();
-        const abbr = (document.getElementById('add-field-opera-abbr')?.value || '').trim();
-        const note = (document.getElementById('add-field-opera-note')?.value || '').trim();
-        if (!cn) return alert('請填寫【中文意思】！');
-        if (!abbr) return alert('請填寫【縮寫】！');
-        newItem['中文意思'] = cn;
-        newItem['縮寫'] = abbr;
-        newItem['補充說明'] = note;
-        newItem.id = `opera_${abbr}`;
-        newItem.code = abbr;
-        newItem.cn = cn;
+        if (!val1) return alert('請填寫【中文意思】！');
+        if (!val2) return alert('請填寫【縮寫】！');
+        newItem['中文意思'] = val1;
+        newItem['縮寫'] = val2;
+        newItem['補充說明'] = val3;
+        newItem.code = val2;
+        newItem.cn = val1;
         newItem.cat = 'OPERA縮寫';
-        newItem.en = note;
+        newItem.en = val3;
+        newItem.id = `opera_${val2}`;
     } else if (type === 'ext') {
-        const phone = (document.getElementById('add-field-ext-phone')?.value || '').trim();
-        const unit = (document.getElementById('add-field-ext-unit')?.value || '').trim();
-        const staff = (document.getElementById('add-field-ext-staff')?.value || '').trim();
-        if (!phone) return alert('請填寫【分機&電話號碼】！');
-        if (!unit) return alert('請填寫【單位】！');
-        if (!staff) return alert('請填寫【部門人員】！');
-        newItem['分機&電話號碼'] = phone;
-        newItem['單位'] = unit;
-        newItem['部門人員'] = staff;
-        newItem.id = `ext_${phone}`;
-        newItem.code = phone;
-        newItem.cn = staff;
-        newItem.cat = unit;
+        if (!val1) return alert('請填寫【分機&電話號碼】！');
+        if (!val2) return alert('請填寫【單位】！');
+        if (!val3) return alert('請填寫【部門人員】！');
+        newItem['分機&電話號碼'] = val1;
+        newItem['單位'] = val2;
+        newItem['部門人員'] = val3;
+        newItem.code = val1;
+        newItem.cn = val3;
+        newItem.cat = val2;
         newItem.en = '';
+        newItem.id = `ext_${val1}`;
     } else if (type === 'room') {
-        const q = (document.getElementById('add-field-room-q')?.value || '').trim();
-        const a = (document.getElementById('add-field-room-a')?.value || '').trim();
-        const note = (document.getElementById('add-field-room-note')?.value || '').trim();
-        if (!q) return alert('請填寫【問題】！');
-        if (!a) return alert('請填寫【答案】！');
-        newItem['問題'] = q;
-        newItem['答案'] = a;
-        newItem['補充'] = note;
-        newItem.id = `room_${q}`;
-        newItem.code = q;
-        newItem.cn = a;
+        if (!val1) return alert('請填寫【問題】！');
+        if (!val2) return alert('請填寫【答案】！');
+        newItem['問題'] = val1;
+        newItem['答案'] = val2;
+        newItem['補充'] = val3;
+        newItem.code = val1;
+        newItem.cn = val2;
         newItem.cat = '客房資訊';
-        newItem.en = note;
+        newItem.en = val3;
+        newItem.id = `room_${val1}`;
     } else if (type === 'restaurant') {
-        const q = (document.getElementById('add-field-rest-q')?.value || '').trim();
-        const a = (document.getElementById('add-field-rest-a')?.value || '').trim();
-        const note = (document.getElementById('add-field-rest-note')?.value || '').trim();
-        if (!q) return alert('請填寫【問題】！');
-        if (!a) return alert('請填寫【答案】！');
-        newItem['問題'] = q;
-        newItem['答案'] = a;
-        newItem['補充'] = note;
-        newItem.id = `restaurant_${q}`;
-        newItem.code = q;
-        newItem.cn = a;
+        if (!val1) return alert('請填寫【問題】！');
+        if (!val2) return alert('請填寫【答案】！');
+        newItem['問題'] = val1;
+        newItem['答案'] = val2;
+        newItem['補充'] = val3;
+        newItem.code = val1;
+        newItem.cn = val2;
         newItem.cat = '餐廳資訊';
-        newItem.en = note;
+        newItem.en = val3;
+        newItem.id = `restaurant_${val1}`;
     }
 
     const existingIdx = db.findIndex(x => x.id === newItem.id);
     let updatedDb = [];
     if (existingIdx > -1) {
-        if (!confirm(`題庫【${getItemCategory(newItem)}】中已有相同項目「${getItemPrompt(newItem)}」，是否確定要覆蓋更新？`)) return;
+        if (!confirm(`題庫【${newItem.cat}】中已有項目「${newItem.code}」，是否確定要覆蓋更新？`)) return;
         updatedDb = [...db];
         updatedDb[existingIdx] = newItem;
     } else {
@@ -1330,10 +2119,7 @@ async function saveNewQuizItem() {
     }
 }
 
-/* ================================================================
-   五、後台題庫管理：移除題目（確認步驟防誤刪，同步移除 Google 試算表）
-   ================================================================ */
-
+// 移除題目功能與彈窗
 function openDeleteQuizModal() {
     document.getElementById('del-filter-type').value = 'all';
     document.getElementById('del-search-input').value = '';
@@ -1357,41 +2143,23 @@ function renderDeleteList() {
         filtered = filtered.filter(x => x.type === filterType);
     }
     if (q) {
-        filtered = filtered.filter(x => {
-            const p = getItemPrompt(x).toLowerCase();
-            const a = getItemAnswer(x).toLowerCase();
-            const c = getItemCategory(x).toLowerCase();
-            const e = getItemExtra(x).toLowerCase();
-            return p.includes(q) || a.includes(q) || c.includes(q) || e.includes(q);
-        });
+        filtered = filtered.filter(x => (x.code && x.code.toLowerCase().includes(q)) || (x.cn && x.cn.toLowerCase().includes(q)) || (x.cat && x.cat.includes(q)) || (x.en && x.en.toLowerCase().includes(q)));
     }
 
     if (filtered.length === 0) {
-        container.innerHTML = '<div style="color:var(--text-sub); text-align:center; padding:24px;">無符合之題目項目</div>';
+        container.innerHTML = '<div style="color:var(--text-sub); text-align:center; padding:20px; font-size:13px;">無相符之題目項目</div>';
         return;
     }
 
     filtered.forEach(item => {
         const div = document.createElement('div');
-        div.style.cssText = 'background:var(--input-bg); border:1px solid var(--border-color); border-radius:10px; padding:10px 12px; display:flex; justify-content:space-between; align-items:center; gap:10px;';
-
-        const p = getItemPrompt(item);
-        const a = getItemAnswer(item);
-        const c = getItemCategory(item);
-        const e = getItemExtra(item);
-
+        div.style.cssText = 'background:var(--input-bg); border:1px solid var(--border-color); border-radius:10px; padding:10px 12px; display:flex; justify-content:space-between; align-items:center; gap:8px;';
         div.innerHTML = `
             <div style="flex:1; min-width:0;">
-                <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
-                    <span style="font-size:11px; padding:2px 6px; border-radius:4px; background:rgba(200,168,110,0.15); color:var(--primary); font-weight:700;">${c}</span>
-                    <b style="color:var(--primary); font-size:14px;">${escapeHtml(p)}</b>
-                    ${e ? `<span style="font-size:11px; color:var(--text-sub);">(${escapeHtml(e)})</span>` : ''}
-                </div>
-                <div style="font-size:12px; color:var(--text-main); margin-top:3px; word-break:break-all;">${escapeHtml(a)}</div>
+                <b style="color:var(--primary); font-size:14px;">${escapeHtml(item.code)}</b> ${item.en ? `<span style="font-size:11px; color:var(--primary); opacity:0.8;">(${escapeHtml(item.en)})</span>` : ''} <span style="font-size:11px; color:var(--text-sub);">[${escapeHtml(item.cat)}]</span>
+                <div style="font-size:12px; color:var(--text-main); margin-top:2px;">${escapeHtml(item.cn)}</div>
             </div>
-            <button type="button" class="admin-item-del-btn" onclick="confirmDeleteQuizItem('${item.id}')" title="永久移除此題">
-                🗑 移除
-            </button>
+            <button type="button" onclick="confirmDeleteQuizItem('${item.id}')" style="background:rgba(255,69,58,0.12); border:1px solid rgba(255,69,58,0.35); color:var(--danger); padding:4px 10px; border-radius:8px; font-size:12px; font-weight:700; cursor:pointer; flex-shrink:0;">－ 移除</button>
         `;
         container.appendChild(div);
     });
@@ -1401,19 +2169,15 @@ async function confirmDeleteQuizItem(itemId) {
     const item = db.find(x => x.id === itemId);
     if (!item) return alert('找不到該題目項目！');
 
-    const c = getItemCategory(item);
-    const p = getItemPrompt(item);
-    const a = getItemAnswer(item);
-
     const confirmed = confirm(
 `⚠️ 【確認移除題目】
 您確定要從題庫與 Google 試算表中永久移除此題目嗎？
 
-【分類】：${c}
-【題目／縮寫】：${p}
-【答案／說明】：${a}
+【分類】：${item.cat}
+【題目／代碼】：${item.code}
+【答案／說明】：${item.cn}
 
-※ 此動作將立即同步更新至 Google 試算表，無法復原！`
+※ 此動作將同步更新至 Google 試算表，無法復原！`
     );
 
     if (!confirmed) return;
@@ -1430,13 +2194,7 @@ async function executeDeleteItem(itemId) {
     if (statusTxt) statusTxt.innerText = '狀態：正在從 Google 試算表移除題目...';
 
     try {
-        const json = await postToAppsScript({
-            adminPin: cloudSecret,
-            items: updatedDb,
-            action: 'delete',
-            deletedId: itemId
-        });
-
+        const json = await postToAppsScript({ adminPin: cloudSecret, items: updatedDb });
         if (json && json.status === 'success') {
             db = normalizeDb(updatedDb);
             localStorage.setItem('opera_custom_db', JSON.stringify({ version: DB_VERSION, data: db }));
@@ -1447,7 +2205,7 @@ async function executeDeleteItem(itemId) {
             nextCard(false);
             nextQuizQuestion();
             if (statusTxt) statusTxt.innerText = `狀態：已自試算表移除題目（目前共 ${db.length} 筆）`;
-            alert(`🗑 移除成功！\n題目「${getItemPrompt(item)}」已成功從本系統與 Google 試算表同步移除。`);
+            alert(`🗑 移除成功！\n題目「${item.code}」已成功從系統與 Google 試算表移除。`);
         } else {
             alert('移除失敗，Google 試算表寫入未成功：' + (json ? json.message : '未知錯誤'));
             if (statusTxt) statusTxt.innerText = '狀態：移除失敗';
@@ -1458,8 +2216,18 @@ async function executeDeleteItem(itemId) {
     }
 }
 
+function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
 /* ================================================================
-   六、學習卡片與作答邏輯
+   其他系統與互動核心邏輯
    ================================================================ */
 
 function loadState() {
@@ -1607,7 +2375,7 @@ function nextCard(shouldFocus = false) {
     if (!db || db.length === 0) {
         document.getElementById('card-badge').innerText = '題庫連線中';
         const promptEl = document.getElementById('card-prompt');
-        promptEl.innerText = '正在從 Google 試算表同步題庫...';
+        promptEl.innerText = '正在從 Google 試算表載入題庫...';
         promptEl.className = 'card-prompt-text';
         input.placeholder = '同步完成後即可開始練習...';
         input.disabled = true;
@@ -1630,36 +2398,24 @@ function nextCard(shouldFocus = false) {
             currentCard = pool[Math.floor(Math.random() * pool.length)] || db[0];
         }
 
-        if (!currentCard) return;
-
-        const isSpecialType = (currentCard.type === 'room' || currentCard.type === 'restaurant') && getItemPrompt(currentCard).includes('？');
-        currentDirection = isSpecialType ? 'prompt' : (Math.random() < 0.5 ? 'prompt' : 'answer');
-
-        const promptText = getItemPrompt(currentCard);
-        const answerText = getItemAnswer(currentCard);
-        const catName = getItemCategory(currentCard);
+        const isSpecialType = (currentCard.type === 'room' || currentCard.type === 'restaurant') && currentCard.code.includes('？');
+        currentDirection = isSpecialType ? 'code' : (Math.random() < 0.5 ? 'code' : 'cn');
 
         const promptEl = document.getElementById('card-prompt');
         if (state.poolType === 'exam10') {
             document.getElementById('card-badge').innerText = `十題測驗 · 第 ${examSession.currentIndex + 1} / 10 題 (10分/題)`;
         } else {
-            if (currentCard.type === 'opera') {
-                document.getElementById('card-badge').innerText = currentDirection === 'prompt' ? `【${catName}】縮寫 ➔ 中文意思` : `【${catName}】中文意思 ➔ 縮寫`;
-            } else if (currentCard.type === 'ext') {
-                document.getElementById('card-badge').innerText = currentDirection === 'prompt' ? `【${catName}】分機 ➔ 部門人員` : `【${catName}】部門人員 ➔ 分機`;
-            } else {
-                document.getElementById('card-badge').innerText = `【${catName}】問題 ➔ 答案`;
-            }
+            document.getElementById('card-badge').innerText = currentDirection === 'code' ? `【${currentCard.cat}】題目 ➔ 答案` : `【${currentCard.cat}】中文 ➔ 代碼`;
         }
 
-        if (currentDirection === 'prompt') {
-            input.placeholder = currentCard.type === 'ext' ? '請輸入單位或部門人員...' : '請輸入答案或中文意思...';
-            promptEl.innerText = promptText;
-            promptEl.className = promptText.length > 12 ? 'card-prompt-text long-text' : 'card-prompt-text';
+        if (currentDirection === 'code') {
+            input.placeholder = currentCard.type === 'ext' ? '請輸入單位或部門名稱...' : '請輸入答案或中文...';
+            promptEl.innerText = currentCard.code;
+            promptEl.className = currentCard.code.length > 12 ? 'card-prompt-text long-text' : 'card-prompt-text';
         } else {
-            input.placeholder = currentCard.type === 'ext' ? '請輸入分機號碼（例: 3225, **777）...' : '請輸入縮寫 (例: VC, SSP)...';
-            promptEl.innerText = answerText;
-            promptEl.className = answerText.length > 8 ? 'card-prompt-text long-text' : 'card-prompt-text';
+            input.placeholder = currentCard.type === 'ext' ? '請輸入分機號碼（例: 3225, **777）...' : '請輸入代碼 (例: VC, SSP)...';
+            promptEl.innerText = currentCard.cn;
+            promptEl.className = currentCard.cn.length > 8 ? 'card-prompt-text long-text' : 'card-prompt-text';
         }
 
         const isFav = state.favs.includes(currentCard.id);
@@ -1711,10 +2467,10 @@ function submitAnswer() {
     state.stats.total++;
 
     let isCorrect = false;
-    if (currentDirection === 'prompt') {
-        isCorrect = checkChineseMatch(val, getItemAnswer(currentCard));
+    if (currentDirection === 'code') {
+        isCorrect = checkChineseMatch(val, currentCard.cn);
     } else {
-        isCorrect = checkCodeMatch(val, getItemPrompt(currentCard));
+        isCorrect = checkCodeMatch(val, currentCard.code);
     }
 
     if (state.poolType === 'exam10') {
@@ -1743,14 +2499,13 @@ function submitAnswer() {
     resBadge.className = `result-badge ${isCorrect ? 'correct' : 'wrong'}`;
     resBadge.innerText = isCorrect ? '🎉 答對了！(+10分)' : '❌ 答錯了！(0分)';
 
-    document.getElementById('card-ans-code').innerText = getItemPrompt(currentCard);
+    document.getElementById('card-ans-code').innerText = currentCard.code;
     const ansEnEl = document.getElementById('card-ans-en');
-    const extraInfo = getItemExtra(currentCard);
     if (ansEnEl) {
-        ansEnEl.innerText = extraInfo ? `(${extraInfo})` : '';
-        ansEnEl.style.display = extraInfo ? 'block' : 'none';
+        ansEnEl.innerText = currentCard.en ? `(${currentCard.en})` : '';
+        ansEnEl.style.display = currentCard.en ? 'block' : 'none';
     }
-    document.getElementById('card-ans-cn').innerText = getItemAnswer(currentCard);
+    document.getElementById('card-ans-cn').innerText = currentCard.cn;
     document.getElementById('card-ans-user').innerText = `你的回答：${val}`;
 
     document.getElementById('main-card').classList.add('flipped');
@@ -1773,7 +2528,7 @@ function showExamResults() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
     document.getElementById('exam-final-score').innerText = examSession.score;
-    const evalText = examSession.score === 100 ? "滿分完美！全數正確" : examSession.score >= 80 ? "表現優秀！已掌握多數內容" : "繼續加油！多練習錯題本";
+    const evalText = examSession.score === 100 ? "滿分完美！全數正確" : examSession.score >= 80 ? "表現優秀！已掌握多數代碼" : "繼續加油！多練習錯題本";
     document.getElementById('exam-final-eval').innerText = `${evalText}（滿分 100 分 · 一題 10 分）`;
 
     const listEl = document.getElementById('exam-results-list');
@@ -1781,18 +2536,17 @@ function showExamResults() {
     examSession.answers.forEach((item, idx) => {
         const div = document.createElement('div');
         div.className = 'exam-item-box';
-        const qPrompt = item.direction === 'prompt' ? getItemPrompt(item.card) : getItemAnswer(item.card);
-        const qTarget = item.direction === 'prompt' ? getItemAnswer(item.card) : getItemPrompt(item.card);
-        const extra = getItemExtra(item.card);
+        const qPrompt = item.direction === 'code' ? item.card.code : item.card.cn;
+        const qTarget = item.direction === 'code' ? item.card.cn : item.card.code;
         div.innerHTML = `
             <div class="exam-item-top">
-                <span>第 ${idx + 1} 題 · ${getItemCategory(item.card)}</span>
+                <span>第 ${idx + 1} 題 · ${item.card.cat}</span>
                 <span class="exam-item-badge ${item.isCorrect ? 'correct' : 'wrong'}">${item.isCorrect ? '+10分 正確' : '0分 錯誤'}</span>
             </div>
-            <div class="exam-item-row"><span class="lbl">題  目：</span><span class="val">${escapeHtml(qPrompt)}</span></div>
-            ${extra ? `<div class="exam-item-row"><span class="lbl">補充資訊：</span><span class="val" style="color:var(--primary); font-weight:700;">${escapeHtml(extra)}</span></div>` : ''}
-            <div class="exam-item-row"><span class="lbl">你的回答：</span><span class="user-ans ${item.isCorrect ? 'correct' : 'wrong'}">${escapeHtml(item.userVal)}</span></div>
-            <div class="exam-item-row"><span class="lbl">正確答案：</span><span class="val">${escapeHtml(qTarget)}</span></div>
+            <div class="exam-item-row"><span class="lbl">題  目：</span><span class="val">${qPrompt}</span></div>
+            ${item.card.en ? `<div class="exam-item-row"><span class="lbl">完整單字：</span><span class="val" style="color:var(--primary); font-weight:700;">${item.card.en}</span></div>` : ''}
+            <div class="exam-item-row"><span class="lbl">你的回答：</span><span class="user-ans ${item.isCorrect ? 'correct' : 'wrong'}">${item.userVal}</span></div>
+            <div class="exam-item-row"><span class="lbl">正確答案：</span><span class="val">${qTarget}</span></div>
         `;
         listEl.appendChild(div);
     });
@@ -1807,10 +2561,6 @@ function toggleFav(e) {
     saveState();
     document.getElementById('card-star').classList.toggle('active', state.favs.includes(currentCard.id));
 }
-
-/* ================================================================
-   七、考題測驗邏輯
-   ================================================================ */
 
 function requestNextQuiz() {
     if (isQuizCooldown) return;
@@ -1836,43 +2586,33 @@ function nextQuizQuestion() {
     const activeScopedList = getScopedDatabase();
     if (!activeScopedList || activeScopedList.length === 0) {
         document.getElementById('quiz-title').innerText = '題庫載入中，請稍候...';
-        document.getElementById('quiz-options').innerHTML = '<div style="color:var(--text-sub); text-align:center; padding:24px;">正在從 Google 試算表同步測驗題目...</div>';
+        document.getElementById('quiz-options').innerHTML = '<div style="color:var(--text-sub); text-align:center; padding:20px;">正在從 Google 試算表同步測驗題目...</div>';
         return;
     }
+    currentQuiz = activeScopedList[Math.floor(Math.random() * activeScopedList.length)] || db[0];
 
-    currentQuiz = activeScopedList[Math.floor(Math.random() * activeScopedList.length)];
-    const isSpecialType = (currentQuiz.type === 'room' || currentQuiz.type === 'restaurant') && getItemPrompt(currentQuiz).includes('？');
+    const isSpecialType = (currentQuiz.type === 'room' || currentQuiz.type === 'restaurant') && currentQuiz.code.includes('？');
     currentQuizType = isSpecialType ? 'code2cn' : (Math.random() < 0.5 ? 'code2cn' : 'cn2code');
 
     let targetAnswer = "";
     let opts = [];
 
-    const promptText = getItemPrompt(currentQuiz);
-    const answerText = getItemAnswer(currentQuiz);
-    const catName = getItemCategory(currentQuiz);
-
     if (currentQuizType === 'code2cn') {
-        if (currentQuiz.type === 'opera') {
-            document.getElementById('quiz-title').innerText = `【 ${promptText} 】（${catName}）代表什麼中文意思？`;
-        } else if (currentQuiz.type === 'ext') {
-            document.getElementById('quiz-title').innerText = `【 ${promptText} 】（${catName}）對應之人員為？`;
-        } else {
-            document.getElementById('quiz-title').innerText = isSpecialType ? `【${catName}】${promptText}` : `【 ${promptText} 】（${catName}）答案是？`;
-        }
-        targetAnswer = answerText;
+        document.getElementById('quiz-title').innerText = isSpecialType ? `【${currentQuiz.cat}】${currentQuiz.code}` : `【 ${currentQuiz.code} 】（${currentQuiz.cat}）代表什麼？`;
+        targetAnswer = currentQuiz.cn;
         opts = [targetAnswer];
         while (opts.length < 4 && opts.length < activeScopedList.length) {
-            let rand = getItemAnswer(activeScopedList[Math.floor(Math.random() * activeScopedList.length)]);
-            if (rand && !opts.includes(rand)) opts.push(rand);
+            let rand = activeScopedList[Math.floor(Math.random() * activeScopedList.length)].cn;
+            if (!opts.includes(rand)) opts.push(rand);
         }
     } else {
-        const labelName = currentQuiz.type === 'ext' ? '分機/電話' : '縮寫代碼';
-        document.getElementById('quiz-title').innerText = `【 ${answerText} 】（${catName}）的${labelName}是？`;
-        targetAnswer = promptText;
+        const labelName = currentQuiz.type === 'ext' ? '分機/電話' : '代碼';
+        document.getElementById('quiz-title').innerText = `【 ${currentQuiz.cn} 】（${currentQuiz.cat}）的${labelName}是？`;
+        targetAnswer = currentQuiz.code;
         opts = [targetAnswer];
         while (opts.length < 4 && opts.length < activeScopedList.length) {
-            let rand = getItemPrompt(activeScopedList[Math.floor(Math.random() * activeScopedList.length)]);
-            if (rand && !opts.includes(rand)) opts.push(rand);
+            let rand = activeScopedList[Math.floor(Math.random() * activeScopedList.length)].code;
+            if (!opts.includes(rand)) opts.push(rand);
         }
     }
 
@@ -1934,81 +2674,44 @@ function changePool(type) {
     }
 }
 
-/* ================================================================
-   八、清單搜尋與後台清單渲染
-   ================================================================ */
-
 function renderSearchList() {
-    const q = (document.getElementById('search-input')?.value || '').trim().toLowerCase();
+    const q = (document.getElementById('search-input')?.value || '').toLowerCase();
     const container = document.getElementById('search-list');
     if (!container) return;
     container.innerHTML = '';
-
     if (!db || db.length === 0) {
-        container.innerHTML = '<div style="color:var(--text-sub); text-align:center; padding:32px;">題庫連線中，正在從 Google 試算表取得最新資料...</div>';
+        container.innerHTML = '<div style="color:var(--text-sub); text-align:center; padding:30px; font-size:13px;">題庫連線中，正在從 Google 試算表取得最新資料...</div>';
         return;
     }
-
-    const filtered = db.filter(x => {
-        const p = getItemPrompt(x).toLowerCase();
-        const a = getItemAnswer(x).toLowerCase();
-        const c = getItemCategory(x).toLowerCase();
-        const e = getItemExtra(x).toLowerCase();
-        return p.includes(q) || a.includes(q) || c.includes(q) || e.includes(q);
-    });
-
-    if (filtered.length === 0) {
-        container.innerHTML = '<div style="color:var(--text-sub); text-align:center; padding:32px;">查無相符之資料</div>';
-        return;
-    }
-
+    const filtered = db.filter(x => (x.code && x.code.toLowerCase().includes(q)) || (x.cn && x.cn.toLowerCase().includes(q)) || (x.cat && x.cat.includes(q)) || (x.en && x.en.toLowerCase().includes(q)));
     filtered.forEach(x => {
         const div = document.createElement('div');
         div.className = 'list-item';
-        const p = getItemPrompt(x);
-        const a = getItemAnswer(x);
-        const c = getItemCategory(x);
-        const e = getItemExtra(x);
-
         div.innerHTML = `
             <div class="list-item-left">
-                <div class="code">${escapeHtml(p)} ${e ? `<span style="font-size:13px; font-weight:600; color:var(--text-sub); opacity:0.85;">(${escapeHtml(e)})</span>` : ''}</div>
-                <div class="cn">${escapeHtml(a)}</div>
+                <div class="code">${x.code} ${x.en ? `<span style="font-size:13px; font-weight:600; color:var(--text-sub); opacity:0.85;">(${x.en})</span>` : ''}</div>
+                <div class="cn">${x.cn}</div>
             </div>
-            <div class="list-item-cat">${escapeHtml(c)}</div>
+            <div class="list-item-cat">${x.cat}</div>
         `;
         container.appendChild(div);
     });
 }
 
 function renderMiniSearch() {
-    const q = (document.getElementById('mini-search')?.value || '').trim().toLowerCase();
+    const q = (document.getElementById('mini-search')?.value || '').toLowerCase();
     const container = document.getElementById('mini-search-list');
     if (!container) return;
     container.innerHTML = '';
-
     if (!db || db.length === 0) {
-        container.innerHTML = '<div style="color:var(--text-sub); text-align:center; font-size:12px; padding:12px;">題庫同步中...</div>';
+        container.innerHTML = '<div style="color:var(--text-sub); text-align:center; font-size:12px; padding:10px;">題庫同步中...</div>';
         return;
     }
-
-    const filtered = db.filter(x => {
-        const p = getItemPrompt(x).toLowerCase();
-        const a = getItemAnswer(x).toLowerCase();
-        const c = getItemCategory(x).toLowerCase();
-        const e = getItemExtra(x).toLowerCase();
-        return p.includes(q) || a.includes(q) || c.includes(q) || e.includes(q);
-    }).slice(0, 15);
-
-    if (filtered.length === 0) {
-        container.innerHTML = '<div style="color:var(--text-sub); text-align:center; font-size:12px; padding:12px;">無相符資料</div>';
-        return;
-    }
-
+    const filtered = db.filter(x => (x.code && x.code.toLowerCase().includes(q)) || (x.cn && x.cn.toLowerCase().includes(q)) || (x.cat && x.cat.includes(q)) || (x.en && x.en.toLowerCase().includes(q))).slice(0, 15);
     filtered.forEach(x => {
         const div = document.createElement('div');
         div.className = 'mini-list-item';
-        div.innerHTML = `<span class="m-code">${escapeHtml(getItemPrompt(x))}</span><span class="m-cn">${escapeHtml(getItemAnswer(x))}</span>`;
+        div.innerHTML = `<span class="m-code">${x.code}</span><span class="m-cn">${x.cn}</span>`;
         container.appendChild(div);
     });
 }
@@ -2018,6 +2721,7 @@ function renderAdminList() {
     if (!container) return;
     container.innerHTML = '';
 
+    const validTypes = ['ext', 'opera', 'room', 'restaurant'];
     const counts = {
         ext: db.filter(x => x.type === 'ext').length,
         opera: db.filter(x => x.type === 'opera').length,
@@ -2037,40 +2741,24 @@ function renderAdminList() {
     const totalLbl = document.getElementById('admin-list-total-lbl');
     if (totalLbl) totalLbl.innerText = `題庫總覽（共 ${db.length} 筆）`;
 
-    if (!db || db.length === 0) {
-        container.innerHTML = '<div style="color:var(--text-sub); text-align:center; padding:32px;">目前試算表尚無題庫資料，或請點擊上方「匯出至 Google 試算表」載入。</div>';
+    if (db.length === 0) {
+        container.innerHTML = '<div style="color:var(--text-sub); text-align:center; padding:30px; font-size:13px;">目前試算表尚無資料，或請點擊上方「匯出至 Google 試算表」載入。</div>';
         return;
     }
 
-    db.forEach(item => {
+    db.forEach((item, idx) => {
         const div = document.createElement('div');
-        div.style.cssText = 'background:var(--input-bg); border:1px solid var(--border-color); border-radius:12px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:8px;';
-
-        const p = getItemPrompt(item);
-        const a = getItemAnswer(item);
-        const c = getItemCategory(item);
-        const e = getItemExtra(item);
-
+        div.style.cssText = 'background:var(--input-bg); border:1px solid var(--border-color); border-radius:12px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:8px;';
         div.innerHTML = `
             <div style="flex:1; min-width:0;">
-                <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-                    <span style="font-size:11px; padding:2px 7px; border-radius:4px; background:rgba(200,168,110,0.15); color:var(--primary); font-weight:700;">${c}</span>
-                    <b style="color:var(--primary); font-size:15px;">${escapeHtml(p)}</b>
-                    ${e ? `<span style="font-size:12px; color:var(--text-sub);">(${escapeHtml(e)})</span>` : ''}
-                </div>
-                <div style="font-size:13px; color:var(--text-main); margin-top:4px; word-break:break-all;">${escapeHtml(a)}</div>
+                <b style="color:var(--primary);">${escapeHtml(item.code)}</b> ${item.en ? `<span style="font-size:11px;color:var(--primary);opacity:0.8;">(${escapeHtml(item.en)})</span>` : ''} <span style="font-size:11px;color:var(--text-sub);">[${escapeHtml(item.cat)}]</span>
+                <div style="font-size:12px;color:var(--text-main); margin-top:2px;">${escapeHtml(item.cn)}</div>
             </div>
-            <button type="button" class="admin-item-del-btn" onclick="confirmDeleteQuizItem('${item.id}')" title="永久移除此題目">
-                🗑 移除
-            </button>
+            <button type="button" onclick="confirmDeleteQuizItem('${item.id}')" style="background:rgba(255,69,58,0.12); border:1px solid rgba(255,69,58,0.35); color:var(--danger); padding:4px 10px; border-radius:8px; font-size:12px; font-weight:700; cursor:pointer; flex-shrink:0;">－ 移除</button>
         `;
         container.appendChild(div);
     });
 }
-
-/* ================================================================
-   九、頁籤切換、主題切換與系統重設
-   ================================================================ */
 
 function switchTab(tab, btn) {
     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
@@ -2089,11 +2777,11 @@ function switchTab(tab, btn) {
     if (mBtn) mBtn.classList.add('active');
 
     const titles = {
-        learn: { title: '學習卡片', desc: '翻轉卡片、輸入拼寫，強化記憶' },
-        quiz: { title: '考題測驗', desc: '隨機四選一實戰模擬題目測驗' },
-        search: { title: '代碼分機', desc: '即時查詢全館分機與 OPERA 代碼' },
-        settings: { title: '系統設定', desc: '介面主題切換與系統重設' },
-        admin: { title: '後台管理', desc: 'Google 試算表題庫雙向同步與主管管理' }
+        learn: { title: '學習卡片', desc: '翻轉卡片、拼寫記憶，扎實掌握飯店專業知識' },
+        quiz: { title: '考題測驗', desc: '隨機四選一實戰模擬考題，檢測即時反應速度' },
+        search: { title: '代碼分機', desc: '快速搜尋全館分機與常用 OPERA 代碼資料庫' },
+        settings: { title: '系統設定', desc: '介面視覺模式切換與個人練習記錄重設' },
+        admin: { title: '後台管理', desc: 'Google 試算表題庫同步與通行碼安全管理' }
     };
 
     if (titles[tab]) {
@@ -2108,13 +2796,13 @@ function switchTab(tab, btn) {
 }
 
 function toggleTheme() {
-    const isDark = document.body.classList.toggle('light-theme');
-    localStorage.setItem('concierge_theme', isDark ? 'light' : 'dark');
+    const isLight = document.body.classList.toggle('light-mode');
+    localStorage.setItem('concierge_theme', isLight ? 'light' : 'dark');
     applyThemeUI();
 }
 
 function applyThemeUI() {
-    const isLight = document.body.classList.contains('light-theme');
+    const isLight = document.body.classList.contains('light-mode');
     ['theme-toggle-status', 'd-theme-toggle-status'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.innerText = isLight ? '日間淺色模式' : '深色專業模式';
@@ -2138,10 +2826,7 @@ function resetAllData() {
     alert('已成功重設本機練習記錄！');
 }
 
-/* ================================================================
-   十、全域鍵盤監聽與初始載入
-   ================================================================ */
-
+// 監聽鍵盤快捷鍵
 document.addEventListener('keydown', (e) => {
     if (e.key !== 'Enter') return;
 
@@ -2168,6 +2853,7 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
+// 行動端鍵盤輸入滾動
 const typeInput = document.getElementById('type-input');
 if (typeInput) {
     typeInput.addEventListener('focus', () => {
@@ -2177,6 +2863,7 @@ if (typeInput) {
     });
 }
 
+// 初始進入系統
 initApp();
 </script>
 </body>

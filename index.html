@@ -159,6 +159,17 @@
             font-weight: 800;
             cursor: pointer;
         }
+        .pin-btn:disabled { opacity: 0.7; cursor: default; }
+        .auth-status {
+            margin-top: 14px;
+            min-height: 18px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-sub);
+            transition: color 0.15s ease;
+        }
+        .auth-status.is-error { color: var(--danger); }
+        .auth-status.is-checking { color: var(--text-sub); }
 
         .silks-logo {
             height: 36px;
@@ -293,6 +304,69 @@
         .admin-box { background: var(--card-bg); border-radius: 20px; padding: 20px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 14px; }
         .sync-banner { background: var(--primary-light); border: 1px solid var(--border-hover); border-radius: 16px; padding: 16px; display: flex; justify-content: space-between; align-items: center; }
 
+        .sync-btn-row { display: flex; gap: 10px; }
+        .sync-btn {
+            flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px;
+            background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 16px;
+            padding: 14px 8px; cursor: pointer; color: var(--text-main); font-size: 13px; font-weight: 700;
+            line-height: 1.4; transition: border-color 0.15s ease, background-color 0.15s ease;
+        }
+        .sync-btn:hover { border-color: var(--primary); }
+        .sync-btn-icon { font-size: 20px; }
+
+        /* 通行碼安全管理卡片（圓角分層、標籤化 key/value，呼應深色現代風格） */
+        .pin-manage-card {
+            background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 20px;
+            padding: 18px; display: flex; flex-direction: column; gap: 14px; margin-top: 6px;
+        }
+        .pin-manage-head { display: flex; align-items: center; gap: 12px; }
+        .pin-manage-icon {
+            width: 38px; height: 38px; border-radius: 12px; background: var(--primary-light);
+            display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;
+        }
+        .pin-manage-title { color: var(--text-main); font-size: 15px; display: block; }
+        .pin-manage-sub { color: var(--text-sub); font-size: 12px; margin-top: 2px; }
+        .pin-manage-row {
+            background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 14px;
+            padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px;
+        }
+        .pin-manage-label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--text-main); font-weight: 700; }
+        .pin-manage-tag {
+            font-size: 10px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase;
+            color: var(--text-sub); background: var(--input-bg); border: 1px solid var(--border-color);
+            border-radius: 6px; padding: 1px 6px; width: fit-content;
+        }
+        .pin-manage-tag-admin { color: var(--primary); border-color: var(--primary); }
+        .pin-manage-input {
+            width: 120px; text-align: right; background: transparent; border: none; outline: none;
+            color: var(--primary); font-size: 16px; font-weight: 800; letter-spacing: 1px;
+        }
+        .pin-manage-hint { font-size: 11px; color: var(--text-sub); line-height: 1.5; }
+
+        .admin-list-head { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; }
+        .add-quiz-fab {
+            width: 34px; height: 34px; border-radius: 50%; border: none; background: var(--primary);
+            color: var(--primary-btn-text); font-size: 18px; font-weight: 800; line-height: 1; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; transition: opacity 0.15s ease;
+        }
+        .add-quiz-fab:hover { opacity: 0.85; }
+
+        /* 新增題庫項目彈窗 */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px); z-index: 99998; display: flex; align-items: center;
+            justify-content: center; padding: 20px;
+        }
+        .modal-overlay.hidden { display: none; }
+        .modal-card {
+            background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 24px;
+            width: 100%; max-width: 420px; max-height: 85vh; overflow-y: auto; padding: 24px;
+            display: flex; flex-direction: column; gap: 10px; box-shadow: var(--shadow);
+        }
+        .modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; color: var(--primary); font-size: 17px; }
+        .modal-close { cursor: pointer; font-size: 18px; color: var(--text-sub); }
+        .modal-label { font-size: 12px; color: var(--text-sub); margin-top: 6px; }
+
         @media (max-width: 859px) {
             html, body { overflow-x: hidden !important; width: 100% !important; max-width: 100vw !important; }
             body { min-height: 100dvh; display: block !important; padding: 0 !important; margin: 0 !important; }
@@ -390,11 +464,12 @@
 <div id="auth-modal">
     <div class="auth-card">
         <div class="auth-title">台南晶英 禮賓司萬事通</div>
-        <div class="auth-desc">請輸入授權通行碼以進入系統</div>
+        <div class="auth-desc">Silks Place Tainan Concierge Knowledge</div>
         <form onsubmit="event.preventDefault(); checkAuthPin();">
             <input type="password" id="pin-input" class="pin-input" maxlength="16" placeholder="••••" autocomplete="off" autofocus>
-            <button type="submit" class="pin-btn">解鎖進入 (Enter)</button>
+            <button type="submit" class="pin-btn" id="pin-submit-btn">登入</button>
         </form>
+        <div id="auth-status" class="auth-status"></div>
     </div>
 </div>
 
@@ -667,15 +742,20 @@
             <div class="admin-box">
                 <div class="sync-banner">
                     <div>
-                        <b style="color:var(--text-main); font-size:15px;">Google 試算表四分頁同步</b>
+                        <b style="color:var(--text-main); font-size:15px;">Google 試算表同步</b>
                         <div style="font-size:12px; color:var(--text-sub); margin-top:2px;" id="sync-status-txt">狀態：本機資料庫</div>
                     </div>
-                    <button onclick="syncFromCloud()" style="background:var(--primary); border:none; padding:8px 14px; border-radius:12px; font-weight:800; cursor:pointer;">立即抓取</button>
                 </div>
-                
-                <div style="display:flex; flex-direction:column; gap:6px;">
-                    <label style="font-size:12px; color:var(--text-sub);">Google Apps Script Web API 網址：</label>
-                    <input type="text" id="api-url-input" class="search-box" placeholder="貼上 https://script.google.com/macros/s/.../exec" onchange="saveApiUrl()">
+
+                <div class="sync-btn-row">
+                    <button class="sync-btn" onclick="pushToCloud()">
+                        <span class="sync-btn-icon">⬆️</span>
+                        <span>匯入至<br>Google 試算表</span>
+                    </button>
+                    <button class="sync-btn" onclick="syncFromCloud()">
+                        <span class="sync-btn-icon">⬇️</span>
+                        <span>匯出至<br>Google 試算表</span>
+                    </button>
                 </div>
 
                 <div style="display:flex; flex-direction:column; gap:6px;">
@@ -683,25 +763,65 @@
                     <input type="text" id="cloud-secret-input" class="search-box" placeholder="例如 9999" onchange="saveCloudSecret()">
                 </div>
 
-                <button class="btn-action" onclick="pushToCloud()">推送本機資料至 Google 試算表（自動分流4個分頁）</button>
-
                 <!-- 通行碼管理 -->
-                <div style="background:var(--input-bg); border:1px solid var(--border-color); border-radius:16px; padding:16px; display:flex; flex-direction:column; gap:10px; margin-top:6px;">
-                    <b style="color:var(--primary); font-size:15px;">🔐 通行碼安全管理（主管自訂）</b>
-                    <div style="font-size:12px; color:var(--text-sub);">在此自訂通行碼後，登入視窗不會顯示任何提示，同仁無法窺探。設定好雲端寫入金鑰後，這裡按下「儲存」會自動同步到雲端，其他裝置按「立即抓取」就能拿到一致的通行碼。</div>
-                    <div>
-                        <label style="font-size:12px; color:var(--text-sub);">同仁練習密碼：</label>
-                        <input type="text" id="cfg-staff-pin" class="search-box" style="padding:10px 14px; margin-top:4px;">
+                <div class="pin-manage-card">
+                    <div class="pin-manage-head">
+                        <span class="pin-manage-icon">🔐</span>
+                        <div>
+                            <b class="pin-manage-title">通行碼安全管理</b>
+                            <div class="pin-manage-sub">主管自訂，設定後自動同步到雲端</div>
+                        </div>
                     </div>
-                    <div>
-                        <label style="font-size:12px; color:var(--text-sub);">主管管理密碼：</label>
-                        <input type="text" id="cfg-admin-pin" class="search-box" style="padding:10px 14px; margin-top:4px;">
+                    <div class="pin-manage-row">
+                        <div class="pin-manage-label">
+                            <span>同仁練習密碼</span>
+                            <span class="pin-manage-tag">staff</span>
+                        </div>
+                        <input type="text" id="cfg-staff-pin" class="pin-manage-input">
+                    </div>
+                    <div class="pin-manage-row">
+                        <div class="pin-manage-label">
+                            <span>主管管理密碼</span>
+                            <span class="pin-manage-tag pin-manage-tag-admin">admin</span>
+                        </div>
+                        <input type="text" id="cfg-admin-pin" class="pin-manage-input">
                     </div>
                     <button class="btn-action" onclick="saveNewPins()">儲存新密碼設定</button>
+                    <div class="pin-manage-hint">在此自訂通行碼後，登入視窗不會顯示任何提示，同仁無法窺探。</div>
                 </div>
 
-                <div class="list-container" id="admin-list" style="margin-top:10px; max-height:350px; overflow-y:auto;"></div>
+                <div class="admin-list-head">
+                    <b style="color:var(--text-main); font-size:15px;">題庫列表</b>
+                    <button class="add-quiz-fab" onclick="openAddQuizModal()" title="新增題庫項目">＋</button>
+                </div>
+                <div class="list-container" id="admin-list" style="margin-top:4px; max-height:350px; overflow-y:auto;"></div>
             </div>
+        </div>
+    </div>
+
+    <!-- 新增題庫項目彈窗 -->
+    <div id="add-quiz-modal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="modal-head">
+                <b>新增題庫項目</b>
+                <span class="modal-close" onclick="closeAddQuizModal()">✕</span>
+            </div>
+            <label class="modal-label">分類</label>
+            <select id="new-item-type" class="search-box">
+                <option value="opera">OPERA縮寫</option>
+                <option value="ext">分機表</option>
+                <option value="room">客房資訊</option>
+                <option value="restaurant">餐廳資訊</option>
+            </select>
+            <label class="modal-label">代碼／關鍵字</label>
+            <input type="text" id="new-item-code" class="search-box" placeholder="例如 DND">
+            <label class="modal-label">中文說明</label>
+            <input type="text" id="new-item-cn" class="search-box" placeholder="例如 請勿打擾">
+            <label class="modal-label">分類標籤（cat）</label>
+            <input type="text" id="new-item-cat" class="search-box" placeholder="例如 客房狀態">
+            <label class="modal-label">英文（選填）</label>
+            <input type="text" id="new-item-en" class="search-box" placeholder="例如 Do Not Disturb">
+            <button class="btn-action" id="save-new-item-btn" onclick="saveNewQuizItem()" style="margin-top:14px;">儲存並同步至 Google 試算表</button>
         </div>
     </div>
 </main>
@@ -919,15 +1039,19 @@ let lastQuizAnswerTime = 0;
 let isQuizCooldown = false;
 let currentQuiz = null;
 let currentQuizType = 'code2cn';
-
-const DEFAULT_API_URL = 'https://script.google.com/macros/s/AKfycby4KSBo1sphWrRrFA4ZD4Fl8GtLTtrVbsTe_ihc1b634g5iqxzcqOKbT4LwWU0I5xkm4w/exec';
+// 【只需要填一次】把部署好的 Apps Script 網址（結尾 /exec）貼在下面引號裡，
+// 之後同仁點連結進來，就會自動連上雲端，不用每台裝置各自設定。
+// 這個網址只能「讀取」，寫入仍需要「雲端寫入金鑰」（金鑰不要寫在這裡）。
+const DEFAULT_API_URL = '';
 let apiUrl = localStorage.getItem('concierge_api_url') || DEFAULT_API_URL;
 
 function cloudGetUrl(pin) {
     if (!apiUrl) return '';
     return pin ? apiUrl + (apiUrl.includes('?') ? '&' : '?') + 'pin=' + encodeURIComponent(pin) : apiUrl;
 }
-
+// 雲端寫入金鑰：專門用來授權「推送資料/同步通行碼」寫入 Google 試算表，
+// 跟下面 staffPin/adminPin（App 登入用的通行碼）是分開的兩件事，
+// 這樣以後改登入密碼不會連帶讓雲端推送失敗。
 let cloudSecret = localStorage.getItem('concierge_cloud_secret') || '';
 
 let authConfig = JSON.parse(localStorage.getItem('concierge_auth_pins') || '{"staffPin":"1688","adminPin":"9999"}');
@@ -948,52 +1072,71 @@ let examSession = {
     score: 0
 };
 
-// 通行碼檢查（Enter 秒解鎖）
+// 通行碼檢查：雲端驗證身分，並加上逾時保護與樂觀 UI，避免等待過久。
 async function checkAuthPin() {
-    const pin = document.getElementById('pin-input').value.trim();
+    const pinInput = document.getElementById('pin-input');
+    const statusEl = document.getElementById('auth-status');
+    const btn = document.getElementById('pin-submit-btn');
+    const pin = pinInput.value.trim();
     if (!pin) return;
 
-    // 把輸入的通行碼交給雲端驗證（密碼不會在網路上被整包下載，只回傳「你是誰」）。
-    // 驗證成功就順便更新本機備份，離線時仍可用最近一次驗證過的密碼登入。
+    btn.disabled = true;
+    statusEl.textContent = '驗證中';
+    statusEl.className = 'auth-status is-checking';
+
+    // 把輸入的通行碼交給雲端驗證（密碼不會被整包下載，只回傳「你是誰」）。
+    // 只讀「設定」分頁、不讀整份題庫，驗證速度跟題庫大小無關；另外加 2.5 秒逾時，
+    // 伺服器回應太慢時自動退回本機最近一次同步過的通行碼，避免卡住整個登入流程。
     let cloudRole = null;
     if (apiUrl) {
         try {
-            const res = await fetch(cloudGetUrl(pin));
+            const controller = new AbortController();
+            const timer = setTimeout(() => controller.abort(), 2500);
+            const res = await fetch(cloudGetUrl(pin), { signal: controller.signal });
+            clearTimeout(timer);
             const json = await res.json();
             if (json && json.status === 'success' && json.role) cloudRole = json.role;
         } catch (e) {
-            // 離線或連線失敗：安靜略過，改用本機備份的通行碼比對
+            // 逾時／離線／連線失敗：安靜略過，改用本機備份的通行碼比對
         }
     }
     let role = cloudRole;
     if (!role) {
-        // 雲端有回應但判定 none → 一律拒絕；雲端連不上才退回本機比對
+        // 雲端有回應但判定 none → 一律拒絕；雲端連不上或逾時才退回本機比對
         if (pin === authConfig.adminPin) role = 'admin';
         else if (pin === authConfig.staffPin) role = 'staff';
     }
     if (cloudRole === 'admin') { authConfig.adminPin = pin; localStorage.setItem('concierge_auth_pins', JSON.stringify(authConfig)); }
     if (cloudRole === 'staff') { authConfig.staffPin = pin; localStorage.setItem('concierge_auth_pins', JSON.stringify(authConfig)); }
 
+    btn.disabled = false;
+
     if (role === 'admin') {
         userRole = 'admin';
         document.getElementById('d-nav-admin-btn').classList.remove('hidden');
         document.getElementById('m-nav-admin-btn').classList.remove('hidden');
+        statusEl.textContent = '';
         document.getElementById('auth-modal').style.display = 'none';
         initApp();
     } else if (role === 'staff') {
         userRole = 'staff';
         document.getElementById('d-nav-admin-btn').classList.add('hidden');
         document.getElementById('m-nav-admin-btn').classList.add('hidden');
+        statusEl.textContent = '';
         document.getElementById('auth-modal').style.display = 'none';
         initApp();
     } else {
-        alert('通行碼錯誤，請重新輸入！');
-        document.getElementById('pin-input').value = '';
+        statusEl.textContent = '密碼錯誤，請再試一次';
+        statusEl.className = 'auth-status is-error';
+        pinInput.value = '';
+        pinInput.focus();
     }
 }
 
 function reLogin() {
     document.getElementById('pin-input').value = '';
+    const statusEl = document.getElementById('auth-status');
+    if (statusEl) { statusEl.textContent = ''; statusEl.className = 'auth-status'; }
     document.getElementById('auth-modal').style.display = 'flex';
     setTimeout(() => document.getElementById('pin-input').focus(), 100);
 }
@@ -1025,7 +1168,6 @@ function initApp() {
         localStorage.removeItem('opera_custom_db');
     }
 
-    document.getElementById('api-url-input').value = apiUrl;
     document.getElementById('cloud-secret-input').value = cloudSecret;
     document.getElementById('cfg-staff-pin').value = authConfig.staffPin;
     document.getElementById('cfg-admin-pin').value = authConfig.adminPin;
@@ -1053,7 +1195,7 @@ function saveNewPins() {
     if (apiUrl && cloudSecret) {
         pushAuthToCloud();
     } else {
-        alert('🎉 通行碼已更新（僅本機）！\n尚未設定「Google Apps Script 網址」與「雲端寫入金鑰」，其他裝置不會自動拿到新密碼，需要各自手動設定或按「立即抓取」。');
+        alert('🎉 通行碼已更新（僅本機）！\n尚未設定「雲端寫入金鑰」，其他裝置不會自動拿到新密碼，需要先在上方填入金鑰。');
     }
 }
 
@@ -1066,7 +1208,7 @@ async function pushAuthToCloud() {
         });
         const json = await res.json();
         if (json.status === 'success') {
-            alert('🎉 通行碼已更新，並同步到雲端！\n其他裝置只要按「立即抓取」，就會拿到一致的通行碼。');
+            alert('🎉 通行碼已更新，並同步到雲端！\n其他裝置下次登入會自動拿到一致的通行碼。');
         } else {
             alert('通行碼已在本機更新，但雲端同步失敗：' + json.message + '\n（請確認「雲端寫入金鑰」跟 Apps Script 裡的 ADMIN_SECRET 是否一致）');
         }
@@ -1631,13 +1773,8 @@ function resetAllData() {
     }
 }
 
-function saveApiUrl() {
-    apiUrl = document.getElementById('api-url-input').value.trim();
-    localStorage.setItem('concierge_api_url', apiUrl);
-}
-
 async function syncFromCloud() {
-    if (!apiUrl) return alert('請先填入 Google Apps Script 網址！');
+    if (!apiUrl) return alert('尚未設定雲端連線網址，請聯繫系統管理者確認部署設定。');
     const statusTxt = document.getElementById('sync-status-txt');
     statusTxt.innerText = '狀態：正在從雲端抓取...';
     try {
@@ -1705,7 +1842,7 @@ async function syncFromCloud() {
 }
 
 async function pushToCloud() {
-    if (!apiUrl) return alert('請先填入 Google Apps Script 網址！');
+    if (!apiUrl) return alert('尚未設定雲端連線網址，請聯繫系統管理者確認部署設定。');
     if (!cloudSecret) return alert('請先在上方設定「雲端寫入金鑰」（需跟 Apps Script 裡的 ADMIN_SECRET 一致）！');
     if (!confirm(`確定要將目前的 ${db.length} 筆完整題庫自動分類寫入 Google 試算表（OPERA縮寫、分機表、客房資訊、餐廳資訊 4 個分頁）嗎？`)) return;
     
@@ -1728,6 +1865,75 @@ async function pushToCloud() {
     } catch(e) {
         alert('推送出錯：' + e);
         statusTxt.innerText = '狀態：推送出錯';
+    }
+}
+
+// ============ 後台直接新增題庫項目 ============
+// 沿用既有資料結構（code/cn/cat/type/en）與既有的 Google Apps Script 寫入架構：
+// 新項目先併入本機 db，再透過跟「匯入至 Google 試算表」相同的 API 呼叫整批寫回，
+// 不另外建立新的後端或資料庫。
+
+function openAddQuizModal() {
+    document.getElementById('new-item-type').value = 'opera';
+    document.getElementById('new-item-code').value = '';
+    document.getElementById('new-item-cn').value = '';
+    document.getElementById('new-item-cat').value = '';
+    document.getElementById('new-item-en').value = '';
+    document.getElementById('add-quiz-modal').classList.remove('hidden');
+}
+
+function closeAddQuizModal() {
+    document.getElementById('add-quiz-modal').classList.add('hidden');
+}
+
+async function saveNewQuizItem() {
+    const type = document.getElementById('new-item-type').value;
+    const code = document.getElementById('new-item-code').value.trim();
+    const cn = document.getElementById('new-item-cn').value.trim();
+    const cat = document.getElementById('new-item-cat').value.trim();
+    const en = document.getElementById('new-item-en').value.trim();
+
+    if (!code || !cn || !cat) return alert('代碼、中文說明、分類標籤為必填！');
+    if (!apiUrl) return alert('尚未設定雲端連線網址，請聯繫系統管理者確認部署設定。');
+    if (!cloudSecret) return alert('請先在上方設定「雲端寫入金鑰」才能新增並同步到 Google 試算表！');
+
+    const newItem = normalizeDb([{ code, cn, cat, type, en }])[0];
+    if (db.some(x => x.id === newItem.id)) {
+        if (!confirm('這個分類下已經有相同代碼的項目，是否要覆蓋原本的內容？')) return;
+        db = db.filter(x => x.id !== newItem.id);
+    }
+    const updatedDb = [...db, newItem];
+
+    const btn = document.getElementById('save-new-item-btn');
+    const originalText = btn.innerText;
+    btn.innerText = '儲存中...';
+    btn.disabled = true;
+
+    try {
+        const res = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({ adminPin: cloudSecret, items: updatedDb })
+        });
+        const json = await res.json();
+        if (json.status === 'success') {
+            db = normalizeDb(updatedDb);
+            localStorage.setItem('opera_custom_db', JSON.stringify({ version: DB_VERSION, data: db }));
+            renderAdminList();
+            renderSearchList();
+            renderMiniSearch();
+            nextCard(false);
+            nextQuizQuestion();
+            closeAddQuizModal();
+            alert('🎉 新增成功，已同步到 Google 試算表，系統也已更新！');
+        } else {
+            alert('新增失敗：' + json.message);
+        }
+    } catch (e) {
+        alert('新增失敗，連線錯誤：' + e);
+    } finally {
+        btn.innerText = originalText;
+        btn.disabled = false;
     }
 }
 

@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
     <title>OPERA 卡牌大師</title>
-
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
     <link rel="icon" type="image/png" href="apple-touch-icon.png">
 
@@ -14,36 +13,26 @@
             --sidebar-bg: #141416;
             --card-bg: #18181b;
             --input-bg: #222226;
-
             --border-color: rgba(255, 255, 255, 0.08);
             --border-hover: rgba(200, 168, 110, 0.4);
-
             --text-main: #ffffff;
             --text-sub: #8e8e93;
-
             --primary: #C8A86E;
             --primary-light: rgba(200, 168, 110, 0.12);
             --primary-btn-text: #121212;
-
             --accent: #30d158;
             --danger: #ff453a;
-
             --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
-
             --nav-bg: #121212;
             --ios-icon-bg: #27272a;
             --ios-icon-stroke: #ffffff;
-
             --toggle-bg: rgba(255, 255, 255, 0.10);
             --toggle-border: rgba(255, 255, 255, 0.12);
-
             --dock-bg: rgba(24, 24, 27, 0.48);
             --dock-border: rgba(255, 255, 255, 0.14);
-
             --dock-shadow:
                 0 16px 40px rgba(0, 0, 0, 0.45),
                 0 4px 12px rgba(0, 0, 0, 0.20);
-
             --dock-active-bg: #ffffff;
             --dock-active-color: #0d0d0e;
             --dock-icon-color: #8e8e93;
@@ -54,33 +43,24 @@
             --sidebar-bg: #ffffff;
             --card-bg: #ffffff;
             --input-bg: #f0f0f4;
-
             --border-color: rgba(0, 0, 0, 0.08);
             --border-hover: rgba(179, 142, 75, 0.45);
-
             --text-main: #18181b;
             --text-sub: #6c6c70;
-
             --primary: #B38E4B;
             --primary-light: rgba(179, 142, 75, 0.12);
             --primary-btn-text: #ffffff;
-
             --shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
-
             --nav-bg: #ffffff;
             --ios-icon-bg: #e5e5ea;
             --ios-icon-stroke: #1c1c1e;
-
             --toggle-bg: rgba(255, 255, 255, 0.52);
             --toggle-border: rgba(255, 255, 255, 0.55);
-
             --dock-bg: rgba(255, 255, 255, 0.58);
             --dock-border: rgba(255, 255, 255, 0.60);
-
             --dock-shadow:
                 0 12px 36px rgba(0, 0, 0, 0.10),
                 0 2px 8px rgba(0, 0, 0, 0.04);
-
             --dock-active-bg: var(--primary);
             --dock-active-color: #ffffff;
             --dock-icon-color: #71717a;
@@ -108,1232 +88,655 @@
         }
 
         /* 密碼驗證彈窗 */
-        .modal-overlay {
+        #auth-modal {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            z-index: 9999;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            z-index: 99999;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
         }
-
         .auth-card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 24px;
-            padding: 32px 24px;
+            border-radius: 28px;
             width: 100%;
-            max-width: 340px;
+            max-width: 380px;
+            padding: 36px 26px;
             text-align: center;
             box-shadow: var(--shadow);
         }
-
-        .auth-icon-wrap {
-            width: 56px;
-            height: 56px;
-            background: var(--primary-light);
-            border-radius: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 16px;
-        }
-
-        .auth-title {
-            font-size: 19px;
-            font-weight: 800;
-            margin-bottom: 6px;
-        }
-
-        .auth-desc {
-            font-size: 13px;
-            color: var(--text-sub);
-            margin-bottom: 22px;
-            line-height: 1.4;
-        }
-
+        .auth-title { font-size: 22px; font-weight: 800; color: var(--primary); margin-bottom: 8px; }
+        .auth-desc { font-size: 13px; color: var(--text-sub); margin-bottom: 24px; line-height: 1.5; }
         .pin-input {
             width: 100%;
-            height: 48px;
-            background: var(--input-bg);
+            padding: 16px;
+            border-radius: 16px;
             border: 1px solid var(--border-color);
-            border-radius: 14px;
+            background: var(--input-bg);
             color: var(--text-main);
-            font-size: 22px;
-            font-weight: 800;
+            font-size: 24px;
             text-align: center;
             letter-spacing: 6px;
-            margin-bottom: 14px;
+            font-weight: 800;
+            margin-bottom: 16px;
             outline: none;
             transition: border-color 0.2s;
         }
-
-        .pin-input:focus {
-            border-color: var(--primary);
-        }
-
-        .pin-submit-btn {
+        .pin-input:focus { border-color: var(--primary); }
+        .pin-btn {
             width: 100%;
-            height: 46px;
+            padding: 16px;
+            border-radius: 16px;
+            border: none;
             background: var(--primary);
             color: var(--primary-btn-text);
-            border: none;
-            border-radius: 14px;
-            font-size: 15px;
-            font-weight: 800;
-            cursor: pointer;
-            transition: opacity 0.2s;
-        }
-
-        .pin-submit-btn:hover {
-            opacity: 0.9;
-        }
-
-        .auth-status {
-            font-size: 12px;
-            margin-top: 10px;
-            min-height: 16px;
-        }
-        .auth-status.error { color: var(--danger); font-weight: 700; }
-        .auth-status.info { color: var(--primary); font-weight: 600; }
-
-        /* 桌面版外框與側邊欄 */
-        .app-layout {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        .desktop-sidebar {
-            display: none;
-            width: 250px;
-            background: var(--sidebar-bg);
-            border-right: 1px solid var(--border-color);
-            padding: 28px 18px;
-            flex-direction: column;
-            justify-content: space-between;
-            flex-shrink: 0;
-        }
-
-        .desktop-brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 28px;
-            padding-left: 6px;
-        }
-
-        .desktop-brand-icon {
-            width: 36px;
-            height: 36px;
-            background: var(--primary-light);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--primary);
-            font-size: 18px;
-            font-weight: 900;
-            border: 1px solid var(--border-hover);
-        }
-
-        .desktop-brand-text h1 {
-            font-size: 15px;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-        }
-
-        .desktop-brand-text p {
-            font-size: 11px;
-            color: var(--text-sub);
-        }
-
-        .side-nav-list {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .side-nav-btn {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 14px;
-            border-radius: 12px;
-            background: transparent;
-            border: 1px solid transparent;
-            color: var(--text-sub);
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-            width: 100%;
-            text-align: left;
-        }
-
-        .side-nav-btn:hover {
-            background: var(--input-bg);
-            color: var(--text-main);
-        }
-
-        .side-nav-btn.active {
-            background: var(--primary-light);
-            border-color: var(--border-hover);
-            color: var(--primary);
-        }
-
-        .side-nav-btn svg {
-            width: 19px;
-            height: 19px;
-            stroke-width: 2.2;
-            fill: none;
-            stroke: currentColor;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-
-        .desktop-stats-card {
-            background: var(--input-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 14px;
-        }
-
-        .d-st-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            font-size: 12px;
-            color: var(--text-sub);
-        }
-
-        .d-st-row:last-child {
-            margin-bottom: 0;
-        }
-
-        .d-st-row b {
-            color: var(--primary);
-        }
-
-        /* 主要內容區域 */
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            padding: 20px 16px 100px;
-            max-width: 640px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        .desktop-header {
-            display: none;
-            margin-bottom: 20px;
-        }
-
-        .desktop-page-title {
-            font-size: 24px;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-        }
-
-        .desktop-page-desc {
-            font-size: 13px;
-            color: var(--text-sub);
-            margin-top: 4px;
-        }
-
-        .mobile-header {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 16px;
-        }
-
-        .stats-bar {
-            display: flex;
-            justify-content: space-between;
-            background: var(--card-bg);
-            padding: 12px 16px;
-            border-radius: 16px;
-            border: 1px solid var(--border-color);
-        }
-
-        .stat-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .stat-val {
             font-size: 16px;
             font-weight: 800;
-            color: var(--primary);
+            cursor: pointer;
         }
-
-        .stat-lbl {
-            font-size: 11px;
+        .pin-btn:disabled { opacity: 0.7; cursor: default; }
+        .auth-status {
+            margin-top: 14px;
+            min-height: 18px;
+            font-size: 13px;
+            font-weight: 700;
             color: var(--text-sub);
-            margin-top: 2px;
+            transition: color 0.15s ease;
         }
+        .auth-status.is-error { color: var(--danger); }
+        .auth-status.is-checking { color: var(--text-sub); }
 
-        /* 模式切換按鈕組 */
-        .toggle-group {
-            display: flex;
+        .silks-logo {
+            height: 36px;
+            width: auto;
+            max-width: 46px;
+            object-fit: contain;
+            display: block;
+        }
+        body:not(.light-mode) .silks-logo { filter: brightness(0) invert(1); }
+        body.light-mode .silks-logo { filter: none; }
+
+        .app-title { font-size: 19px; font-weight: 800; color: var(--text-main); letter-spacing: 0.5px; }
+
+        .theme-toggle {
+            position: relative;
+            overflow: hidden;
             background: var(--toggle-bg);
             border: 1px solid var(--toggle-border);
-            border-radius: 14px;
-            padding: 3px;
-            gap: 3px;
-            overflow-x: auto;
-        }
-
-        .toggle-btn {
-            flex: 1;
-            min-width: 58px;
-            padding: 7px 4px;
-            border-radius: 11px;
-            border: none;
-            background: transparent;
+            padding: 7px 14px;
+            border-radius: 9999px;
+            cursor: pointer;
             color: var(--text-sub);
-            font-size: 12px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-align: center;
-            white-space: nowrap;
-        }
-
-        .toggle-btn.active {
-            background: var(--card-bg);
-            color: var(--primary);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-        }
-
-        /* 內容視圖切換 */
-        .view-content {
-            display: none;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .view-content.active {
-            display: flex;
-        }
-
-        /* 卡片設計 */
-        .card-container {
-            perspective: 1000px;
-            height: 250px;
-            width: 100%;
-        }
-
-        .card {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            transform-style: preserve-3d;
-            transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
-            border-radius: 24px;
-            box-shadow: var(--shadow);
-            cursor: pointer;
-        }
-
-        .card.flipped {
-            transform: rotateY(180deg);
-        }
-
-        .card-face {
-            position: absolute;
-            inset: 0;
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden;
-            border-radius: 24px;
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            border: 1px solid var(--border-color);
-            background: var(--card-bg);
-        }
-
-        .card-back {
-            transform: rotateY(180deg);
-            background: var(--card-bg);
-            border-color: var(--primary);
-        }
-
-        .card-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .badge {
-            font-size: 11px;
-            font-weight: 800;
-            padding: 4px 10px;
-            border-radius: 20px;
-            background: var(--primary-light);
-            color: var(--primary);
-            border: 1px solid var(--border-hover);
-        }
-
-        .star-btn {
-            background: none;
-            border: none;
-            font-size: 20px;
-            color: var(--text-sub);
-            cursor: pointer;
-        }
-
-        .star-btn.active {
-            color: var(--primary);
-        }
-
-        .card-center {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-        }
-
-        .card-prompt-text {
-            font-size: 32px;
-            font-weight: 900;
-            letter-spacing: 1px;
-            color: var(--text-main);
-            word-break: break-all;
-        }
-
-        .card-prompt-text.long-text {
-            font-size: 22px;
-            line-height: 1.35;
-        }
-
-        .card-sub {
             font-size: 13px;
-            color: var(--text-sub);
-        }
-
-        .result-badge {
-            font-size: 12px;
-            font-weight: 800;
-            padding: 4px 10px;
-            border-radius: 20px;
-        }
-
-        .result-badge.correct {
-            background: rgba(48, 209, 88, 0.15);
-            color: var(--accent);
-        }
-
-        .result-badge.wrong {
-            background: rgba(255, 69, 58, 0.15);
-            color: var(--danger);
-        }
-
-        .card-ans-title {
-            font-size: 26px;
-            font-weight: 900;
-            color: var(--primary);
-            margin-bottom: 4px;
-            word-break: break-all;
-        }
-
-        .card-ans-desc {
-            font-size: 14px;
-            color: var(--text-main);
             font-weight: 600;
-            line-height: 1.4;
-            word-break: break-all;
-        }
-
-        .card-ans-user {
-            font-size: 12px;
-            color: var(--text-sub);
-            margin-top: 8px;
-        }
-
-        /* 作答區域 */
-        .action-area {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .input-box {
-            display: flex;
-            gap: 8px;
-            width: 100%;
-        }
-
-        .type-input {
-            flex: 1;
-            height: 50px;
-            background: var(--input-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 0 16px;
-            font-size: 15px;
-            color: var(--text-main);
-            outline: none;
-        }
-
-        .type-input:focus {
-            border-color: var(--primary);
-        }
-
-        .submit-btn {
-            width: 78px;
-            height: 50px;
-            background: var(--primary);
-            border: none;
-            border-radius: 16px;
-            color: var(--primary-btn-text);
-            font-weight: 800;
-            font-size: 15px;
-            cursor: pointer;
-        }
-
-        .next-btn {
-            width: 100%;
-            height: 50px;
-            background: var(--primary);
-            border: none;
-            border-radius: 16px;
-            color: var(--primary-btn-text);
-            font-weight: 800;
-            font-size: 15px;
-            cursor: pointer;
-        }
-
-        /* 十題測驗結算畫面 */
-        .exam-report-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 22px;
-            padding: 22px;
-        }
-
-        .exam-score-big {
-            font-size: 48px;
-            font-weight: 900;
-            color: var(--primary);
-        }
-
-        .exam-results-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-top: 14px;
-        }
-
-        .exam-item-box {
-            background: var(--input-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 12px;
-        }
-
-        .exam-item-top {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 6px;
-            font-size: 12px;
-            color: var(--text-sub);
-        }
-
-        .exam-item-badge.correct { color: var(--accent); font-weight: 800; }
-        .exam-item-badge.wrong { color: var(--danger); font-weight: 800; }
-        .exam-item-row { font-size: 13px; margin-bottom: 4px; line-height: 1.4; word-break: break-all; }
-        .exam-item-row .lbl { color: var(--text-sub); }
-        .exam-item-row .val { color: var(--text-main); font-weight: 600; }
-        .exam-item-row .user-ans.correct { color: var(--accent); font-weight: 700; }
-        .exam-item-row .user-ans.wrong { color: var(--danger); font-weight: 700; text-decoration: line-through; }
-
-        /* 查詢列表 */
-        .search-box {
-            position: relative;
-            width: 100%;
-        }
-
-        .search-input {
-            width: 100%;
-            height: 46px;
-            background: var(--input-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 0 16px 0 40px;
-            font-size: 14px;
-            color: var(--text-main);
-            outline: none;
-        }
-
-        .search-input:focus {
-            border-color: var(--primary);
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 14px;
-            top: 14px;
-            color: var(--text-sub);
-        }
-
-        .list-container {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .list-item {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 12px 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .list-item-left .code {
-            font-size: 15px;
-            font-weight: 800;
-            color: var(--primary);
-        }
-
-        .list-item-left .cn {
-            font-size: 13px;
-            color: var(--text-main);
-            margin-top: 2px;
-        }
-
-        .list-item-cat {
-            font-size: 11px;
-            color: var(--text-sub);
-        }
-
-        /* 考題測驗 */
-        .quiz-card {
-            background: var(--card-bg);
-            border-radius: 22px;
-            padding: 22px;
-            border: 1px solid var(--border-color);
-        }
-
-        .quiz-q {
-            font-size: 20px;
-            font-weight: 800;
-            margin-bottom: 20px;
-            line-height: 1.4;
-        }
-
-        .quiz-opts {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .q-opt {
-            background: var(--input-bg);
-            border: 1px solid var(--border-color);
-            padding: 15px 16px;
-            border-radius: 14px;
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-            word-break: break-all;
-        }
-
-        .q-opt:hover {
-            border-color: var(--primary);
-        }
-
-        .q-opt.correct {
-            background: rgba(48, 209, 88, 0.15);
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-
-        .q-opt.wrong {
-            background: rgba(255, 69, 58, 0.15);
-            border-color: var(--danger);
-            color: var(--danger);
-        }
-
-        /* 後台管理頁面樣式 */
-        .admin-box {
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 22px;
-            border: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        /* 一、同步功能按鈕卡片（完全移除 API 網址設定區塊） */
-        .admin-sync-section {
-            background: var(--input-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .sync-banner {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .sync-btn-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-        .sync-action-card-btn {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 12px;
-            border-radius: 12px;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            cursor: pointer;
-            transition: all 0.2s;
-            text-align: left;
-        }
-        .sync-action-card-btn:hover {
-            border-color: var(--primary);
-            transform: translateY(-1px);
-        }
-        .sync-btn-icon { font-size: 24px; flex-shrink: 0; }
-        .sync-btn-content { display: flex; flex-direction: column; gap: 3px; }
-        .sync-btn-main { font-size: 14px; font-weight: 800; color: var(--primary); }
-        .sync-btn-sub { font-size: 11px; color: var(--text-sub); }
-
-        /* 二、更改密碼安全卡片（遵循圖二設計風格） */
-        .pwd-card-container {
-            background: #141416;
-            border: 1px solid rgba(200, 168, 110, 0.35);
-            border-radius: 16px;
-            padding: 18px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
-        }
-        body.light-mode .pwd-card-container {
-            background: #ffffff;
-            border-color: rgba(179, 142, 75, 0.4);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
-        }
-        .pwd-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 14px;
-        }
-        .pwd-card-title {
-            font-size: 15px;
-            font-weight: 800;
-            color: var(--primary);
-            letter-spacing: 0.5px;
-        }
-        .pwd-role-tabs {
-            display: flex;
-            background: var(--input-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 2px;
-            gap: 2px;
-        }
-        .pwd-tab-btn {
-            padding: 5px 10px;
-            border-radius: 8px;
-            border: none;
-            background: transparent;
-            color: var(--text-sub);
-            font-size: 11px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .pwd-tab-btn.active {
-            background: var(--card-bg);
-            color: var(--primary);
-            font-weight: 800;
-        }
-        .pwd-close-btn {
-            background: none;
-            border: none;
-            color: var(--text-sub);
-            font-size: 16px;
-            cursor: pointer;
-            padding: 4px;
-            line-height: 1;
-        }
-        .pwd-close-btn:hover { color: var(--text-main); }
-        .pwd-card-body {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .pwd-field-group {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-        .pwd-field-label {
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--text-sub);
-        }
-        .pwd-field-input {
-            height: 42px;
-            background: var(--input-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 0 12px;
-            font-size: 13px;
-            color: var(--text-main);
-            outline: none;
-            transition: border-color 0.2s;
-        }
-        .pwd-field-input:focus { border-color: var(--primary); }
-        .pwd-card-footer {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 14px;
-            padding-top: 12px;
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
-        }
-        .pwd-btn-cancel {
-            padding: 8px 16px;
-            border-radius: 10px;
-            background: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--text-sub);
-            font-size: 12px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-        .pwd-btn-submit {
-            padding: 8px 18px;
-            border-radius: 10px;
-            background: var(--primary);
-            border: none;
-            color: var(--primary-btn-text);
-            font-size: 12px;
-            font-weight: 800;
-            cursor: pointer;
-            transition: opacity 0.2s;
-        }
-        .pwd-btn-submit:hover { opacity: 0.9; }
-
-        /* 四、後台題庫統計與「＋」按鈕區域（配合圖三紅圈位置） */
-        .admin-stats-and-add-row {
-            display: grid;
-            grid-template-columns: 1.15fr 0.85fr;
-            gap: 12px;
-            margin-top: 4px;
-            align-items: stretch;
-        }
-        .admin-stat-pills-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-        }
-        .admin-stat-pill {
-            background: var(--input-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 10px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        .stat-pill-val { font-size: 20px; font-weight: 900; color: var(--primary); line-height: 1.1; }
-        .stat-pill-lbl { font-size: 11px; color: var(--text-sub); margin-top: 3px; font-weight: 600; }
-
-        /* 圖三圈起來的「＋」新增題庫按鈕 */
-        .admin-add-quiz-btn {
-            background: rgba(200, 168, 110, 0.07);
-            border: 2px dashed rgba(200, 168, 110, 0.45);
-            border-radius: 14px;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-            padding: 12px;
+            gap: 6px;
+            backdrop-filter: blur(18px) saturate(150%);
+            -webkit-backdrop-filter: blur(18px) saturate(150%);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.12);
             transition: all 0.2s ease;
         }
-        .admin-add-quiz-btn:hover {
-            background: rgba(200, 168, 110, 0.15);
-            border-color: var(--primary);
-            transform: translateY(-1px);
-        }
-        .add-plus-symbol {
-            font-size: 32px;
-            font-weight: 900;
-            color: var(--primary);
-            line-height: 1;
-        }
-        .add-btn-caption {
-            font-size: 13px;
-            font-weight: 800;
-            color: var(--primary);
-            letter-spacing: 0.5px;
-        }
+        .theme-toggle svg { width: 15px; height: 15px; stroke: var(--primary); fill: none; stroke-width: 2.2; }
 
-        /* 題庫清單表頭與快速新增 FAB */
-        .admin-list-head {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-top: 6px;
-        }
-        .add-quiz-fab {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: var(--primary-light);
-            border: 1px solid var(--border-hover);
-            color: var(--primary);
-            font-size: 18px;
-            font-weight: 900;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-        }
-        .add-quiz-fab:hover {
-            background: var(--primary);
-            color: var(--primary-btn-text);
-            transform: scale(1.05);
-        }
+        .view-content { display: none; flex-direction: column; gap: 14px; width: 100%; }
+        .view-content.active { display: flex; }
 
-        /* 設定頁面 */
-        .settings-card {
+        /* Flashcard */
+        .flashcard-container { perspective: 1000px; width: 100%; transition: height 0.2s ease; }
+        .flashcard { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 24px; }
+        .flashcard.flipped { transform: rotateY(180deg); }
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 24px;
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 20px;
+            padding: 22px 18px;
             display: flex;
             flex-direction: column;
-            gap: 14px;
-        }
-
-        .settings-row {
-            display: flex;
             justify-content: space-between;
             align-items: center;
-            padding-bottom: 12px;
-            border-bottom: 1px solid var(--border-color);
+            text-align: center;
+            box-shadow: var(--shadow);
         }
+        .card-back { transform: rotateY(180deg); }
+        .card-star { position: absolute; top: 18px; right: 20px; font-size: 26px; color: #404040; cursor: pointer; z-index: 10; transition: color 0.15s; }
+        .card-star.active { color: #f59e0b; }
+        .card-badge { font-size: 12px; font-weight: 700; padding: 5px 14px; border-radius: 14px; background: var(--input-bg); border: 1px solid var(--border-color); color: var(--primary); letter-spacing: 0.3px; }
+        .card-prompt-text { font-weight: 900; letter-spacing: 0.5px; color: var(--text-main); margin: auto 0; line-height: 1.35; padding: 0 10px; word-break: break-word; }
 
-        .settings-row:last-child {
-            border-bottom: none;
-            padding-bottom: 0;
-        }
+        .result-badge { font-size: 14px; font-weight: 800; padding: 6px 16px; border-radius: 18px; }
+        .result-badge.correct { background: rgba(48, 209, 88, 0.18); color: var(--accent); border: 1px solid rgba(48, 209, 88, 0.35); }
+        .result-badge.wrong { background: rgba(255, 69, 58, 0.18); color: var(--danger); border: 1px solid rgba(255, 69, 58, 0.35); }
+        .ans-code { font-size: 38px; font-weight: 900; color: var(--primary); margin-top: 4px; word-break: break-word; }
+        .ans-en { font-size: 20px; font-weight: 700; color: var(--primary); opacity: 0.92; margin-top: 3px; letter-spacing: 0.4px; line-height: 1.3; }
+        .ans-cn { font-size: 20px; font-weight: 700; color: var(--text-main); margin-top: 4px; line-height: 1.3; white-space: pre-line; }
+        .ans-user { font-size: 13px; color: var(--text-sub); margin-top: 8px; background: var(--input-bg); padding: 5px 12px; border-radius: 10px; border: 1px solid var(--border-color); }
 
-        .settings-btn {
-            padding: 8px 14px;
-            border-radius: 12px;
-            background: var(--input-bg);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            font-size: 13px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        .settings-btn.danger {
-            color: var(--danger);
-            border-color: rgba(255, 69, 58, 0.3);
-        }
-
-        /* 行動端 Dock 浮動導覽列 */
-        .nav-bar {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: calc(100% - 32px);
-            max-width: 380px;
-            height: 60px;
-            background: var(--dock-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--dock-border);
-            border-radius: 30px;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            box-shadow: var(--dock-shadow);
-            z-index: 1000;
-            padding: 0 10px;
-        }
-
-        .nav-item {
-            background: transparent;
-            border: none;
-            color: var(--dock-icon-color);
-            width: 44px;
-            height: 44px;
-            border-radius: 22px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .nav-item svg {
-            width: 22px;
-            height: 22px;
-            stroke-width: 2.2;
-            fill: none;
-            stroke: currentColor;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-
-        .nav-item.active {
-            background: var(--dock-active-bg);
-            color: var(--dock-active-color);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        .nav-item.hidden {
-            display: none !important;
-        }
-
+        .action-area { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+        .input-group { width: 100%; display: flex; gap: 8px; }
+        .card-input { flex: 1; border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-main); font-weight: 600; outline: none; transition: 0.2s; box-shadow: var(--shadow); }
+        .card-input:focus { border-color: var(--primary); }
+        .btn-submit { background: var(--primary); color: var(--primary-btn-text); border: none; font-weight: 800; cursor: pointer; transition: opacity 0.2s; }
+        .btn-action { background: var(--primary); color: var(--primary-btn-text); font-weight: 800; border: none; width: 100%; cursor: pointer; transition: opacity 0.2s, background-color 0.2s; }
         .hidden { display: none !important; }
 
+        .nav-item.hidden, .side-nav-btn.hidden { display: none !important; }
+
+        /* Exam Report */
+        .exam-report-card { background: var(--card-bg); border-radius: 24px; border: 1px solid var(--border-color); padding: 24px 20px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 16px; }
+        .exam-score-header { text-align: center; padding: 10px 0 16px 0; border-bottom: 1px solid var(--border-color); }
+        .exam-score-title { font-size: 13px; font-weight: 700; color: var(--primary); letter-spacing: 1px; }
+        .exam-score-val { font-size: 58px; font-weight: 900; color: var(--text-main); margin: 6px 0; line-height: 1; }
+        .exam-score-sub { font-size: 13px; color: var(--text-sub); }
+        .exam-details-list { display: flex; flex-direction: column; gap: 10px; max-height: 400px; overflow-y: auto; padding-right: 4px; }
+        .exam-item-box { background: var(--input-bg); border-radius: 16px; padding: 14px 16px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 6px; font-size: 13px; }
+        .exam-item-top { display: flex; justify-content: space-between; align-items: center; font-weight: 700; }
+        .exam-item-badge { font-size: 11px; padding: 3px 8px; border-radius: 8px; font-weight: 800; }
+        .exam-item-badge.correct { background: rgba(48, 209, 88, 0.18); color: var(--accent); }
+        .exam-item-badge.wrong { background: rgba(255, 69, 58, 0.18); color: var(--danger); border: 1px solid rgba(255, 69, 58, 0.35); }
+        .exam-item-row { display: flex; gap: 8px; line-height: 1.4; }
+        .exam-item-row .lbl { color: var(--text-sub); min-width: 65px; flex-shrink: 0; }
+        .exam-item-row .val { color: var(--text-main); font-weight: 600; }
+        .exam-item-row .user-ans.correct { color: var(--accent); font-weight: 700; }
+        .exam-item-row .user-ans.wrong { color: var(--danger); font-weight: 700; }
+
+        /* Quiz */
+        .quiz-card { background: var(--card-bg); border-radius: 22px; padding: 22px; border: 1px solid var(--border-color); box-shadow: var(--shadow); }
+        .quiz-q { font-size: 20px; font-weight: 800; margin-bottom: 20px; line-height: 1.4; }
+        .quiz-opts { display: flex; flex-direction: column; gap: 10px; }
+        .q-opt { background: var(--input-bg); border: 1px solid var(--border-color); padding: 16px 20px; border-radius: 18px; font-weight: 700; font-size: 16px; text-align: left; cursor: pointer; color: var(--text-main); transition: 0.15s; }
+        .q-opt.correct { background: rgba(48, 209, 88, 0.2); border-color: var(--accent); color: var(--accent); }
+        .q-opt.wrong { background: rgba(255, 69, 58, 0.2); border-color: var(--danger); color: var(--danger); }
+
+        /* Search */
+        .search-box { width: 100%; padding: 16px 20px; border-radius: 18px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-main); font-size: 16px; font-weight: 600; outline: none; }
+        .list-container { display: flex; flex-direction: column; gap: 8px; }
+        .list-item { background: var(--card-bg); padding: 16px 20px; border-radius: 18px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+        .list-item-left .code { font-weight: 900; font-size: 18px; color: var(--primary); }
+        .list-item-left .cn { font-size: 14px; font-weight: 700; color: var(--text-main); margin-top: 3px; white-space: pre-line; line-height: 1.4; }
+        .list-item-cat { font-size: 11px; padding: 3px 8px; border-radius: 8px; background: var(--input-bg); color: var(--text-sub); font-weight: 700; }
+
+        /* Settings */
+        .ios-group-title { font-size: 13px; font-weight: 600; color: var(--text-sub); padding: 6px 16px 8px 16px; }
+        .ios-group { background: var(--card-bg); border-radius: 16px; overflow: hidden; margin-bottom: 20px; border: 1px solid var(--border-color); }
+        .ios-item { display: flex; align-items: center; justify-content: space-between; padding: 13px 18px; cursor: pointer; position: relative; background: var(--card-bg); transition: background-color 0.15s; }
+        .ios-item:not(:last-child)::after { content: ''; position: absolute; bottom: 0; left: 56px; right: 0; height: 1px; background: var(--border-color); opacity: 0.6; }
+        .ios-item:active { background: var(--input-bg); }
+        .ios-item-left { display: flex; align-items: center; gap: 14px; }
+        .ios-icon-box { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; background-color: var(--ios-icon-bg); flex-shrink: 0; }
+        .ios-icon-box svg { width: 17px; height: 17px; stroke: var(--ios-icon-stroke); fill: none; stroke-width: 2.2; }
+        .ios-label { font-size: 16px; font-weight: 600; color: var(--text-main); }
+        .ios-check { font-size: 17px; font-weight: 800; color: var(--primary); opacity: 0; transform: scale(0.7); transition: 0.15s ease; }
+        .ios-item.active .ios-check { opacity: 1; transform: scale(1); }
+
+        /* Admin Box */
+        .admin-box { background: var(--card-bg); border-radius: 20px; padding: 20px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 14px; }
+        .sync-banner { background: var(--primary-light); border: 1px solid var(--border-hover); border-radius: 16px; padding: 16px; display: flex; justify-content: space-between; align-items: center; }
+
+        .sync-btn-row { display: flex; gap: 10px; }
+        .sync-btn {
+            flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px;
+            background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 16px;
+            padding: 14px 8px; cursor: pointer; color: var(--text-main); font-size: 13px; font-weight: 700;
+            line-height: 1.4; transition: border-color 0.15s ease, background-color 0.15s ease;
+        }
+        .sync-btn:hover { border-color: var(--primary); }
+        .sync-btn-icon { font-size: 20px; }
+
+        /* 通行碼安全管理卡片 */
+        .pin-manage-card {
+            background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 20px;
+            padding: 18px; display: flex; flex-direction: column; gap: 14px; margin-top: 6px;
+        }
+        .pin-manage-head { display: flex; align-items: center; gap: 12px; }
+        .pin-manage-icon {
+            width: 38px; height: 38px; border-radius: 12px; background: var(--primary-light);
+            display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;
+        }
+        .pin-manage-title { color: var(--text-main); font-size: 15px; display: block; }
+        .pin-manage-sub { color: var(--text-sub); font-size: 12px; margin-top: 2px; }
+        .pin-manage-row {
+            background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 14px;
+            padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px;
+        }
+        .pin-manage-label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--text-main); font-weight: 700; }
+        .pin-manage-tag {
+            font-size: 10px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase;
+            color: var(--text-sub); background: var(--input-bg); border: 1px solid var(--border-color);
+            border-radius: 6px; padding: 1px 6px; width: fit-content;
+        }
+        .pin-manage-tag-admin { color: var(--primary); border-color: var(--primary); }
+        .pin-change-btn {
+            background: var(--primary-light); border: 1px solid var(--border-hover); color: var(--primary);
+            font-size: 12px; font-weight: 800; padding: 7px 14px; border-radius: 10px; cursor: pointer;
+            white-space: nowrap; transition: opacity 0.15s ease;
+        }
+        .pin-change-btn:hover { opacity: 0.8; }
+        .pin-manage-hint { font-size: 11px; color: var(--text-sub); line-height: 1.5; }
+
+        .admin-list-head { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; }
+
+        /* 題庫管理浮動按鈕 (新增/移除) */
+        .add-quiz-fab {
+            position: fixed; right: 28px; bottom: 28px; z-index: 500;
+            width: 54px; height: 54px; border-radius: 50%; border: none; background: var(--primary);
+            color: var(--primary-btn-text); font-size: 26px; font-weight: 800; line-height: 1; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.35); transition: opacity 0.15s ease, transform 0.15s ease;
+        }
+        .add-quiz-fab:hover { opacity: 0.9; transform: scale(1.05); }
+        
+        /* 移除按鈕特定樣式（僅新增這幾行 CSS 以配合原版位置） */
+        .remove-quiz-fab { right: 96px; background: var(--danger); color: #fff; }
+
+        /* 彈窗共用樣式 */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px); z-index: 99998; display: flex; align-items: center;
+            justify-content: center; padding: 20px;
+        }
+        .modal-overlay.hidden { display: none; }
+        .modal-card {
+            background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 24px;
+            width: 100%; max-width: 420px; max-height: 85vh; overflow-y: auto; padding: 24px;
+            display: flex; flex-direction: column; gap: 10px; box-shadow: var(--shadow);
+        }
+        .modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; color: var(--primary); font-size: 17px; }
+        .modal-close {
+            cursor: pointer; font-size: 16px; color: var(--text-sub); width: 30px; height: 30px;
+            border: 1px solid var(--border-color); border-radius: 9px; display: flex; align-items: center; justify-content: center;
+        }
+        .modal-label { font-size: 12px; color: var(--text-sub); margin-top: 6px; }
+        .modal-btn-row { display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
+        .modal-btn-secondary {
+            background: transparent; border: 1px solid var(--border-color); color: var(--text-sub);
+            font-weight: 700; font-size: 14px; padding: 10px 18px; border-radius: 12px; cursor: pointer;
+        }
+        .modal-btn-secondary:hover { border-color: var(--text-sub); }
+        .modal-btn-primary {
+            background: var(--primary); border: none; color: var(--primary-btn-text);
+            font-weight: 800; font-size: 14px; padding: 10px 20px; border-radius: 12px; cursor: pointer;
+        }
+        .modal-btn-primary:hover { opacity: 0.9; }
+
+        @media (max-width: 859px) {
+            html, body { overflow-x: hidden !important; width: 100% !important; max-width: 100vw !important; }
+            body { min-height: 100dvh; display: block !important; padding: 0 !important; margin: 0 !important; }
+            .desktop-sidebar, .desktop-header-bar, .desktop-side-tools { display: none !important; }
+            .main-stage { width: 100% !important; max-width: 480px !important; margin: 0 auto !important; padding: 10px 16px calc(92px + env(safe-area-inset-bottom, 16px)) 16px !important; box-sizing: border-box !important; overflow-x: hidden !important; min-height: 100dvh !important; display: flex !important; flex-direction: column !important; }
+            .stage-inner { width: 100% !important; max-width: 100% !important; margin: 0 auto !important; padding: 0 !important; gap: 10px !important; box-sizing: border-box !important; }
+            .mobile-header { display: flex; justify-content: space-between; align-items: center; padding: 4px 2px 6px 2px; width: 100%; box-sizing: border-box; }
+            .mobile-stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; background: transparent !important; border: none !important; box-shadow: none !important; padding: 4px 0 8px 0 !important; text-align: center; width: 100%; box-sizing: border-box; }
+            .mobile-stats-bar > div { display: flex; flex-direction: column; align-items: center; position: relative; }
+            .mobile-stats-bar > div:not(:last-child)::after { content: ''; position: absolute; right: 0; top: 20%; height: 60%; width: 1px; background: var(--border-color); opacity: 0.5; }
+            .mobile-stats-bar .val { font-weight: 800; font-size: 17px; color: var(--primary); line-height: 1.1; }
+            .mobile-stats-bar .lbl { font-size: 11px; color: var(--text-sub); margin-top: 3px; font-weight: 500; }
+            .view-content, .learn-grid-pc, .flashcard-container, .card-face, .action-area, .input-group, .quiz-card, .quiz-opts, .q-opt, .search-box, .list-container, .list-item, .settings-grid-2col, .ios-group, .ios-item { width: 100% !important; max-width: 100% !important; box-sizing: border-box !important; }
+            .learn-grid-pc, .quiz-opts, .list-container, .settings-grid-2col { display: flex !important; flex-direction: column !important; gap: 12px !important; }
+            .flashcard-container { height: clamp(210px, 32vh, 270px) !important; }
+            .ans-en { font-size: clamp(14px, 4.2vw, 19px) !important; }
+            .card-face { padding: 18px 14px !important; border-radius: 22px !important; }
+            .card-prompt-text { font-size: clamp(28px, 8vw, 42px) !important; }
+            .card-prompt-text.long-text { font-size: clamp(18px, 5vw, 26px) !important; }
+            .card-input { padding: 14px 16px !important; font-size: 16px !important; border-radius: 18px !important; }
+            .btn-submit { padding: 0 20px !important; font-size: 16px !important; border-radius: 18px !important; }
+            .btn-action { padding: 14px !important; font-size: 16px !important; border-radius: 18px !important; }
+            .quiz-card { padding: 20px 16px !important; border-radius: 22px !important; }
+            .quiz-q { font-size: 18px !important; margin-bottom: 16px !important; }
+            .q-opt { padding: 15px 16px !important; font-size: 15px !important; border-radius: 16px !important; }
+            .search-box { padding: 14px 16px !important; font-size: 15px !important; border-radius: 16px !important; }
+            .list-item { padding: 14px 16px !important; border-radius: 16px !important; }
+            .exam-report-card { padding: 20px 14px !important; margin-bottom: 24px !important; }
+            .exam-details-list { max-height: none !important; overflow: visible !important; padding-right: 0 !important; gap: 12px !important; -webkit-overflow-scrolling: touch !important; }
+            
+            .add-quiz-fab { right: 18px; bottom: 96px; } 
+            .remove-quiz-fab { right: 86px; bottom: 96px; } /* 手機版移除按鈕位置 */
+
+            .nav-bar { position: fixed !important; bottom: calc(14px + env(safe-area-inset-bottom, 12px)) !important; left: 50% !important; transform: translateX(-50%) !important; width: auto !important; max-width: 90% !important; background: var(--dock-bg) !important; backdrop-filter: blur(28px) saturate(190%) !important; -webkit-backdrop-filter: blur(28px) saturate(190%) !important; border: 1px solid var(--dock-border) !important; border-radius: 9999px !important; box-shadow: var(--dock-shadow) !important; display: flex !important; align-items: center !important; justify-content: center !important; gap: 8px !important; padding: 6px 10px !important; z-index: 999 !important; box-sizing: border-box !important; overflow: hidden !important; }
+            .nav-item { display: flex !important; align-items: center !important; justify-content: center !important; width: 52px !important; height: 44px !important; border: none !important; background: transparent !important; color: var(--dock-icon-color) !important; border-radius: 9999px !important; cursor: pointer !important; outline: none !important; transition: all 0.2s ease !important; }
+            .nav-item:active { transform: scale(0.86) !important; }
+            .nav-item.active { background: var(--dock-active-bg) !important; color: var(--dock-active-color) !important; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22) !important; }
+            .nav-item svg { width: 22px !important; height: 22px !important; stroke: currentColor !important; fill: none !important; stroke-width: 2.1 !important; stroke-linecap: round !important; stroke-linejoin: round !important; }
+        }
+
         @media (min-width: 860px) {
-            .nav-bar { display: none !important; }
-            .desktop-sidebar { display: flex; }
-            .desktop-header { display: block; }
-            .mobile-header { display: none; }
-            .main-content {
-                padding: 36px 36px 40px;
-                max-width: 860px;
-            }
-            .action-area {
-                max-width: 540px;
-                margin: 0 auto;
-                width: 100%;
-            }
+            body { display: flex; flex-direction: row; min-height: 100vh; overflow-x: hidden; }
+            .mobile-header, .mobile-stats-bar, .nav-bar { display: none !important; }
+            .desktop-sidebar { width: 280px; height: 100vh; position: sticky; top: 0; background: var(--sidebar-bg); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; justify-content: space-between; padding: 24px 18px; flex-shrink: 0; z-index: 100; }
+            .sidebar-top { display: flex; flex-direction: column; gap: 24px; }
+            .sidebar-brand { display: flex; align-items: center; gap: 12px; padding: 0 8px; }
+            .sidebar-brand .silks-logo { height: 38px; max-width: 48px; }
+            .sidebar-brand .app-title { font-size: 20px; letter-spacing: 0.5px; }
+            .sidebar-nav { display: flex; flex-direction: column; gap: 6px; }
+            .side-nav-btn { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 14px; background: transparent; border: none; color: var(--text-sub); font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s ease; text-align: left; width: 100%; }
+            .side-nav-btn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2.2; flex-shrink: 0; }
+            .side-nav-btn:hover { background: rgba(255, 255, 255, 0.05); color: var(--text-main); }
+            body.light-mode .side-nav-btn:hover { background: rgba(0, 0, 0, 0.04); }
+            .side-nav-btn.active { background: var(--primary); color: var(--primary-btn-text); box-shadow: 0 4px 16px rgba(200, 168, 110, 0.35); }
+            .sidebar-stats-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 18px; padding: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; text-align: center; }
+            .sidebar-stat-item .val { font-size: 22px; font-weight: 900; color: var(--primary); }
+            .sidebar-stat-item .lbl { font-size: 11px; color: var(--text-sub); margin-top: 2px; font-weight: 700; }
+            .sidebar-footer { padding-top: 14px; border-top: 1px solid var(--border-color); }
+            .sidebar-theme-btn { width: 100%; justify-content: center; padding: 12px; border-radius: 14px; font-size: 14px; font-weight: 700; }
+            .main-stage { flex: 1; min-width: 0; min-height: 100vh; display: flex; flex-direction: column; padding: 36px 48px; overflow-y: auto; }
+            .stage-inner { width: 100%; max-width: 1380px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; }
+            .desktop-header-bar { display: flex; justify-content: space-between; align-items: center; padding-bottom: 16px; border-bottom: 1px solid var(--border-color); }
+            .page-heading { font-size: 26px; font-weight: 900; color: var(--text-main); letter-spacing: -0.3px; }
+            .page-subheading { font-size: 13px; color: var(--text-sub); margin-top: 4px; font-weight: 500; }
+            .learn-grid-pc { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 28px; align-items: start; }
+            .flashcard-container { height: 420px; }
+            .card-face { padding: 46px 40px; border-radius: 28px; }
+            .card-prompt-text { font-size: 54px; }
+            .card-prompt-text.long-text { font-size: 34px; }
+            .action-area { gap: 14px; margin-top: 4px; }
+            .card-input { padding: 18px 24px; font-size: 18px; border-radius: 20px; }
+            .btn-submit { padding: 0 36px; font-size: 18px; border-radius: 20px; }
+            .btn-action { padding: 18px; font-size: 18px; border-radius: 20px; }
+            .desktop-side-tools { display: flex; flex-direction: column; gap: 20px; }
+            .side-tool-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 24px; padding: 24px; box-shadow: var(--shadow); }
+            .side-tool-title { font-size: 15px; font-weight: 800; color: var(--primary); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+            .mini-search-box { width: 100%; padding: 12px 16px; border-radius: 14px; border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-main); font-size: 14px; outline: none; margin-bottom: 12px; }
+            .mini-search-box:focus { border-color: var(--primary); }
+            .mini-list-scroll { max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 4px; }
+            .mini-list-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: var(--input-bg); border-radius: 12px; font-size: 13px; }
+            .mini-list-item .m-code { font-weight: 800; color: var(--primary); }
+            .mini-list-item .m-cn { color: var(--text-sub); font-size: 12px; }
+            .exam-details-list { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-height: 520px; }
+            .quiz-card { padding: 40px; border-radius: 28px; }
+            .quiz-q { font-size: 24px; margin-bottom: 28px; }
+            .quiz-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+            .q-opt { padding: 24px 28px; font-size: 18px; border-radius: 20px; }
+            .list-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; }
+            .list-item { padding: 20px 24px; border-radius: 22px; }
+            .settings-grid-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: start; }
+            .settings-full-width { grid-column: 1 / -1; margin-top: 8px; }
         }
     </style>
 </head>
-<body>
 
-<!-- 登入通行碼彈窗 -->
-<div id="auth-modal" class="modal-overlay">
+<body>
+<!-- 通行碼彈窗 -->
+<div id="auth-modal">
     <div class="auth-card">
-        <div class="auth-icon-wrap">
-            <svg viewBox="0 0 24 24" width="28" height="28" stroke="var(--primary)" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-            </svg>
-        </div>
-        <div class="auth-title">請輸入通行碼</div>
-        <div class="auth-desc">同仁請輸入練習碼，主管請輸入管理碼</div>
-        <input type="password" id="pin-input" class="pin-input" placeholder="••••" maxlength="8" autocomplete="off" autofocus>
-        <button type="button" class="pin-submit-btn" id="pin-submit-btn" onclick="checkAuthPin()">確認登入</button>
-        <div class="auth-status" id="auth-status"></div>
+        <div class="auth-title">台南晶英 禮賓司萬事通</div>
+        <div class="auth-desc">Silks Place Tainan Concierge Knowledge</div>
+        <form onsubmit="event.preventDefault(); checkAuthPin();">
+            <input type="password" id="pin-input" class="pin-input" maxlength="16" placeholder="••••" autocomplete="off" autofocus>
+            <button type="submit" class="pin-btn" id="pin-submit-btn">登入</button>
+        </form>
+        <div id="auth-status" class="auth-status"></div>
     </div>
 </div>
 
-<div class="app-layout">
-    <!-- 桌機側邊欄 -->
-    <aside class="desktop-sidebar">
-        <div>
-            <div class="desktop-brand">
-                <div class="desktop-brand-icon">
-                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                    </svg>
-                </div>
-                <div class="desktop-brand-text">
-                    <h1>OPERA 卡牌大師</h1>
-                    <p>台南晶英客務部專業培訓</p>
-                </div>
+<!-- 電腦版側邊欄 -->
+<aside class="desktop-sidebar">
+    <div class="sidebar-top">
+        <div class="sidebar-brand">
+            <img src="silks_logo.png" alt="晶英酒店" class="silks-logo" onerror="this.style.display='none'">
+            <div class="app-title">OPERA 卡牌大師</div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <button class="side-nav-btn active" onclick="switchTab('learn', this)">
+                <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                學習卡片
+            </button>
+            <button class="side-nav-btn" onclick="switchTab('quiz', this)">
+                <svg viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                考題測驗
+            </button>
+            <button class="side-nav-btn" onclick="switchTab('search', this)">
+                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                代碼與分機
+            </button>
+            <button class="side-nav-btn" onclick="switchTab('settings', this)">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                設定
+            </button>
+            <button class="side-nav-btn hidden" id="d-nav-admin-btn" onclick="switchTab('admin', this)">
+                <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 14.93V17a1 1 0 0 1-2 0v-.07A7.002 7.002 0 0 1 5.07 11H5a1 1 0 0 1 0-2h.07A7.002 7.002 0 0 1 11 5.07V5a1 1 0 0 1 2 0v.07A7.002 7.002 0 0 1 18.93 11H19a1 1 0 0 1 0 2h-.07A7.002 7.002 0 0 1 13 16.93z"></path></svg>
+                後台管理
+            </button>
+        </nav>
+
+        <div class="sidebar-stats-card">
+            <div class="sidebar-stat-item"><div class="val" id="d-st-accuracy">0%</div><div class="lbl">正確率</div></div>
+            <div class="sidebar-stat-item"><div class="val" id="d-st-streak">0</div><div class="lbl">連續答對</div></div>
+            <div class="sidebar-stat-item"><div class="val" id="d-st-wrong">0</div><div class="lbl">錯題本</div></div>
+            <div class="sidebar-stat-item"><div class="val" id="d-st-fav">0</div><div class="lbl">收藏數</div></div>
+        </div>
+    </div>
+
+    <div class="sidebar-footer">
+        <button class="theme-toggle sidebar-theme-btn" onclick="toggleTheme()">
+            <svg class="theme-icon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            <span class="theme-text">深色模式</span>
+        </button>
+    </div>
+</aside>
+
+<!-- 主舞台 -->
+<main class="main-stage">
+    <div class="stage-inner">
+        <!-- 行動端 Header -->
+        <header class="mobile-header">
+            <div style="display:flex; align-items:center; gap:8px;">
+                <img src="silks_logo.png" alt="晶英酒店" class="silks-logo" onerror="this.style.display='none'">
+                <div class="app-title">OPERA 卡牌大師</div>
             </div>
-
-            <nav class="side-nav-list">
-                <button type="button" class="side-nav-btn active" id="d-nav-learn-btn" onclick="switchTab('learn', this)">
-                    <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"></rect><line x1="7" y1="8" x2="17" y2="8"></line><line x1="7" y1="12" x2="13" y2="12"></line></svg>
-                    學習卡片
-                </button>
-                <button type="button" class="side-nav-btn" id="d-nav-quiz-btn" onclick="switchTab('quiz', this)">
-                    <svg viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
-                    考題測驗
-                </button>
-                <button type="button" class="side-nav-btn" id="d-nav-search-btn" onclick="switchTab('search', this)">
-                    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                    代碼分機
-                </button>
-                <button type="button" class="side-nav-btn" id="d-nav-settings-btn" onclick="switchTab('settings', this)">
-                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-                    系統設定
-                </button>
-                <button type="button" class="side-nav-btn hidden" id="d-nav-admin-btn" onclick="switchTab('admin', this)">
-                    <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 14.93V17a1 1 0 0 1-2 0v-.07A7.002 7.002 0 0 1 5.07 11H5a1 1 0 0 1 0-2h.07A7.002 7.002 0 0 1 11 5.07V5a1 1 0 0 1 2 0v.07A7.002 7.002 0 0 1 18.93 11H19a1 1 0 0 1 0 2h-.07A7.002 7.002 0 0 1 13 16.93z"></path></svg>
-                    後台管理
-                </button>
-            </nav>
-        </div>
-
-        <div class="desktop-stats-card">
-            <div class="d-st-row"><span>答對率</span><b id="d-st-accuracy">0%</b></div>
-            <div class="d-st-row"><span>連對數</span><b id="d-st-streak">0</b></div>
-            <div class="d-st-row"><span>待複習錯題</span><b id="d-st-wrong">0</b></div>
-            <div class="d-st-row"><span>已收藏卡片</span><b id="d-st-fav">0</b></div>
-        </div>
-    </aside>
-
-    <!-- 主要操作區 -->
-    <main class="main-content">
-        <!-- 桌機頂部標題列 -->
-        <header class="desktop-header">
-            <h2 class="desktop-page-title" id="desktop-page-title">學習卡片</h2>
-            <p class="desktop-page-desc" id="desktop-page-desc">翻轉卡片、拼寫記憶，扎實掌握飯店專業知識</p>
+            <button class="theme-toggle" onclick="toggleTheme()">
+                <svg class="theme-icon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                <span class="theme-text">深色</span>
+            </button>
         </header>
 
-        <!-- 行動端頂部數據條 -->
-        <div class="mobile-header">
-            <div class="stats-bar">
-                <div class="stat-item"><span class="stat-val" id="st-accuracy">0%</span><span class="stat-lbl">答對率</span></div>
-                <div class="stat-item"><span class="stat-val" id="st-streak">0</span><span class="stat-lbl">連對</span></div>
-                <div class="stat-item"><span class="stat-val" id="st-wrong">0</span><span class="stat-lbl">錯題</span></div>
-                <div class="stat-item"><span class="stat-val" id="st-fav">0</span><span class="stat-lbl">收藏</span></div>
+        <!-- 行動端數據列 -->
+        <div class="mobile-stats-bar">
+            <div><div class="val" id="st-accuracy">0%</div><div class="lbl">正確率</div></div>
+            <div><div class="val" id="st-streak">0</div><div class="lbl">連續答對</div></div>
+            <div><div class="val" id="st-wrong">0</div><div class="lbl">錯題本</div></div>
+            <div><div class="val" id="st-fav">0</div><div class="lbl">收藏數</div></div>
+        </div>
+
+        <!-- 電腦版 Header -->
+        <div class="desktop-header-bar">
+            <div>
+                <h1 class="page-heading" id="desktop-page-title">學習卡片</h1>
+                <p class="page-subheading" id="desktop-page-desc">台南晶英酒店 OPERA 系統專業代碼與館內分機極速精熟訓練</p>
             </div>
         </div>
 
-        <!-- 1. 學習卡片分頁 -->
+        <!-- 1. 學習卡片 -->
         <div id="view-learn" class="view-content active">
-            <div class="toggle-group" style="margin-bottom:2px;">
-                <button type="button" class="toggle-btn active" id="scope-all" onclick="changeScope('all')">全部</button>
-                <button type="button" class="toggle-btn" id="scope-opera" onclick="changeScope('opera')">OPERA縮寫</button>
-                <button type="button" class="toggle-btn" id="scope-ext" onclick="changeScope('ext')">分機表</button>
-                <button type="button" class="toggle-btn" id="scope-room" onclick="changeScope('room')">客房資訊</button>
-                <button type="button" class="toggle-btn" id="scope-restaurant" onclick="changeScope('restaurant')">餐廳資訊</button>
-            </div>
-
-            <div class="toggle-group" style="margin-bottom:10px;">
-                <button type="button" class="toggle-btn active" id="pool-all" onclick="changePool('all')">全題庫</button>
-                <button type="button" class="toggle-btn" id="pool-wrong" onclick="changePool('wrong')">錯題本</button>
-                <button type="button" class="toggle-btn" id="pool-fav" onclick="changePool('fav')">收藏本</button>
-                <button type="button" class="toggle-btn" id="pool-exam10" onclick="changePool('exam10')">十題測驗</button>
-            </div>
-
-            <div class="card-container" id="learn-card-container">
-                <div class="card" id="main-card">
-                    <div class="card-face card-front">
-                        <div class="card-top">
-                            <span class="badge" id="card-badge">OPERA代碼</span>
-                            <button type="button" class="star-btn" id="card-star" onclick="toggleFav(event)">★</button>
+            <div class="learn-grid-pc">
+                <div style="display:flex; flex-direction:column; gap:14px; width:100%;">
+                    <div class="flashcard-container" id="learn-card-container">
+                        <div class="flashcard" id="main-card">
+                            <div class="card-face card-front">
+                                <span class="card-star" id="card-star" onclick="toggleFav(event)">★</span>
+                                <div class="card-badge" id="card-badge">隨機出題</div>
+                                <div class="card-prompt-text" id="card-prompt">--</div>
+                                <div style="font-size:13px; color:var(--text-sub);">輸入後送出翻轉卡片 👆</div>
+                            </div>
+                            <div class="card-face card-back">
+                                <div class="result-badge" id="card-result-badge">🎉 答對了！</div>
+                                <div style="margin:auto 0; display:flex; flex-direction:column; align-items:center; gap:3px;">
+                                    <div class="ans-code" id="card-ans-code">VC</div>
+                                    <div class="ans-en" id="card-ans-en">Vacant Clean</div>
+                                    <div class="ans-cn" id="card-ans-cn">房間已清潔，待查房，不可入住</div>
+                                    <div class="ans-user" id="card-ans-user">你的輸入：VC</div>
+                                </div>
+                                <div style="font-size:13px; color:var(--text-sub);">按 Enter 或點擊「下一題」繼續刷題</div>
+                            </div>
                         </div>
-                        <div class="card-center">
-                            <div class="card-prompt-text" id="card-prompt">載入中...</div>
-                        </div>
-                        <div class="card-sub">點擊翻面查看答案</div>
                     </div>
-                    <div class="card-face card-back">
-                        <div class="card-top">
-                            <span class="result-badge" id="card-result-badge">🎉 答對了！</span>
+
+                    <!-- 10題測驗成績單 -->
+                    <div class="exam-report-card hidden" id="exam-report-view">
+                        <div class="exam-score-header">
+                            <div class="exam-score-title">十題測驗 成績結算</div>
+                            <div class="exam-score-val" id="exam-final-score">100</div>
+                            <div class="exam-score-sub" id="exam-final-eval">滿分 100 分 · 一題 10 分</div>
                         </div>
-                        <div class="card-center" style="flex-direction:column; gap:6px;">
-                            <div class="card-ans-title" id="card-ans-code">---</div>
-                            <div id="card-ans-en" style="font-size:13px; color:var(--primary); font-weight:700;"></div>
-                            <div class="card-ans-desc" id="card-ans-cn">---</div>
-                            <div class="card-ans-user" id="card-ans-user"></div>
+                        <div class="exam-details-list" id="exam-results-list"></div>
+                        <div style="display:flex; gap:14px; margin-top:10px;">
+                            <button class="btn-action" onclick="startNewExam10();">再測一次 (全新10題)</button>
+                            <button class="btn-action" style="background:var(--input-bg); color:var(--text-main); border:1px solid var(--border-color);" onclick="changePool('all');">返回自主學習</button>
                         </div>
-                        <div class="card-sub">Enter 或點擊下一題</div>
+                    </div>
+
+                    <!-- 原汁原味打字輸入區 -->
+                    <div class="action-area" id="learn-action-area">
+                        <form id="input-form" class="input-group" onsubmit="event.preventDefault(); submitAnswer();">
+                            <input type="text" class="card-input" id="type-input" placeholder="鍵盤輸入答案後按 Enter 或送出..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                            <button type="submit" class="btn-submit">送出</button>
+                        </form>
+                        <button class="btn-action hidden" id="next-card-btn" onclick="requestNextCard()">下一題 ➔ (Enter)</button>
                     </div>
                 </div>
-            </div>
 
-            <!-- 十題測驗結算畫面 -->
-            <div id="exam-report-view" class="exam-report-card hidden">
-                <div style="text-align:center; padding:10px 0;">
-                    <div style="font-size:13px; color:var(--text-sub); font-weight:700;">十題測驗結算成績</div>
-                    <div class="exam-score-big" id="exam-final-score">0</div>
-                    <div style="font-size:14px; font-weight:800; color:var(--text-main);" id="exam-final-eval">完成測驗！</div>
-                    <button type="button" class="next-btn" style="margin-top:16px;" onclick="startNewExam10()">再測一次 ➔</button>
+                <!-- 電腦版輔助工具 -->
+                <div class="desktop-side-tools">
+                    <div class="side-tool-card">
+                        <div class="side-tool-title">
+                            <svg style="width:17px; height:17px; stroke:var(--primary); fill:none; stroke-width:2.2;" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                            邊練邊查 · 速查字典
+                        </div>
+                        <input type="text" class="mini-search-box" id="mini-search" placeholder="輸入關鍵字或號碼秒查..." oninput="renderMiniSearch()">
+                        <div class="mini-list-scroll" id="mini-search-list"></div>
+                    </div>
+
+                    <div class="side-tool-card" style="font-size:13px; line-height:1.6; color:var(--text-sub);">
+                        <div class="side-tool-title">
+                            <svg style="width:17px; height:17px; stroke:var(--primary); fill:none; stroke-width:2.2;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            鍵盤操作捷徑
+                        </div>
+                        <p>• 輸入答案後直接按 <b style="color:var(--text-main);">Enter</b> 即可送出翻牌。</p>
+                        <p>• 翻牌後再次按下 <b style="color:var(--text-main);">Enter</b> 立即前進下一題。</p>
+                        <p>• 右上方點擊 <b style="color:#f59e0b;">★</b> 可將困難題收錄至收藏題庫。</p>
+                    </div>
                 </div>
-                <div class="exam-results-list" id="exam-results-list"></div>
-            </div>
-
-            <div class="action-area" id="learn-action-area">
-                <form class="input-box" id="input-form" onsubmit="event.preventDefault(); submitAnswer();">
-                    <input type="text" id="type-input" class="type-input" placeholder="請輸入答案或中文..." autocomplete="off">
-                    <button type="submit" class="submit-btn">送出</button>
-                </form>
-                <button type="button" id="next-card-btn" class="next-btn hidden" onclick="requestNextCard()">下一題 ➔ (Enter)</button>
-            </div>
-
-            <div class="mini-search-card" style="margin-top:12px; background:var(--card-bg); border:1px solid var(--border-color); border-radius:18px; padding:14px;">
-                <input type="text" id="mini-search" class="pwd-field-input" style="width:100%;" placeholder="🔍 快速檢索題庫代碼／分機..." oninput="renderMiniSearch()">
-                <div id="mini-search-list" style="margin-top:10px; max-height:160px; overflow-y:auto; display:flex; flex-direction:column; gap:6px;"></div>
             </div>
         </div>
 
-        <!-- 2. 考題測驗分頁 -->
+        <!-- 2. 四選一測驗 -->
         <div id="view-quiz" class="view-content">
             <div class="quiz-card">
-                <div class="quiz-q" id="quiz-title">測驗載入中...</div>
+                <div class="quiz-q" id="quiz-title">載入中...</div>
                 <div class="quiz-opts" id="quiz-options"></div>
-                <button type="button" id="quiz-next-btn" class="next-btn hidden" style="margin-top:18px;" onclick="requestNextQuiz()">下一題 ➔ (Enter)</button>
             </div>
+            <button class="btn-action hidden" id="quiz-next-btn" onclick="requestNextQuiz()">下一題 ➔ (Enter)</button>
         </div>
 
-        <!-- 3. 代碼分機分頁 -->
+        <!-- 3. 代碼與分機速查 -->
         <div id="view-search" class="view-content">
-            <div class="search-box">
-                <span class="search-icon">🔍</span>
-                <input type="text" id="search-input" class="search-input" placeholder="搜尋代碼、中文、分機或部門..." oninput="renderSearchList()">
-            </div>
+            <input type="text" class="search-box" id="search-input" placeholder="🔍 搜尋代碼、分機號碼、中文或部門..." oninput="renderSearchList()">
             <div class="list-container" id="search-list"></div>
         </div>
 
-        <!-- 4. 系統設定分頁 -->
+        <!-- 4. 設定 -->
         <div id="view-settings" class="view-content">
-            <div class="settings-card">
-                <div class="settings-row">
-                    <div>
-                        <b style="color:var(--text-main); font-size:14px;">深淺主題外觀</b>
-                        <div style="font-size:12px; color:var(--text-sub); margin-top:2px;" id="theme-toggle-status">深色專業模式</div>
+            <div class="settings-grid-2col">
+                <div>
+                    <div class="ios-group-title">測驗題庫類型</div>
+                    <div class="ios-group">
+                        <div class="ios-item active" id="scope-all" onclick="changeScope('all')">
+                            <div class="ios-item-left">
+                                <div class="ios-icon-box"><svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg></div>
+                                <span class="ios-label">全選（所有類別）</span>
+                            </div>
+                            <span class="ios-check">✓</span>
+                        </div>
+                        <div class="ios-item" id="scope-opera" onclick="changeScope('opera')">
+                            <div class="ios-item-left">
+                                <div class="ios-icon-box"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg></div>
+                                <span class="ios-label">OPERA縮寫</span>
+                            </div>
+                            <span class="ios-check">✓</span>
+                        </div>
+                        <div class="ios-item" id="scope-ext" onclick="changeScope('ext')">
+                            <div class="ios-item-left">
+                                <div class="ios-icon-box"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg></div>
+                                <span class="ios-label">館內分機表</span>
+                            </div>
+                            <span class="ios-check">✓</span>
+                        </div>
+                        <div class="ios-item" id="scope-room" onclick="changeScope('room')">
+                            <div class="ios-item-left">
+                                <div class="ios-icon-box"><svg viewBox="0 0 24 24"><rect x="3" y="10" width="18" height="9" rx="2"></rect><path d="M5 10V7a3 3 0 0 1 3-3h3"></path><line x1="3" y1="15" x2="21" y2="15"></line></svg></div>
+                                <span class="ios-label">客房與房型資訊</span>
+                            </div>
+                            <span class="ios-check">✓</span>
+                        </div>
+                        <div class="ios-item" id="scope-restaurant" onclick="changeScope('restaurant')">
+                            <div class="ios-item-left">
+                                <div class="ios-icon-box"><svg viewBox="0 0 24 24"><path d="M7 2v7a2 2 0 0 0 4 0V2"></path><path d="M9 9v13"></path><path d="M17 2c-1.2 0-2.5 2-2.5 5.5S15.8 13 17 13s2.5-2 2.5-5.5S18.2 2 17 2z"></path><path d="M17 13v9"></path></svg></div>
+                                <span class="ios-label">餐廳時段與設施</span>
+                            </div>
+                            <span class="ios-check">✓</span>
+                        </div>
                     </div>
-                    <button type="button" class="settings-btn" onclick="toggleTheme()">切換主題</button>
                 </div>
-                <div class="settings-row">
-                    <div>
-                        <b style="color:var(--text-main); font-size:14px;">重新驗證身分</b>
-                        <div style="font-size:12px; color:var(--text-sub); margin-top:2px;">更換練習同仁或主管身分</div>
+
+                <div>
+                    <div class="ios-group-title">測驗範圍篩選</div>
+                    <div class="ios-group">
+                        <div class="ios-item active" id="pool-all" onclick="changePool('all')">
+                            <div class="ios-item-left">
+                                <div class="ios-icon-box"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg></div>
+                                <span class="ios-label">全選題庫</span>
+                            </div>
+                            <span class="ios-check">✓</span>
+                        </div>
+                        <div class="ios-item" id="pool-exam10" onclick="changePool('exam10')">
+                            <div class="ios-item-left">
+                                <div class="ios-icon-box"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></div>
+                                <span class="ios-label">十題測驗</span>
+                            </div>
+                            <span class="ios-check">✓</span>
+                        </div>
+                        <div class="ios-item" id="pool-wrong" onclick="changePool('wrong')">
+                            <div class="ios-item-left">
+                                <div class="ios-icon-box"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg></div>
+                                <span class="ios-label">錯題練習</span>
+                            </div>
+                            <span class="ios-check">✓</span>
+                        </div>
+                        <div class="ios-item" id="pool-fav" onclick="changePool('fav')">
+                            <div class="ios-item-left">
+                                <div class="ios-icon-box"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></div>
+                                <span class="ios-label">我的收藏</span>
+                            </div>
+                            <span class="ios-check">✓</span>
+                        </div>
                     </div>
-                    <button type="button" class="settings-btn" onclick="reLogin()">切換身分</button>
                 </div>
-                <div class="settings-row">
-                    <div>
-                        <b style="color:var(--text-main); font-size:14px;">重設個人記錄</b>
-                        <div style="font-size:12px; color:var(--text-sub); margin-top:2px;">清除本機答題率與錯題本</div>
+
+                <div class="settings-full-width">
+                    <div class="ios-group-title">系統操作</div>
+                    <div class="ios-group">
+                        <div class="ios-item" onclick="resetAllData()">
+                            <div class="ios-item-left">
+                                <div class="ios-icon-box"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></div>
+                                <span class="ios-label" style="color:var(--danger); font-weight:700;">清空所有紀錄與錯題本</span>
+                            </div>
+                        </div>
+                        <div class="ios-item" onclick="reLogin()">
+                            <div class="ios-item-left">
+                                <div class="ios-icon-box"><svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg></div>
+                                <span class="ios-label">切換通行身分（重新輸入通行碼）</span>
+                            </div>
+                        </div>
                     </div>
-                    <button type="button" class="settings-btn danger" onclick="resetAllData()">重設資料</button>
                 </div>
             </div>
         </div>
@@ -1341,178 +744,120 @@
         <!-- 5. 主管管理後台 -->
         <div id="view-admin" class="view-content">
             <div class="admin-box">
-                <!-- 試算表同步按鈕（已完全移除 API 網址相關設定） -->
-                <div class="admin-sync-section">
-                    <div class="sync-banner">
+                <div class="sync-banner">
+                    <div>
+                        <b style="color:var(--text-main); font-size:15px;">Google 試算表同步</b>
+                        <div style="font-size:12px; color:var(--text-sub); margin-top:2px;" id="sync-status-txt">狀態：本機資料庫</div>
+                    </div>
+                </div>
+
+                <div class="sync-btn-row">
+                    <button class="sync-btn" onclick="pushToCloud()">
+                        <span class="sync-btn-icon">⬆️</span>
+                        <span>匯入至<br>Google 試算表</span>
+                    </button>
+                    <button class="sync-btn" onclick="syncFromCloud()">
+                        <span class="sync-btn-icon">⬇️</span>
+                        <span>匯出至<br>Google 試算表</span>
+                    </button>
+                </div>
+
+                <!-- 通行碼管理 -->
+                <div class="pin-manage-card">
+                    <div class="pin-manage-head">
+                        <span class="pin-manage-icon">🔐</span>
                         <div>
-                            <b style="color:var(--text-main); font-size:15px;">Google 試算表同步</b>
-                            <div style="font-size:12px; color:var(--text-sub); margin-top:2px;" id="sync-status-txt">狀態：本機資料庫</div>
+                            <b class="pin-manage-title">通行碼安全管理</b>
+                            <div class="pin-manage-sub">主管自訂，設定後自動同步到雲端</div>
                         </div>
                     </div>
-
-                    <div class="sync-btn-row">
-                        <button type="button" class="sync-action-card-btn" onclick="pushToCloud()">
-                            <span class="sync-btn-icon">⬆️</span>
-                            <div class="sync-btn-content">
-                                <span class="sync-btn-main">匯入至 Google 試算表</span>
-                                <span class="sync-btn-sub">將目前系統／後台資料同步至試算表</span>
-                            </div>
-                        </button>
-                        <button type="button" class="sync-action-card-btn" onclick="syncFromCloud()">
-                            <span class="sync-btn-icon">⬇️</span>
-                            <div class="sync-btn-content">
-                                <span class="sync-btn-main">匯出至 Google 試算表</span>
-                                <span class="sync-btn-sub">將 Google 試算表最新資料載入目前系統</span>
-                            </div>
-                        </button>
+                    <div class="pin-manage-row">
+                        <div class="pin-manage-label">
+                            <span>同仁練習密碼</span>
+                            <span class="pin-manage-tag">staff</span>
+                        </div>
+                        <button class="pin-change-btn" onclick="openChangePinModal('staff')">更改密碼</button>
                     </div>
+                    <div class="pin-manage-row">
+                        <div class="pin-manage-label">
+                            <span>主管管理密碼</span>
+                            <span class="pin-manage-tag pin-manage-tag-admin">admin</span>
+                        </div>
+                        <button class="pin-change-btn" onclick="openChangePinModal('admin')">更改密碼</button>
+                    </div>
+                    <div class="pin-manage-hint">在此自訂通行碼後，登入視窗不會顯示任何提示，同仁無法窺探。更改後會自動同步到雲端。</div>
                 </div>
 
-                <!-- 密碼安全管理（遵循圖二視覺風格） -->
-                <div class="pwd-card-container">
-                    <div class="pwd-card-header">
-                        <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
-                            <h3 class="pwd-card-title">更改密碼</h3>
-                            <div class="pwd-role-tabs">
-                                <button type="button" class="pwd-tab-btn active" id="pwd-tab-staff" onclick="setPwdTargetRole('staff')">同仁練習密碼</button>
-                                <button type="button" class="pwd-tab-btn" id="pwd-tab-admin" onclick="setPwdTargetRole('admin')">主管管理密碼</button>
-                            </div>
-                        </div>
-                        <button type="button" class="pwd-close-btn" onclick="resetPwdForm()" title="清除重設">✕</button>
-                    </div>
-                    
-                    <div class="pwd-card-body">
-                        <div class="pwd-field-group">
-                            <label class="pwd-field-label" id="pwd-label-current">目前密碼</label>
-                            <input type="text" id="pwd-current" class="pwd-field-input" placeholder="輸入目前密碼">
-                        </div>
-
-                        <div class="pwd-field-group">
-                            <label class="pwd-field-label">新密碼（至少 4 字元）</label>
-                            <input type="text" id="pwd-new" class="pwd-field-input" placeholder="新密碼">
-                        </div>
-
-                        <div class="pwd-field-group">
-                            <label class="pwd-field-label">確認新密碼</label>
-                            <input type="text" id="pwd-confirm" class="pwd-field-input" placeholder="再輸入一次">
-                        </div>
-                    </div>
-
-                    <div class="pwd-card-footer">
-                        <button type="button" class="pwd-btn-cancel" onclick="resetPwdForm()">取消</button>
-                        <button type="button" class="pwd-btn-submit" onclick="submitPasswordChange()">更新密碼</button>
-                    </div>
-                </div>
-
-                <!-- 主管管理題庫操作按鈕群：＋ 新增題目 與 － 移除題目 -->
-                <div class="admin-stats-and-add-row">
-                    <div class="admin-stat-pills-grid">
-                        <div class="admin-stat-pill">
-                            <span class="stat-pill-val" id="cnt-ext">0</span>
-                            <span class="stat-pill-lbl">分機表</span>
-                        </div>
-                        <div class="admin-stat-pill">
-                            <span class="stat-pill-val" id="cnt-opera">0</span>
-                            <span class="stat-pill-lbl">OPERA縮寫</span>
-                        </div>
-                        <div class="admin-stat-pill">
-                            <span class="stat-pill-val" id="cnt-room">0</span>
-                            <span class="stat-pill-lbl">客房資訊</span>
-                        </div>
-                        <div class="admin-stat-pill">
-                            <span class="stat-pill-val" id="cnt-restaurant">0</span>
-                            <span class="stat-pill-lbl">餐廳資訊</span>
-                        </div>
-                    </div>
-
-                    <!-- 主管管理題庫操作按鈕群：＋ 新增題目 與 － 移除題目 -->
-                    <div style="display:flex; flex-direction:column; gap:8px;">
-                        <button type="button" class="admin-add-quiz-btn" style="flex:1; padding:8px;" onclick="openAddQuizModal()" title="主管新增題庫項目">
-                            <span class="add-plus-symbol" style="font-size:24px;">＋</span>
-                            <span class="add-btn-caption">新增題目</span>
-                        </button>
-                        <button type="button" class="admin-add-quiz-btn" style="flex:1; padding:8px; border-color:rgba(255, 69, 58, 0.4); background:rgba(255, 69, 58, 0.06);" onclick="openDeleteQuizModal()" title="主管移除題庫項目">
-                            <span class="add-plus-symbol" style="font-size:24px; color:var(--danger);">－</span>
-                            <span class="add-btn-caption" style="color:var(--danger);">移除題目</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- 題庫總覽表頭 -->
                 <div class="admin-list-head">
-                    <b style="color:var(--text-main); font-size:15px;" id="admin-list-total-lbl">題庫總覽</b>
-                    <div style="display:flex; gap:6px;">
-                        <button type="button" class="add-quiz-fab" onclick="openAddQuizModal()" title="新增題庫項目">＋</button>
-                        <button type="button" class="add-quiz-fab" style="border-color:rgba(255, 69, 58, 0.4); color:var(--danger); background:rgba(255, 69, 58, 0.1);" onclick="openDeleteQuizModal()" title="移除題庫項目">－</button>
-                    </div>
+                    <b style="color:var(--text-main); font-size:15px;">題庫列表</b>
                 </div>
-                <div class="list-container" id="admin-list" style="margin-top:2px; max-height:360px; overflow-y:auto;"></div>
+                <div class="list-container" id="admin-list" style="margin-top:4px; max-height:350px; overflow-y:auto;"></div>
             </div>
+
+            <!-- 新增 / 移除 題庫項目：浮動按鈕 -->
+            <button class="add-quiz-fab remove-quiz-fab" onclick="openRemoveQuizModal()" title="移除題庫項目">－</button>
+            <button class="add-quiz-fab" onclick="openAddQuizModal()" title="新增題庫項目">＋</button>
         </div>
     </div>
 
-    <!-- 新增題庫項目彈窗（完全沿用原版 Modal 元件與設計，欄位配合新版 Google 試算表格式） -->
+    <!-- 新增題庫項目彈窗 -->
     <div id="add-quiz-modal" class="modal-overlay hidden">
         <div class="modal-card">
             <div class="modal-head">
                 <b>新增題庫項目</b>
                 <span class="modal-close" onclick="closeAddQuizModal()">✕</span>
             </div>
-            <div class="modal-field">
-                <label class="modal-label">題庫分類</label>
-                <select id="new-item-type" class="pwd-field-input" onchange="onAddTypeChange()">
-                    <option value="opera">OPERA縮寫</option>
-                    <option value="ext">分機表</option>
-                    <option value="room">客房資訊</option>
-                    <option value="restaurant">餐廳資訊</option>
-                </select>
-            </div>
-            <div class="modal-field" id="modal-field-wrap-1">
-                <label class="modal-label" id="modal-label-1">中文意思 *</label>
-                <input type="text" id="new-item-1" class="pwd-field-input" placeholder="例如: 請勿打擾">
-            </div>
-            <div class="modal-field" id="modal-field-wrap-2">
-                <label class="modal-label" id="modal-label-2">縮寫 *</label>
-                <input type="text" id="new-item-2" class="pwd-field-input" placeholder="例如: DND">
-            </div>
-            <div class="modal-field" id="modal-field-wrap-3">
-                <label class="modal-label" id="modal-label-3">補充說明</label>
-                <input type="text" id="new-item-3" class="pwd-field-input" placeholder="例如: Do Not Disturb（選填）">
-            </div>
-            <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:10px; padding-top:12px; border-top:1px solid rgba(255,255,255,0.08);">
-                <button type="button" class="pwd-btn-cancel" onclick="closeAddQuizModal()">取消</button>
-                <button type="button" class="pwd-btn-submit" id="save-new-item-btn" onclick="saveNewQuizItem()">儲存並寫入試算表</button>
-            </div>
+            <label class="modal-label">分類</label>
+            <select id="new-item-type" class="search-box" onchange="updateAddQuizLabels()">
+                <option value="opera">OPERA縮寫</option>
+                <option value="ext">分機表</option>
+                <option value="room">客房資訊</option>
+                <option value="restaurant">餐廳資訊</option>
+            </select>
+            <label class="modal-label" id="lbl-new-code">縮寫</label>
+            <input type="text" id="new-item-code" class="search-box" placeholder="輸入內容">
+            
+            <label class="modal-label" id="lbl-new-cn">中文意思</label>
+            <input type="text" id="new-item-cn" class="search-box" placeholder="輸入內容">
+            
+            <label class="modal-label" id="lbl-new-en">補充說明</label>
+            <input type="text" id="new-item-en" class="search-box" placeholder="選填">
+
+            <button class="btn-action" id="save-new-item-btn" onclick="saveNewQuizItem()" style="margin-top:14px;">儲存並同步至 Google 試算表</button>
         </div>
     </div>
 
-    <!-- 移除題庫項目彈窗（完全沿用原版 Modal 樣式） -->
-    <div id="delete-quiz-modal" class="modal-overlay hidden">
+    <!-- 移除題庫項目彈窗 -->
+    <div id="remove-quiz-modal" class="modal-overlay hidden">
         <div class="modal-card">
             <div class="modal-head">
-                <b style="color:var(--danger);">移除題庫項目</b>
-                <span class="modal-close" onclick="closeDeleteQuizModal()">✕</span>
+                <b>移除題庫項目</b>
+                <span class="modal-close" onclick="closeRemoveQuizModal()">✕</span>
             </div>
-            <div class="modal-field">
-                <label class="modal-label">篩選分類</label>
-                <select id="del-filter-type" class="pwd-field-input" onchange="renderDeleteList()">
-                    <option value="all">全部分類</option>
-                    <option value="opera">OPERA縮寫</option>
-                    <option value="ext">分機表</option>
-                    <option value="room">客房資訊</option>
-                    <option value="restaurant">餐廳資訊</option>
-                </select>
+            <label class="modal-label">選擇要移除的題目</label>
+            <select id="remove-item-select" class="search-box" style="margin-bottom: 14px;">
+            </select>
+            <button class="btn-action" id="delete-item-btn" onclick="confirmRemoveQuizItem()" style="background: var(--danger);">確認移除並同步</button>
+        </div>
+    </div>
+
+    <!-- 更改密碼彈窗 -->
+    <div id="change-pin-modal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="modal-head">
+                <b id="change-pin-title">更改密碼</b>
+                <span class="modal-close" onclick="closeChangePinModal()">✕</span>
             </div>
-            <div class="modal-field">
-                <label class="modal-label">搜尋關鍵字</label>
-                <input type="text" id="del-search-input" class="pwd-field-input" placeholder="輸入題目或縮寫搜尋..." oninput="renderDeleteList()">
-            </div>
-            <div class="modal-field">
-                <label class="modal-label">選擇項目（點擊右側按鈕進行移除）</label>
-                <div id="delete-modal-list" style="max-height:220px; overflow-y:auto; display:flex; flex-direction:column; gap:6px;"></div>
-            </div>
-            <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:10px; padding-top:12px; border-top:1px solid rgba(255,255,255,0.08);">
-                <button type="button" class="pwd-btn-cancel" onclick="closeDeleteQuizModal()">關閉</button>
+            <label class="modal-label">目前密碼</label>
+            <input type="password" id="change-pin-current" class="search-box" placeholder="輸入目前密碼" autocomplete="off">
+            <label class="modal-label">新密碼（至少 4 字元）</label>
+            <input type="password" id="change-pin-new" class="search-box" placeholder="新密碼" autocomplete="off">
+            <label class="modal-label">確認新密碼</label>
+            <input type="password" id="change-pin-confirm" class="search-box" placeholder="再輸入一次" autocomplete="off">
+            <div id="change-pin-error" class="auth-status is-error" style="text-align:left; margin:4px 0 0; min-height:16px;"></div>
+            <div class="modal-btn-row">
+                <button class="modal-btn-secondary" onclick="closeChangePinModal()">取消</button>
+                <button class="modal-btn-primary" id="change-pin-submit" onclick="submitChangePin()">更新密碼</button>
             </div>
         </div>
     </div>
@@ -1529,8 +874,11 @@
 
 <script>
 /* ================================================================
-   Google 試算表為唯一資料來源（Single Source of Truth），本體不硬編碼任何題目
+   全量單一資料庫（已移除硬編碼，資料僅靠 Google 試算表同步）
    ================================================================ */
+
+// HTML 不再保存寫死的題庫
+const fullDatabase = [];
 
 let db = [];
 let userRole = 'staff';
@@ -1544,135 +892,77 @@ let isQuizCooldown = false;
 let currentQuiz = null;
 let currentQuizType = 'code2cn';
 
-// 已部署之 Google Apps Script Web API 網址（鎖定直接生效，不需使用者手動輸入）
-const DEFAULT_API_URL = 'https://script.google.com/macros/s/AKfycyb4KSBo1sphWrRrFA4ZD4Fl8GtLTtrVbsTe_ihc1b634g5iqxzcqOKbT4LwWU0I5xkm4w/exec';
+const DEFAULT_API_URL = 'https://script.google.com/macros/s/AKfycby4KSBo1sphWrRrFA4ZD4Fl8GtLTtrVbsTe_ihc1b634g5iqxzcqOKbT4LwWU0I5xkm4w/exec';
 let apiUrl = localStorage.getItem('concierge_api_url') || DEFAULT_API_URL;
-
-// 雲端寫入金鑰（需與 Apps Script 中的 ADMIN_SECRET 一致，預設 9999）
-const DEFAULT_CLOUD_SECRET = '9999';
-let cloudSecret = localStorage.getItem('concierge_cloud_secret') || DEFAULT_CLOUD_SECRET;
 
 function cloudGetUrl(pin) {
     if (!apiUrl) return '';
-    const sep = apiUrl.includes('?') ? '&' : '?';
-    return pin ? `${apiUrl}${sep}pin=${encodeURIComponent(pin)}` : apiUrl;
+    return pin ? apiUrl + (apiUrl.includes('?') ? '&' : '?') + 'pin=' + encodeURIComponent(pin) : apiUrl;
 }
 
-// 練習用同仁通行碼 / 主管管理通行碼
+const DEFAULT_CLOUD_SECRET = '9999';
+let cloudSecret = localStorage.getItem('concierge_cloud_secret') || DEFAULT_CLOUD_SECRET;
+
 let authConfig = JSON.parse(localStorage.getItem('concierge_auth_pins') || '{"staffPin":"1688","adminPin":"9999"}');
 
 let state = {
-    scope: 'all',      // all, opera, ext, room, restaurant
-    poolType: 'all',   // all, wrong, fav, exam10
-    favs: [],
-    wrongs: [],
-    stats: { total: 0, correct: 0, streak: 0 }
+    favs: [], wrongs: [], stats: { total: 0, correct: 0, streak: 0 }, theme: 'dark', poolType: 'all', scope: 'all'
 };
 
-let examSession = {
-    questions: [],
-    currentIndex: 0,
-    answers: [],
-    score: 0
-};
-
-let currentPwdTargetRole = 'staff'; // 'staff' | 'admin'
-
-/* ================================================================
-   一、登入驗證功能（支援極速背景驗證與離線備援）
-   ================================================================ */
+let examSession = { questions: [], currentIndex: 0, answers: [], score: 0 };
 
 async function checkAuthPin() {
-    const input = document.getElementById('pin-input');
-    const val = (input ? input.value : '').trim();
+    const pinInput = document.getElementById('pin-input');
     const statusEl = document.getElementById('auth-status');
-    const submitBtn = document.getElementById('pin-submit-btn');
+    const btn = document.getElementById('pin-submit-btn');
+    const pin = pinInput.value.trim();
+    if (!pin) return;
 
-    if (!val) {
-        if (statusEl) {
-            statusEl.textContent = '請輸入通行碼！';
-            statusEl.className = 'auth-status error';
-        }
-        return;
-    }
+    btn.disabled = true;
+    statusEl.textContent = '驗證中';
+    statusEl.className = 'auth-status is-checking';
 
-    if (submitBtn) {
-        submitBtn.disabled = true;
-        submitBtn.innerText = '驗證中...';
-    }
-    if (statusEl) {
-        statusEl.textContent = '連線驗證身分中...';
-        statusEl.className = 'auth-status info';
-    }
-
-    let role = 'none';
-
-    // 優先以 Google Apps Script 雲端比對（帶 ?pin= 只查 2 列設定，0.5秒秒開）
+    let cloudRole = null;
     if (apiUrl) {
         try {
-            const url = cloudGetUrl(val);
-            const res = await fetch(url);
+            const controller = new AbortController();
+            const timer = setTimeout(() => controller.abort(), 2500);
+            const res = await fetch(cloudGetUrl(pin), { signal: controller.signal });
+            clearTimeout(timer);
             const json = await res.json();
-            if (json && json.status === 'success' && json.role && json.role !== 'none') {
-                role = json.role;
-                if (role === 'admin' && json.auth) {
-                    authConfig = { ...authConfig, ...json.auth };
-                    localStorage.setItem('concierge_auth_pins', JSON.stringify(authConfig));
-                }
-            }
-        } catch(e) {
-            // 離線或被擋時，自動轉入本機比對
-            console.warn('雲端驗證失敗，切換為本機驗證:', e);
-        }
+            if (json && json.status === 'success' && json.role) cloudRole = json.role;
+        } catch (e) {}
     }
-
-    // 本機 fallback 比對
-    if (role === 'none') {
-        if (val === authConfig.adminPin) role = 'admin';
-        else if (val === authConfig.staffPin) role = 'staff';
+    let role = cloudRole;
+    if (!role) {
+        if (pin === authConfig.adminPin) role = 'admin';
+        else if (pin === authConfig.staffPin) role = 'staff';
     }
+    if (cloudRole === 'admin') { authConfig.adminPin = pin; localStorage.setItem('concierge_auth_pins', JSON.stringify(authConfig)); }
+    if (cloudRole === 'staff') { authConfig.staffPin = pin; localStorage.setItem('concierge_auth_pins', JSON.stringify(authConfig)); }
 
-    if (submitBtn) {
-        submitBtn.disabled = false;
-        submitBtn.innerText = '開始練習';
-    }
-
-    if (role !== 'none') {
-        loginSuccess(role);
-    } else {
-        if (statusEl) {
-            statusEl.textContent = '通行碼錯誤，請確認後再試！';
-            statusEl.className = 'auth-status error';
-        }
-        if (input) {
-            input.value = '';
-            input.focus();
-        }
-    }
-}
-
-function loginSuccess(role) {
-    userRole = role;
-    const desktopAdminBtn = document.getElementById('d-nav-admin-btn');
-    const mobileAdminBtn = document.getElementById('m-nav-admin-btn');
+    btn.disabled = false;
 
     if (role === 'admin') {
-        if (desktopAdminBtn) desktopAdminBtn.classList.remove('hidden');
-        if (mobileAdminBtn) mobileAdminBtn.classList.remove('hidden');
-    } else {
-        if (desktopAdminBtn) desktopAdminBtn.classList.add('hidden');
-        if (mobileAdminBtn) mobileAdminBtn.classList.add('hidden');
-    }
-
-    const statusEl = document.getElementById('auth-status');
-    if (statusEl) {
+        userRole = 'admin';
+        document.getElementById('d-nav-admin-btn').classList.remove('hidden');
+        document.getElementById('m-nav-admin-btn').classList.remove('hidden');
         statusEl.textContent = '';
-        statusEl.className = 'auth-status';
+        document.getElementById('auth-modal').style.display = 'none';
+        initApp();
+    } else if (role === 'staff') {
+        userRole = 'staff';
+        document.getElementById('d-nav-admin-btn').classList.add('hidden');
+        document.getElementById('m-nav-admin-btn').classList.add('hidden');
+        statusEl.textContent = '';
+        document.getElementById('auth-modal').style.display = 'none';
+        initApp();
+    } else {
+        statusEl.textContent = '密碼錯誤，請再試一次';
+        statusEl.className = 'auth-status is-error';
+        pinInput.value = '';
+        pinInput.focus();
     }
-    const authModal = document.getElementById('auth-modal');
-    if (authModal) authModal.style.display = 'none';
-
-    initApp();
 }
 
 function reLogin() {
@@ -1683,58 +973,13 @@ function reLogin() {
     setTimeout(() => document.getElementById('pin-input').focus(), 100);
 }
 
-// 資料庫版本標記
-const DB_VERSION = 3;
+const DB_VERSION = 2;
 
-// 正規化資料：支援 Google 試算表新版四大分頁欄位，同時建立 code/cn/cat/en 屬性，確保原版 UI 100% 正常顯示
 function normalizeDb(arr) {
-    return (arr || []).map((item, idx) => {
-        const type = item.type || 'opera';
-        let norm = { type };
-
-        if (type === 'opera') {
-            norm['中文意思'] = String(item['中文意思'] !== undefined ? item['中文意思'] : (item.cn || '')).trim();
-            norm['縮寫'] = String(item['縮寫'] !== undefined ? item['縮寫'] : (item.code || '')).trim();
-            norm['補充說明'] = String(item['補充說明'] !== undefined ? item['補充說明'] : (item.en || '')).trim();
-            norm.code = norm['縮寫'];
-            norm.cn = norm['中文意思'];
-            norm.cat = item.cat || 'OPERA縮寫';
-            norm.en = norm['補充說明'];
-            norm.id = item.id || `opera_${norm.code || idx}`;
-        } else if (type === 'ext') {
-            norm['分機&電話號碼'] = String(item['分機&電話號碼'] !== undefined ? item['分機&電話號碼'] : (item.code || '')).trim();
-            norm['單位'] = String(item['單位'] !== undefined ? item['單位'] : (item.cat || '飯店分機')).trim();
-            norm['部門人員'] = String(item['部門人員'] !== undefined ? item['部門人員'] : (item.cn || '')).trim();
-            norm.code = norm['分機&電話號碼'];
-            norm.cn = norm['部門人員'];
-            norm.cat = norm['單位'];
-            norm.en = '';
-            norm.id = item.id || `ext_${norm.code || idx}`;
-        } else if (type === 'room') {
-            norm['問題'] = String(item['問題'] !== undefined ? item['問題'] : (item.code || '')).trim();
-            norm['答案'] = String(item['答案'] !== undefined ? item['答案'] : (item.cn || '')).trim();
-            norm['補充'] = String(item['補充'] !== undefined ? item['補充'] : (item.en || item.cat || '')).trim();
-            norm.code = norm['問題'];
-            norm.cn = norm['答案'];
-            norm.cat = item.cat || '客房資訊';
-            norm.en = norm['補充'];
-            norm.id = item.id || `room_${norm.code || idx}`;
-        } else if (type === 'restaurant') {
-            norm['問題'] = String(item['問題'] !== undefined ? item['問題'] : (item.code || '')).trim();
-            norm['答案'] = String(item['答案'] !== undefined ? item['答案'] : (item.cn || '')).trim();
-            norm['補充'] = String(item['補充'] !== undefined ? item['補充'] : (item.en || item.cat || '')).trim();
-            norm.code = norm['問題'];
-            norm.cn = norm['答案'];
-            norm.cat = item.cat || '餐廳資訊';
-            norm.en = norm['補充'];
-            norm.id = item.id || `restaurant_${norm.code || idx}`;
-        } else {
-            norm = { ...item };
-            norm.id = item.id || `item_${idx}`;
-        }
-
-        return norm;
-    });
+    return (arr || []).map(item => ({
+        ...item,
+        id: item.id || `${item.type}_${item.code}`
+    }));
 }
 
 function initApp() {
@@ -1742,528 +987,104 @@ function initApp() {
     let saved = null;
     try { saved = JSON.parse(localStorage.getItem('opera_custom_db')); } catch(e) { saved = null; }
 
-    if (saved && Array.isArray(saved.data) && saved.data.length > 0) {
+    if (saved && saved.version === DB_VERSION && Array.isArray(saved.data) && saved.data.length > 0) {
         db = normalizeDb(saved.data);
     } else {
-        db = []; // HTML 完全不儲存題庫，Google 試算表是唯一 Source of Truth
+        db = normalizeDb(fullDatabase); // 如果沒有快取，會是空的，需要主管按同步
+        localStorage.removeItem('opera_custom_db');
     }
 
-    updatePwdFormUI();
-    syncAuthPinsInBackground(); // 自動在背景同步雲端最新密碼
-    nextCard(false);
-    nextQuizQuestion();
-    renderMiniSearch();
-    renderSearchList();
-    if (userRole === 'admin') renderAdminList();
-
-    // 啟動時自動靜默向 Google 試算表同步最新題目
-    if (apiUrl) {
-        syncFromCloud(true);
+    if (db.length > 0) {
+        nextCard(false);
+        nextQuizQuestion();
+        renderMiniSearch();
+        renderSearchList();
+        if (userRole === 'admin') renderAdminList();
     }
 }
 
-/* ================================================================
-   二、Google 試算表同步功能（匯入至試算表／匯出至試算表）
-   ================================================================ */
+let changePinRole = null;
+function openChangePinModal(role) {
+    changePinRole = role;
+    document.getElementById('change-pin-title').innerText = role === 'admin' ? '更改主管管理密碼' : '更改同仁練習密碼';
+    document.getElementById('change-pin-current').value = '';
+    document.getElementById('change-pin-new').value = '';
+    document.getElementById('change-pin-confirm').value = '';
+    document.getElementById('change-pin-error').textContent = '';
+    document.getElementById('change-pin-modal').classList.remove('hidden');
+}
 
-// 通用雲端寫入函式（支援 iPhone Safari 跨網域重定向 no-cors 備援，解決 TypeError: Load failed）
-async function postToAppsScript(payload) {
-    if (!apiUrl) throw new Error('尚未設定雲端連線網址');
-    const bodyStr = JSON.stringify(payload);
+function closeChangePinModal() {
+    document.getElementById('change-pin-modal').classList.add('hidden');
+}
+
+function submitChangePin() {
+    const errEl = document.getElementById('change-pin-error');
+    const cur = document.getElementById('change-pin-current').value.trim();
+    const next = document.getElementById('change-pin-new').value.trim();
+    const confirmVal = document.getElementById('change-pin-confirm').value.trim();
+
+    const expected = changePinRole === 'admin' ? authConfig.adminPin : authConfig.staffPin;
+    if (cur !== expected) { errEl.textContent = '目前密碼不正確'; return; }
+    if (next.length < 4) { errEl.textContent = '新密碼至少需要 4 個字元'; return; }
+    if (next !== confirmVal) { errEl.textContent = '兩次輸入的新密碼不一致'; return; }
+
+    if (changePinRole === 'admin') authConfig.adminPin = next;
+    else authConfig.staffPin = next;
+    localStorage.setItem('concierge_auth_pins', JSON.stringify(authConfig));
+
+    closeChangePinModal();
+    if (apiUrl && cloudSecret) pushAuthToCloud();
+    else alert('🎉 密碼已更新（僅本機）！\n尚未設定「雲端寫入金鑰」，其他裝置不會自動拿到新密碼。');
+}
+
+async function pushAuthToCloud() {
     try {
         const res = await fetch(apiUrl, {
             method: 'POST',
-            headers: { 'Content-Type': 'text/plain' },
-            body: bodyStr
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({ adminPin: cloudSecret, authOnly: true, auth: authConfig })
         });
         const json = await res.json();
-        return json;
-    } catch (e) {
-        // iPhone (iOS Safari) 專屬相容處理：改用 no-cors 模式保證資料寫入 Google 試算表
-        await fetch(apiUrl, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'text/plain' },
-            body: bodyStr
-        });
-        return { status: 'success', count: (payload.items ? payload.items.length : 0), authUpdated: true };
-    }
-}
-
-// 自動在背景同步雲端最新密碼（確保手機與電腦的密碼自動保持一致）
-async function syncAuthPinsInBackground() {
-    if (!apiUrl) return;
-    try {
-        const res = await fetch(apiUrl);
-        const json = await res.json();
-        if (json && json.status === 'success' && json.auth) {
-            authConfig = { ...authConfig, ...json.auth };
-            localStorage.setItem('concierge_auth_pins', JSON.stringify(authConfig));
-            updatePwdFormUI();
-        }
-    } catch(e) { /* 靜默略過 */ }
-}
-
-async function pushToCloud() {
-    if (!apiUrl) return alert('尚未設定雲端連線網址，請聯繫系統管理者。');
-    if (db.length === 0) return alert('目前本機無資料可匯入試算表。');
-    if (!confirm(`確定要將目前系統／後台中的 ${db.length} 筆資料同步匯入至 Google 試算表（4 個分頁自動分流）嗎？`)) return;
-
-    const statusTxt = document.getElementById('sync-status-txt');
-    if (statusTxt) statusTxt.innerText = '狀態：正在匯入資料至 Google 試算表...';
-
-    try {
-        const json = await postToAppsScript({ adminPin: cloudSecret, items: db });
-        if (json && json.status === 'success') {
-            alert(`🎉 成功匯入至 Google 試算表！\n共同步更新 ${json.count || db.length} 筆資料至 4 個分頁。`);
-            if (statusTxt) statusTxt.innerText = `狀態：已成功匯入至試算表（共 ${json.count || db.length} 筆）`;
+        if (json.status === 'success') {
+            alert('🎉 通行碼已更新，並同步到雲端！\n其他裝置下次登入會自動拿到一致的通行碼。');
         } else {
-            alert('匯入失敗：' + (json ? json.message : '未知錯誤'));
-            if (statusTxt) statusTxt.innerText = '狀態：匯入失敗';
+            alert('通行碼已在本機更新，但雲端同步失敗：' + json.message);
         }
     } catch(e) {
-        alert('匯入出錯，請檢查網路連線：' + e);
-        if (statusTxt) statusTxt.innerText = '狀態：連線錯誤';
+        alert('通行碼已在本機更新，但雲端同步連線失敗：' + e);
     }
 }
-
-async function syncFromCloud(silent = false) {
-    if (!apiUrl) {
-        if (!silent) alert('尚未設定雲端連線網址，請聯繫系統管理者。');
-        return;
-    }
-    const statusTxt = document.getElementById('sync-status-txt');
-    if (statusTxt) statusTxt.innerText = '狀態：正在從 Google 試算表載入最新資料...';
-
-    try {
-        const res = await fetch(apiUrl);
-        const json = await res.json();
-        if (json && json.status === 'success' && Array.isArray(json.data) && json.data.length > 0) {
-            const validTypes = ['ext', 'opera', 'room', 'restaurant'];
-            const cleanRows = [];
-            json.data.forEach(row => {
-                if (row && validTypes.includes(row.type)) {
-                    cleanRows.push(row);
-                }
-            });
-
-            if (cleanRows.length === 0) {
-                if (!silent) alert('⚠️ 試算表回傳資料格式異常，已取消套用。');
-                if (statusTxt) statusTxt.innerText = '狀態：資料格式異常';
-                return;
-            }
-
-            db = normalizeDb(cleanRows);
-            localStorage.setItem('opera_custom_db', JSON.stringify({ version: DB_VERSION, data: db }));
-            renderAdminList();
-            renderSearchList();
-            renderMiniSearch();
-            renderDeleteList();
-
-            if (json.auth && (json.auth.staffPin || json.auth.adminPin)) {
-                authConfig = { ...authConfig, ...json.auth };
-                localStorage.setItem('concierge_auth_pins', JSON.stringify(authConfig));
-                updatePwdFormUI();
-            }
-
-            const countLine = validTypes.map(t => `${t}: ${db.filter(x => x.type === t).length}`).join(' / ');
-            if (statusTxt) statusTxt.innerText = `狀態：已自試算表載入（共 ${db.length} 筆，${countLine}）`;
-
-            if (!silent) {
-                let msg = `🎉 成功載入！已從 Google 試算表匯出最新資料到本系統（共 ${db.length} 筆）。\n\n` +
-                          `・OPERA縮寫：${db.filter(x => x.type === 'opera').length} 筆\n` +
-                          `・分機表：${db.filter(x => x.type === 'ext').length} 筆\n` +
-                          `・客房資訊：${db.filter(x => x.type === 'room').length} 筆\n` +
-                          `・餐廳資訊：${db.filter(x => x.type === 'restaurant').length} 筆`;
-                alert(msg);
-            }
-
-            nextCard(false);
-            nextQuizQuestion();
-        } else {
-            if (!silent) alert('載入失敗：伺服器回傳格式不正確或無資料。');
-            if (statusTxt) statusTxt.innerText = '狀態：載入失敗';
-        }
-    } catch(e) {
-        if (!silent) alert('載入出錯：' + e);
-        if (statusTxt) statusTxt.innerText = '狀態：連線失敗';
-    }
-}
-
-/* ================================================================
-   三、更改密碼安全功能（同步至 Google 試算表「設定」分頁）
-   ================================================================ */
-
-function setPwdTargetRole(role) {
-    currentPwdTargetRole = role;
-    document.querySelectorAll('.pwd-tab-btn').forEach(btn => btn.classList.remove('active'));
-    if (role === 'admin') {
-        document.getElementById('pwd-tab-admin')?.classList.add('active');
-    } else {
-        document.getElementById('pwd-tab-staff')?.classList.add('active');
-    }
-    updatePwdFormUI();
-}
-
-function updatePwdFormUI() {
-    const isStaff = currentPwdTargetRole === 'staff';
-    const labelCurrent = document.getElementById('pwd-label-current');
-    if (labelCurrent) {
-        labelCurrent.innerText = isStaff ? '目前同仁密碼' : '目前主管密碼';
-    }
-    const currentInput = document.getElementById('pwd-current');
-    if (currentInput) {
-        currentInput.value = isStaff ? (authConfig.staffPin || '1688') : (authConfig.adminPin || '9999');
-    }
-}
-
-function resetPwdForm() {
-    const newPwd = document.getElementById('pwd-new');
-    const confirmPwd = document.getElementById('pwd-confirm');
-    if (newPwd) newPwd.value = '';
-    if (confirmPwd) confirmPwd.value = '';
-    updatePwdFormUI();
-}
-
-async function submitPasswordChange() {
-    const newPwd = (document.getElementById('pwd-new')?.value || '').trim();
-    const confirmPwd = (document.getElementById('pwd-confirm')?.value || '').trim();
-
-    if (!newPwd) return alert('請輸入新密碼！');
-    if (newPwd.length < 4) return alert('新密碼長度至少需要 4 位字元！');
-    if (newPwd !== confirmPwd) return alert('兩次輸入的新密碼不一致，請重新檢查！');
-
-    const roleName = currentPwdTargetRole === 'staff' ? '同仁練習密碼' : '主管管理密碼';
-    if (!confirm(`確定要將【${roleName}】修改為「${newPwd}」並同步至雲端嗎？`)) return;
-
-    await saveTargetRolePin(newPwd);
-}
-
-async function saveTargetRolePin(pinVal) {
-    const isStaff = currentPwdTargetRole === 'staff';
-    const updatedAuth = {
-        staffPin: isStaff ? pinVal : (authConfig.staffPin || '1688'),
-        adminPin: isStaff ? (authConfig.adminPin || '9999') : pinVal
-    };
-
-    try {
-        const json = await postToAppsScript({
-            adminPin: cloudSecret,
-            authOnly: true,
-            auth: updatedAuth
-        });
-
-        if (json && json.status === 'success') {
-            authConfig = updatedAuth;
-            localStorage.setItem('concierge_auth_pins', JSON.stringify(authConfig));
-            updatePwdFormUI();
-            resetPwdForm();
-            alert(`🎉 密碼更新成功！新密碼已同步寫入 Google 試算表設定分頁。`);
-        } else {
-            alert('雲端更新失敗：' + (json ? json.message : '未知錯誤'));
-        }
-    } catch(e) {
-        alert('雲端更新出錯：' + e);
-    }
-}
-
-/* ================================================================
-   四、後台題庫「＋」新增功能與「－」移除功能（直接讀寫 Google 試算表）
-   ================================================================ */
-
-function onAddTypeChange() {
-    const type = document.getElementById('new-item-type').value;
-    const l1 = document.getElementById('modal-label-1');
-    const l2 = document.getElementById('modal-label-2');
-    const l3 = document.getElementById('modal-label-3');
-    const i1 = document.getElementById('new-item-1');
-    const i2 = document.getElementById('new-item-2');
-    const i3 = document.getElementById('new-item-3');
-
-    if (type === 'opera') {
-        if (l1) l1.innerText = '中文意思 *';
-        if (i1) i1.placeholder = '例如: 請勿打擾、重要貴賓、開夜床服務';
-        if (l2) l2.innerText = '縮寫 *';
-        if (i2) i2.placeholder = '例如: DND、VIP、TD';
-        if (l3) l3.innerText = '補充說明（選填）';
-        if (i3) i3.placeholder = '例如: Do Not Disturb（選填）';
-    } else if (type === 'ext') {
-        if (l1) l1.innerText = '分機&電話號碼 *';
-        if (i1) i1.placeholder = '例如: 3401、3225、06 213 6290、**777';
-        if (l2) l2.innerText = '單位 *';
-        if (i2) i2.placeholder = '例如: 飯店分機、前台禮賓、客房部';
-        if (l3) l3.innerText = '部門人員 *';
-        if (i3) i3.placeholder = '例如: 禮賓司、值班經理、櫃檯主任';
-    } else if (type === 'room') {
-        if (l1) l1.innerText = '問題 *';
-        if (i1) i1.placeholder = '例如: 全館客房總數？ 或 海東客房(DK)';
-        if (l2) l2.innerText = '答案 *';
-        if (i2) i2.placeholder = '例如: 255間 或 一大床（180*200cm，12坪）';
-        if (l3) l3.innerText = '補充（選填）';
-        if (i3) i3.placeholder = '例如: 一般樓層202間、行政樓層54間（選填）';
-    } else if (type === 'restaurant') {
-        if (l1) l1.innerText = '問題 *';
-        if (i1) i1.placeholder = "例如: Robin's牛排館營業時段？ 或 晶英軒最後點餐？";
-        if (l2) l2.innerText = '答案 *';
-        if (i2) i2.placeholder = '例如: 06:30-10:30 / 12:00-17:00 / 18:00-22:00';
-        if (l3) l3.innerText = '補充（選填）';
-        if (i3) i3.placeholder = '例如: 最後點餐午餐14:00 / 晚餐21:00（選填）';
-    }
-}
-
-function openAddQuizModal() {
-    document.getElementById('new-item-type').value = 'opera';
-    document.getElementById('new-item-1').value = '';
-    document.getElementById('new-item-2').value = '';
-    document.getElementById('new-item-3').value = '';
-    onAddTypeChange();
-    document.getElementById('add-quiz-modal')?.classList.remove('hidden');
-    setTimeout(() => document.getElementById('new-item-1')?.focus(), 100);
-}
-
-function closeAddQuizModal() {
-    document.getElementById('add-quiz-modal')?.classList.add('hidden');
-}
-
-async function saveNewQuizItem() {
-    const type = document.getElementById('new-item-type').value;
-    const val1 = (document.getElementById('new-item-1')?.value || '').trim();
-    const val2 = (document.getElementById('new-item-2')?.value || '').trim();
-    const val3 = (document.getElementById('new-item-3')?.value || '').trim();
-
-    let newItem = { type };
-
-    if (type === 'opera') {
-        if (!val1) return alert('請填寫【中文意思】！');
-        if (!val2) return alert('請填寫【縮寫】！');
-        newItem['中文意思'] = val1;
-        newItem['縮寫'] = val2;
-        newItem['補充說明'] = val3;
-        newItem.code = val2;
-        newItem.cn = val1;
-        newItem.cat = 'OPERA縮寫';
-        newItem.en = val3;
-        newItem.id = `opera_${val2}`;
-    } else if (type === 'ext') {
-        if (!val1) return alert('請填寫【分機&電話號碼】！');
-        if (!val2) return alert('請填寫【單位】！');
-        if (!val3) return alert('請填寫【部門人員】！');
-        newItem['分機&電話號碼'] = val1;
-        newItem['單位'] = val2;
-        newItem['部門人員'] = val3;
-        newItem.code = val1;
-        newItem.cn = val3;
-        newItem.cat = val2;
-        newItem.en = '';
-        newItem.id = `ext_${val1}`;
-    } else if (type === 'room') {
-        if (!val1) return alert('請填寫【問題】！');
-        if (!val2) return alert('請填寫【答案】！');
-        newItem['問題'] = val1;
-        newItem['答案'] = val2;
-        newItem['補充'] = val3;
-        newItem.code = val1;
-        newItem.cn = val2;
-        newItem.cat = '客房資訊';
-        newItem.en = val3;
-        newItem.id = `room_${val1}`;
-    } else if (type === 'restaurant') {
-        if (!val1) return alert('請填寫【問題】！');
-        if (!val2) return alert('請填寫【答案】！');
-        newItem['問題'] = val1;
-        newItem['答案'] = val2;
-        newItem['補充'] = val3;
-        newItem.code = val1;
-        newItem.cn = val2;
-        newItem.cat = '餐廳資訊';
-        newItem.en = val3;
-        newItem.id = `restaurant_${val1}`;
-    }
-
-    const existingIdx = db.findIndex(x => x.id === newItem.id);
-    let updatedDb = [];
-    if (existingIdx > -1) {
-        if (!confirm(`題庫【${newItem.cat}】中已有項目「${newItem.code}」，是否確定要覆蓋更新？`)) return;
-        updatedDb = [...db];
-        updatedDb[existingIdx] = newItem;
-    } else {
-        updatedDb = [...db, newItem];
-    }
-
-    const saveBtn = document.getElementById('save-new-item-btn');
-    const originalText = saveBtn.innerText;
-    saveBtn.innerText = '寫入 Google 試算表中...';
-    saveBtn.disabled = true;
-
-    try {
-        const json = await postToAppsScript({ adminPin: cloudSecret, items: updatedDb });
-        if (json && json.status === 'success') {
-            db = normalizeDb(updatedDb);
-            localStorage.setItem('opera_custom_db', JSON.stringify({ version: DB_VERSION, data: db }));
-            renderAdminList();
-            renderSearchList();
-            renderMiniSearch();
-            renderDeleteList();
-            nextCard(false);
-            nextQuizQuestion();
-            closeAddQuizModal();
-            alert(`🎉 新增成功！已成功寫入 Google 試算表，題庫目前共 ${db.length} 筆，系統已立即同步生效！`);
-        } else {
-            alert('寫入 Google 試算表失敗：' + (json ? json.message : '未知錯誤'));
-        }
-    } catch (e) {
-        alert('連線失敗，無法寫入 Google 試算表：' + e);
-    } finally {
-        saveBtn.innerText = originalText;
-        saveBtn.disabled = false;
-    }
-}
-
-// 移除題目功能與彈窗
-function openDeleteQuizModal() {
-    document.getElementById('del-filter-type').value = 'all';
-    document.getElementById('del-search-input').value = '';
-    renderDeleteList();
-    document.getElementById('delete-quiz-modal')?.classList.remove('hidden');
-}
-
-function closeDeleteQuizModal() {
-    document.getElementById('delete-quiz-modal')?.classList.add('hidden');
-}
-
-function renderDeleteList() {
-    const filterType = document.getElementById('del-filter-type')?.value || 'all';
-    const q = (document.getElementById('del-search-input')?.value || '').trim().toLowerCase();
-    const container = document.getElementById('delete-modal-list');
-    if (!container) return;
-    container.innerHTML = '';
-
-    let filtered = db;
-    if (filterType !== 'all') {
-        filtered = filtered.filter(x => x.type === filterType);
-    }
-    if (q) {
-        filtered = filtered.filter(x => (x.code && x.code.toLowerCase().includes(q)) || (x.cn && x.cn.toLowerCase().includes(q)) || (x.cat && x.cat.includes(q)) || (x.en && x.en.toLowerCase().includes(q)));
-    }
-
-    if (filtered.length === 0) {
-        container.innerHTML = '<div style="color:var(--text-sub); text-align:center; padding:20px; font-size:13px;">無相符之題目項目</div>';
-        return;
-    }
-
-    filtered.forEach(item => {
-        const div = document.createElement('div');
-        div.style.cssText = 'background:var(--input-bg); border:1px solid var(--border-color); border-radius:10px; padding:10px 12px; display:flex; justify-content:space-between; align-items:center; gap:8px;';
-        div.innerHTML = `
-            <div style="flex:1; min-width:0;">
-                <b style="color:var(--primary); font-size:14px;">${escapeHtml(item.code)}</b> ${item.en ? `<span style="font-size:11px; color:var(--primary); opacity:0.8;">(${escapeHtml(item.en)})</span>` : ''} <span style="font-size:11px; color:var(--text-sub);">[${escapeHtml(item.cat)}]</span>
-                <div style="font-size:12px; color:var(--text-main); margin-top:2px;">${escapeHtml(item.cn)}</div>
-            </div>
-            <button type="button" onclick="confirmDeleteQuizItem('${item.id}')" style="background:rgba(255,69,58,0.12); border:1px solid rgba(255,69,58,0.35); color:var(--danger); padding:4px 10px; border-radius:8px; font-size:12px; font-weight:700; cursor:pointer; flex-shrink:0;">－ 移除</button>
-        `;
-        container.appendChild(div);
-    });
-}
-
-async function confirmDeleteQuizItem(itemId) {
-    const item = db.find(x => x.id === itemId);
-    if (!item) return alert('找不到該題目項目！');
-
-    const confirmed = confirm(
-`⚠️ 【確認移除題目】
-您確定要從題庫與 Google 試算表中永久移除此題目嗎？
-
-【分類】：${item.cat}
-【題目／代碼】：${item.code}
-【答案／說明】：${item.cn}
-
-※ 此動作將同步更新至 Google 試算表，無法復原！`
-    );
-
-    if (!confirmed) return;
-
-    await executeDeleteItem(itemId);
-}
-
-async function executeDeleteItem(itemId) {
-    const item = db.find(x => x.id === itemId);
-    if (!item) return;
-
-    const updatedDb = db.filter(x => x.id !== itemId);
-    const statusTxt = document.getElementById('sync-status-txt');
-    if (statusTxt) statusTxt.innerText = '狀態：正在從 Google 試算表移除題目...';
-
-    try {
-        const json = await postToAppsScript({ adminPin: cloudSecret, items: updatedDb });
-        if (json && json.status === 'success') {
-            db = normalizeDb(updatedDb);
-            localStorage.setItem('opera_custom_db', JSON.stringify({ version: DB_VERSION, data: db }));
-            renderAdminList();
-            renderSearchList();
-            renderMiniSearch();
-            renderDeleteList();
-            nextCard(false);
-            nextQuizQuestion();
-            if (statusTxt) statusTxt.innerText = `狀態：已自試算表移除題目（目前共 ${db.length} 筆）`;
-            alert(`🗑 移除成功！\n題目「${item.code}」已成功從系統與 Google 試算表移除。`);
-        } else {
-            alert('移除失敗，Google 試算表寫入未成功：' + (json ? json.message : '未知錯誤'));
-            if (statusTxt) statusTxt.innerText = '狀態：移除失敗';
-        }
-    } catch(e) {
-        alert('連線失敗，無法從 Google 試算表移除題目：' + e);
-        if (statusTxt) statusTxt.innerText = '狀態：連線錯誤';
-    }
-}
-
-function escapeHtml(str) {
-    if (!str) return '';
-    return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-}
-
-/* ================================================================
-   其他系統與互動核心邏輯
-   ================================================================ */
 
 function loadState() {
-    const defaultState = {
-        favs: [],
-        wrongs: [],
-        stats: { total: 0, correct: 0, streak: 0 },
-        scope: 'all',
-        poolType: 'all'
-    };
+    const defaultState = { favs: [], wrongs: [], stats: { total: 0, correct: 0, streak: 0 }, theme: 'dark', poolType: 'all', scope: 'all' };
     try {
-        const saved = JSON.parse(localStorage.getItem('concierge_state'));
-        state = { ...defaultState, ...(saved || {}), stats: { ...defaultState.stats, ...((saved && saved.stats) || {}) } };
-    } catch (e) {
-        state = defaultState;
-    }
+        const saved = localStorage.getItem('opera_app_data');
+        if (saved) {
+            const parsed = JSON.parse(saved);
+            state = { ...defaultState, ...parsed, stats: { ...defaultState.stats, ...(parsed.stats || {}) } };
+        } else { state = defaultState; }
+    } catch(e) { state = defaultState; }
+    applyThemeUI();
     updateStatsUI();
     updateScopeUI();
 }
 
 function saveState() {
-    localStorage.setItem('concierge_state', JSON.stringify(state));
+    localStorage.setItem('opera_app_data', JSON.stringify(state));
     updateStatsUI();
 }
 
 function updateStatsUI() {
-    const rate = state.stats.total > 0 ? Math.round((state.stats.correct / state.stats.total) * 100) : 0;
-    const rateTxt = `${rate}%`;
-    const streakTxt = `${state.stats.streak}`;
-    const wrongTxt = `${state.wrongs.length}`;
-    const favTxt = `${state.favs.length}`;
+    const favCount = state.favs.length || 0;
+    const wrongCount = state.wrongs.length || 0;
+    const streakCount = state.stats.streak || 0;
+    const acc = state.stats.total > 0 ? Math.round((state.stats.correct / state.stats.total) * 100) : 0;
 
-    ['st-accuracy', 'd-st-accuracy'].forEach(id => { const el = document.getElementById(id); if (el) el.innerText = rateTxt; });
-    ['st-streak', 'd-st-streak'].forEach(id => { const el = document.getElementById(id); if (el) el.innerText = streakTxt; });
-    ['st-wrong', 'd-st-wrong'].forEach(id => { const el = document.getElementById(id); if (el) el.innerText = wrongTxt; });
-    ['st-fav', 'd-st-fav'].forEach(id => { const el = document.getElementById(id); if (el) el.innerText = favTxt; });
+    ['st-fav', 'd-st-fav'].forEach(id => { const el = document.getElementById(id); if (el) el.innerText = favCount; });
+    ['st-wrong', 'd-st-wrong'].forEach(id => { const el = document.getElementById(id); if (el) el.innerText = wrongCount; });
+    ['st-streak', 'd-st-streak'].forEach(id => { const el = document.getElementById(id); if (el) el.innerText = streakCount; });
+    ['st-accuracy', 'd-st-accuracy'].forEach(id => { const el = document.getElementById(id); if (el) el.innerText = `${acc}%`; });
 }
 
 function updateScopeUI() {
@@ -2326,7 +1147,7 @@ function checkChineseMatch(userInput, targetStr) {
 }
 
 function checkCodeMatch(userInput, targetCode) {
-    const clean = s => s.trim().replace(/[＊]/g, '*').toUpperCase().replace(/[\s\-_/]/g, '');
+    const clean = s => s.trim().replace(/[\uFF0A]/g, '*').toUpperCase().replace(/[\s\-_/]/g, '');
     const u = clean(userInput);
     const t = clean(targetCode);
     if (!u) return false;
@@ -2347,6 +1168,7 @@ function checkCodeMatch(userInput, targetCode) {
 }
 
 function initExam10Session() {
+    if(db.length === 0) return;
     const scopedList = [...getScopedDatabase()].sort(() => Math.random() - 0.5);
     examSession.questions = scopedList.slice(0, 10);
     examSession.currentIndex = 0;
@@ -2364,6 +1186,7 @@ function startNewExam10() {
 }
 
 function nextCard(shouldFocus = false) {
+    if(db.length === 0) return;
     const cardEl = document.getElementById('main-card');
     cardEl.classList.remove('flipped');
     document.getElementById('input-form').classList.remove('hidden');
@@ -2371,17 +1194,6 @@ function nextCard(shouldFocus = false) {
 
     const input = document.getElementById('type-input');
     input.value = '';
-
-    if (!db || db.length === 0) {
-        document.getElementById('card-badge').innerText = '題庫連線中';
-        const promptEl = document.getElementById('card-prompt');
-        promptEl.innerText = '正在從 Google 試算表載入題庫...';
-        promptEl.className = 'card-prompt-text';
-        input.placeholder = '同步完成後即可開始練習...';
-        input.disabled = true;
-        return;
-    }
-    input.disabled = false;
 
     setTimeout(() => {
         if (state.poolType === 'exam10') {
@@ -2457,7 +1269,7 @@ function requestNextCard() {
 }
 
 function submitAnswer() {
-    if (!currentCard || !db || db.length === 0) return;
+    if (!currentCard) return;
     const input = document.getElementById('type-input');
     const val = input.value.trim();
     if (!val) return;
@@ -2492,7 +1304,6 @@ function submitAnswer() {
         state.stats.streak = 0;
         if (!state.wrongs.includes(currentCard.id)) state.wrongs.push(currentCard.id);
     }
-
     saveState();
 
     const resBadge = document.getElementById('card-result-badge');
@@ -2582,13 +1393,9 @@ function requestNextQuiz() {
 }
 
 function nextQuizQuestion() {
+    if(db.length === 0) return;
     document.getElementById('quiz-next-btn').classList.add('hidden');
     const activeScopedList = getScopedDatabase();
-    if (!activeScopedList || activeScopedList.length === 0) {
-        document.getElementById('quiz-title').innerText = '題庫載入中，請稍候...';
-        document.getElementById('quiz-options').innerHTML = '<div style="color:var(--text-sub); text-align:center; padding:20px;">正在從 Google 試算表同步測驗題目...</div>';
-        return;
-    }
     currentQuiz = activeScopedList[Math.floor(Math.random() * activeScopedList.length)] || db[0];
 
     const isSpecialType = (currentQuiz.type === 'room' || currentQuiz.type === 'restaurant') && currentQuiz.code.includes('？');
@@ -2675,15 +1482,10 @@ function changePool(type) {
 }
 
 function renderSearchList() {
-    const q = (document.getElementById('search-input')?.value || '').toLowerCase();
+    const q = document.getElementById('search-input').value.toLowerCase();
     const container = document.getElementById('search-list');
-    if (!container) return;
     container.innerHTML = '';
-    if (!db || db.length === 0) {
-        container.innerHTML = '<div style="color:var(--text-sub); text-align:center; padding:30px; font-size:13px;">題庫連線中，正在從 Google 試算表取得最新資料...</div>';
-        return;
-    }
-    const filtered = db.filter(x => (x.code && x.code.toLowerCase().includes(q)) || (x.cn && x.cn.toLowerCase().includes(q)) || (x.cat && x.cat.includes(q)) || (x.en && x.en.toLowerCase().includes(q)));
+    const filtered = db.filter(x => x.code.toLowerCase().includes(q) || x.cn.toLowerCase().includes(q) || (x.cat && x.cat.includes(q)) || (x.en && x.en.toLowerCase().includes(q)));
     filtered.forEach(x => {
         const div = document.createElement('div');
         div.className = 'list-item';
@@ -2692,7 +1494,7 @@ function renderSearchList() {
                 <div class="code">${x.code} ${x.en ? `<span style="font-size:13px; font-weight:600; color:var(--text-sub); opacity:0.85;">(${x.en})</span>` : ''}</div>
                 <div class="cn">${x.cn}</div>
             </div>
-            <div class="list-item-cat">${x.cat}</div>
+            <div class="list-item-cat">${x.cat || x.type}</div>
         `;
         container.appendChild(div);
     });
@@ -2703,11 +1505,7 @@ function renderMiniSearch() {
     const container = document.getElementById('mini-search-list');
     if (!container) return;
     container.innerHTML = '';
-    if (!db || db.length === 0) {
-        container.innerHTML = '<div style="color:var(--text-sub); text-align:center; font-size:12px; padding:10px;">題庫同步中...</div>';
-        return;
-    }
-    const filtered = db.filter(x => (x.code && x.code.toLowerCase().includes(q)) || (x.cn && x.cn.toLowerCase().includes(q)) || (x.cat && x.cat.includes(q)) || (x.en && x.en.toLowerCase().includes(q))).slice(0, 15);
+    const filtered = db.filter(x => x.code.toLowerCase().includes(q) || x.cn.toLowerCase().includes(q) || (x.cat && x.cat.includes(q)) || (x.en && x.en.toLowerCase().includes(q))).slice(0, 15);
     filtered.forEach(x => {
         const div = document.createElement('div');
         div.className = 'mini-list-item';
@@ -2722,40 +1520,23 @@ function renderAdminList() {
     container.innerHTML = '';
 
     const validTypes = ['ext', 'opera', 'room', 'restaurant'];
-    const counts = {
-        ext: db.filter(x => x.type === 'ext').length,
-        opera: db.filter(x => x.type === 'opera').length,
-        room: db.filter(x => x.type === 'room').length,
-        restaurant: db.filter(x => x.type === 'restaurant').length
-    };
-
-    const cntExt = document.getElementById('cnt-ext');
-    const cntOpera = document.getElementById('cnt-opera');
-    const cntRoom = document.getElementById('cnt-room');
-    const cntRestaurant = document.getElementById('cnt-restaurant');
-    if (cntExt) cntExt.innerText = counts.ext;
-    if (cntOpera) cntOpera.innerText = counts.opera;
-    if (cntRoom) cntRoom.innerText = counts.room;
-    if (cntRestaurant) cntRestaurant.innerText = counts.restaurant;
-
-    const totalLbl = document.getElementById('admin-list-total-lbl');
-    if (totalLbl) totalLbl.innerText = `題庫總覽（共 ${db.length} 筆）`;
-
-    if (db.length === 0) {
-        container.innerHTML = '<div style="color:var(--text-sub); text-align:center; padding:30px; font-size:13px;">目前試算表尚無資料，或請點擊上方「匯出至 Google 試算表」載入。</div>';
-        return;
-    }
+    const typeLabels = { ext: '分機表', opera: 'OPERA縮寫', room: '客房資訊', restaurant: '餐廳資訊' };
+    
+    const statDiv = document.createElement('div');
+    statDiv.style.cssText = 'display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px;';
+    statDiv.innerHTML = validTypes.map(t => {
+        const cnt = db.filter(x => x.type === t).length;
+        return `<div style="flex:1; min-width:90px; background:var(--input-bg); border:1px solid var(--border-color); border-radius:10px; padding:8px 10px; text-align:center;">
+            <div style="font-size:18px; font-weight:800; color:var(--primary);">${cnt}</div>
+            <div style="font-size:11px; color:var(--text-sub); margin-top:2px;">${typeLabels[t]}</div>
+        </div>`;
+    }).join('');
+    container.appendChild(statDiv);
 
     db.forEach((item, idx) => {
         const div = document.createElement('div');
-        div.style.cssText = 'background:var(--input-bg); border:1px solid var(--border-color); border-radius:12px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:8px;';
-        div.innerHTML = `
-            <div style="flex:1; min-width:0;">
-                <b style="color:var(--primary);">${escapeHtml(item.code)}</b> ${item.en ? `<span style="font-size:11px;color:var(--primary);opacity:0.8;">(${escapeHtml(item.en)})</span>` : ''} <span style="font-size:11px;color:var(--text-sub);">[${escapeHtml(item.cat)}]</span>
-                <div style="font-size:12px;color:var(--text-main); margin-top:2px;">${escapeHtml(item.cn)}</div>
-            </div>
-            <button type="button" onclick="confirmDeleteQuizItem('${item.id}')" style="background:rgba(255,69,58,0.12); border:1px solid rgba(255,69,58,0.35); color:var(--danger); padding:4px 10px; border-radius:8px; font-size:12px; font-weight:700; cursor:pointer; flex-shrink:0;">－ 移除</button>
-        `;
+        div.style.cssText = 'background:var(--input-bg); border:1px solid var(--border-color); border-radius:12px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center;';
+        div.innerHTML = `<div><b style="color:var(--primary);">${item.code}</b> <span style="font-size:11px;color:var(--text-sub);">[${item.cat || item.type}]</span><div style="font-size:12px;color:var(--text-main); margin-top:2px;">${item.cn}</div></div>`;
         container.appendChild(div);
     });
 }
@@ -2765,106 +1546,356 @@ function switchTab(tab, btn) {
     document.querySelectorAll('.side-nav-btn').forEach(i => i.classList.remove('active'));
     document.querySelectorAll('.view-content').forEach(v => v.classList.remove('active'));
 
-    const targetView = document.getElementById(`view-${tab}`);
-    if (targetView) targetView.classList.add('active');
-
-    if (btn) btn.classList.add('active');
-
-    const dBtn = document.getElementById(`d-nav-${tab}-btn`);
-    if (dBtn) dBtn.classList.add('active');
-
-    const mBtn = document.querySelector(`.nav-bar .nav-item[onclick*="${tab}"]`);
-    if (mBtn) mBtn.classList.add('active');
-
-    const titles = {
-        learn: { title: '學習卡片', desc: '翻轉卡片、拼寫記憶，扎實掌握飯店專業知識' },
-        quiz: { title: '考題測驗', desc: '隨機四選一實戰模擬考題，檢測即時反應速度' },
-        search: { title: '代碼分機', desc: '快速搜尋全館分機與常用 OPERA 代碼資料庫' },
-        settings: { title: '系統設定', desc: '介面視覺模式切換與個人練習記錄重設' },
-        admin: { title: '後台管理', desc: 'Google 試算表題庫同步與通行碼安全管理' }
-    };
-
-    if (titles[tab]) {
-        const titleEl = document.getElementById('desktop-page-title');
-        const descEl = document.getElementById('desktop-page-desc');
-        if (titleEl) titleEl.innerText = titles[tab].title;
-        if (descEl) descEl.innerText = titles[tab].desc;
+    const tabIndex = ['learn', 'quiz', 'search', 'settings', 'admin'].indexOf(tab);
+    if (tabIndex > -1) {
+        document.querySelectorAll('.nav-item')[tabIndex]?.classList.add('active');
+        document.querySelectorAll('.side-nav-btn')[tabIndex]?.classList.add('active');
     }
+    document.getElementById(`view-${tab}`)?.classList.add('active');
 
+    const titleMap = {
+        'learn': ['學習卡片', '台南晶英酒店 OPERA 系統專業代碼與館內分機極速精熟訓練'],
+        'quiz': ['考題測驗', '全真模擬四選一快速測驗，檢驗即時反應力與代碼記憶度'],
+        'search': ['代碼與分機', '飯店各部門代碼與館內專屬分機全庫極速檢索查詢'],
+        'settings': ['系統設定', '自訂測驗範圍、專案類別與個人答題歷史數據管理'],
+        'admin': ['後台管理', 'Google 試算表雲端同步與通行碼安全管理']
+    };
+    if (titleMap[tab]) {
+        const tEl = document.getElementById('desktop-page-title');
+        const dEl = document.getElementById('desktop-page-desc');
+        if (tEl) tEl.innerText = titleMap[tab][0];
+        if (dEl) dEl.innerText = titleMap[tab][1];
+    }
     if (tab === 'search') renderSearchList();
     if (tab === 'admin') renderAdminList();
 }
 
 function toggleTheme() {
-    const isLight = document.body.classList.toggle('light-mode');
-    localStorage.setItem('concierge_theme', isLight ? 'light' : 'dark');
+    state.theme = state.theme === 'dark' ? 'light' : 'dark';
     applyThemeUI();
+    saveState();
 }
 
 function applyThemeUI() {
-    const isLight = document.body.classList.contains('light-mode');
-    ['theme-toggle-status', 'd-theme-toggle-status'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.innerText = isLight ? '日間淺色模式' : '深色專業模式';
-    });
+    const textEls = document.querySelectorAll('.theme-text');
+    const iconEls = document.querySelectorAll('.theme-icon');
+    if (state.theme === 'light') {
+        document.body.classList.add('light-mode');
+        textEls.forEach(t => t.innerText = '深色模式');
+        iconEls.forEach(ic => ic.innerHTML = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>`);
+    } else {
+        document.body.classList.remove('light-mode');
+        textEls.forEach(t => t.innerText = '淺色模式');
+        iconEls.forEach(ic => ic.innerHTML = `<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>`);
+    }
 }
 
 function resetAllData() {
-    if (!confirm('確定要重設本機練習進度（答對率、錯題本、收藏卡片）嗎？此動作不影響 Google 試算表上的題庫資料。')) return;
-    localStorage.removeItem('concierge_state');
-    state = {
-        scope: 'all',
-        poolType: 'all',
-        favs: [],
-        wrongs: [],
-        stats: { total: 0, correct: 0, streak: 0 }
-    };
-    saveState();
-    updateScopeUI();
-    nextCard(false);
-    nextQuizQuestion();
-    alert('已成功重設本機練習記錄！');
+    if (confirm("確定要重置所有紀錄與錯題本嗎？")) {
+        localStorage.removeItem('opera_app_data');
+        state = { favs: [], wrongs: [], stats: { total: 0, correct: 0, streak: 0 }, theme: 'dark', poolType: 'all', scope: 'all' };
+        saveState();
+        applyThemeUI();
+        alert("資料已重置！");
+        location.reload();
+    }
 }
 
-// 監聽鍵盤快捷鍵
-document.addEventListener('keydown', (e) => {
-    if (e.key !== 'Enter') return;
+async function syncFromCloud() {
+    if (!apiUrl) return alert('尚未設定雲端連線網址，請聯繫系統管理者確認部署設定。');
+    const statusTxt = document.getElementById('sync-status-txt');
+    statusTxt.innerText = '狀態：正在從雲端抓取...';
+    try {
+        const res = await fetch(cloudGetUrl(authConfig.adminPin));
+        const json = await res.json();
+        if (json.status === 'success' && Array.isArray(json.data) && json.data.length > 0) {
+            const validTypes = ['ext', 'opera', 'room', 'restaurant'];
+            const cleanRows = [];
+            const badRows = [];
+            json.data.forEach(row => {
+                if (row && row.code && row.cn && validTypes.includes(row.type)) {
+                    cleanRows.push(row);
+                } else {
+                    badRows.push(row);
+                }
+            });
 
-    const authModal = document.getElementById('auth-modal');
-    if (authModal && authModal.style.display !== 'none') {
-        checkAuthPin();
-        return;
+            if (cleanRows.length === 0) {
+                alert('⚠️ 同步中止：試算表回傳的資料欄位格式不正確，請檢查 Google Apps Script 的欄位對應，本次未套用任何資料。');
+                statusTxt.innerText = '狀態：資料格式異常，已取消套用';
+                return;
+            }
+
+            db = normalizeDb(cleanRows);
+            localStorage.setItem('opera_custom_db', JSON.stringify({ version: DB_VERSION, data: db }));
+            renderAdminList();
+            renderSearchList();
+            renderMiniSearch();
+
+            let authSynced = false;
+            if (json.auth && (json.auth.staffPin || json.auth.adminPin)) {
+                authConfig = { ...authConfig, ...json.auth };
+                localStorage.setItem('concierge_auth_pins', JSON.stringify(authConfig));
+                authSynced = true;
+            }
+
+            const countLine = validTypes.map(t => `${t}: ${db.filter(x => x.type === t).length}`).join(' / ');
+            statusTxt.innerText = `狀態：已同步 4 個工作表（共 ${db.length} 筆，${countLine}）${authSynced ? '，通行碼已一併更新' : ''}`;
+
+            let msg = `🎉 成功同步！共載入 ${db.length} 筆資料\n\n分類統計（請核對是否符合試算表各分頁筆數）：\n` +
+                validTypes.map(t => `・${t}：${db.filter(x => x.type === t).length} 筆`).join('\n');
+            if (authSynced) msg += `\n\n🔑 通行碼設定也已從雲端同步。`;
+            if (badRows.length > 0) msg += `\n\n⚠️ 另有 ${badRows.length} 筆資料因欄位缺漏或分類異常已被自動略過、未加入題庫。`;
+            
+            alert(msg);
+            
+            // 同步完重新載入第一張卡片
+            nextCard(false);
+            nextQuizQuestion();
+        } else {
+            alert('同步失敗：伺服器回傳格式不正確或無資料。');
+            statusTxt.innerText = '狀態：同步失敗';
+        }
+    } catch(e) {
+        alert('同步出錯：' + e);
+        statusTxt.innerText = '狀態：連線失敗';
     }
+}
 
+async function pushToCloud() {
+    if (!apiUrl) return alert('尚未設定雲端連線網址，請聯繫系統管理者確認部署設定。');
+    if (!cloudSecret) return alert('請先在上方設定「雲端寫入金鑰」！');
+    if (!confirm(`確定要將目前的 ${db.length} 筆完整題庫自動分類寫入 Google 試算表（OPERA縮寫、分機表、客房資訊、餐廳資訊 4 個分頁）嗎？`)) return;
+    
+    const statusTxt = document.getElementById('sync-status-txt');
+    statusTxt.innerText = '狀態：正在分流寫入 4 個工作表...';
+
+    try {
+        const res = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({ adminPin: cloudSecret, items: db })
+        });
+        const json = await res.json();
+        if (json.status === 'success') {
+            alert(`🎉 成功分流寫入 ${json.count} 筆資料至 Google 試算表！\n請回試算表重新整理查看 4 個工作表！`);
+            statusTxt.innerText = `狀態：已成功寫入 4 個工作表（共 ${json.count} 筆）`;
+        } else {
+            alert('推送失敗：' + json.message);
+        }
+    } catch(e) {
+        alert('推送出錯：' + e);
+        statusTxt.innerText = '狀態：推送出錯';
+    }
+}
+
+// ============ 動態更新新增題庫視窗的標籤 ============
+function updateAddQuizLabels() {
+    const type = document.getElementById('new-item-type').value;
+    const lblCode = document.getElementById('lbl-new-code');
+    const lblCn = document.getElementById('lbl-new-cn');
+    const lblEn = document.getElementById('lbl-new-en');
+
+    if (type === 'opera') {
+        lblCode.innerText = "縮寫";
+        lblCn.innerText = "中文意思";
+        lblEn.innerText = "補充說明";
+    } else if (type === 'ext') {
+        lblCode.innerText = "分機&電話號碼";
+        lblCn.innerText = "單位";
+        lblEn.innerText = "部門人員";
+    } else if (type === 'room' || type === 'restaurant') {
+        lblCode.innerText = "答案";
+        lblCn.innerText = "問題";
+        lblEn.innerText = "補充";
+    }
+}
+
+// ============ 新增題庫 ============
+function openAddQuizModal() {
+    document.getElementById('new-item-type').value = 'opera';
+    updateAddQuizLabels();
+    document.getElementById('new-item-code').value = '';
+    document.getElementById('new-item-cn').value = '';
+    document.getElementById('new-item-en').value = '';
+    document.getElementById('add-quiz-modal').classList.remove('hidden');
+}
+
+function closeAddQuizModal() {
+    document.getElementById('add-quiz-modal').classList.add('hidden');
+}
+
+async function saveNewQuizItem() {
+    const type = document.getElementById('new-item-type').value;
+    const code = document.getElementById('new-item-code').value.trim();
+    const cn = document.getElementById('new-item-cn').value.trim();
+    const en = document.getElementById('new-item-en').value.trim();
+
+    if (!code || !cn) return alert('前兩個欄位為必填！');
+    if (!apiUrl) return alert('尚未設定雲端連線網址，請聯繫系統管理者確認部署設定。');
+    if (!cloudSecret) return alert('請先設定「雲端寫入金鑰」才能新增並同步到 Google 試算表！');
+
+    const catMap = { opera: 'OPERA縮寫', ext: '分機表', room: '客房資訊', restaurant: '餐廳資訊' };
+    const cat = catMap[type];
+
+    const newItem = normalizeDb([{ code, cn, cat, type, en }])[0];
+    
+    if (db.some(x => x.id === newItem.id)) {
+        if (!confirm('這個分類下已經有相同代碼/答案的項目，是否要覆蓋原本的內容？')) return;
+        db = db.filter(x => x.id !== newItem.id);
+    }
+    const updatedDb = [...db, newItem];
+
+    const btn = document.getElementById('save-new-item-btn');
+    const originalText = btn.innerText;
+    btn.innerText = '儲存中...';
+    btn.disabled = true;
+
+    try {
+        const res = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({ adminPin: cloudSecret, items: updatedDb })
+        });
+        const json = await res.json();
+        if (json.status === 'success') {
+            db = normalizeDb(updatedDb);
+            localStorage.setItem('opera_custom_db', JSON.stringify({ version: DB_VERSION, data: db }));
+            renderAdminList();
+            renderSearchList();
+            renderMiniSearch();
+            nextCard(false);
+            nextQuizQuestion();
+            closeAddQuizModal();
+            alert('🎉 新增成功，已同步到 Google 試算表，系統也已更新！');
+        } else {
+            alert('新增失敗：' + json.message);
+        }
+    } catch (e) {
+        alert('新增失敗，連線錯誤：' + e);
+    } finally {
+        btn.innerText = originalText;
+        btn.disabled = false;
+    }
+}
+
+// ============ 移除題庫 ============
+function openRemoveQuizModal() {
+    const select = document.getElementById('remove-item-select');
+    select.innerHTML = '';
+    
+    // 依據類型排序，讓使用者更好找
+    const sortedDb = [...db].sort((a, b) => a.type.localeCompare(b.type));
+    
+    sortedDb.forEach(item => {
+        const opt = document.createElement('option');
+        opt.value = item.id;
+        opt.innerText = `[${item.cat || item.type}] ${item.code} - ${item.cn}`;
+        select.appendChild(opt);
+    });
+    
+    document.getElementById('remove-quiz-modal').classList.remove('hidden');
+}
+
+function closeRemoveQuizModal() {
+    document.getElementById('remove-quiz-modal').classList.add('hidden');
+}
+
+async function confirmRemoveQuizItem() {
+    const select = document.getElementById('remove-item-select');
+    const selectedId = select.value;
+    if (!selectedId) return alert('請選擇要移除的題目');
+
+    const itemToRemove = db.find(x => x.id === selectedId);
+    if (!confirm(`確定要移除「${itemToRemove.code} - ${itemToRemove.cn}」嗎？\n確認後將同步至 Google 試算表。`)) return;
+
+    if (!apiUrl) return alert('尚未設定雲端連線網址。');
+    if (!cloudSecret) return alert('請先設定「雲端寫入金鑰」。');
+
+    const updatedDb = db.filter(x => x.id !== selectedId);
+
+    const btn = document.getElementById('delete-item-btn');
+    const originalText = btn.innerText;
+    btn.innerText = '移除並同步中...';
+    btn.disabled = true;
+
+    try {
+        const res = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({ adminPin: cloudSecret, items: updatedDb })
+        });
+        const json = await res.json();
+        if (json.status === 'success') {
+            db = normalizeDb(updatedDb);
+            localStorage.setItem('opera_custom_db', JSON.stringify({ version: DB_VERSION, data: db }));
+            renderAdminList();
+            renderSearchList();
+            renderMiniSearch();
+            nextCard(false);
+            nextQuizQuestion();
+            closeRemoveQuizModal();
+            alert('🎉 移除成功，已同步到 Google 試算表！');
+        } else {
+            alert('移除失敗：' + json.message);
+        }
+    } catch (e) {
+        alert('移除失敗，連線錯誤：' + e);
+    } finally {
+        btn.innerText = originalText;
+        btn.disabled = false;
+    }
+}
+
+window.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter') return;
     const nextCardBtn = document.getElementById('next-card-btn');
     const learnView = document.getElementById('view-learn');
-    if (learnView && learnView.classList.contains('active') && !nextCardBtn.classList.contains('hidden')) {
+    if (learnView.classList.contains('active') && !nextCardBtn.classList.contains('hidden')) {
         e.preventDefault();
         requestNextCard();
         return;
     }
-
     const quizNextBtn = document.getElementById('quiz-next-btn');
     const quizView = document.getElementById('view-quiz');
-    if (quizView && quizView.classList.contains('active') && !quizNextBtn.classList.contains('hidden')) {
+    if (quizView.classList.contains('active') && !quizNextBtn.classList.contains('hidden')) {
         e.preventDefault();
         requestNextQuiz();
         return;
     }
 });
 
-// 行動端鍵盤輸入滾動
 const typeInput = document.getElementById('type-input');
-if (typeInput) {
-    typeInput.addEventListener('focus', () => {
-        if (window.innerWidth < 860) {
-            setTimeout(() => { typeInput.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 150);
-        }
-    });
-}
+typeInput.addEventListener('focus', () => {
+    if (window.innerWidth < 860) {
+        setTimeout(() => { typeInput.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 150);
+    }
+});
 
-// 初始進入系統
 initApp();
+
+async function autoSyncOnLoad() {
+    if (!apiUrl) return;
+    try {
+        const res = await fetch(cloudGetUrl());
+        const json = await res.json();
+        if (json.status !== 'success' || !Array.isArray(json.data)) return;
+        const validTypes = ['ext', 'opera', 'room', 'restaurant'];
+        const clean = json.data.filter(r => r && r.code && r.cn && validTypes.includes(r.type));
+        if (clean.length === 0) return;
+        db = normalizeDb(clean);
+        localStorage.setItem('opera_custom_db', JSON.stringify({ version: DB_VERSION, data: db }));
+        
+        if (isFirstLoad) {
+            nextCard(false);
+            nextQuizQuestion();
+        }
+        renderMiniSearch();
+        renderSearchList();
+        if (userRole === 'admin') renderAdminList();
+    } catch (e) {}
+}
+autoSyncOnLoad();
 </script>
 </body>
 </html>

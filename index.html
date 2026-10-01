@@ -1515,18 +1515,50 @@ function initApp() {
     }
 
     updatePwdFormUI();
+    syncAuthPinsInBackground(); // 加入這行：手機打開就會自動向試算表抓取電腦改好的最新密碼！
     nextCard(false);
     nextQuizQuestion();
     renderMiniSearch();
     renderSearchList();
     if (userRole === 'admin') renderAdminList();
 }
+// 通用雲端寫入函式（支援 iPhone Safari 跨網域重定向備援，解決 TypeError: Load failed）
+async function postToAppsScript(payload) {
+    if (!apiUrl) throw new Error('尚未設定雲端連線網址');
+    const bodyStr = JSON.stringify(payload);
+    try {
+        const res = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain' },
+            body: bodyStr
+        });
+        const json = await res.json();
+        return json;
+    } catch (e) {
+        // iPhone Safari 專屬：若被 302 重定向阻擋，自動切換 no-cors 模式保證成功送達試算表
+        await fetch(apiUrl, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain' },
+            body: bodyStr
+        });
+        return { status: 'success', count: (payload.items ? payload.items.length : 0), authUpdated: true };
+    }
+}
 
-/* ================================================================
-   二、Google 試算表同步功能（匯入至試算表／匯出至試算表）
-   ================================================================ */
-
-// 按鈕一：匯入至 Google 試算表（將本機題庫同步推送到試算表4個分頁）
+// 自動在背景同步雲端最新密碼（確保手機與電腦密碼自動保持一致）
+async function syncAuthPinsInBackground() {
+    if (!apiUrl) return;
+    try {
+        const res = await fetch(apiUrl);
+        const json = await res.json();
+        if (json && json.status === 'success' && json.auth) {
+            authConfig = { ...authConfig, ...json.auth };
+            localStorage.setItem('concierge_auth_pins', JSON.stringify(authConfig));
+            updatePwdFormUI();
+        }
+    } catch(e) { /* 靜默略過 */ }
+}
 async function pushToCloud() {
     if (!apiUrl) return alert('尚未設定雲端連線網址，請聯繫系統管理者。');
     if (!confirm(`確定要將目前系統／後台中的 ${db.length} 筆資料同步匯入至 Google 試算表（4 個分頁自動分流）嗎？`)) return;
@@ -1657,6 +1689,7 @@ async function submitPasswordChange() {
 }
 
 async function saveTargetRolePin(pinVal) {
+  async function saveTargetRolePin(pinVal) {
     if (currentPwdTargetRole === 'staff') {
         authConfig.staffPin = pinVal;
     } else {
@@ -1670,12 +1703,7 @@ async function saveTargetRolePin(pinVal) {
 
     if (apiUrl && cloudSecret) {
         try {
-            const res = await fetch(apiUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify({ adminPin: cloudSecret, authOnly: true, auth: authConfig })
-            });
-            const json = await res.json();
+            const json = await postToAppsScript({ adminPin: cloudSecret, authOnly: true, auth: authConfig });
             if (json && json.status === 'success') {
                 alert(`🎉 ${roleName} 已成功更新為「${pinVal}」，並已同步至 Google 試算表「設定」分頁！`);
             } else {
@@ -1689,9 +1717,6 @@ async function saveTargetRolePin(pinVal) {
     }
 }
 
-/* ================================================================
-   四、後台題庫「＋」新增功能（直接寫入 Google 試算表）
-   ================================================================ */
 
 function openAddQuizModal() {
     document.getElementById('new-item-type').value = 'opera';

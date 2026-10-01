@@ -1748,4 +1748,618 @@ async function saveNewQuizItem() {
             renderAdminList();
             renderSearchList();
             renderMiniSearch();
+
+
+            nextCard(false);
+            nextQuizQuestion();
+            closeAddQuizModal();
+            alert(`🎉 新增成功！已成功寫入 Google 試算表，題庫目前共 ${db.length} 筆，系統已立即同步生效！`);
+        } else {
+            alert('寫入 Google 試算表失敗：' + (json ? json.message : '未知錯誤'));
+        }
+    } catch (e) {
+        alert('連線失敗，無法寫入 Google 試算表：' + e);
+    } finally {
+        saveBtn.innerText = originalText;
+        saveBtn.disabled = false;
+    }
+}
+
+/* ================================================================
+   其他系統與互動核心邏輯
+   ================================================================ */
+
+function loadState() {
+    const defaultState = {
+        favs: [],
+        wrongs: [],
+        stats: { total: 0, correct: 0, streak: 0 },
+        theme: 'dark',
+        poolType: 'all',
+        scope: 'all'
+    };
+    try {
+        const saved = localStorage.getItem('opera_app_data');
+        if (saved) {
+            const parsed = JSON.parse(saved);
+            state = { ...defaultState, ...parsed, stats: { ...defaultState.stats, ...(parsed.stats || {}) } };
+        } else {
+            state = defaultState;
+        }
+    } catch(e) {
+        state = defaultState;
+    }
+    applyThemeUI();
+    updateStatsUI();
+    updateScopeUI();
+}
+
+function saveState() {
+    localStorage.setItem('opera_app_data', JSON.stringify(state));
+    updateStatsUI();
+}
+
+function updateStatsUI() {
+    const favCount = state.favs.length || 0;
+    const wrongCount = state.wrongs.length || 0;
+    const streakCount = state.stats.streak || 0;
+    const acc = state.stats.total > 0 ? Math.round((state.stats.correct / state.stats.total) * 100) : 0;
+
+    ['st-fav', 'd-st-fav'].forEach(id => { const el = document.getElementById(id); if (el) el.innerText = favCount; });
+    ['st-wrong', 'd-st-wrong'].forEach(id => { const el = document.getElementById(id); if (el) el.innerText = wrongCount; });
+    ['st-streak', 'd-st-streak'].forEach(id => { const el = document.getElementById(id); if (el) el.innerText = streakCount; });
+    ['st-accuracy', 'd-st-accuracy'].forEach(id => { const el = document.getElementById(id); if (el) el.innerText = `${acc}%`; });
+}
+
+function updateScopeUI() {
+    document.querySelectorAll('[id^="scope-"]').forEach(el => el.classList.remove('active'));
+    document.getElementById(`scope-${state.scope}`)?.classList.add('active');
+
+    document.querySelectorAll('[id^="pool-"]').forEach(el => el.classList.remove('active'));
+    document.getElementById(`pool-${state.poolType}`)?.classList.add('active');
+}
+
+function getScopedDatabase() {
+    if (state.scope === 'opera') return db.filter(x => x.type === 'opera');
+    if (state.scope === 'ext') return db.filter(x => x.type === 'ext');
+    if (state.scope === 'room') return db.filter(x => x.type === 'room');
+    if (state.scope === 'restaurant') return db.filter(x => x.type === 'restaurant');
+    return db;
+}
+
+function getPool() {
+    let scoped = getScopedDatabase();
+    if (!scoped || scoped.length === 0) scoped = db;
+
+    if (state.poolType === 'wrong') {
+        const pool = scoped.filter(x => state.wrongs.includes(x.id));
+        return pool.length > 0 ? pool : scoped;
+    }
+    if (state.poolType === 'fav') {
+        const pool = scoped.filter(x => state.favs.includes(x.id));
+        return pool.length > 0 ? pool : scoped;
+    }
+    return scoped.length > 0 ? scoped : db;
+}
+
+function checkChineseMatch(userInput, targetStr) {
+    const clean = s => s.toLowerCase().replace(/[*＊×✕✖]/g, 'x').replace(/[\s\-_/，,、。.！!？?（）()]/g, '');
+    const u = clean(userInput);
+    if (!u) return false;
+    const targetFull = clean(targetStr);
+    const targetMain = clean(targetStr.replace(/（.*?）|\(.*?\)/g, ''));
+
+    if (targetFull.includes(u) && (u.length >= 2 || targetFull.length <= 2)) return true;
+    if (targetMain && targetMain.includes(u) && (u.length >= 2 || targetMain.length <= 2)) return true;
+    if (u.includes(targetMain) && targetMain.length >= 2) return true;
+
+    let matchCount = 0;
+    let tempTarget = targetFull;
+    for (const char of u) {
+        const idx = tempTarget.indexOf(char);
+        if (idx > -1) {
+            matchCount++;
+            tempTarget = tempTarget.slice(0, idx) + tempTarget.slice(idx + 1);
+        }
+    }
+    const precision = matchCount / u.length;
+    const baseTarget = targetMain.length >= 2 ? targetMain : targetFull;
+    const recall = matchCount / baseTarget.length;
+    if (u.length >= 3 && precision >= 0.75 && recall >= 0.6) return true;
+    if (u.length >= 4 && precision >= 0.7 && recall >= 0.5) return true;
+    return false;
+}
+
+function checkCodeMatch(userInput, targetCode) {
+    const clean = s => s.trim().replace(/[\uFF0A]/g, '*').toUpperCase().replace(/[\s\-_/]/g, '');
+    const u = clean(userInput);
+    const t = clean(targetCode);
+    if (!u) return false;
+    if (t.includes('*')) return u === t;
+    if (u === t) return true;
+
+    const rawParts = targetCode.split(/[-\/]/).map(p => clean(p));
+    if (rawParts.length === 2 && !isNaN(rawParts[0]) && !isNaN(rawParts[1])) {
+        const start = parseInt(rawParts[0], 10);
+        const end = parseInt(rawParts[1], 10);
+        if (end > start && end - start <= 5) {
+            const userNum = parseInt(u, 10);
+            if (userNum >= start && userNum <= end) return true;
+        }
+    }
+    if (rawParts.some(part => part === u)) return true;
+    return false;
+}
+
+function initExam10Session() {
+    const scopedList = [...getScopedDatabase()].sort(() => Math.random() - 0.5);
+    examSession.questions = scopedList.slice(0, 10);
+    examSession.currentIndex = 0;
+    examSession.answers = [];
+    examSession.score = 0;
+
+    document.getElementById('exam-report-view')?.classList.add('hidden');
+    document.getElementById('learn-card-container')?.classList.remove('hidden');
+    document.getElementById('learn-action-area')?.classList.remove('hidden');
+}
+
+function startNewExam10() {
+    initExam10Session();
+    nextCard(true);
+}
+
+function nextCard(shouldFocus = false) {
+    const cardEl = document.getElementById('main-card');
+    cardEl.classList.remove('flipped');
+    document.getElementById('input-form').classList.remove('hidden');
+    document.getElementById('next-card-btn').classList.add('hidden');
+
+    const input = document.getElementById('type-input');
+    input.value = '';
+
+    setTimeout(() => {
+        if (state.poolType === 'exam10') {
+            if (examSession.currentIndex >= 10) {
+                showExamResults();
+                return;
+            }
+            if (!examSession.questions || examSession.questions.length === 0) {
+                initExam10Session();
+            }
+            currentCard = examSession.questions[examSession.currentIndex] || db[0];
+        } else {
+            const pool = getPool();
+            currentCard = pool[Math.floor(Math.random() * pool.length)] || db[0];
+        }
+
+        const isSpecialType = (currentCard.type === 'room' || currentCard.type === 'restaurant') && currentCard.code.includes('？');
+        currentDirection = isSpecialType ? 'code' : (Math.random() < 0.5 ? 'code' : 'cn');
+
+        const promptEl = document.getElementById('card-prompt');
+        if (state.poolType === 'exam10') {
+            document.getElementById('card-badge').innerText = `十題測驗 · 第 ${examSession.currentIndex + 1} / 10 題 (10分/題)`;
+        } else {
+            document.getElementById('card-badge').innerText = currentDirection === 'code' ? `【${currentCard.cat}】題目 ➔ 答案` : `【${currentCard.cat}】中文 ➔ 代碼`;
+        }
+
+        if (currentDirection === 'code') {
+            input.placeholder = currentCard.type === 'ext' ? '請輸入單位或部門名稱...' : '請輸入答案或中文...';
+            promptEl.innerText = currentCard.code;
+            promptEl.className = currentCard.code.length > 12 ? 'card-prompt-text long-text' : 'card-prompt-text';
+        } else {
+            input.placeholder = currentCard.type === 'ext' ? '請輸入分機號碼（例: 3225, **777）...' : '請輸入代碼 (例: VC, SSP)...';
+            promptEl.innerText = currentCard.cn;
+            promptEl.className = currentCard.cn.length > 8 ? 'card-prompt-text long-text' : 'card-prompt-text';
+        }
+
+        const isFav = state.favs.includes(currentCard.id);
+        document.getElementById('card-star').classList.toggle('active', isFav);
+
+        const isDesktop = window.innerWidth >= 860;
+        if ((isDesktop || shouldFocus) && !isFirstLoad) {
+            input.focus();
+        }
+        isFirstLoad = false;
+    }, 180);
+}
+
+function requestNextCard() {
+    if (isNextCooldown) return;
+    if (Date.now() - lastSubmitTime < 300) return;
+    isNextCooldown = true;
+
+    const btn = document.getElementById('next-card-btn');
+    btn.innerText = "⏳ 載入下一題...";
+    btn.style.opacity = "0.75";
+    btn.style.pointerEvents = "none";
+
+    setTimeout(() => {
+        btn.innerText = "下一題 ➔ (Enter)";
+        btn.style.opacity = "1";
+        btn.style.pointerEvents = "auto";
+        isNextCooldown = false;
+
+        if (state.poolType === 'exam10') {
+            examSession.currentIndex++;
+            if (examSession.currentIndex >= 10) {
+                showExamResults();
+                return;
+            }
+        }
+        nextCard(true);
+    }, 280);
+}
+
+function submitAnswer() {
+    if (!currentCard) return;
+    const input = document.getElementById('type-input');
+    const val = input.value.trim();
+    if (!val) return;
+
+    lastSubmitTime = Date.now();
+    input.blur();
+    state.stats.total++;
+
+    let isCorrect = false;
+    if (currentDirection === 'code') {
+        isCorrect = checkChineseMatch(val, currentCard.cn);
+    } else {
+        isCorrect = checkCodeMatch(val, currentCard.code);
+    }
+
+    if (state.poolType === 'exam10') {
+        if (isCorrect) examSession.score += 10;
+        examSession.answers.push({
+            card: currentCard,
+            direction: currentDirection,
+            userVal: val,
+            isCorrect: isCorrect
+        });
+    }
+
+    if (isCorrect) {
+        state.stats.correct++;
+        state.stats.streak++;
+        const wIdx = state.wrongs.indexOf(currentCard.id);
+        if (wIdx > -1) state.wrongs.splice(wIdx, 1);
+    } else {
+        state.stats.streak = 0;
+        if (!state.wrongs.includes(currentCard.id)) state.wrongs.push(currentCard.id);
+    }
+
+    saveState();
+
+    const resBadge = document.getElementById('card-result-badge');
+    resBadge.className = `result-badge ${isCorrect ? 'correct' : 'wrong'}`;
+    resBadge.innerText = isCorrect ? '🎉 答對了！(+10分)' : '❌ 答錯了！(0分)';
+
+    document.getElementById('card-ans-code').innerText = currentCard.code;
+    const ansEnEl = document.getElementById('card-ans-en');
+    if (ansEnEl) {
+        ansEnEl.innerText = currentCard.en ? `(${currentCard.en})` : '';
+        ansEnEl.style.display = currentCard.en ? 'block' : 'none';
+    }
+    document.getElementById('card-ans-cn').innerText = currentCard.cn;
+    document.getElementById('card-ans-user').innerText = `你的回答：${val}`;
+
+    document.getElementById('main-card').classList.add('flipped');
+    document.getElementById('input-form').classList.add('hidden');
+
+    const nextBtn = document.getElementById('next-card-btn');
+    if (state.poolType === 'exam10' && examSession.currentIndex === 9) {
+        nextBtn.innerText = "查看成績結算 ➔ (Enter)";
+    } else {
+        nextBtn.innerText = "下一題 ➔ (Enter)";
+    }
+    nextBtn.classList.remove('hidden');
+}
+
+function showExamResults() {
+    document.getElementById('learn-card-container').classList.add('hidden');
+    document.getElementById('learn-action-area').classList.add('hidden');
+    const reportView = document.getElementById('exam-report-view');
+    reportView.classList.remove('hidden');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    document.getElementById('exam-final-score').innerText = examSession.score;
+    const evalText = examSession.score === 100 ? "滿分完美！全數正確" : examSession.score >= 80 ? "表現優秀！已掌握多數代碼" : "繼續加油！多練習錯題本";
+    document.getElementById('exam-final-eval').innerText = `${evalText}（滿分 100 分 · 一題 10 分）`;
+
+    const listEl = document.getElementById('exam-results-list');
+    listEl.innerHTML = '';
+    examSession.answers.forEach((item, idx) => {
+        const div = document.createElement('div');
+        div.className = 'exam-item-box';
+        const qPrompt = item.direction === 'code' ? item.card.code : item.card.cn;
+        const qTarget = item.direction === 'code' ? item.card.cn : item.card.code;
+        div.innerHTML = `
+            <div class="exam-item-top">
+                <span>第 ${idx + 1} 題 · ${item.card.cat}</span>
+                <span class="exam-item-badge ${item.isCorrect ? 'correct' : 'wrong'}">${item.isCorrect ? '+10分 正確' : '0分 錯誤'}</span>
+            </div>
+            <div class="exam-item-row"><span class="lbl">題  目：</span><span class="val">${qPrompt}</span></div>
+            ${item.card.en ? `<div class="exam-item-row"><span class="lbl">完整單字：</span><span class="val" style="color:var(--primary); font-weight:700;">${item.card.en}</span></div>` : ''}
+            <div class="exam-item-row"><span class="lbl">你的回答：</span><span class="user-ans ${item.isCorrect ? 'correct' : 'wrong'}">${item.userVal}</span></div>
+            <div class="exam-item-row"><span class="lbl">正確答案：</span><span class="val">${qTarget}</span></div>
+        `;
+        listEl.appendChild(div);
+    });
+}
+
+function toggleFav(e) {
+    e.stopPropagation();
+    if (!currentCard) return;
+    const idx = state.favs.indexOf(currentCard.id);
+    if (idx > -1) state.favs.splice(idx, 1);
+    else state.favs.push(currentCard.id);
+    saveState();
+    document.getElementById('card-star').classList.toggle('active', state.favs.includes(currentCard.id));
+}
+
+function requestNextQuiz() {
+    if (isQuizCooldown) return;
+    if (Date.now() - lastQuizAnswerTime < 300) return;
+    isQuizCooldown = true;
+
+    const btn = document.getElementById('quiz-next-btn');
+    btn.innerText = "⏳ 載入下一題...";
+    btn.style.opacity = "0.75";
+    btn.style.pointerEvents = "none";
+
+    setTimeout(() => {
+        btn.innerText = "下一題 ➔ (Enter)";
+        btn.style.opacity = "1";
+        btn.style.pointerEvents = "auto";
+        isNextCooldown = false;
+        nextQuizQuestion();
+    }, 600);
+}
+
+function nextQuizQuestion() {
+    document.getElementById('quiz-next-btn').classList.add('hidden');
+    const activeScopedList = getScopedDatabase();
+    currentQuiz = activeScopedList[Math.floor(Math.random() * activeScopedList.length)] || db[0];
+
+    const isSpecialType = (currentQuiz.type === 'room' || currentQuiz.type === 'restaurant') && currentQuiz.code.includes('？');
+    currentQuizType = isSpecialType ? 'code2cn' : (Math.random() < 0.5 ? 'code2cn' : 'cn2code');
+
+    let targetAnswer = "";
+    let opts = [];
+
+    if (currentQuizType === 'code2cn') {
+        document.getElementById('quiz-title').innerText = isSpecialType ? `【${currentQuiz.cat}】${currentQuiz.code}` : `【 ${currentQuiz.code} 】（${currentQuiz.cat}）代表什麼？`;
+        targetAnswer = currentQuiz.cn;
+        opts = [targetAnswer];
+        while (opts.length < 4 && opts.length < activeScopedList.length) {
+            let rand = activeScopedList[Math.floor(Math.random() * activeScopedList.length)].cn;
+            if (!opts.includes(rand)) opts.push(rand);
+        }
+    } else {
+        const labelName = currentQuiz.type === 'ext' ? '分機/電話' : '代碼';
+        document.getElementById('quiz-title').innerText = `【 ${currentQuiz.cn} 】（${currentQuiz.cat}）的${labelName}是？`;
+        targetAnswer = currentQuiz.code;
+        opts = [targetAnswer];
+        while (opts.length < 4 && opts.length < activeScopedList.length) {
+            let rand = activeScopedList[Math.floor(Math.random() * activeScopedList.length)].code;
+            if (!opts.includes(rand)) opts.push(rand);
+        }
+    }
+
+    opts.sort(() => Math.random() - 0.5);
+    const container = document.getElementById('quiz-options');
+    container.innerHTML = '';
+    opts.forEach(o => {
+        const div = document.createElement('div');
+        div.className = 'q-opt';
+        div.innerText = o;
+        div.onclick = () => checkQuiz(div, o, targetAnswer);
+        container.appendChild(div);
+    });
+}
+
+function checkQuiz(btn, selected, target) {
+    document.querySelectorAll('.q-opt').forEach(x => x.onclick = null);
+    lastQuizAnswerTime = Date.now();
+    state.stats.total++;
+
+    if (selected === target) {
+        btn.classList.add('correct');
+        state.stats.correct++;
+        state.stats.streak++;
+        const wIdx = state.wrongs.indexOf(currentQuiz.id);
+        if (wIdx > -1) state.wrongs.splice(wIdx, 1);
+    } else {
+        btn.classList.add('wrong');
+        state.stats.streak = 0;
+        document.querySelectorAll('.q-opt').forEach(x => { if (x.innerText === target) x.classList.add('correct'); });
+        if (!state.wrongs.includes(currentQuiz.id)) state.wrongs.push(currentQuiz.id);
+    }
+    saveState();
+    const qBtn = document.getElementById('quiz-next-btn');
+    qBtn.innerText = "下一題 ➔ (Enter)";
+    qBtn.classList.remove('hidden');
+}
+
+function changeScope(scope) {
+    state.scope = scope;
+    updateScopeUI();
+    saveState();
+    if (state.poolType === 'exam10') startNewExam10();
+    else nextCard(false);
+    nextQuizQuestion();
+}
+
+function changePool(type) {
+    state.poolType = type;
+    updateScopeUI();
+    saveState();
+    if (type === 'exam10') {
+        startNewExam10();
+    } else {
+        document.getElementById('exam-report-view')?.classList.add('hidden');
+        document.getElementById('learn-card-container')?.classList.remove('hidden');
+        document.getElementById('learn-action-area')?.classList.remove('hidden');
+        nextCard(false);
+    }
+}
+
+function renderSearchList() {
+    const q = document.getElementById('search-input').value.toLowerCase();
+    const container = document.getElementById('search-list');
+    container.innerHTML = '';
+    const filtered = db.filter(x => x.code.toLowerCase().includes(q) || x.cn.toLowerCase().includes(q) || x.cat.includes(q) || (x.en && x.en.toLowerCase().includes(q)));
+    filtered.forEach(x => {
+        const div = document.createElement('div');
+        div.className = 'list-item';
+        div.innerHTML = `
+            <div class="list-item-left">
+                <div class="code">${x.code} ${x.en ? `<span style="font-size:13px; font-weight:600; color:var(--text-sub); opacity:0.85;">(${x.en})</span>` : ''}</div>
+                <div class="cn">${x.cn}</div>
+            </div>
+            <div class="list-item-cat">${x.cat}</div>
+        `;
+        container.appendChild(div);
+    });
+}
+
+function renderMiniSearch() {
+    const q = (document.getElementById('mini-search')?.value || '').toLowerCase();
+    const container = document.getElementById('mini-search-list');
+    if (!container) return;
+    container.innerHTML = '';
+    const filtered = db.filter(x => x.code.toLowerCase().includes(q) || x.cn.toLowerCase().includes(q) || x.cat.includes(q) || (x.en && x.en.toLowerCase().includes(q))).slice(0, 15);
+    filtered.forEach(x => {
+        const div = document.createElement('div');
+        div.className = 'mini-list-item';
+        div.innerHTML = `<span class="m-code">${x.code}</span><span class="m-cn">${x.cn}</span>`;
+        container.appendChild(div);
+    });
+}
+
+function renderAdminList() {
+    const container = document.getElementById('admin-list');
+    if (!container) return;
+    container.innerHTML = '';
+
+    const counts = {
+        ext: db.filter(x => x.type === 'ext').length,
+        opera: db.filter(x => x.type === 'opera').length,
+        room: db.filter(x => x.type === 'room').length,
+        restaurant: db.filter(x => x.type === 'restaurant').length
+    };
+
+    const cntExt = document.getElementById('cnt-ext');
+    const cntOpera = document.getElementById('cnt-opera');
+    const cntRoom = document.getElementById('cnt-room');
+    const cntRestaurant = document.getElementById('cnt-restaurant');
+    if (cntExt) cntExt.innerText = counts.ext;
+    if (cntOpera) cntOpera.innerText = counts.opera;
+    if (cntRoom) cntRoom.innerText = counts.room;
+    if (cntRestaurant) cntRestaurant.innerText = counts.restaurant;
+
+    const totalLbl = document.getElementById('admin-list-total-lbl');
+    if (totalLbl) totalLbl.innerText = `題庫總覽（共 ${db.length} 筆）`;
+
+    db.forEach((item, idx) => {
+        const div = document.createElement('div');
+        div.style.cssText = 'background:var(--input-bg); border:1px solid var(--border-color); border-radius:12px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center;';
+        div.innerHTML = `<div><b style="color:var(--primary);">${item.code}</b> ${item.en ? `<span style="font-size:11px;color:var(--primary);opacity:0.8;">(${item.en})</span>` : ''} <span style="font-size:11px;color:var(--text-sub);">[${item.cat}]</span><div style="font-size:12px;color:var(--text-main); margin-top:2px;">${item.cn}</div></div>`;
+        container.appendChild(div);
+    });
+}
+
+function switchTab(tab, btn) {
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    document.querySelectorAll('.side-nav-btn').forEach(i => i.classList.remove('active'));
+    document.querySelectorAll('.view-content').forEach(v => v.classList.remove('active'));
+
+    const tabIndex = ['learn', 'quiz', 'search', 'settings', 'admin'].indexOf(tab);
+    if (tabIndex > -1) {
+        document.querySelectorAll('.nav-item')[tabIndex]?.classList.add('active');
+        document.querySelectorAll('.side-nav-btn')[tabIndex]?.classList.add('active');
+    }
+    document.getElementById(`view-${tab}`)?.classList.add('active');
+
+    const titleMap = {
+        'learn': ['學習卡片', '台南晶英酒店 OPERA 系統專業代碼與館內分機極速精熟訓練'],
+        'quiz': ['考題測驗', '全真模擬四選一快速測驗，檢驗即時反應力與代碼記憶度'],
+        'search': ['代碼與分機', '飯店各部門代碼與館內專屬分機全庫極速檢索查詢'],
+        'settings': ['系統設定', '自訂測驗範圍、專案類別與個人答題歷史數據管理'],
+        'admin': ['後台管理', 'Google 試算表雲端同步與通行碼安全管理']
+    };
+    if (titleMap[tab]) {
+        const tEl = document.getElementById('desktop-page-title');
+        const dEl = document.getElementById('desktop-page-desc');
+        if (tEl) tEl.innerText = titleMap[tab][0];
+        if (dEl) dEl.innerText = titleMap[tab][1];
+    }
+    if (tab === 'search') renderSearchList();
+    if (tab === 'admin') renderAdminList();
+}
+
+function toggleTheme() {
+    state.theme = state.theme === 'dark' ? 'light' : 'dark';
+    applyThemeUI();
+    saveState();
+}
+
+function applyThemeUI() {
+    const textEls = document.querySelectorAll('.theme-text');
+    const iconEls = document.querySelectorAll('.theme-icon');
+    if (state.theme === 'light') {
+        document.body.classList.add('light-mode');
+        textEls.forEach(t => t.innerText = '深色模式');
+        iconEls.forEach(ic => ic.innerHTML = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>`);
+    } else {
+        document.body.classList.remove('light-mode');
+        textEls.forEach(t => t.innerText = '淺色模式');
+        iconEls.forEach(ic => ic.innerHTML = `<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>`);
+    }
+}
+
+function resetAllData() {
+    if (confirm("確定要重置所有紀錄與錯題本嗎？")) {
+        localStorage.removeItem('opera_app_data');
+        state = { favs: [], wrongs: [], stats: { total: 0, correct: 0, streak: 0 }, theme: 'dark', poolType: 'all', scope: 'all' };
+        saveState();
+        applyThemeUI();
+        alert("資料已重置！");
+        location.reload();
+    }
+}
+
+// 監聽鍵盤 Enter
+window.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter') return;
+    const nextCardBtn = document.getElementById('next-card-btn');
+    const learnView = document.getElementById('view-learn');
+    if (learnView && learnView.classList.contains('active') && !nextCardBtn.classList.contains('hidden')) {
+        e.preventDefault();
+        requestNextCard();
+        return;
+    }
+    const quizNextBtn = document.getElementById('quiz-next-btn');
+    const quizView = document.getElementById('view-quiz');
+    if (quizView && quizView.classList.contains('active') && !quizNextBtn.classList.contains('hidden')) {
+        e.preventDefault();
+        requestNextQuiz();
+        return;
+    }
+});
+
+// 行動端鍵盤輸入滾動
+const typeInput = document.getElementById('type-input');
+if (typeInput) {
+    typeInput.addEventListener('focus', () => {
+        if (window.innerWidth < 860) {
+            setTimeout(() => { typeInput.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 150);
+        }
+    });
+}
+
+// 初始進入系統
+initApp();
+</script>
+</body>
+</html>
             nextCard(

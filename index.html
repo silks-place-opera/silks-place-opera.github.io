@@ -896,7 +896,7 @@ let currentQuizType = 'code2cn';
 // 【只需要填一次】把部署好的 Apps Script 網址（結尾 /exec）貼在下面引號裡，
 // 之後同仁點連結進來，就會自動連上雲端，不用每台裝置各自設定。
 // 這個網址只能「讀取」，寫入仍需要「雲端寫入金鑰」（金鑰不要寫在這裡）。
-const DEFAULT_API_URL = 'https://script.google.com/macros/s/AKfycbz3lQOlu1bROV0FyBRDlpkzG4faj5Kv-_EQsdretZ2QIOb5t4Za8EeOi5phEl5EjxbDFw/exec';
+const DEFAULT_API_URL = 'https://script.google.com/macros/s/AKfycby4KSBo1sphWrRrFA4ZD4Fl8GtLTtrVbsTe_ihc1b634g5iqxzcqOKbT4LwWU0I5xkm4w/exec';
 let apiUrl = localStorage.getItem('concierge_api_url') || DEFAULT_API_URL;
 
 function cloudGetUrl(pin) {
@@ -1272,7 +1272,7 @@ function nextCard(shouldFocus = false) {
         if (state.poolType === 'exam10') {
             document.getElementById('card-badge').innerText = `十題測驗 · 第 ${examSession.currentIndex + 1} / 10 題 (10分/題)`;
         } else {
-            document.getElementById('card-badge').innerText = currentDirection === 'code' ? `【${currentCard.cat}】題目 ➔ 答案` : `【${currentCard.cat}】中文 ➔ 代碼`;
+            document.getElementById('card-badge').innerText = currentDirection === 'code' ? `【${TYPE_NAMES[currentCard.type]}】題目 ➔ 答案` : `【${TYPE_NAMES[currentCard.type]}】中文 ➔ 代碼`;
         }
 
         if (currentDirection === 'code') {
@@ -1402,7 +1402,7 @@ function showExamResults() {
         const qTarget = item.direction === 'code' ? item.card.cn : item.card.code;
         div.innerHTML = `
             <div class="exam-item-top">
-                <span>第 ${idx + 1} 題 · ${item.card.cat}</span>
+                <span>第 ${idx + 1} 題 · ${TYPE_NAMES[item.card.type]}</span>
                 <span class="exam-item-badge ${item.isCorrect ? 'correct' : 'wrong'}">${item.isCorrect ? '+10分 正確' : '0分 錯誤'}</span>
             </div>
             <div class="exam-item-row"><span class="lbl">題  目：</span><span class="val">${qPrompt}</span></div>
@@ -1462,7 +1462,7 @@ function nextQuizQuestion() {
     let opts = [];
 
     if (currentQuizType === 'code2cn') {
-        document.getElementById('quiz-title').innerText = isSpecialType ? `【${currentQuiz.cat}】${currentQuiz.code}` : `【 ${currentQuiz.code} 】（${currentQuiz.cat}）代表什麼？`;
+        document.getElementById('quiz-title').innerText = isSpecialType ? `【${TYPE_NAMES[currentQuiz.type]}】${currentQuiz.code}` : `【 ${currentQuiz.code} 】（${TYPE_NAMES[currentQuiz.type]}）代表什麼？`;
         targetAnswer = currentQuiz.cn;
         opts = [targetAnswer];
         while (opts.length < 4 && opts.length < activeScopedList.length) {
@@ -1471,7 +1471,7 @@ function nextQuizQuestion() {
         }
     } else {
         const labelName = currentQuiz.type === 'ext' ? '分機/電話' : '代碼';
-        document.getElementById('quiz-title').innerText = `【 ${currentQuiz.cn} 】（${currentQuiz.cat}）的${labelName}是？`;
+        document.getElementById('quiz-title').innerText = `【 ${currentQuiz.cn} 】（${TYPE_NAMES[currentQuiz.type]}）的${labelName}是？`;
         targetAnswer = currentQuiz.code;
         opts = [targetAnswer];
         while (opts.length < 4 && opts.length < activeScopedList.length) {
@@ -1769,6 +1769,11 @@ async function pushToCloud() {
 
 // 新增題目視窗的欄位標籤：依照 Google 試算表四個分頁各自的實際欄位命名，
 // 跟試算表看到的名稱一致（例如客房／餐廳是「問題／答案」，不是通用的「代碼」）。
+// 四大分類的顯示名稱：卡片／測驗標題上的【】要標示「屬於哪一大類」，
+// 用這個而不是 item.cat（item.cat 是分類底下更細的子分類，例如「房態排房」），
+// 不然像「客房備品」這種子分類會被誤認成最上層的四大分類之一。
+const TYPE_NAMES = { opera: 'OPERA縮寫', ext: '分機表', room: '客房資訊', restaurant: '餐廳資訊' };
+
 const ADD_ITEM_LABELS = {
     opera: { l1: '縮寫', l2: '中文意思', l3: '補充說明（選填）', p1: '例如 DND', p2: '例如 請勿打擾', p3: '例如 房務相關' },
     ext: { l1: '分機／電話號碼', l2: '部門人員', l3: '單位（選填）', p1: '例如 3103', p2: '例如 李總秘書 Shelly', p3: '例如 總經理室' },

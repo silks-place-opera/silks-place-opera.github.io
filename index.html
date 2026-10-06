@@ -1,248 +1,523 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>OPERA 卡牌大師 v2</title>
-<style>
-:root {
-    --bg-color: #0d0d0e;
-    --sidebar-bg: #141416;
-    --card-bg: #18181b;
-    --input-bg: #222226;
-    --border-color: rgba(255, 255, 255, 0.08);
-    --border-hover: rgba(200, 168, 110, 0.4);
-    --text-main: #ffffff;
-    --text-sub: #8e8e93;
-    --primary: #C8A86E;
-    --primary-dark: #B38E4B;
-    --primary-light: rgba(200, 168, 110, 0.12);
-    --primary-btn-text: #121212;
-    --success: #30d158;
-    --danger: #ff453a;
-    --shadow: 0 20px 60px rgba(0,0,0,0.45);
-}
-:root[data-theme="light"] {
-    --bg-color: #f5f5f7;
-    --sidebar-bg: #ffffff;
-    --card-bg: #ffffff;
-    --input-bg: #f0f0f2;
-    --border-color: rgba(0, 0, 0, 0.08);
-    --border-hover: rgba(179, 142, 75, 0.45);
-    --text-main: #1c1c1e;
-    --text-sub: #6e6e73;
-    --primary-btn-text: #121212;
-    --shadow: 0 20px 50px rgba(0,0,0,0.12);
-}
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-html, body {
-    background: var(--bg-color); color: var(--text-main); height: 100%;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC", "Microsoft JhengHei", sans-serif;
-    padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px);
-}
-button, input, select, textarea { font-family: inherit; }
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
+    <title>OPERA 卡牌大師</title>
 
-/* ---------- Layout shell ---------- */
-.app-shell { display: flex; min-height: 100vh; }
-.sidebar {
-    width: 240px; flex-shrink: 0; background: var(--sidebar-bg); border-right: 1px solid var(--border-color);
-    padding: 24px 16px; display: flex; flex-direction: column; gap: 4px; position: sticky; top: 0; height: 100vh;
-}
-.sidebar-logo { font-size: 18px; font-weight: 800; color: var(--text-main); padding: 8px 10px 20px; }
-.nav-btn {
-    display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: 12px; border: none;
-    background: transparent; color: var(--text-sub); font-size: 14px; font-weight: 700; cursor: pointer;
-    text-align: left; width: 100%; transition: background-color 0.15s ease, color 0.15s ease;
-}
-.nav-btn:hover { background: var(--input-bg); color: var(--text-main); }
-.nav-btn.active { background: var(--primary); color: var(--primary-btn-text); }
-.nav-btn svg { width: 18px; height: 18px; fill: currentColor; flex-shrink: 0; }
-.nav-btn.hidden { display: none; }
-.sidebar-spacer { flex: 1; }
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="apple-touch-icon.png">
 
-.main { flex: 1; min-width: 0; padding: 36px 40px; max-width: 980px; }
-.page-title { font-size: 26px; font-weight: 800; }
-.page-desc { font-size: 13px; color: var(--text-sub); margin-top: 6px; }
-.divider { height: 1px; background: var(--border-color); margin: 20px 0; }
+    <style>
+        :root {
+            --bg-color: #0d0d0e;
+            --sidebar-bg: #141416;
+            --card-bg: #18181b;
+            --input-bg: #222226;
 
-.view-content { display: none; flex-direction: column; gap: 18px; }
-.view-content.active { display: flex; }
+            --border-color: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(200, 168, 110, 0.4);
 
-/* ---------- Cards / generic UI ---------- */
-.card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 20px; padding: 20px; }
-.btn-primary {
-    background: var(--primary); color: var(--primary-btn-text); border: none; border-radius: 14px;
-    padding: 14px 18px; font-weight: 800; font-size: 14px; cursor: pointer; transition: opacity 0.15s ease;
-}
-.btn-primary:hover { opacity: 0.9; }
-.btn-primary:disabled { opacity: 0.5; cursor: default; }
-.btn-secondary {
-    background: var(--input-bg); color: var(--text-main); border: 1px solid var(--border-color); border-radius: 14px;
-    padding: 13px 18px; font-weight: 700; font-size: 14px; cursor: pointer; transition: border-color 0.15s ease;
-}
-.btn-secondary:hover { border-color: var(--text-sub); }
-.btn-danger { background: rgba(255,69,58,0.14); color: var(--danger); border: 1px solid rgba(255,69,58,0.35); border-radius: 12px; padding: 9px 14px; font-weight: 700; font-size: 12px; cursor: pointer; }
-.input-box {
-    width: 100%; background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 12px;
-    padding: 12px 14px; color: var(--text-main); font-size: 14px; outline: none; transition: border-color 0.15s ease;
-}
-.input-box:focus { border-color: var(--primary); }
-.field-label { font-size: 12px; color: var(--text-sub); font-weight: 700; margin-bottom: 6px; display: block; }
+            --text-main: #ffffff;
+            --text-sub: #8e8e93;
 
-/* ---------- Auth modal (casual app-entry PIN gate) ---------- */
-#auth-modal {
-    position: fixed; inset: 0; z-index: 99999; background: rgba(0,0,0,0.85); backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px); display: flex; align-items: center; justify-content: center; padding: 20px;
-}
-#auth-modal.hidden { display: none; }
-.auth-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 26px; padding: 36px 28px; width: 100%; max-width: 360px; text-align: center; box-shadow: var(--shadow); }
-.auth-title { font-size: 21px; font-weight: 800; color: var(--primary); margin-bottom: 8px; }
-.auth-desc { font-size: 13px; color: var(--text-sub); margin-bottom: 24px; }
-.pin-input { width: 100%; background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 16px; text-align: center; font-size: 22px; letter-spacing: 10px; color: var(--text-main); outline: none; margin-bottom: 14px; }
-.pin-input:focus { border-color: var(--primary); }
-.pin-btn { width: 100%; padding: 16px; border-radius: 16px; border: none; background: var(--primary); color: var(--primary-btn-text); font-size: 16px; font-weight: 800; cursor: pointer; }
-.pin-btn:disabled { opacity: 0.7; }
-.auth-status { margin-top: 14px; min-height: 18px; font-size: 13px; font-weight: 700; color: var(--text-sub); }
-.auth-status.is-error { color: var(--danger); }
+            --primary: #C8A86E;
+            --primary-light: rgba(200, 168, 110, 0.12);
+            --primary-btn-text: #121212;
 
-/* ---------- Home ---------- */
-.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-.stat-tile { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 18px; padding: 16px 10px; text-align: center; }
-.stat-num { font-size: 22px; font-weight: 800; color: var(--primary); }
-.stat-label { font-size: 11px; color: var(--text-sub); margin-top: 4px; }
-.cta-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-.cta-card {
-    background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 20px; padding: 22px 16px;
-    cursor: pointer; text-align: center; transition: border-color 0.15s ease, transform 0.1s ease;
-}
-.cta-card:hover { border-color: var(--border-hover); transform: translateY(-2px); }
-.cta-icon { font-size: 26px; margin-bottom: 10px; }
-.cta-title { font-weight: 800; font-size: 14px; }
-.cta-sub { font-size: 11px; color: var(--text-sub); margin-top: 4px; }
+            --accent: #30d158;
+            --danger: #ff453a;
 
-/* ---------- Learn (flashcard) ---------- */
-.flashcard { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 24px; padding: 40px 28px; min-height: 320px; display: flex; flex-direction: column; justify-content: space-between; text-align: center; position: relative; }
-.card-badge { display: inline-block; background: var(--primary-light); color: var(--primary); font-size: 12px; font-weight: 800; padding: 6px 14px; border-radius: 10px; margin: 0 auto; }
-.card-star { position: absolute; top: 20px; right: 20px; font-size: 22px; cursor: pointer; color: var(--text-sub); background: none; border: none; }
-.card-star.active { color: var(--primary); }
-.card-title { font-size: 26px; font-weight: 800; line-height: 1.4; margin: 20px 0; }
-.card-hint { font-size: 12px; color: var(--text-sub); }
-.card-answer-box { background: var(--primary-light); border: 1px solid var(--border-hover); border-radius: 16px; padding: 18px; display: none; flex-direction: column; gap: 6px; margin-top: 14px; }
-.card-answer-box.show { display: flex; }
-.card-answer-main { font-size: 20px; font-weight: 800; color: var(--primary); }
-.card-answer-extra { font-size: 13px; color: var(--text-sub); }
-.card-controls { display: flex; gap: 10px; margin-top: 18px; }
-.card-controls .btn-secondary, .card-controls .btn-primary { flex: 1; }
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
 
-/* ---------- Quiz ---------- */
-.quiz-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 24px; padding: 32px 26px; }
-.quiz-title { font-size: 19px; font-weight: 800; line-height: 1.5; margin: 16px 0 22px; }
-.quiz-input-row { display: flex; gap: 10px; }
-.quiz-input-row .input-box { flex: 1; }
-.quiz-feedback { margin-top: 16px; padding: 14px; border-radius: 14px; font-size: 13px; line-height: 1.6; display: none; }
-.quiz-feedback.show { display: block; }
-.quiz-feedback.correct { background: rgba(48,209,88,0.12); border: 1px solid rgba(48,209,88,0.35); color: var(--success); }
-.quiz-feedback.wrong { background: rgba(255,69,58,0.12); border: 1px solid rgba(255,69,58,0.35); color: var(--danger); }
-.quiz-feedback b { color: inherit; }
-.pool-toggle { display: flex; gap: 8px; margin-bottom: 4px; flex-wrap: wrap; }
-.pool-chip { padding: 8px 14px; border-radius: 10px; background: var(--input-bg); border: 1px solid var(--border-color); font-size: 12px; font-weight: 700; color: var(--text-sub); cursor: pointer; }
-.pool-chip.active { background: var(--primary); color: var(--primary-btn-text); border-color: var(--primary); }
+            --nav-bg: #121212;
+            --ios-icon-bg: #27272a;
+            --ios-icon-stroke: #ffffff;
 
-/* ---------- Knowledge overview ---------- */
-.search-row { display: flex; gap: 10px; }
-.cat-filter-row { display: flex; gap: 8px; flex-wrap: wrap; }
-.cat-chip { padding: 8px 14px; border-radius: 10px; background: var(--input-bg); border: 1px solid var(--border-color); font-size: 12px; font-weight: 700; color: var(--text-sub); cursor: pointer; }
-.cat-chip.active { background: var(--primary); color: var(--primary-btn-text); border-color: var(--primary); }
-.knowledge-list { display: flex; flex-direction: column; gap: 10px; }
-.knowledge-item { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 14px 16px; }
-.knowledge-item-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
-.knowledge-item-title { font-weight: 800; font-size: 15px; }
-.knowledge-item-cat { font-size: 10px; font-weight: 800; color: var(--primary); background: var(--primary-light); padding: 2px 8px; border-radius: 6px; flex-shrink: 0; }
-.knowledge-item-fields { margin-top: 8px; display: flex; flex-direction: column; gap: 3px; }
-.knowledge-item-field { font-size: 12px; color: var(--text-sub); }
-.knowledge-item-field b { color: var(--text-main); font-weight: 700; }
+            --toggle-bg: rgba(255, 255, 255, 0.10);
+            --toggle-border: rgba(255, 255, 255, 0.12);
 
-/* ---------- Settings ---------- */
-.settings-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--border-color); }
-.settings-row:last-child { border-bottom: none; }
-.settings-row-label { font-size: 14px; font-weight: 700; }
-.settings-row-sub { font-size: 12px; color: var(--text-sub); margin-top: 2px; }
-.switch { position: relative; width: 46px; height: 26px; background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 14px; cursor: pointer; }
-.switch.on { background: var(--primary); border-color: var(--primary); }
-.switch-knob { position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; background: #fff; border-radius: 50%; transition: transform 0.15s ease; }
-.switch.on .switch-knob { transform: translateX(20px); }
+            --dock-bg: rgba(24, 24, 27, 0.48);
+            --dock-border: rgba(255, 255, 255, 0.14);
 
-/* ---------- Admin CRUD ---------- */
-.admin-login-card { max-width: 380px; }
-.admin-table-head { display: flex; justify-content: space-between; align-items: center; }
-.record-row { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 14px; padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-.record-row-main { min-width: 0; }
-.record-row-title { font-weight: 800; font-size: 14px; }
-.record-row-sub { font-size: 11px; color: var(--text-sub); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.record-row-actions { display: flex; gap: 6px; flex-shrink: 0; }
-.record-select-box { width: 18px; height: 18px; flex-shrink: 0; accent-color: var(--primary); cursor: pointer; }
-.admin-selection-bar { display: flex; justify-content: space-between; align-items: center; background: var(--primary-light); border: 1px solid var(--border-hover); border-radius: 12px; padding: 10px 14px; font-size: 12px; font-weight: 700; }
-.admin-selection-bar.hidden { display: none; }
-.icon-btn { width: 32px; height: 32px; border-radius: 10px; background: var(--input-bg); border: 1px solid var(--border-color); cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; color: var(--text-main); }
-.icon-btn.danger { color: var(--danger); }
-.add-fab {
-    position: fixed; right: 28px; bottom: 28px; width: 56px; height: 56px; border-radius: 50%; border: none;
-    background: var(--primary); color: var(--primary-btn-text); font-size: 26px; font-weight: 800; cursor: pointer;
-    box-shadow: 0 10px 30px rgba(200,168,110,0.35); z-index: 500; display: flex; align-items: center; justify-content: center;
-}
+            --dock-shadow:
+                0 16px 40px rgba(0, 0, 0, 0.45),
+                0 4px 12px rgba(0, 0, 0, 0.20);
 
-/* ---------- Generic modal ---------- */
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); z-index: 99998; display: flex; align-items: center; justify-content: center; padding: 20px; }
-.modal-overlay.hidden { display: none; }
-.modal-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 24px; width: 100%; max-width: 440px; max-height: 85vh; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 10px; box-shadow: var(--shadow); }
-.modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; color: var(--primary); font-size: 17px; font-weight: 800; }
-.modal-close { cursor: pointer; font-size: 18px; color: var(--text-sub); background: none; border: none; }
-.modal-btn-row { display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
-.modal-error { font-size: 12px; color: var(--danger); min-height: 16px; }
-.dynamic-field { margin-top: 4px; }
+            --dock-active-bg: #ffffff;
+            --dock-active-color: #0d0d0e;
+            --dock-icon-color: #8e8e93;
+        }
 
-/* ---------- Loading / empty states ---------- */
-.empty-state { text-align: center; padding: 50px 20px; color: var(--text-sub); font-size: 13px; }
-.spinner { width: 28px; height: 28px; border-radius: 50%; border: 3px solid var(--border-color); border-top-color: var(--primary); animation: spin 0.8s linear infinite; margin: 0 auto 14px; }
-@keyframes spin { to { transform: rotate(360deg); } }
+        body.light-mode {
+            --bg-color: #f5f5f7;
+            --sidebar-bg: #ffffff;
+            --card-bg: #ffffff;
+            --input-bg: #f0f0f4;
 
-/* ---------- Mobile: glass floating tab bar ---------- */
-.mobile-tabbar { display: none; }
-@media (max-width: 859px) {
-    .sidebar { display: none; }
-    .app-shell { max-width: 480px; margin: 0 auto; display: block; }
-    .main { padding: 20px 16px 110px; max-width: 100%; }
-    .stats-grid { grid-template-columns: repeat(4, 1fr); gap: 8px; }
-    .cta-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+            --border-color: rgba(0, 0, 0, 0.08);
+            --border-hover: rgba(179, 142, 75, 0.45);
 
-    .mobile-tabbar {
-        display: flex; position: fixed; left: 50%; transform: translateX(-50%);
-        bottom: calc(14px + env(safe-area-inset-bottom, 0px)); z-index: 900;
-        background: rgba(24,24,27,0.62); border: 1px solid rgba(255,255,255,0.12);
-        backdrop-filter: blur(22px) saturate(160%); -webkit-backdrop-filter: blur(22px) saturate(160%);
-        border-radius: 24px; padding: 8px; gap: 4px; box-shadow: 0 14px 40px rgba(0,0,0,0.45);
-        width: calc(100% - 32px); max-width: 420px;
-    }
-    :root[data-theme="light"] .mobile-tabbar { background: rgba(255,255,255,0.65); border-color: rgba(0,0,0,0.08); box-shadow: 0 14px 34px rgba(0,0,0,0.14); }
-    .tab-item {
-        flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 9px 4px;
-        border-radius: 18px; background: none; border: none; color: var(--text-sub); font-size: 10px; font-weight: 700;
-        cursor: pointer; transition: background-color 0.15s ease, color 0.15s ease;
-    }
-    .tab-item svg { width: 20px; height: 20px; fill: currentColor; }
-    .tab-item.active { color: var(--primary-btn-text); background: var(--primary); }
-    .tab-item.hidden { display: none; }
-    .add-fab { bottom: 100px; right: 20px; width: 52px; height: 52px; }
-}
-:root { color-scheme: dark; }
-:root[data-theme="light"] { color-scheme: light; }
-</style>
+            --text-main: #18181b;
+            --text-sub: #6c6c70;
+
+            --primary: #B38E4B;
+            --primary-light: rgba(179, 142, 75, 0.12);
+            --primary-btn-text: #ffffff;
+
+            --shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+
+            --nav-bg: #ffffff;
+            --ios-icon-bg: #e5e5ea;
+            --ios-icon-stroke: #1c1c1e;
+
+            --toggle-bg: rgba(255, 255, 255, 0.52);
+            --toggle-border: rgba(255, 255, 255, 0.55);
+
+            --dock-bg: rgba(255, 255, 255, 0.58);
+            --dock-border: rgba(255, 255, 255, 0.60);
+
+            --dock-shadow:
+                0 12px 36px rgba(0, 0, 0, 0.10),
+                0 2px 8px rgba(0, 0, 0, 0.04);
+
+            --dock-active-bg: var(--primary);
+            --dock-active-color: #ffffff;
+            --dock-icon-color: #71717a;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+        }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 999px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.28); }
+        body.light-mode ::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.15); }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            transition: background-color 0.25s ease;
+        }
+
+        /* 密碼驗證彈窗 */
+        #auth-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .auth-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 28px;
+            width: 100%;
+            max-width: 380px;
+            padding: 36px 26px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+        .auth-title { font-size: 22px; font-weight: 800; color: var(--primary); margin-bottom: 8px; }
+        .auth-desc { font-size: 13px; color: var(--text-sub); margin-bottom: 24px; line-height: 1.5; }
+        .pin-input {
+            width: 100%;
+            padding: 16px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            background: var(--input-bg);
+            color: var(--text-main);
+            font-size: 24px;
+            text-align: center;
+            letter-spacing: 6px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .pin-input:focus { border-color: var(--primary); }
+        .pin-btn {
+            width: 100%;
+            padding: 16px;
+            border-radius: 16px;
+            border: none;
+            background: var(--primary);
+            color: var(--primary-btn-text);
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+        .pin-btn:disabled { opacity: 0.7; cursor: default; }
+        .auth-status {
+            margin-top: 14px;
+            min-height: 18px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-sub);
+            transition: color 0.15s ease;
+        }
+        .auth-status.is-error { color: var(--danger); }
+        .auth-status.is-checking { color: var(--text-sub); }
+
+        .silks-logo {
+            height: 36px;
+            width: auto;
+            max-width: 46px;
+            object-fit: contain;
+            display: block;
+        }
+        body:not(.light-mode) .silks-logo { filter: brightness(0) invert(1); }
+        body.light-mode .silks-logo { filter: none; }
+
+        .app-title { font-size: 19px; font-weight: 800; color: var(--text-main); letter-spacing: 0.5px; }
+
+        .theme-toggle {
+            position: relative;
+            overflow: hidden;
+            background: var(--toggle-bg);
+            border: 1px solid var(--toggle-border);
+            padding: 7px 14px;
+            border-radius: 9999px;
+            cursor: pointer;
+            color: var(--text-sub);
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            backdrop-filter: blur(18px) saturate(150%);
+            -webkit-backdrop-filter: blur(18px) saturate(150%);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+            transition: all 0.2s ease;
+        }
+        .theme-toggle svg { width: 15px; height: 15px; stroke: var(--primary); fill: none; stroke-width: 2.2; }
+
+        .view-content { display: none; flex-direction: column; gap: 14px; width: 100%; }
+        .view-content.active { display: flex; }
+
+        /* Flashcard */
+        .flashcard-container { perspective: 1000px; width: 100%; transition: height 0.2s ease; }
+        .flashcard { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 24px; }
+        .flashcard.flipped { transform: rotateY(180deg); }
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 24px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 22px 18px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+        .card-back { transform: rotateY(180deg); }
+        .card-star { position: absolute; top: 18px; right: 20px; font-size: 26px; color: #404040; cursor: pointer; z-index: 10; transition: color 0.15s; }
+        .card-star.active { color: #f59e0b; }
+        .card-badge { font-size: 12px; font-weight: 700; padding: 5px 14px; border-radius: 14px; background: var(--input-bg); border: 1px solid var(--border-color); color: var(--primary); letter-spacing: 0.3px; }
+        .card-prompt-text { font-weight: 900; letter-spacing: 0.5px; color: var(--text-main); margin: auto 0; line-height: 1.35; padding: 0 10px; word-break: break-word; }
+
+        .result-badge { font-size: 14px; font-weight: 800; padding: 6px 16px; border-radius: 18px; }
+        .result-badge.correct { background: rgba(48, 209, 88, 0.18); color: var(--accent); border: 1px solid rgba(48, 209, 88, 0.35); }
+        .result-badge.wrong { background: rgba(255, 69, 58, 0.18); color: var(--danger); border: 1px solid rgba(255, 69, 58, 0.35); }
+        .ans-code { font-size: 38px; font-weight: 900; color: var(--primary); margin-top: 4px; word-break: break-word; }
+        .ans-en { font-size: 20px; font-weight: 700; color: var(--primary); opacity: 0.92; margin-top: 3px; letter-spacing: 0.4px; line-height: 1.3; }
+        .ans-cn { font-size: 20px; font-weight: 700; color: var(--text-main); margin-top: 4px; line-height: 1.3; white-space: pre-line; }
+        .ans-user { font-size: 13px; color: var(--text-sub); margin-top: 8px; background: var(--input-bg); padding: 5px 12px; border-radius: 10px; border: 1px solid var(--border-color); }
+
+        .action-area { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+        .input-group { width: 100%; display: flex; gap: 8px; }
+        .card-input { flex: 1; border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-main); font-weight: 600; outline: none; transition: 0.2s; box-shadow: var(--shadow); }
+        .card-input:focus { border-color: var(--primary); }
+        .btn-submit { background: var(--primary); color: var(--primary-btn-text); border: none; font-weight: 800; cursor: pointer; transition: opacity 0.2s; }
+        .btn-action { background: var(--primary); color: var(--primary-btn-text); font-weight: 800; border: none; width: 100%; cursor: pointer; transition: opacity 0.2s, background-color 0.2s; }
+        .hidden { display: none !important; }
+        /* 修正手機版行動裝置選單：.nav-item 在手機版媒體查詢中用了 display:flex !important，
+           會跟 .hidden 的 !important 打平手，導致後台管理按鈕即使未登入管理員也會顯示、可點擊。
+           這條規則靠更高的選擇器優先度（兩個 class）強制蓋掉，確保隱藏一定生效。 */
+        .nav-item.hidden, .side-nav-btn.hidden { display: none !important; }
+
+        /* Exam Report */
+        .exam-report-card { background: var(--card-bg); border-radius: 24px; border: 1px solid var(--border-color); padding: 24px 20px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 16px; }
+        .exam-score-header { text-align: center; padding: 10px 0 16px 0; border-bottom: 1px solid var(--border-color); }
+        .exam-score-title { font-size: 13px; font-weight: 700; color: var(--primary); letter-spacing: 1px; }
+        .exam-score-val { font-size: 58px; font-weight: 900; color: var(--text-main); margin: 6px 0; line-height: 1; }
+        .exam-score-sub { font-size: 13px; color: var(--text-sub); }
+        .exam-details-list { display: flex; flex-direction: column; gap: 10px; max-height: 400px; overflow-y: auto; padding-right: 4px; }
+        .exam-item-box { background: var(--input-bg); border-radius: 16px; padding: 14px 16px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 6px; font-size: 13px; }
+        .exam-item-top { display: flex; justify-content: space-between; align-items: center; font-weight: 700; }
+        .exam-item-badge { font-size: 11px; padding: 3px 8px; border-radius: 8px; font-weight: 800; }
+        .exam-item-badge.correct { background: rgba(48, 209, 88, 0.18); color: var(--accent); }
+        .exam-item-badge.wrong { background: rgba(255, 69, 58, 0.18); color: var(--danger); border: 1px solid rgba(255, 69, 58, 0.35); }
+        .exam-item-row { display: flex; gap: 8px; line-height: 1.4; }
+        .exam-item-row .lbl { color: var(--text-sub); min-width: 65px; flex-shrink: 0; }
+        .exam-item-row .val { color: var(--text-main); font-weight: 600; }
+        .exam-item-row .user-ans.correct { color: var(--accent); font-weight: 700; }
+        .exam-item-row .user-ans.wrong { color: var(--danger); font-weight: 700; }
+
+        /* Quiz */
+        .quiz-card { background: var(--card-bg); border-radius: 22px; padding: 22px; border: 1px solid var(--border-color); box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 14px; }
+        .quiz-q { font-size: 20px; font-weight: 800; margin-bottom: 0; line-height: 1.4; }
+        .quiz-opts { display: flex; flex-direction: column; gap: 10px; }
+        .quiz-progress { font-size: 12px; font-weight: 700; color: var(--text-sub); letter-spacing: 0.3px; }
+        .quiz-result { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+        .quiz-result.hidden { display: none; }
+        .quiz-result-answer { font-size: 15px; font-weight: 700; color: var(--text-main); }
+        .quiz-result-reason { font-size: 13px; color: var(--text-sub); }
+        .quiz-result-note { font-size: 12px; color: var(--text-sub); opacity: 0.85; }
+        .q-opt { background: var(--input-bg); border: 1px solid var(--border-color); padding: 16px 20px; border-radius: 18px; font-weight: 700; font-size: 16px; text-align: left; cursor: pointer; color: var(--text-main); transition: 0.15s; }
+        .q-opt.correct { background: rgba(48, 209, 88, 0.2); border-color: var(--accent); color: var(--accent); }
+        .q-opt.wrong { background: rgba(255, 69, 58, 0.2); border-color: var(--danger); color: var(--danger); }
+
+        /* Search */
+        .search-box { width: 100%; padding: 16px 20px; border-radius: 18px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-main); font-size: 16px; font-weight: 600; outline: none; }
+        .list-container { display: flex; flex-direction: column; gap: 8px; }
+        .list-item { background: var(--card-bg); padding: 16px 20px; border-radius: 18px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+        .list-item-left .code { font-weight: 900; font-size: 18px; color: var(--primary); }
+        .list-item-left .cn { font-size: 14px; font-weight: 700; color: var(--text-main); margin-top: 3px; white-space: pre-line; line-height: 1.4; }
+        .list-item-cat { font-size: 11px; padding: 3px 8px; border-radius: 8px; background: var(--input-bg); color: var(--text-sub); font-weight: 700; }
+        .know-filter-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; }
+        .admin-selection-bar { display: flex; align-items: center; justify-content: space-between; background: var(--primary-light); border: 1px solid var(--border-hover); border-radius: 14px; padding: 10px 14px; font-size: 13px; font-weight: 700; color: var(--text-main); }
+        .admin-selection-bar.hidden { display: none; }
+        .know-filter-chip {
+            flex-shrink: 0; padding: 8px 16px; border-radius: 999px; border: 1px solid var(--border-color);
+            background: var(--input-bg); color: var(--text-sub); font-size: 13px; font-weight: 700; cursor: pointer;
+            transition: all 0.15s ease; white-space: nowrap;
+        }
+        .know-filter-chip.active { background: var(--primary); color: var(--primary-btn-text); border-color: var(--primary); }
+
+        /* Settings */
+        .ios-group-title { font-size: 13px; font-weight: 600; color: var(--text-sub); padding: 6px 16px 8px 16px; }
+        .ios-group { background: var(--card-bg); border-radius: 16px; overflow: hidden; margin-bottom: 20px; border: 1px solid var(--border-color); }
+        .ios-item { display: flex; align-items: center; justify-content: space-between; padding: 13px 18px; cursor: pointer; position: relative; background: var(--card-bg); transition: background-color 0.15s; }
+        .ios-item:not(:last-child)::after { content: ''; position: absolute; bottom: 0; left: 56px; right: 0; height: 1px; background: var(--border-color); opacity: 0.6; }
+        .ios-item:active { background: var(--input-bg); }
+        .ios-item-left { display: flex; align-items: center; gap: 14px; }
+        .ios-icon-box { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; background-color: var(--ios-icon-bg); flex-shrink: 0; }
+        .ios-icon-box svg { width: 17px; height: 17px; stroke: var(--ios-icon-stroke); fill: none; stroke-width: 2.2; }
+        .ios-label { font-size: 16px; font-weight: 600; color: var(--text-main); }
+        .ios-check { font-size: 17px; font-weight: 800; color: var(--primary); opacity: 0; transform: scale(0.7); transition: 0.15s ease; }
+        .ios-item.active .ios-check { opacity: 1; transform: scale(1); }
+
+        /* Admin Box */
+        .admin-box { background: var(--card-bg); border-radius: 20px; padding: 20px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 14px; }
+        .home-stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .home-stat-tile { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 16px 8px; text-align: center; }
+        .home-stat-tile .val { font-size: 22px; font-weight: 800; color: var(--primary); line-height: 1.2; }
+        .home-stat-tile .lbl { font-size: 12px; color: var(--text-sub); margin-top: 4px; }
+        .home-action-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        .home-action-btn {
+            background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 18px;
+            padding: 22px 10px; display: flex; flex-direction: column; align-items: center; gap: 8px;
+            cursor: pointer; transition: border-color 0.15s ease; color: var(--text-main);
+        }
+        .home-action-btn:hover { border-color: var(--primary); }
+        .home-action-btn .icon { font-size: 26px; }
+        .home-action-btn .title { font-weight: 800; font-size: 14px; }
+        .home-action-btn .sub { font-size: 11px; color: var(--text-sub); }
+        @media (max-width: 859px) { .home-stat-grid { grid-template-columns: repeat(2, 1fr); } }
+        .sync-banner { background: var(--primary-light); border: 1px solid var(--border-hover); border-radius: 16px; padding: 16px; display: flex; justify-content: space-between; align-items: center; }
+
+        .sync-btn-row { display: flex; gap: 10px; }
+        .sync-btn {
+            flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px;
+            background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 16px;
+            padding: 14px 8px; cursor: pointer; color: var(--text-main); font-size: 13px; font-weight: 700;
+            line-height: 1.4; transition: border-color 0.15s ease, background-color 0.15s ease;
+        }
+        .sync-btn:hover { border-color: var(--primary); }
+        .sync-btn-icon { font-size: 20px; }
+
+        /* 通行碼安全管理卡片（圓角分層、標籤化 key/value，呼應深色現代風格） */
+        .pin-manage-card {
+            background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 20px;
+            padding: 18px; display: flex; flex-direction: column; gap: 14px; margin-top: 6px;
+        }
+        .pin-manage-head { display: flex; align-items: center; gap: 12px; }
+        .pin-manage-icon {
+            width: 38px; height: 38px; border-radius: 12px; background: var(--primary-light);
+            display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;
+        }
+        .pin-manage-title { color: var(--text-main); font-size: 15px; display: block; }
+        .pin-manage-sub { color: var(--text-sub); font-size: 12px; margin-top: 2px; }
+        .pin-manage-row {
+            background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 14px;
+            padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px;
+        }
+        .pin-manage-label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--text-main); font-weight: 700; }
+        .pin-manage-tag {
+            font-size: 10px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase;
+            color: var(--text-sub); background: var(--input-bg); border: 1px solid var(--border-color);
+            border-radius: 6px; padding: 1px 6px; width: fit-content;
+        }
+        .pin-manage-tag-admin { color: var(--primary); border-color: var(--primary); }
+        .pin-change-btn {
+            background: var(--primary-light); border: 1px solid var(--border-hover); color: var(--primary);
+            font-size: 12px; font-weight: 800; padding: 7px 14px; border-radius: 10px; cursor: pointer;
+            white-space: nowrap; transition: opacity 0.15s ease;
+        }
+        .pin-change-btn:hover { opacity: 0.8; }
+        .pin-manage-hint { font-size: 11px; color: var(--text-sub); line-height: 1.5; }
+
+        .admin-list-head { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; }
+        .admin-item-del {
+            flex-shrink: 0; width: 32px; height: 32px; border-radius: 10px; border: 1px solid var(--border-color);
+            background: transparent; color: var(--danger); font-size: 14px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; transition: background-color 0.15s ease;
+        }
+        .admin-item-del:hover { background: rgba(255, 69, 58, 0.12); }
+
+        /* 新增題庫浮動按鈕：固定在後台管理頁面右下角，捲動時也維持可見 */
+        .add-quiz-fab {
+            position: fixed; right: 28px; bottom: 28px; z-index: 500;
+            width: 54px; height: 54px; border-radius: 50%; border: none; background: var(--primary);
+            color: var(--primary-btn-text); font-size: 26px; font-weight: 800; line-height: 1; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.35); transition: opacity 0.15s ease, transform 0.15s ease;
+        }
+        .add-quiz-fab:hover { opacity: 0.9; transform: scale(1.05); }
+        @media (max-width: 859px) { .add-quiz-fab { right: 18px; bottom: 96px; } }
+
+        /* 彈窗共用樣式（新增題庫 / 更改密碼） */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px); z-index: 99998; display: flex; align-items: center;
+            justify-content: center; padding: 20px;
+        }
+        .modal-overlay.hidden { display: none; }
+        .modal-card {
+            background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 24px;
+            width: 100%; max-width: 420px; max-height: 85vh; overflow-y: auto; padding: 24px;
+            display: flex; flex-direction: column; gap: 10px; box-shadow: var(--shadow);
+        }
+        .modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; color: var(--primary); font-size: 17px; }
+        .modal-close {
+            cursor: pointer; font-size: 16px; color: var(--text-sub); width: 30px; height: 30px;
+            border: 1px solid var(--border-color); border-radius: 9px; display: flex; align-items: center; justify-content: center;
+        }
+        .modal-label { font-size: 12px; color: var(--text-sub); margin-top: 6px; }
+        .modal-btn-row { display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
+        .modal-btn-secondary {
+            background: transparent; border: 1px solid var(--border-color); color: var(--text-sub);
+            font-weight: 700; font-size: 14px; padding: 10px 18px; border-radius: 12px; cursor: pointer;
+        }
+        .modal-btn-secondary:hover { border-color: var(--text-sub); }
+        .modal-btn-primary {
+            background: var(--primary); border: none; color: var(--primary-btn-text);
+            font-weight: 800; font-size: 14px; padding: 10px 20px; border-radius: 12px; cursor: pointer;
+        }
+        .modal-btn-primary:hover { opacity: 0.9; }
+
+        @media (max-width: 859px) {
+            html, body { overflow-x: hidden !important; width: 100% !important; max-width: 100vw !important; }
+            body { min-height: 100dvh; display: block !important; padding: 0 !important; margin: 0 !important; }
+            .desktop-sidebar, .desktop-header-bar, .desktop-side-tools { display: none !important; }
+            .main-stage { width: 100% !important; max-width: 480px !important; margin: 0 auto !important; padding: 10px 16px calc(92px + env(safe-area-inset-bottom, 16px)) 16px !important; box-sizing: border-box !important; overflow-x: hidden !important; min-height: 100dvh !important; display: flex !important; flex-direction: column !important; }
+            .stage-inner { width: 100% !important; max-width: 100% !important; margin: 0 auto !important; padding: 0 !important; gap: 10px !important; box-sizing: border-box !important; }
+            .mobile-header { display: flex; justify-content: space-between; align-items: center; padding: 4px 2px 6px 2px; width: 100%; box-sizing: border-box; }
+            .mobile-stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; background: transparent !important; border: none !important; box-shadow: none !important; padding: 4px 0 8px 0 !important; text-align: center; width: 100%; box-sizing: border-box; }
+            .mobile-stats-bar > div { display: flex; flex-direction: column; align-items: center; position: relative; }
+            .mobile-stats-bar > div:not(:last-child)::after { content: ''; position: absolute; right: 0; top: 20%; height: 60%; width: 1px; background: var(--border-color); opacity: 0.5; }
+            .mobile-stats-bar .val { font-weight: 800; font-size: 17px; color: var(--primary); line-height: 1.1; }
+            .mobile-stats-bar .lbl { font-size: 11px; color: var(--text-sub); margin-top: 3px; font-weight: 500; }
+            .view-content, .learn-grid-pc, .flashcard-container, .card-face, .action-area, .input-group, .quiz-card, .quiz-opts, .q-opt, .search-box, .list-container, .list-item, .settings-grid-2col, .ios-group, .ios-item { width: 100% !important; max-width: 100% !important; box-sizing: border-box !important; }
+            .learn-grid-pc, .quiz-opts, .list-container, .settings-grid-2col { display: flex !important; flex-direction: column !important; gap: 12px !important; }
+            .flashcard-container { height: clamp(210px, 32vh, 270px) !important; }
+            .ans-en { font-size: clamp(14px, 4.2vw, 19px) !important; }
+            .card-face { padding: 18px 14px !important; border-radius: 22px !important; }
+            .card-prompt-text { font-size: clamp(28px, 8vw, 42px) !important; }
+            .card-prompt-text.long-text { font-size: clamp(18px, 5vw, 26px) !important; }
+            .card-input { padding: 14px 16px !important; font-size: 16px !important; border-radius: 18px !important; }
+            .btn-submit { padding: 0 20px !important; font-size: 16px !important; border-radius: 18px !important; }
+            .btn-action { padding: 14px !important; font-size: 16px !important; border-radius: 18px !important; }
+            .quiz-card { padding: 20px 16px !important; border-radius: 22px !important; }
+            .quiz-q { font-size: 18px !important; margin-bottom: 16px !important; }
+            .q-opt { padding: 15px 16px !important; font-size: 15px !important; border-radius: 16px !important; }
+            .search-box { padding: 14px 16px !important; font-size: 15px !important; border-radius: 16px !important; }
+            .list-item { padding: 14px 16px !important; border-radius: 16px !important; }
+            .exam-report-card { padding: 20px 14px !important; margin-bottom: 24px !important; }
+            .exam-details-list { max-height: none !important; overflow: visible !important; padding-right: 0 !important; gap: 12px !important; -webkit-overflow-scrolling: touch !important; }
+            .nav-bar { position: fixed !important; bottom: calc(14px + env(safe-area-inset-bottom, 12px)) !important; left: 50% !important; transform: translateX(-50%) !important; width: auto !important; max-width: 90% !important; background: var(--dock-bg) !important; backdrop-filter: blur(28px) saturate(190%) !important; -webkit-backdrop-filter: blur(28px) saturate(190%) !important; border: 1px solid var(--dock-border) !important; border-radius: 9999px !important; box-shadow: var(--dock-shadow) !important; display: flex !important; align-items: center !important; justify-content: center !important; gap: 8px !important; padding: 6px 10px !important; z-index: 999 !important; box-sizing: border-box !important; overflow: hidden !important; }
+            .nav-item { display: flex !important; align-items: center !important; justify-content: center !important; width: 52px !important; height: 44px !important; border: none !important; background: transparent !important; color: var(--dock-icon-color) !important; border-radius: 9999px !important; cursor: pointer !important; outline: none !important; transition: all 0.2s ease !important; }
+            .nav-item:active { transform: scale(0.86) !important; }
+            .nav-item.active { background: var(--dock-active-bg) !important; color: var(--dock-active-color) !important; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22) !important; }
+            .nav-item svg { width: 22px !important; height: 22px !important; stroke: currentColor !important; fill: none !important; stroke-width: 2.1 !important; stroke-linecap: round !important; stroke-linejoin: round !important; }
+        }
+
+        @media (min-width: 860px) {
+            body { display: flex; flex-direction: row; min-height: 100vh; overflow-x: hidden; }
+            .mobile-header, .mobile-stats-bar, .nav-bar { display: none !important; }
+            .desktop-sidebar { width: 280px; height: 100vh; position: sticky; top: 0; background: var(--sidebar-bg); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; justify-content: space-between; padding: 24px 18px; flex-shrink: 0; z-index: 100; }
+            .sidebar-top { display: flex; flex-direction: column; gap: 24px; }
+            .sidebar-brand { display: flex; align-items: center; gap: 12px; padding: 0 8px; }
+            .sidebar-brand .silks-logo { height: 38px; max-width: 48px; }
+            .sidebar-brand .app-title { font-size: 20px; letter-spacing: 0.5px; }
+            .sidebar-nav { display: flex; flex-direction: column; gap: 6px; }
+            .side-nav-btn { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 14px; background: transparent; border: none; color: var(--text-sub); font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s ease; text-align: left; width: 100%; }
+            .side-nav-btn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2.2; flex-shrink: 0; }
+            .side-nav-btn:hover { background: rgba(255, 255, 255, 0.05); color: var(--text-main); }
+            body.light-mode .side-nav-btn:hover { background: rgba(0, 0, 0, 0.04); }
+            .side-nav-btn.active { background: var(--primary); color: var(--primary-btn-text); box-shadow: 0 4px 16px rgba(200, 168, 110, 0.35); }
+            .sidebar-stats-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 18px; padding: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; text-align: center; }
+            .sidebar-stat-item .val { font-size: 22px; font-weight: 900; color: var(--primary); }
+            .sidebar-stat-item .lbl { font-size: 11px; color: var(--text-sub); margin-top: 2px; font-weight: 700; }
+            .sidebar-footer { padding-top: 14px; border-top: 1px solid var(--border-color); }
+            .sidebar-theme-btn { width: 100%; justify-content: center; padding: 12px; border-radius: 14px; font-size: 14px; font-weight: 700; }
+            .main-stage { flex: 1; min-width: 0; min-height: 100vh; display: flex; flex-direction: column; padding: 36px 48px; overflow-y: auto; }
+            .stage-inner { width: 100%; max-width: 1380px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; }
+            .desktop-header-bar { display: flex; justify-content: space-between; align-items: center; padding-bottom: 16px; border-bottom: 1px solid var(--border-color); }
+            .page-heading { font-size: 26px; font-weight: 900; color: var(--text-main); letter-spacing: -0.3px; }
+            .page-subheading { font-size: 13px; color: var(--text-sub); margin-top: 4px; font-weight: 500; }
+            .learn-grid-pc { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 28px; align-items: start; }
+            .flashcard-container { height: 420px; }
+            .card-face { padding: 46px 40px; border-radius: 28px; }
+            .card-prompt-text { font-size: 54px; }
+            .card-prompt-text.long-text { font-size: 34px; }
+            .action-area { gap: 14px; margin-top: 4px; }
+            .card-input { padding: 18px 24px; font-size: 18px; border-radius: 20px; }
+            .btn-submit { padding: 0 36px; font-size: 18px; border-radius: 20px; }
+            .btn-action { padding: 18px; font-size: 18px; border-radius: 20px; }
+            .desktop-side-tools { display: flex; flex-direction: column; gap: 20px; }
+            .side-tool-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 24px; padding: 24px; box-shadow: var(--shadow); }
+            .side-tool-title { font-size: 15px; font-weight: 800; color: var(--primary); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+            .mini-search-box { width: 100%; padding: 12px 16px; border-radius: 14px; border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-main); font-size: 14px; outline: none; margin-bottom: 12px; }
+            .mini-search-box:focus { border-color: var(--primary); }
+            .mini-list-scroll { max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 4px; }
+            .mini-list-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: var(--input-bg); border-radius: 12px; font-size: 13px; }
+            .mini-list-item .m-code { font-weight: 800; color: var(--primary); }
+            .mini-list-item .m-cn { color: var(--text-sub); font-size: 12px; }
+            .exam-details-list { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-height: 520px; }
+            .quiz-card { padding: 40px; border-radius: 28px; }
+            .quiz-q { font-size: 24px; margin-bottom: 28px; }
+            .quiz-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+            .q-opt { padding: 24px 28px; font-size: 18px; border-radius: 20px; }
+            .list-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; }
+            .list-item { padding: 20px 24px; border-radius: 22px; }
+            .settings-grid-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: start; }
+            .settings-full-width { grid-column: 1 / -1; margin-top: 8px; }
+        }
+    </style>
 </head>
+
 <body>
 
-<!-- ============ 一般進入用的通行碼關卡（跟後台 CRUD 登入是兩回事） ============ -->
+<!-- 通行碼彈窗（支援 Enter 快速解鎖） -->
 <div id="auth-modal">
     <div class="auth-card">
         <div class="auth-title">台南晶英 禮賓司萬事通</div>
@@ -255,259 +530,479 @@ button, input, select, textarea { font-family: inherit; }
     </div>
 </div>
 
-<div class="app-shell">
-    <aside class="sidebar">
-        <div class="sidebar-logo">OPERA 卡牌大師</div>
-        <button class="nav-btn active" data-view="home" onclick="switchView('home')">
-            <svg viewBox="0 0 24 24"><path d="M12 3l9 8h-2v9h-5v-6H10v6H5v-9H3z"/></svg>首頁
-        </button>
-        <button class="nav-btn" data-view="learn" onclick="switchView('learn')">
-            <svg viewBox="0 0 24 24"><path d="M4 4h11a3 3 0 0 1 3 3v13H7a3 3 0 0 1-3-3z"/></svg>學習卡片
-        </button>
-        <button class="nav-btn" data-view="quiz" onclick="switchView('quiz')">
-            <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.8 9.94l-3.75-3.75zM20.7 7.04a1 1 0 0 0 0-1.41l-2.33-2.33a1 1 0 0 0-1.41 0L15 5.25l3.75 3.75z"/></svg>考題測驗
-        </button>
-        <button class="nav-btn" data-view="knowledge" onclick="switchView('knowledge')">
-            <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 1 0-.7.7l.27.28v.79l5 5L20.5 19zm-6 0A4.5 4.5 0 1 1 14 9.5 4.5 4.5 0 0 1 9.5 14z"/></svg>知識總覽
-        </button>
-        <button class="nav-btn" data-view="settings" onclick="switchView('settings')">
-            <svg viewBox="0 0 24 24"><path d="M12 15.5A3.5 3.5 0 1 1 15.5 12 3.5 3.5 0 0 1 12 15.5zm7.43-2.5a7.6 7.6 0 0 0 0-2l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.5 7.5 0 0 0-1.73-1l-.36-2.54a.5.5 0 0 0-.5-.43h-3.84a.5.5 0 0 0-.5.43l-.36 2.54a7.5 7.5 0 0 0-1.73 1l-2.39-.96a.5.5 0 0 0-.6.22L2.74 9.28a.5.5 0 0 0 .12.64L4.9 11.5a7.6 7.6 0 0 0 0 2l-2.04 1.58a.5.5 0 0 0-.12.64l1.92 3.32a.5.5 0 0 0 .6.22l2.39-.96a7.5 7.5 0 0 0 1.73 1l.36 2.54a.5.5 0 0 0 .5.43h3.84a.5.5 0 0 0 .5-.43l.36-2.54a7.5 7.5 0 0 0 1.73-1l2.39.96a.5.5 0 0 0 .6-.22l1.92-3.32a.5.5 0 0 0-.12-.64z"/></svg>設定
-        </button>
-        <button class="nav-btn hidden" id="nav-admin-btn" data-view="admin" onclick="switchView('admin')">
-            <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 14.93V17a1 1 0 0 1-2 0v-.07A7.002 7.002 0 0 1 5.07 11H5a1 1 0 0 1 0-2h.07A7.002 7.002 0 0 1 11 5.07V5a1 1 0 0 1 2 0v.07A7.002 7.002 0 0 1 18.93 11H19a1 1 0 0 1 0 2h-.07A7.002 7.002 0 0 1 13 16.93z"/></svg>後台管理
-        </button>
-        <div class="sidebar-spacer"></div>
-        <button class="nav-btn" onclick="toggleTheme()"><span id="theme-icon-side">🌙</span>&nbsp;<span id="theme-text-side">深色模式</span></button>
-    </aside>
+<!-- 電腦版側邊欄 -->
+<aside class="desktop-sidebar">
+    <div class="sidebar-top">
+        <div class="sidebar-brand">
+            <img src="silks_logo.png" alt="晶英酒店" class="silks-logo" onerror="this.style.display='none'">
+            <div class="app-title">OPERA 卡牌大師</div>
+        </div>
 
-    <main class="main">
-        <!-- 首頁 -->
-        <section id="view-home" class="view-content active">
-            <div class="page-title">首頁</div>
-            <div class="page-desc">台南晶英 禮賓司萬事通・動態知識庫</div>
-            <div class="stats-grid">
-                <div class="stat-tile"><div class="stat-num" id="stat-accuracy">0%</div><div class="stat-label">正確率</div></div>
-                <div class="stat-tile"><div class="stat-num" id="stat-streak">0</div><div class="stat-label">連續答對</div></div>
-                <div class="stat-tile"><div class="stat-num" id="stat-wrongs">0</div><div class="stat-label">錯題本</div></div>
-                <div class="stat-tile"><div class="stat-num" id="stat-favs">0</div><div class="stat-label">收藏數</div></div>
-            </div>
-            <div class="cta-grid">
-                <div class="cta-card" onclick="switchView('learn')"><div class="cta-icon">📖</div><div class="cta-title">開始學習</div><div class="cta-sub">翻卡片記憶</div></div>
-                <div class="cta-card" onclick="switchView('quiz')"><div class="cta-icon">✍️</div><div class="cta-title">開始測驗</div><div class="cta-sub">動態出題</div></div>
-                <div class="cta-card" onclick="switchView('knowledge')"><div class="cta-icon">🔍</div><div class="cta-title">搜尋知識</div><div class="cta-sub">知識總覽</div></div>
-            </div>
-            <div class="card" id="home-sync-status" style="font-size:12px; color:var(--text-sub);">正在連線 Google 試算表…</div>
-        </section>
+        <nav class="sidebar-nav">
+            <button class="side-nav-btn active" onclick="switchTab('home', this)">
+                <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                首頁
+            </button>
+            <button class="side-nav-btn" onclick="switchTab('learn', this)">
+                <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                學習卡片
+            </button>
+            <button class="side-nav-btn" onclick="switchTab('quiz', this)">
+                <svg viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                考題測驗
+            </button>
+            <button class="side-nav-btn" onclick="switchTab('search', this)">
+                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                知識總覽
+            </button>
+            <button class="side-nav-btn" onclick="switchTab('settings', this)">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                設定
+            </button>
+            <button class="side-nav-btn hidden" id="d-nav-admin-btn" onclick="switchTab('admin', this)">
+                <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 14.93V17a1 1 0 0 1-2 0v-.07A7.002 7.002 0 0 1 5.07 11H5a1 1 0 0 1 0-2h.07A7.002 7.002 0 0 1 11 5.07V5a1 1 0 0 1 2 0v.07A7.002 7.002 0 0 1 18.93 11H19a1 1 0 0 1 0 2h-.07A7.002 7.002 0 0 1 13 16.93z"></path></svg>
+                後台管理
+            </button>
+        </nav>
 
-        <!-- 學習卡片 -->
-        <section id="view-learn" class="view-content">
-            <div class="page-title">學習卡片</div>
-            <div class="page-desc">翻卡片記憶知識內容</div>
-            <div class="pool-toggle">
-                <div class="pool-chip active" data-pool="all" onclick="setLearnPool('all')">全部</div>
-                <div class="pool-chip" data-pool="fav" onclick="setLearnPool('fav')">⭐ 收藏優先</div>
-                <div class="pool-chip" data-pool="wrong" onclick="setLearnPool('wrong')">❌ 錯題優先</div>
+        <div class="sidebar-stats-card">
+            <div class="sidebar-stat-item"><div class="val" id="d-st-accuracy">0%</div><div class="lbl">正確率</div></div>
+            <div class="sidebar-stat-item"><div class="val" id="d-st-streak">0</div><div class="lbl">連續答對</div></div>
+            <div class="sidebar-stat-item"><div class="val" id="d-st-wrong">0</div><div class="lbl">錯題本</div></div>
+            <div class="sidebar-stat-item"><div class="val" id="d-st-fav">0</div><div class="lbl">收藏數</div></div>
+        </div>
+    </div>
+
+    <div class="sidebar-footer">
+        <button class="theme-toggle sidebar-theme-btn" onclick="toggleTheme()">
+            <svg class="theme-icon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            <span class="theme-text">深色模式</span>
+        </button>
+    </div>
+</aside>
+
+<!-- 主舞台 -->
+<main class="main-stage">
+    <div class="stage-inner">
+        <!-- 行動端 Header -->
+        <header class="mobile-header">
+            <div style="display:flex; align-items:center; gap:8px; cursor:pointer;" onclick="switchTab('home', null)">
+                <img src="silks_logo.png" alt="晶英酒店" class="silks-logo" onerror="this.style.display='none'">
+                <div class="app-title">OPERA 卡牌大師</div>
             </div>
-            <div class="cat-filter-row" id="learn-cat-filter"></div>
-            <div class="flashcard" id="flashcard">
-                <button class="card-star" id="card-star" onclick="toggleFav()">☆</button>
-                <div class="card-badge" id="card-badge">OPERA縮寫</div>
-                <div class="card-title" id="card-title">載入中…</div>
-                <div class="card-hint">點擊卡片查看答案</div>
-                <div class="card-answer-box" id="card-answer-box">
-                    <div class="card-answer-main" id="card-answer-main"></div>
-                    <div class="card-answer-extra" id="card-answer-extra"></div>
+            <button class="theme-toggle" onclick="toggleTheme()">
+                <svg class="theme-icon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                <span class="theme-text">深色</span>
+            </button>
+        </header>
+
+        <!-- 行動端數據列 -->
+        <div class="mobile-stats-bar">
+            <div><div class="val" id="st-accuracy">0%</div><div class="lbl">正確率</div></div>
+            <div><div class="val" id="st-streak">0</div><div class="lbl">連續答對</div></div>
+            <div><div class="val" id="st-wrong">0</div><div class="lbl">錯題本</div></div>
+            <div><div class="val" id="st-fav">0</div><div class="lbl">收藏數</div></div>
+        </div>
+
+        <!-- 電腦版 Header -->
+        <div class="desktop-header-bar">
+            <div>
+                <h1 class="page-heading" id="desktop-page-title">學習卡片</h1>
+                <p class="page-subheading" id="desktop-page-desc">台南晶英酒店 OPERA 系統專業代碼與館內分機極速精熟訓練</p>
+            </div>
+        </div>
+
+        <!-- 0. 首頁 -->
+        <div id="view-home" class="view-content active">
+            <div class="home-stat-grid">
+                <div class="home-stat-tile"><div class="val" id="h-st-accuracy">0%</div><div class="lbl">正確率</div></div>
+                <div class="home-stat-tile"><div class="val" id="h-st-streak">0</div><div class="lbl">連續答對</div></div>
+                <div class="home-stat-tile"><div class="val" id="h-st-wrong">0</div><div class="lbl">錯題本</div></div>
+                <div class="home-stat-tile"><div class="val" id="h-st-fav">0</div><div class="lbl">收藏數</div></div>
+            </div>
+            <div class="home-action-grid">
+                <div class="home-action-btn" onclick="switchTab('learn', null)">
+                    <span class="icon">📖</span><span class="title">開始學習</span><span class="sub">翻卡片記憶</span>
+                </div>
+                <div class="home-action-btn" onclick="switchTab('quiz', null)">
+                    <span class="icon">✍️</span><span class="title">開始測驗</span><span class="sub">動態出題</span>
+                </div>
+                <div class="home-action-btn" onclick="switchTab('search', null)">
+                    <span class="icon">🔍</span><span class="title">搜尋知識</span><span class="sub">知識總覽</span>
                 </div>
             </div>
-            <div class="card-controls">
-                <button class="btn-secondary" onclick="flipCard()">翻面</button>
-                <button class="btn-primary" onclick="nextCard()">下一張 ➜</button>
-            </div>
-        </section>
+            <div class="admin-box" style="font-size:12px; color:var(--text-sub);" id="home-sync-status">正在連線 Google 試算表…</div>
+        </div>
 
-        <!-- 考題測驗 -->
-        <section id="view-quiz" class="view-content">
-            <div class="page-title">考題測驗</div>
-            <div class="page-desc">動態產生題目，智慧判分</div>
-            <div class="pool-toggle">
-                <div class="pool-chip active" data-pool="all" onclick="setQuizPool('all')">全部</div>
-                <div class="pool-chip" data-pool="fav" onclick="setQuizPool('fav')">⭐ 收藏優先</div>
-                <div class="pool-chip" data-pool="wrong" onclick="setQuizPool('wrong')">❌ 錯題優先</div>
-            </div>
-            <div class="cat-filter-row" id="quiz-cat-filter"></div>
-            <div class="quiz-card">
-                <div class="card-badge" id="quiz-badge">OPERA縮寫</div>
-                <div class="quiz-title" id="quiz-title">載入中…</div>
-                <form onsubmit="event.preventDefault(); submitQuizAnswer();">
-                    <div class="quiz-input-row">
-                        <input type="text" id="quiz-input" class="input-box" placeholder="請輸入答案…" autocomplete="off">
-                        <button type="submit" class="btn-primary">送出</button>
+        <!-- 1. 學習卡片（原汁原味打字輸入模式） -->
+        <div id="view-learn" class="view-content">
+            <div class="learn-grid-pc">
+                <div style="display:flex; flex-direction:column; gap:14px; width:100%;">
+                    <div class="flashcard-container" id="learn-card-container">
+                        <div class="flashcard" id="main-card">
+                            <div class="card-face card-front">
+                                <span class="card-star" id="card-star" onclick="toggleFav(event)">★</span>
+                                <div class="card-badge" id="card-badge">隨機出題</div>
+                                <div class="card-prompt-text" id="card-prompt">--</div>
+                                <div style="font-size:13px; color:var(--text-sub);">輸入後送出翻轉卡片 👆</div>
+                            </div>
+                            <div class="card-face card-back">
+                                <div class="result-badge" id="card-result-badge">🎉 答對了！</div>
+                                <div style="margin:auto 0; display:flex; flex-direction:column; align-items:center; gap:3px;">
+                                    <div class="ans-code" id="card-ans-code">VC</div>
+                                    <div class="ans-cn" id="card-ans-cn">房間已清潔，待查房，不可入住</div>
+                                    <div class="ans-user" id="card-ans-user">你的輸入：VC</div>
+                                </div>
+                                <div style="font-size:13px; color:var(--text-sub);">按 Enter 或點擊「下一題」繼續刷題</div>
+                            </div>
+                        </div>
                     </div>
+
+                    <!-- 原汁原味打字輸入區 -->
+                    <div class="action-area" id="learn-action-area">
+                        <form id="input-form" class="input-group" onsubmit="event.preventDefault(); submitAnswer();">
+                            <input type="text" class="card-input" id="type-input" placeholder="鍵盤輸入答案後按 Enter 或送出..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                            <button type="submit" class="btn-submit">送出</button>
+                        </form>
+                        <button class="btn-action hidden" id="next-card-btn" onclick="requestNextCard()">下一題 ➔ (Enter)</button>
+                    </div>
+                </div>
+
+                <!-- 電腦版輔助工具 -->
+                <div class="desktop-side-tools">
+                    <div class="side-tool-card">
+                        <div class="side-tool-title">
+                            <svg style="width:17px; height:17px; stroke:var(--primary); fill:none; stroke-width:2.2;" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                            邊練邊查 · 速查字典
+                        </div>
+                        <input type="text" class="mini-search-box" id="mini-search" placeholder="輸入關鍵字或號碼秒查..." oninput="renderMiniSearch()">
+                        <div class="mini-list-scroll" id="mini-search-list"></div>
+                    </div>
+
+                    <div class="side-tool-card" style="font-size:13px; line-height:1.6; color:var(--text-sub);">
+                        <div class="side-tool-title">
+                            <svg style="width:17px; height:17px; stroke:var(--primary); fill:none; stroke-width:2.2;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            鍵盤操作捷徑
+                        </div>
+                        <p>• 輸入答案後直接按 <b style="color:var(--text-main);">Enter</b> 即可送出翻牌。</p>
+                        <p>• 翻牌後再次按下 <b style="color:var(--text-main);">Enter</b> 立即前進下一題。</p>
+                        <p>• 右上方點擊 <b style="color:#f59e0b;">★</b> 可將困難題收錄至收藏題庫。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. 考題測驗：動態出題＋直接問答（智慧判分），頁面本身不放任何範圍/題數/模式控制項，
+             這些全部移到「設定」頁，考題頁只負責當下這一題。 -->
+        <div id="view-quiz" class="view-content">
+            <div class="quiz-card">
+                <div class="quiz-progress" id="quiz-progress">第 1 / 10 題</div>
+                <div class="quiz-q" id="quiz-title">載入中...</div>
+                <form id="quiz-form" class="input-group" onsubmit="event.preventDefault(); submitQuizAnswer();">
+                    <input type="text" class="card-input" id="quiz-input" placeholder="輸入答案後按 Enter 或送出..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                    <button type="submit" class="btn-submit">送出</button>
                 </form>
-                <div class="quiz-feedback" id="quiz-feedback"></div>
-                <div class="card-controls">
-                    <button class="btn-secondary" style="flex:1;" onclick="nextQuiz()">跳過 / 下一題 ➜</button>
+                <div class="quiz-result hidden" id="quiz-result">
+                    <div class="result-badge" id="quiz-result-badge">🎉 答對了！</div>
+                    <div class="quiz-result-answer" id="quiz-result-answer"></div>
+                    <div class="quiz-result-reason" id="quiz-result-reason"></div>
+                    <div class="quiz-result-note" id="quiz-result-note"></div>
                 </div>
             </div>
-        </section>
+            <button class="btn-action hidden" id="quiz-next-btn" onclick="nextQuiz()">下一題 ➔ (Enter)</button>
+        </div>
 
-        <!-- 知識總覽 -->
-        <section id="view-knowledge" class="view-content">
-            <div class="page-title">知識總覽</div>
-            <div class="page-desc">全域搜尋所有分類的知識內容</div>
-            <div class="search-row">
-                <input type="text" id="knowledge-search" class="input-box" placeholder="搜尋關鍵字、餐廳名稱、分機、縮寫…" oninput="renderKnowledgeList()">
-            </div>
-            <div class="cat-filter-row" id="knowledge-cat-filter"></div>
-            <div class="knowledge-list" id="knowledge-list"></div>
-        </section>
+        <!-- 3. 知識總覽（全域搜尋，橫跨 OPERA縮寫／分機表／餐廳資訊／房型資訊） -->
+        <div id="view-search" class="view-content">
+            <input type="text" class="search-box" id="search-input" placeholder="🔍 全域搜尋：餐廳名稱、分機、縮寫、早餐…" oninput="renderSearchList()">
+            <div class="know-filter-row" id="know-filter-row"></div>
+            <div class="list-container" id="search-list"></div>
+        </div>
 
-        <!-- 設定 -->
-        <section id="view-settings" class="view-content">
-            <div class="page-title">設定</div>
-            <div class="page-desc">外觀、通行碼與資料同步</div>
-            <div class="card">
-                <div class="settings-row">
-                    <div><div class="settings-row-label">深色模式</div><div class="settings-row-sub">切換淺色／深色外觀</div></div>
-                    <div class="switch on" id="theme-switch" onclick="toggleTheme()"><div class="switch-knob"></div></div>
+        <!-- 4. 設定 -->
+        <div id="view-settings" class="view-content">
+            <div class="settings-grid-2col">
+                <div>
+                    <div class="ios-group-title">考試範圍</div>
+                    <div class="ios-group" id="exam-scope-group">
+                        <div class="ios-item active" data-scope="all" onclick="changeExamScope('all')">
+                            <div class="ios-item-left">
+                                <div class="ios-icon-box"><svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg></div>
+                                <span class="ios-label">全部題庫</span>
+                            </div>
+                            <span class="ios-check">✓</span>
+                        </div>
+                        <div class="ios-item" data-scope="opera" onclick="changeExamScope('opera')">
+                            <div class="ios-item-left">
+                                <div class="ios-icon-box"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg></div>
+                                <span class="ios-label">OPERA縮寫</span>
+                            </div>
+                            <span class="ios-check">✓</span>
+                        </div>
+                        <div class="ios-item" data-scope="ext" onclick="changeExamScope('ext')">
+                            <div class="ios-item-left">
+                                <div class="ios-icon-box"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg></div>
+                                <span class="ios-label">分機表</span>
+                            </div>
+                            <span class="ios-check">✓</span>
+                        </div>
+                        <div class="ios-item" data-scope="room" onclick="changeExamScope('room')">
+                            <div class="ios-item-left">
+                                <div class="ios-icon-box"><svg viewBox="0 0 24 24"><rect x="3" y="10" width="18" height="9" rx="2"></rect><path d="M5 10V7a3 3 0 0 1 3-3h3"></path><line x1="3" y1="15" x2="21" y2="15"></line></svg></div>
+                                <span class="ios-label">房型資訊</span>
+                            </div>
+                            <span class="ios-check">✓</span>
+                        </div>
+                        <div class="ios-item" data-scope="restaurant" onclick="changeExamScope('restaurant')">
+                            <div class="ios-item-left">
+                                <div class="ios-icon-box"><svg viewBox="0 0 24 24"><path d="M7 2v7a2 2 0 0 0 4 0V2"></path><path d="M9 9v13"></path><path d="M17 2c-1.2 0-2.5 2-2.5 5.5S15.8 13 17 13s2.5-2 2.5-5.5S18.2 2 17 2z"></path><path d="M17 13v9"></path></svg></div>
+                                <span class="ios-label">餐廳資訊</span>
+                            </div>
+                            <span class="ios-check">✓</span>
+                        </div>
+                    </div>
+
+                    <div class="ios-group-title" style="margin-top:18px;">考試題數</div>
+                    <div class="ios-group" id="exam-count-group">
+                        <div class="ios-item" data-count="5" onclick="changeExamCount(5)"><div class="ios-item-left"><span class="ios-label">5 題</span></div><span class="ios-check">✓</span></div>
+                        <div class="ios-item active" data-count="10" onclick="changeExamCount(10)"><div class="ios-item-left"><span class="ios-label">10 題</span></div><span class="ios-check">✓</span></div>
+                        <div class="ios-item" data-count="20" onclick="changeExamCount(20)"><div class="ios-item-left"><span class="ios-label">20 題</span></div><span class="ios-check">✓</span></div>
+                        <div class="ios-item" data-count="30" onclick="changeExamCount(30)"><div class="ios-item-left"><span class="ios-label">30 題</span></div><span class="ios-check">✓</span></div>
+                    </div>
                 </div>
-                <div class="settings-row">
-                    <div><div class="settings-row-label">重新整理知識庫</div><div class="settings-row-sub">從 Google 試算表重新抓取最新資料</div></div>
-                    <button class="btn-secondary" onclick="boot(true)">重新整理</button>
-                </div>
-                <div class="settings-row">
-                    <div><div class="settings-row-label">清空本機紀錄</div><div class="settings-row-sub">清除收藏、錯題本與答題統計（不影響試算表）</div></div>
-                    <button class="btn-danger" onclick="resetLocalState()">清空</button>
-                </div>
-            </div>
-            <div class="card">
-                <div class="settings-row-label" style="margin-bottom:10px;">更改我的通行碼</div>
-                <div class="settings-row-sub" style="margin-bottom:14px;">變更後會同步到 Google 試算表，其他裝置下次登入自動生效</div>
-                <button class="btn-primary" onclick="openChangePinModal()">更改通行碼</button>
-            </div>
-            <div class="card">
-                <div class="settings-row-label" style="margin-bottom:10px;">主管後台</div>
-                <div class="settings-row-sub" id="admin-entry-sub" style="margin-bottom:14px;">需要輸入 Google 試算表「設定」分頁的 admin_password 才能管理題庫</div>
-                <button class="btn-primary" onclick="switchView('admin')">進入後台管理</button>
-            </div>
-        </section>
 
-        <!-- 後台管理 -->
-        <section id="view-admin" class="view-content">
-            <div class="page-title">後台管理</div>
-            <div class="page-desc">新增／編輯／刪除題庫，直接同步回 Google 試算表</div>
+                <div>
+                    <div class="ios-group-title">題目模式</div>
+                    <div class="ios-group" id="exam-mode-group">
+                        <div class="ios-item active" data-mode="random" onclick="changeExamMode('random')">
+                            <div class="ios-item-left">
+                                <div class="ios-icon-box"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg></div>
+                                <span class="ios-label">全部隨機</span>
+                            </div>
+                            <span class="ios-check">✓</span>
+                        </div>
+                        <div class="ios-item" data-mode="wrong" onclick="changeExamMode('wrong')">
+                            <div class="ios-item-left">
+                                <div class="ios-icon-box"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg></div>
+                                <span class="ios-label">錯題優先</span>
+                            </div>
+                            <span class="ios-check">✓</span>
+                        </div>
+                        <div class="ios-item" data-mode="fav" onclick="changeExamMode('fav')">
+                            <div class="ios-item-left">
+                                <div class="ios-icon-box"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></div>
+                                <span class="ios-label">收藏優先</span>
+                            </div>
+                            <span class="ios-check">✓</span>
+                        </div>
+                    </div>
 
-            <div class="card admin-login-card" id="admin-login-card">
-                <div class="field-label">主管後台密碼（Google 試算表「設定」分頁的 admin_password）</div>
-                <input type="password" id="admin-password-input" class="input-box" placeholder="輸入密碼" style="margin-bottom:12px;">
-                <button class="btn-primary" style="width:100%;" onclick="adminLogin()">登入後台</button>
-                <div class="modal-error" id="admin-login-error"></div>
+                    <div class="ios-group-title" style="margin-top:18px;">本機紀錄</div>
+                    <div class="ios-group">
+                        <div class="ios-item" style="cursor:default;">
+                            <div class="ios-item-left"><span class="ios-label">收藏數</span></div>
+                            <span class="ios-label" id="set-st-fav" style="color:var(--primary); font-weight:800;">0</span>
+                        </div>
+                        <div class="ios-item" style="cursor:default;">
+                            <div class="ios-item-left"><span class="ios-label">錯題本</span></div>
+                            <span class="ios-label" id="set-st-wrong" style="color:var(--primary); font-weight:800;">0</span>
+                        </div>
+                        <div class="ios-item" onclick="resetAllData()">
+                            <div class="ios-item-left">
+                                <div class="ios-icon-box"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></div>
+                                <span class="ios-label" style="color:var(--danger); font-weight:700;">清空紀錄（只清本機，不動 Google 試算表）</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-full-width">
+                    <div class="ios-group-title">身分</div>
+                    <div class="ios-group">
+                        <div class="ios-item" style="cursor:default;">
+                            <div class="ios-item-left"><span class="ios-label">目前身分</span></div>
+                            <span class="ios-label" id="current-role-label" style="color:var(--primary); font-weight:800;">同仁</span>
+                        </div>
+                        <div class="ios-item" onclick="openSwitchIdentityModal()">
+                            <div class="ios-item-left">
+                                <div class="ios-icon-box"><svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg></div>
+                                <span class="ios-label">切換身分</span>
+                            </div>
+                        </div>
+                        <div class="ios-item hidden" id="settings-admin-entry" onclick="switchTab('admin', null)">
+                            <div class="ios-item-left">
+                                <div class="ios-icon-box"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 14.93V17a1 1 0 0 1-2 0v-.07A7.002 7.002 0 0 1 5.07 11H5a1 1 0 0 1 0-2h.07A7.002 7.002 0 0 1 11 5.07V5a1 1 0 0 1 2 0v.07A7.002 7.002 0 0 1 18.93 11H19a1 1 0 0 1 0 2h-.07A7.002 7.002 0 0 1 13 16.93z"></path></svg></div>
+                                <span class="ios-label" style="color:var(--primary); font-weight:800;">進入主管後台</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 切換身分彈窗 -->
+        <div id="switch-identity-modal" class="modal-overlay hidden">
+            <div class="modal-card">
+                <div class="modal-head"><span>切換身分</span><span class="modal-close" onclick="closeSwitchIdentityModal()">✕</span></div>
+                <label class="modal-label">請輸入通行碼</label>
+                <input type="password" id="switch-identity-input" class="search-box" placeholder="••••" autocomplete="off">
+                <div id="switch-identity-error" class="auth-status is-error" style="text-align:left; margin:4px 0 0; min-height:16px;"></div>
+                <div class="modal-btn-row">
+                    <button class="modal-btn-secondary" onclick="closeSwitchIdentityModal()">取消</button>
+                    <button class="modal-btn-primary" id="switch-identity-submit" onclick="submitSwitchIdentity()">確認</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. 主管管理後台 -->
+        <div id="view-admin" class="view-content">
+            <!-- 後台寫入權限閘門：就算 app 角色已經是 admin，CRUD 仍然要另外驗證
+                 Google 試算表「設定」分頁的 admin_password 換到 adminToken 才能動作，
+                 不是只靠前端判斷 role 就放行。 -->
+            <div class="admin-box" id="admin-login-gate">
+                <b style="color:var(--text-main); font-size:15px;">主管後台驗證</b>
+                <div style="font-size:12px; color:var(--text-sub);">請輸入 Google 試算表「設定」分頁內的 admin_password</div>
+                <input type="password" id="admin-password-input" class="search-box" placeholder="輸入主管後台密碼" autocomplete="off">
+                <div id="admin-login-error" class="auth-status is-error" style="text-align:left; min-height:16px;"></div>
+                <button class="btn-action" onclick="submitAdminLogin()">驗證進入</button>
             </div>
 
             <div id="admin-crud-area" style="display:none; flex-direction:column; gap:14px;">
-                <div class="cat-filter-row" id="admin-cat-filter"></div>
-                <div class="admin-table-head">
-                    <b id="admin-list-title" style="font-size:15px;">OPERA縮寫（0 筆）</b>
-                    <button class="btn-secondary" onclick="adminLogout()">登出後台</button>
-                </div>
-                <div class="admin-selection-bar hidden" id="admin-selection-bar">
-                    <span id="admin-selection-count">已選取 0 筆</span>
-                    <div style="display:flex; gap:8px;">
-                        <button class="btn-secondary" onclick="clearSelection()">取消選取</button>
-                        <button class="btn-danger" onclick="deleteSelectedRecords()">批次刪除</button>
+                <div class="admin-box">
+                    <div class="sync-banner">
+                        <div>
+                            <b style="color:var(--text-main); font-size:15px;">Google 試算表同步</b>
+                            <div style="font-size:12px; color:var(--text-sub); margin-top:2px;" id="sync-status-txt">狀態：已連線</div>
+                        </div>
+                        <button class="pin-change-btn" onclick="reloadBootstrap()">重新整理</button>
                     </div>
                 </div>
-                <div class="knowledge-list" id="admin-record-list"></div>
+
+                <!-- 密碼與判分門檻管理 -->
+                <div class="pin-manage-card">
+                    <div class="pin-manage-head">
+                        <span class="pin-manage-icon">🔐</span>
+                        <div>
+                            <b class="pin-manage-title">密碼與判分設定</b>
+                            <div class="pin-manage-sub">修改後立即同步到 Google 試算表「設定」分頁</div>
+                        </div>
+                    </div>
+                    <div class="pin-manage-row">
+                        <div class="pin-manage-label"><span>同仁登入密碼</span><span class="pin-manage-tag">staff</span></div>
+                        <button class="pin-change-btn" onclick="openChangePinModal('staff')">更改密碼</button>
+                    </div>
+                    <div class="pin-manage-row">
+                        <div class="pin-manage-label"><span>主管登入密碼</span><span class="pin-manage-tag pin-manage-tag-admin">admin</span></div>
+                        <button class="pin-change-btn" onclick="openChangePinModal('admin')">更改密碼</button>
+                    </div>
+                    <div class="pin-manage-row">
+                        <div class="pin-manage-label"><span>智慧判分門檻</span><span class="pin-manage-tag">%</span></div>
+                        <button class="pin-change-btn" onclick="openChangePinModal('threshold')">修改門檻</button>
+                    </div>
+                    <div class="pin-manage-hint">同仁／主管登入密碼跟「主管後台驗證」密碼是兩回事，同仁永遠無法得知或取得後台驗證密碼。</div>
+                </div>
+
+                <div class="admin-box">
+                    <div class="admin-list-head">
+                        <b style="color:var(--text-main); font-size:15px;" id="admin-list-title">知識管理</b>
+                    </div>
+                    <input type="text" id="admin-search-input" class="search-box" placeholder="搜尋這個分類的資料…" oninput="renderAdminList()">
+                    <div class="know-filter-row" id="admin-filter-row"></div>
+                    <div class="admin-selection-bar hidden" id="admin-selection-bar">
+                        <span id="admin-selection-count">已選取 0 筆</span>
+                        <button class="pin-change-btn" style="background:var(--danger); color:#fff;" onclick="batchDeleteRecords()">批次刪除</button>
+                    </div>
+                    <div class="list-container" id="admin-list" style="margin-top:4px; max-height:420px; overflow-y:auto;"></div>
+                </div>
             </div>
-        </section>
-    </main>
-</div>
 
-<button class="add-fab" id="admin-add-fab" style="display:none;" onclick="openRecordForm()">＋</button>
+            <!-- 新增題庫項目：浮動按鈕，只在已驗證的後台管理頁面出現 -->
+            <button class="add-quiz-fab" id="admin-add-fab" style="display:none;" onclick="openRecordForm()" title="新增資料">＋</button>
+        </div>
+    </div>
 
-<nav class="mobile-tabbar">
-    <button class="tab-item active" data-view="learn" onclick="switchView('learn')">
-        <svg viewBox="0 0 24 24"><path d="M4 4h11a3 3 0 0 1 3 3v13H7a3 3 0 0 1-3-3z"/></svg>學習
-    </button>
-    <button class="tab-item" data-view="quiz" onclick="switchView('quiz')">
-        <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.8 9.94l-3.75-3.75zM20.7 7.04a1 1 0 0 0 0-1.41l-2.33-2.33a1 1 0 0 0-1.41 0L15 5.25l3.75 3.75z"/></svg>測驗
-    </button>
-    <button class="tab-item" data-view="knowledge" onclick="switchView('knowledge')">
-        <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 1 0-.7.7l.27.28v.79l5 5L20.5 19zm-6 0A4.5 4.5 0 1 1 14 9.5 4.5 4.5 0 0 1 9.5 14z"/></svg>知識
-    </button>
-    <button class="tab-item" data-view="settings" onclick="switchView('settings')">
-        <svg viewBox="0 0 24 24"><path d="M12 15.5A3.5 3.5 0 1 1 15.5 12 3.5 3.5 0 0 1 12 15.5zm7.43-2.5a7.6 7.6 0 0 0 0-2l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.5 7.5 0 0 0-1.73-1l-.36-2.54a.5.5 0 0 0-.5-.43h-3.84a.5.5 0 0 0-.5.43l-.36 2.54a7.5 7.5 0 0 0-1.73 1l-2.39-.96a.5.5 0 0 0-.6.22L2.74 9.28a.5.5 0 0 0 .12.64L4.9 11.5a7.6 7.6 0 0 0 0 2l-2.04 1.58a.5.5 0 0 0-.12.64l1.92 3.32a.5.5 0 0 0 .6.22l2.39-.96a7.5 7.5 0 0 0 1.73 1l.36 2.54a.5.5 0 0 0 .5.43h3.84a.5.5 0 0 0 .5-.43l.36-2.54a7.5 7.5 0 0 0 1.73-1l2.39.96a.5.5 0 0 0 .6-.22l1.92-3.32a.5.5 0 0 0-.12-.64z"/></svg>設定
-    </button>
-    <button class="tab-item hidden" id="tab-admin-btn" data-view="admin" onclick="switchView('admin')">
-        <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 14.93V17a1 1 0 0 1-2 0v-.07A7.002 7.002 0 0 1 5.07 11H5a1 1 0 0 1 0-2h.07A7.002 7.002 0 0 1 11 5.07V5a1 1 0 0 1 2 0v.07A7.002 7.002 0 0 1 18.93 11H19a1 1 0 0 1 0 2h-.07A7.002 7.002 0 0 1 13 16.93z"/></svg>後台
-    </button>
+    <!-- 新增／編輯資料彈窗：欄位完全依照該分類目前 Google 試算表的 Header 動態產生 -->
+    <div id="record-form-modal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="modal-head">
+                <b id="record-form-title">新增資料</b>
+                <span class="modal-close" onclick="closeRecordForm()">✕</span>
+            </div>
+            <label class="modal-label">分類</label>
+            <select id="record-form-category" class="search-box" onchange="renderRecordFormFields()"></select>
+            <div id="record-form-fields"></div>
+            <div id="record-form-error" class="auth-status is-error" style="text-align:left; margin:4px 0 0; min-height:16px;"></div>
+            <button class="btn-action" id="record-form-submit" onclick="submitRecordForm()" style="margin-top:14px;">儲存並同步至 Google 試算表</button>
+        </div>
+    </div>
+
+    <!-- 更改密碼／判分門檻彈窗 -->
+    <div id="change-pin-modal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="modal-head">
+                <b id="change-pin-title">更改密碼</b>
+                <span class="modal-close" onclick="closeChangePinModal()">✕</span>
+            </div>
+            <label class="modal-label" id="change-pin-label-1">新密碼</label>
+            <input type="text" id="change-pin-new" class="search-box" placeholder="" autocomplete="off">
+            <div id="change-pin-error" class="auth-status is-error" style="text-align:left; margin:4px 0 0; min-height:16px;"></div>
+            <div class="modal-btn-row">
+                <button class="modal-btn-secondary" onclick="closeChangePinModal()">取消</button>
+                <button class="modal-btn-primary" id="change-pin-submit" onclick="submitChangePin()">更新</button>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- 手機底部浮動導覽列：依照規格只保留 考題測驗／知識總覽／設定 三個，
+     首頁、學習卡片、後台管理都不放進來（後台另外從「設定」頁的主管入口進入）。 -->
+<nav class="nav-bar">
+    <button class="nav-item active" onclick="switchTab('quiz', this)" aria-label="考題測驗"><svg viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></button>
+    <button class="nav-item" onclick="switchTab('search', this)" aria-label="知識總覽"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button>
+    <button class="nav-item" onclick="switchTab('settings', this)" aria-label="設定"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button>
 </nav>
 
-<!-- 更改通行碼彈窗 -->
-<div id="change-pin-modal" class="modal-overlay hidden">
-    <div class="modal-card">
-        <div class="modal-head"><span id="change-pin-title">更改通行碼</span><button class="modal-close" onclick="closeChangePinModal()">✕</button></div>
-        <label class="field-label">目前密碼</label>
-        <input type="password" id="change-pin-current" class="input-box" placeholder="輸入目前密碼">
-        <label class="field-label" style="margin-top:10px;">新密碼（至少 4 字元）</label>
-        <input type="password" id="change-pin-new" class="input-box" placeholder="新密碼">
-        <label class="field-label" style="margin-top:10px;">確認新密碼</label>
-        <input type="password" id="change-pin-confirm" class="input-box" placeholder="再輸入一次">
-        <div class="modal-error" id="change-pin-error"></div>
-        <div class="modal-btn-row">
-            <button class="btn-secondary" onclick="closeChangePinModal()">取消</button>
-            <button class="btn-primary" id="change-pin-submit" onclick="submitChangePin()">更新密碼</button>
-        </div>
-    </div>
-</div>
-
-<!-- 新增／編輯題目彈窗（欄位動態產生） -->
-<div id="record-form-modal" class="modal-overlay hidden">
-    <div class="modal-card">
-        <div class="modal-head"><span id="record-form-title">新增題目</span><button class="modal-close" onclick="closeRecordForm()">✕</button></div>
-        <label class="field-label">分類</label>
-        <select id="record-form-category" class="input-box" onchange="renderRecordFormFields()"></select>
-        <div id="record-form-fields"></div>
-        <div class="modal-error" id="record-form-error"></div>
-        <div class="modal-btn-row">
-            <button class="btn-secondary" onclick="closeRecordForm()">取消</button>
-            <button class="btn-primary" id="record-form-submit" onclick="submitRecordForm()">儲存並同步</button>
-        </div>
-    </div>
-</div>
-
 <script>
-// ================================================================
-// CONFIG — 這是整個系統唯一需要手動設定的地方：Apps Script 網址。
-// 不是知識資料，純粹是連線端點設定，所以放在程式碼裡是合理的（跟 403 行的
-// 「不要把資料硬編碼」是兩件事——這裡存的是「去哪裡拿資料」，不是資料本身）。
-// ================================================================
-const API_URL = 'https://script.google.com/macros/s/AKfycbwmZjmS_d11ZYEc7NbTmvMpoN0V3pey_fhnlHpq0plYV6xz8lAflp1p7gdImdrpZPgj/exec';
 
-// ================================================================
-// STATE（記憶體內，重新整理就消失；只有 favs/wrongLog/stats/theme 存 localStorage）
-// ================================================================
-let bootstrapData = null;   // { knowledge, headers, fieldRules, settings, titleFields, categorySheets }
-let knowledgeUnits = [];    // Knowledge Engine 攤平出來的最小學習/出題單位
-let userRole = null;        // 'staff' | 'admin'（App 一般進入關卡的角色，跟後台 CRUD 無關）
-let adminToken = null;      // 後台 CRUD 的短期 session token（adminLogin 成功後才有）
+/* ================================================================
+   CONFIG — 這是整個系統唯一需要手動設定的地方：Apps Script 網址。
+   不是知識資料，純粹是連線端點設定，跟「不要把資料硬編碼」是兩件事。
+   ================================================================ */
+const API_URL = 'PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE';
+
+/* ================================================================
+   STATE
+   記憶體內（重新整理就消失）：bootstrapData / knowledgeUnits / userRole / adminToken。
+   userRole、adminToken 刻意「不」存 localStorage —— 重新整理一定要重新驗證，
+   不能因為瀏覽器裡還留著舊的角色字串就直接恢復主管權限。
+   只有 favs / wrongLog / stats / examSettings / 主題 這些「使用者本機偏好」存 localStorage，
+   題庫本身／任何知識內容絕對不存。
+   ================================================================ */
+let bootstrapData = null;
+let knowledgeUnits = [];
+let userRole = null;        // 'staff' | 'admin'：App 一般進入關卡的角色，跟後台 CRUD 無關
+let adminToken = null;      // 後台 CRUD 專用的短期 session token，只在記憶體內，絕不落地
 let currentCardUnit = null;
 let currentQuestion = null;
+let quizQueue = [];
+let quizIndex = 0;
 let usedQuestionKeys = new Set();
-let learnState = { pool: 'all', cat: 'all' };
-let quizState = { pool: 'all', cat: 'all' };
 let knowledgeFilterCat = 'all';
 let adminFilterCat = null;
 let recordFormEditingId = null;
-let selectedRecordIds = new Set(); // 批次刪除用的多選狀態，切換分類時會清空
+let selectedRecordIds = new Set();
+let pendingSwitchRole = null; // 'staff' | 'admin'，切換身分彈窗用
 
-let favs = JSON.parse(localStorage.getItem('v2_favs') || '[]');
-let wrongLog = JSON.parse(localStorage.getItem('v2_wrong_log') || '[]');
-let stats = JSON.parse(localStorage.getItem('v2_stats') || '{"correct":0,"total":0,"streak":0}');
+let favs = JSON.parse(localStorage.getItem('v3_favs') || '[]');
+let wrongLog = JSON.parse(localStorage.getItem('v3_wrong_log') || '[]');
+let stats = JSON.parse(localStorage.getItem('v3_stats') || '{"correct":0,"total":0,"streak":0}');
+let examSettings = Object.assign({ scope: 'all', count: 10, mode: 'random' },
+    JSON.parse(localStorage.getItem('v3_exam_settings') || '{}'));
 
-function saveFavs() { localStorage.setItem('v2_favs', JSON.stringify(favs)); }
-function saveWrongLog() { localStorage.setItem('v2_wrong_log', JSON.stringify(wrongLog)); }
-function saveStats() { localStorage.setItem('v2_stats', JSON.stringify(stats)); }
+function saveFavs() { localStorage.setItem('v3_favs', JSON.stringify(favs)); }
+function saveWrongLog() { localStorage.setItem('v3_wrong_log', JSON.stringify(wrongLog)); }
+function saveStats() { localStorage.setItem('v3_stats', JSON.stringify(stats)); }
+function saveExamSettings() { localStorage.setItem('v3_exam_settings', JSON.stringify(examSettings)); }
 function getWrongKnowledgeIds() { return [...new Set(wrongLog.map(w => w.knowledgeId))]; }
 function logWrong(entry) { wrongLog.push(entry); if (wrongLog.length > 500) wrongLog = wrongLog.slice(-500); saveWrongLog(); }
 function removeWrong(knowledgeId) { wrongLog = wrongLog.filter(w => w.knowledgeId !== knowledgeId); saveWrongLog(); }
@@ -518,12 +1013,12 @@ function esc(s) {
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
-// ================================================================
-// API 輔助：GET 用 query string；POST 用 text/plain 避開瀏覽器的 CORS 預檢
-// （application/json 會觸發 OPTIONS 預檢，Apps Script 標準部署對 OPTIONS
-// 的支援並不穩定；text/plain 屬於「簡單請求」，不會觸發預檢，是業界公認
-// 在 Apps Script Web App 上最可靠的跨網域 POST 做法）。
-// ================================================================
+/* ================================================================
+   API 輔助：GET 用 query string；POST 用 text/plain 避開瀏覽器的 CORS 預檢
+   （application/json 會觸發 OPTIONS 預檢，Apps Script 對 OPTIONS 的支援不穩定；
+   text/plain 屬於「簡單請求」，不會觸發預檢，是業界公認在 Apps Script Web App
+   上最可靠的跨網域 POST 做法）。
+   ================================================================ */
 async function apiGet(params) {
     const qs = new URLSearchParams(params).toString();
     const url = API_URL + (API_URL.includes('?') ? '&' : '?') + qs;
@@ -539,11 +1034,11 @@ async function apiPost(body) {
     return res.json();
 }
 
-// ================================================================
-// KNOWLEDGE ENGINE — 把 Google Sheet 的原始列資料拆成 Knowledge Units。
-// 完全不知道「早餐」「分機」這些具體欄位名稱，純粹依照 bootstrap 回傳的
-// headers / titleFields / fieldRules 動態運作，Sheet 加欄位不用改這裡。
-// ================================================================
+/* ================================================================
+   KNOWLEDGE ENGINE — 把 Google Sheet 的原始列資料拆成 Knowledge Units。
+   完全不知道「早餐」「分機」這些具體欄位名稱，純粹依照 bootstrap 回傳的
+   headers / titleFields / fieldRules 動態運作，Sheet 加欄位不用改這裡。
+   ================================================================ */
 function buildKnowledgeUnits() {
     const units = [];
     const rulesByCat = {};
@@ -566,7 +1061,7 @@ function buildKnowledgeUnits() {
 
             Object.keys(rec).forEach(field => {
                 if (field === 'ID' || field === '_row') return;
-                if (titleCandidates.includes(field)) return; // 標題欄位本身不當成獨立出題單位
+                if (titleCandidates.includes(field)) return;
                 const value = rec[field];
                 if (!value) return;
                 const rule = (rulesByCat[catName] || {})[field];
@@ -579,7 +1074,7 @@ function buildKnowledgeUnits() {
                     field: field,
                     value: value,
                     record: rec,
-                    questionable: rule ? rule.enabled : false, // 沒規則＝預設不可出題，需主管明確在「出題規則」開啟
+                    questionable: rule ? rule.enabled : false,
                     gradingType: rule ? rule.gradingType : 'text',
                     required: rule ? rule.required : false
                 });
@@ -589,14 +1084,14 @@ function buildKnowledgeUnits() {
     knowledgeUnits = units;
 }
 
-function getFilteredUnits(poolState, catState, requireQuestionable) {
+function getFilteredUnits(scope, mode, requireQuestionable) {
     let pool = knowledgeUnits.slice();
     if (requireQuestionable) pool = pool.filter(u => u.questionable);
-    if (catState && catState !== 'all') pool = pool.filter(u => u.category === catState);
-    if (poolState === 'fav') {
+    if (scope && scope !== 'all') pool = pool.filter(u => u.category === scope);
+    if (mode === 'fav') {
         const p = pool.filter(u => favs.includes(u.knowledgeId));
         if (p.length) pool = p;
-    } else if (poolState === 'wrong') {
+    } else if (mode === 'wrong') {
         const wrongIds = getWrongKnowledgeIds();
         const p = pool.filter(u => wrongIds.includes(u.knowledgeId));
         if (p.length) pool = p;
@@ -604,10 +1099,10 @@ function getFilteredUnits(poolState, catState, requireQuestionable) {
     return pool;
 }
 
-// ================================================================
-// QUESTION ENGINE — 不預先產生固定題庫，每次從 Knowledge Unit 即時產生題目。
-// 支援多種問法（同一欄位隨機挑一句）與多方位出題（正向問值／反向問標題）。
-// ================================================================
+/* ================================================================
+   QUESTION ENGINE — 不預先產生固定題庫，每次從 Knowledge Unit 即時產生題目。
+   支援多種問法（同一欄位隨機挑一句）與多方位出題（正向問值／反向問標題）。
+   ================================================================ */
 const GENERIC_TEMPLATES = {
     default: (t, f) => [`${t} 的${f}是什麼？`, `請回答 ${t} 的${f}。`, `${t}的${f}？`],
     time_range: (t, f) => [`${t}的${f}是什麼時候？`, `${t} ${f}時間？`, `請問 ${t} 的${f}營業時間？`],
@@ -622,7 +1117,6 @@ const GENERIC_TEMPLATES = {
 function reverseTemplates(catName, field, value) {
     return [`哪一個${catName}項目的${field}是「${value}」？`, `${field}是「${value}」的是哪一個？`];
 }
-
 function generateQuestionFromUnit(unit, allowReverse) {
     const reverse = !!allowReverse && Math.random() < 0.3;
     const templates = reverse
@@ -630,7 +1124,7 @@ function generateQuestionFromUnit(unit, allowReverse) {
         : (GENERIC_TEMPLATES[unit.gradingType] || GENERIC_TEMPLATES.default)(unit.title, unit.field);
     const prompt = templates[Math.floor(Math.random() * templates.length)];
     return {
-        id: unit.id + (reverse ? '::rev' : '') + '::' + Date.now(),
+        id: unit.id + (reverse ? '::rev' : ''),
         unit: unit,
         reverse: reverse,
         prompt: prompt,
@@ -639,12 +1133,12 @@ function generateQuestionFromUnit(unit, allowReverse) {
     };
 }
 
-// ================================================================
-// SMART GRADING ENGINE — 規則優先，相似度是最後手段。
-// Level1 完全相同 → Level2 格式正規化相同 → Level3 依資料型態結構化判斷
-// （time_range 要求完整起訖、number/phone/code/exact 要求精確、不接受
-// 用相似度矇混）→ Level4 相似度（門檻從 Sheet 設定讀取，不寫死）。
-// ================================================================
+/* ================================================================
+   SMART GRADING ENGINE — 規則優先，相似度是最後手段。
+   Level1 完全相同 → Level2 格式正規化相同 → Level3 依資料型態結構化判斷
+   （time_range 要求完整起訖、number/phone/code/exact 要求精確、不接受
+   用相似度矇混）→ Level4 相似度（門檻從 Sheet 設定讀取，不寫死）。
+   ================================================================ */
 function normalizeAnswer(s) {
     if (!s) return '';
     return String(s).trim().toLowerCase()
@@ -689,7 +1183,6 @@ function similarity(a, b) {
     const dist = levenshtein(a, b);
     return (1 - dist / Math.max(a.length, b.length)) * 100;
 }
-
 function gradeAnswer(userInput, question) {
     const correct = question.correctAnswer;
     const type = question.gradingType;
@@ -737,9 +1230,11 @@ function gradeAnswer(userInput, question) {
     return { correct: false, reason: `相似度 ${sim.toFixed(0)}% 未達門檻 ${threshold}%` };
 }
 
-// ================================================================
-// AUTH — App 一般進入關卡（輕量 PIN，跟後台 CRUD 的 admin_password 分開）
-// ================================================================
+/* ================================================================
+   AUTH — App 一般進入關卡（輕量同仁/主管 PIN，跟後台 CRUD 的 admin_password
+   是完全分開的兩回事）。密碼永遠在雲端比對，前端只拿到比對結果（role），
+   拿不到密碼本身。
+   ================================================================ */
 async function checkAuthPin() {
     const pinInput = document.getElementById('pin-input');
     const statusEl = document.getElementById('auth-status');
@@ -753,14 +1248,14 @@ async function checkAuthPin() {
 
     try {
         const res = await apiGet({ action: 'checkPin', pin: pin });
-        const role = (res.ok && res.data.role) || 'none';
+        const role = (res.ok && res.data && res.data.role) || 'none';
         btn.disabled = false;
         if (role === 'admin' || role === 'staff') {
             userRole = role;
-            document.getElementById('nav-admin-btn').classList.remove('hidden');
-            document.getElementById('tab-admin-btn').classList.remove('hidden');
             statusEl.textContent = '';
-            document.getElementById('auth-modal').classList.add('hidden');
+            document.getElementById('auth-modal').style.display = 'none';
+            applyRoleUI();
+            switchTab('home', null);
             boot();
         } else {
             statusEl.textContent = '密碼錯誤，請再試一次';
@@ -775,9 +1270,31 @@ async function checkAuthPin() {
     }
 }
 
-// ================================================================
-// BOOT — 從 Google 試算表抓 bootstrap，重建 Knowledge Units，刷新畫面
-// ================================================================
+/** 依照目前 userRole 顯示/隱藏「後台管理」入口（Sidebar + 設定頁），
+ *  同仁狀態下這兩個地方一定完全看不到，不是只有 disabled。 */
+function applyRoleUI() {
+    const isAdmin = userRole === 'admin';
+    document.getElementById('d-nav-admin-btn').classList.toggle('hidden', !isAdmin);
+    document.getElementById('settings-admin-entry').classList.toggle('hidden', !isAdmin);
+    const roleLabel = document.getElementById('current-role-label');
+    if (roleLabel) roleLabel.textContent = isAdmin ? '主管' : '同仁';
+    if (!isAdmin) {
+        // 降級成同仁：後台 CRUD token 必須立即清掉，不能留著舊 session。
+        adminToken = null;
+        const gate = document.getElementById('admin-login-gate');
+        const crud = document.getElementById('admin-crud-area');
+        if (gate) gate.style.display = 'flex';
+        if (crud) crud.style.display = 'none';
+        // 如果使用者剛好停在後台頁面，直接踢回首頁。
+        if (document.getElementById('view-admin').classList.contains('active')) {
+            switchTab('home', null);
+        }
+    }
+}
+
+/* ================================================================
+   BOOT — 從 Google 試算表抓 bootstrap，重建 Knowledge Units，刷新畫面
+   ================================================================ */
 async function boot(silent) {
     const statusEl = document.getElementById('home-sync-status');
     if (!silent && statusEl) statusEl.innerText = '正在連線 Google 試算表…';
@@ -787,343 +1304,443 @@ async function boot(silent) {
         bootstrapData = res.data;
         if (!adminFilterCat) adminFilterCat = Object.keys(bootstrapData.categorySheets)[0];
         buildKnowledgeUnits();
-        renderCatFilters();
+        renderKnowFilterRow();
         renderHomeStats();
         if (statusEl) statusEl.innerText = `已連線 Google 試算表・共 ${knowledgeUnits.length} 筆知識單元`;
         nextCard();
-        nextQuiz();
-        renderKnowledgeList();
-        if (adminToken) renderAdminList();
+        startNewQuizSession();
+        renderSearchList();
+        if (adminToken) { renderAdminCatFilter(); renderAdminList(); }
     } catch (e) {
         if (statusEl) statusEl.innerText = '⚠️ 連線 Google 試算表失敗：' + e.message;
     }
 }
 
-// ================================================================
-// UI：導覽
-// ================================================================
-function switchView(view) {
-    document.querySelectorAll('.view-content').forEach(el => el.classList.toggle('active', el.id === 'view-' + view));
-    document.querySelectorAll('.nav-btn').forEach(el => el.classList.toggle('active', el.dataset.view === view));
-    document.querySelectorAll('.tab-item').forEach(el => el.classList.toggle('active', el.dataset.view === view));
+/* ================================================================
+   導覽：桌面 Sidebar（6 顆，含後台）／手機底部只有 3 顆（考題/知識/設定）
+   ================================================================ */
+const DESKTOP_TABS = ['home', 'learn', 'quiz', 'search', 'settings', 'admin'];
+const MOBILE_TABS = ['quiz', 'search', 'settings'];
+const PAGE_TITLES = {
+    home: ['首頁', '台南晶英 禮賓司萬事通・動態知識庫'],
+    learn: ['學習卡片', '翻卡片記憶，熟悉代碼與知識內容'],
+    quiz: ['考題測驗', '動態出題，智慧判分'],
+    search: ['知識總覽', '全域搜尋所有分類的知識內容'],
+    settings: ['設定', '外觀、考試設定與身分管理'],
+    admin: ['後台管理', '新增、編輯、刪除知識，管理密碼與判分門檻']
+};
+
+function switchTab(tab, btn) {
+    if (tab === 'admin' && userRole !== 'admin') tab = 'home'; // 防呆：同仁永遠進不了後台頁
+
+    document.querySelectorAll('.view-content').forEach(el => el.classList.toggle('active', el.id === 'view-' + tab));
+
+    const dIdx = DESKTOP_TABS.indexOf(tab);
+    document.querySelectorAll('.side-nav-btn').forEach((el, i) => el.classList.toggle('active', i === dIdx));
+
+    const mIdx = MOBILE_TABS.indexOf(tab);
+    document.querySelectorAll('.nav-item').forEach((el, i) => el.classList.toggle('active', i === mIdx));
+
+    const titles = PAGE_TITLES[tab] || ['', ''];
+    const titleEl = document.getElementById('desktop-page-title');
+    const descEl = document.getElementById('desktop-page-desc');
+    if (titleEl) titleEl.innerText = titles[0];
+    if (descEl) descEl.innerText = titles[1];
+
+    if (tab === 'admin') {
+        const gate = document.getElementById('admin-login-gate');
+        const crud = document.getElementById('admin-crud-area');
+        if (adminToken) {
+            gate.style.display = 'none';
+            crud.style.display = 'flex';
+            renderAdminCatFilter();
+            renderAdminList();
+        } else {
+            gate.style.display = 'flex';
+            crud.style.display = 'none';
+            document.getElementById('admin-password-input').value = '';
+            document.getElementById('admin-login-error').textContent = '';
+        }
+    }
+    if (tab === 'settings') updateSettingsStatsUI();
 }
 
-function catChipsHtml(activeCat, fnName, includeAll) {
-    if (!bootstrapData) return '';
-    const cats = Object.keys(bootstrapData.categorySheets);
-    let html = includeAll ? `<div class="cat-chip ${activeCat === 'all' ? 'active' : ''}" onclick="${fnName}('all')">全部</div>` : '';
-    cats.forEach(c => {
-        html += `<div class="cat-chip ${activeCat === c ? 'active' : ''}" onclick="${fnName}('${c}')">${esc(bootstrapData.categorySheets[c])}</div>`;
-    });
-    return html;
+/* ================================================================
+   外觀
+   ================================================================ */
+function toggleTheme() {
+    const isLight = document.body.classList.toggle('light-mode');
+    localStorage.setItem('v3_theme', isLight ? 'light' : 'dark');
+    applyThemeUI();
 }
-function renderCatFilters() {
-    document.getElementById('learn-cat-filter').innerHTML = catChipsHtml(learnState.cat, 'setLearnCat', true);
-    document.getElementById('quiz-cat-filter').innerHTML = catChipsHtml(quizState.cat, 'setQuizCat', true);
-    document.getElementById('knowledge-cat-filter').innerHTML = catChipsHtml(knowledgeFilterCat, 'setKnowledgeCat', true);
-    renderAdminCatFilter();
+function applyThemeUI() {
+    const isLight = document.body.classList.contains('light-mode');
+    document.querySelectorAll('.theme-text').forEach(el => el.textContent = isLight ? '淺色模式' : '深色模式');
 }
-function setKnowledgeCat(c) { knowledgeFilterCat = c; renderCatFilters(); renderKnowledgeList(); }
-function setLearnPool(p) { learnState.pool = p; document.querySelectorAll('#view-learn .pool-chip').forEach(el => el.classList.toggle('active', el.dataset.pool === p)); nextCard(); }
-function setLearnCat(c) { learnState.cat = c; renderCatFilters(); nextCard(); }
-function setQuizPool(p) { quizState.pool = p; document.querySelectorAll('#view-quiz .pool-chip').forEach(el => el.classList.toggle('active', el.dataset.pool === p)); nextQuiz(); }
-function setQuizCat(c) { quizState.cat = c; renderCatFilters(); nextQuiz(); }
 
+/* ================================================================
+   首頁統計
+   ================================================================ */
 function renderHomeStats() {
-    document.getElementById('stat-accuracy').innerText = stats.total > 0 ? Math.round(stats.correct / stats.total * 100) + '%' : '0%';
-    document.getElementById('stat-streak').innerText = stats.streak;
-    document.getElementById('stat-wrongs').innerText = getWrongKnowledgeIds().length;
-    document.getElementById('stat-favs').innerText = favs.length;
+    const acc = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
+    const vals = { accuracy: acc + '%', streak: stats.streak, wrong: getWrongKnowledgeIds().length, fav: favs.length };
+    ['h-st', 'st', 'd-st'].forEach(prefix => {
+        const a = document.getElementById(`${prefix}-accuracy`); if (a) a.innerText = vals.accuracy;
+        const s = document.getElementById(`${prefix}-streak`); if (s) s.innerText = vals.streak;
+        const w = document.getElementById(`${prefix}-wrong`); if (w) w.innerText = vals.wrong;
+        const f = document.getElementById(`${prefix}-fav`); if (f) f.innerText = vals.fav;
+    });
+}
+function updateSettingsStatsUI() {
+    const f = document.getElementById('set-st-fav'); if (f) f.innerText = favs.length;
+    const w = document.getElementById('set-st-wrong'); if (w) w.innerText = getWrongKnowledgeIds().length;
 }
 
-// ================================================================
-// UI：學習卡片
-// ================================================================
+/* ================================================================
+   學習卡片（翻卡片記憶：打字輸入 → 翻牌看答案 → 下一題）
+   ================================================================ */
 function nextCard() {
-    if (!bootstrapData) return;
-    const pool = getFilteredUnits(learnState.pool, learnState.cat, false);
+    document.getElementById('learn-action-area').style.display = 'flex';
+    document.getElementById('learn-card-container').style.display = 'block';
+
+    const pool = getFilteredUnits('all', 'random', true);
     if (pool.length === 0) {
+        document.getElementById('card-prompt').innerText = bootstrapData ? '目前沒有可學習的知識內容，請聯繫主管確認出題規則或 Google 試算表資料。' : '載入中…';
         currentCardUnit = null;
-        document.getElementById('card-badge').innerText = '';
-        document.getElementById('card-title').innerText = '目前沒有符合條件的知識資料';
-        document.getElementById('card-answer-box').classList.remove('show');
-        document.getElementById('card-answer-extra').innerHTML = '';
         return;
     }
     currentCardUnit = pool[Math.floor(Math.random() * pool.length)];
-    renderCard();
+    document.getElementById('main-card').classList.remove('flipped');
+    document.getElementById('card-badge').innerText = `【${currentCardUnit.categoryName}】${currentCardUnit.field}`;
+    document.getElementById('card-prompt').innerText = `${currentCardUnit.title}`;
+    document.getElementById('card-star').classList.toggle('active', favs.includes(currentCardUnit.knowledgeId));
+    document.getElementById('type-input').value = '';
+    document.getElementById('next-card-btn').classList.add('hidden');
+    setTimeout(() => document.getElementById('type-input')?.focus(), 50);
 }
-function renderCard() {
-    const u = currentCardUnit;
-    document.getElementById('card-badge').innerText = u.categoryName;
-    document.getElementById('card-title').innerText = `${u.title} 的「${u.field}」？`;
-    document.getElementById('card-answer-box').classList.remove('show');
-    document.getElementById('card-answer-main').innerText = u.value;
-    const others = Object.keys(u.record).filter(k => k !== 'ID' && k !== '_row' && k !== u.field && u.record[k]);
-    document.getElementById('card-answer-extra').innerHTML = others.map(k => `${esc(k)}：${esc(u.record[k])}`).join('<br>');
-    const starBtn = document.getElementById('card-star');
-    const isFav = favs.includes(u.knowledgeId);
-    starBtn.classList.toggle('active', isFav);
-    starBtn.innerText = isFav ? '★' : '☆';
+
+function submitAnswer() {
+    if (!currentCardUnit) return;
+    const input = document.getElementById('type-input');
+    const userVal = input.value.trim();
+    if (!userVal) return;
+
+    const result = gradeAnswer(userVal, { correctAnswer: currentCardUnit.value, gradingType: currentCardUnit.gradingType });
+    document.getElementById('main-card').classList.add('flipped');
+    document.getElementById('card-result-badge').className = 'result-badge ' + (result.correct ? 'correct' : 'wrong');
+    document.getElementById('card-result-badge').innerText = result.correct ? '🎉 答對了！' : '❌ 再想想';
+    document.getElementById('card-ans-code').innerText = currentCardUnit.field;
+    document.getElementById('card-ans-cn').innerText = currentCardUnit.value;
+    document.getElementById('card-ans-user').innerText = `你的輸入：${userVal}（${result.reason}）`;
+
+    stats.total++;
+    if (result.correct) { stats.correct++; stats.streak++; removeWrong(currentCardUnit.knowledgeId); }
+    else {
+        stats.streak = 0;
+        logWrong({ questionId: currentCardUnit.id, knowledgeId: currentCardUnit.knowledgeId, category: currentCardUnit.categoryName, field: currentCardUnit.field, userAnswer: userVal, correctAnswer: currentCardUnit.value, timestamp: new Date().toISOString() });
+    }
+    saveStats();
+    renderHomeStats();
+    document.getElementById('next-card-btn').classList.remove('hidden');
 }
-function flipCard() { document.getElementById('card-answer-box').classList.toggle('show'); }
-function toggleFav() {
+
+function requestNextCard() { nextCard(); }
+
+function toggleFav(e) {
+    if (e) e.stopPropagation();
     if (!currentCardUnit) return;
     const id = currentCardUnit.knowledgeId;
     const idx = favs.indexOf(id);
     if (idx > -1) favs.splice(idx, 1); else favs.push(id);
     saveFavs();
-    renderCard();
+    document.getElementById('card-star').classList.toggle('active', favs.includes(id));
     renderHomeStats();
 }
 
-// ================================================================
-// UI：考題測驗
-// ================================================================
+function renderMiniSearch() {
+    const q = (document.getElementById('mini-search').value || '').trim().toLowerCase();
+    const box = document.getElementById('mini-search-list');
+    if (!q) { box.innerHTML = ''; return; }
+    const results = knowledgeUnits.filter(u =>
+        u.title.toLowerCase().includes(q) || String(u.value).toLowerCase().includes(q) || u.field.toLowerCase().includes(q)
+    ).slice(0, 20);
+    box.innerHTML = results.map(u => `
+        <div class="list-item">
+            <div class="list-item-left"><div class="code">${esc(u.title)}</div><div class="cn">${esc(u.field)}：${esc(u.value)}</div></div>
+            <span class="list-item-cat">${esc(u.categoryName)}</span>
+        </div>`).join('') || `<div style="padding:10px; font-size:13px; color:var(--text-sub);">查無結果</div>`;
+}
+
+/* ================================================================
+   考題測驗：依照「設定」頁的考試範圍／題數／模式產生一整輪測驗，
+   頁面本身只負責顯示「當下這一題」，不放任何範圍/模式切換 UI。
+   ================================================================ */
+function startNewQuizSession() {
+    usedQuestionKeys.clear();
+    const pool = getFilteredUnits(examSettings.scope, examSettings.mode, true);
+    const shuffled = pool.slice().sort(() => Math.random() - 0.5);
+    const count = Math.min(examSettings.count, shuffled.length);
+    quizQueue = shuffled.slice(0, count);
+    quizIndex = 0;
+    nextQuiz();
+}
+
 function nextQuiz() {
-    if (!bootstrapData) return;
-    const pool = getFilteredUnits(quizState.pool, quizState.cat, true);
-    if (pool.length === 0) {
+    document.getElementById('quiz-result').classList.add('hidden');
+    document.getElementById('quiz-next-btn').classList.add('hidden');
+    document.getElementById('quiz-input').value = '';
+    document.getElementById('quiz-form').style.display = 'flex';
+
+    if (quizQueue.length === 0) {
+        document.getElementById('quiz-title').innerText = bootstrapData ? '目前沒有可出題的知識內容，請到設定調整考試範圍，或聯繫主管確認出題規則。' : '載入中…';
+        document.getElementById('quiz-progress').innerText = '';
         currentQuestion = null;
-        document.getElementById('quiz-badge').innerText = '';
-        document.getElementById('quiz-title').innerText = '目前沒有可以出題的知識（請確認「出題規則」分頁是否有啟用對應欄位）';
-        document.getElementById('quiz-feedback').classList.remove('show');
         return;
     }
-    const dedupe = bootstrapData.settings.question_dedupe !== 'FALSE';
-    let candidates = pool;
-    if (dedupe) {
-        const fresh = pool.filter(u => !usedQuestionKeys.has(u.id));
-        if (fresh.length > 0) candidates = fresh; else usedQuestionKeys.clear();
+    if (quizIndex >= quizQueue.length) {
+        // 一輪考完，自動重新開一輪（維持「考題測驗」頁永遠有題目可作答）
+        startNewQuizSession();
+        return;
     }
-    const unit = candidates[Math.floor(Math.random() * candidates.length)];
-    const randomize = bootstrapData.settings.question_randomize !== 'FALSE';
-    currentQuestion = generateQuestionFromUnit(unit, randomize);
-    usedQuestionKeys.add(unit.id);
-    renderQuiz();
+
+    const unit = quizQueue[quizIndex];
+    let q = generateQuestionFromUnit(unit, true);
+    let guard = 0;
+    while (usedQuestionKeys.has(q.id) && guard < 5) { q = generateQuestionFromUnit(unit, true); guard++; }
+    usedQuestionKeys.add(q.id);
+    currentQuestion = q;
+
+    document.getElementById('quiz-progress').innerText = `第 ${quizIndex + 1} / ${quizQueue.length} 題`;
+    document.getElementById('quiz-title').innerText = q.prompt;
+    setTimeout(() => document.getElementById('quiz-input')?.focus(), 50);
 }
-function renderQuiz() {
-    document.getElementById('quiz-badge').innerText = currentQuestion.unit.categoryName;
-    document.getElementById('quiz-title').innerText = currentQuestion.prompt;
-    document.getElementById('quiz-input').value = '';
-    const fb = document.getElementById('quiz-feedback');
-    fb.classList.remove('show', 'correct', 'wrong');
-    document.getElementById('quiz-input').focus();
-}
+
 function submitQuizAnswer() {
     if (!currentQuestion) return;
-    const val = document.getElementById('quiz-input').value.trim();
-    const result = gradeAnswer(val, currentQuestion);
-    const fb = document.getElementById('quiz-feedback');
-    fb.classList.add('show');
-    fb.classList.toggle('correct', result.correct);
-    fb.classList.toggle('wrong', !result.correct);
-    fb.innerHTML = `<b>${result.correct ? '✅ 正確' : '❌ 錯誤'}</b>　${esc(result.reason)}<br>標準答案：<b>${esc(currentQuestion.correctAnswer)}</b>`;
+    const input = document.getElementById('quiz-input');
+    const userVal = input.value.trim();
+    if (!userVal) return;
+
+    const result = gradeAnswer(userVal, currentQuestion);
+    const unit = currentQuestion.unit;
+
+    document.getElementById('quiz-form').style.display = 'none';
+    const resultBox = document.getElementById('quiz-result');
+    resultBox.classList.remove('hidden');
+    document.getElementById('quiz-result-badge').className = 'result-badge ' + (result.correct ? 'correct' : 'wrong');
+    document.getElementById('quiz-result-badge').innerText = result.correct ? '🎉 答對了！' : '❌ 答錯了';
+    document.getElementById('quiz-result-answer').innerText = `正確答案：${currentQuestion.correctAnswer}`;
+    document.getElementById('quiz-result-reason').innerText = `判定原因：${result.reason}`;
+    document.getElementById('quiz-result-note').innerText = `補充說明：${unit.categoryName} · ${unit.title} · ${unit.field}`;
+    document.getElementById('quiz-next-btn').classList.remove('hidden');
 
     stats.total++;
-    if (result.correct) {
-        stats.correct++; stats.streak++;
-        removeWrong(currentQuestion.unit.knowledgeId);
-    } else {
+    if (result.correct) { stats.correct++; stats.streak++; removeWrong(unit.knowledgeId); }
+    else {
         stats.streak = 0;
-        logWrong({
-            questionId: currentQuestion.id, knowledgeId: currentQuestion.unit.knowledgeId,
-            category: currentQuestion.unit.categoryName, field: currentQuestion.unit.field,
-            userAnswer: val, correctAnswer: currentQuestion.correctAnswer, timestamp: new Date().toISOString()
-        });
+        logWrong({ questionId: currentQuestion.id, knowledgeId: unit.knowledgeId, category: unit.categoryName, field: unit.field, userAnswer: userVal, correctAnswer: currentQuestion.correctAnswer, timestamp: new Date().toISOString() });
     }
     saveStats();
     renderHomeStats();
+    quizIndex++;
 }
 
-// ================================================================
-// UI：知識總覽（全域搜尋）
-// ================================================================
-function renderKnowledgeList() {
+/* ================================================================
+   設定頁：考試設定（範圍／題數／模式）＋ 本機紀錄 ＋ 身分
+   ================================================================ */
+function changeExamScope(scope) {
+    examSettings.scope = scope; saveExamSettings();
+    document.querySelectorAll('#exam-scope-group .ios-item').forEach(el => el.classList.toggle('active', el.dataset.scope === scope));
+    startNewQuizSession();
+}
+function changeExamCount(count) {
+    examSettings.count = count; saveExamSettings();
+    document.querySelectorAll('#exam-count-group .ios-item').forEach(el => el.classList.toggle('active', String(el.dataset.count) === String(count)));
+    startNewQuizSession();
+}
+function changeExamMode(mode) {
+    examSettings.mode = mode; saveExamSettings();
+    document.querySelectorAll('#exam-mode-group .ios-item').forEach(el => el.classList.toggle('active', el.dataset.mode === mode));
+    startNewQuizSession();
+}
+function applyExamSettingsUI() {
+    document.querySelectorAll('#exam-scope-group .ios-item').forEach(el => el.classList.toggle('active', el.dataset.scope === examSettings.scope));
+    document.querySelectorAll('#exam-count-group .ios-item').forEach(el => el.classList.toggle('active', String(el.dataset.count) === String(examSettings.count)));
+    document.querySelectorAll('#exam-mode-group .ios-item').forEach(el => el.classList.toggle('active', el.dataset.mode === examSettings.mode));
+}
+
+function resetAllData() {
+    if (!confirm('確定要清空本機紀錄嗎？\n只會清除這台裝置上的收藏、錯題本與答題統計，不會動到 Google 試算表的任何資料。')) return;
+    favs = []; wrongLog = []; stats = { correct: 0, total: 0, streak: 0 };
+    saveFavs(); saveWrongLog(); saveStats();
+    renderHomeStats(); updateSettingsStatsUI();
+    alert('已清空本機紀錄。');
+}
+
+/* ---- 切換身分：一定要重新打 API 驗證，不是前端直接改變數 ---- */
+function openSwitchIdentityModal() {
+    document.getElementById('switch-identity-input').value = '';
+    document.getElementById('switch-identity-error').textContent = '';
+    document.getElementById('switch-identity-modal').classList.remove('hidden');
+    setTimeout(() => document.getElementById('switch-identity-input')?.focus(), 50);
+}
+function closeSwitchIdentityModal() { document.getElementById('switch-identity-modal').classList.add('hidden'); }
+
+async function submitSwitchIdentity() {
+    const pin = document.getElementById('switch-identity-input').value.trim();
+    const errEl = document.getElementById('switch-identity-error');
+    const btn = document.getElementById('switch-identity-submit');
+    if (!pin) return;
+    btn.disabled = true; errEl.textContent = '';
+    try {
+        const res = await apiGet({ action: 'checkPin', pin: pin });
+        const role = (res.ok && res.data && res.data.role) || 'none';
+        btn.disabled = false;
+        if (role === 'admin' || role === 'staff') {
+            userRole = role;
+            applyRoleUI();
+            closeSwitchIdentityModal();
+        } else {
+            errEl.textContent = '密碼錯誤，請再試一次';
+        }
+    } catch (e) {
+        btn.disabled = false;
+        errEl.textContent = '連線失敗，請確認網路後再試一次';
+    }
+}
+
+/* ================================================================
+   知識總覽：全域搜尋（比對欄位值，也比對欄位名稱本身）
+   ================================================================ */
+function renderKnowFilterRow() {
     if (!bootstrapData) return;
-    const q = document.getElementById('knowledge-search').value.trim().toLowerCase();
-    const container = document.getElementById('knowledge-list');
+    const cats = Object.keys(bootstrapData.categorySheets);
+    let html = `<div class="know-filter-chip ${knowledgeFilterCat === 'all' ? 'active' : ''}" onclick="setKnowledgeCat('all')">全部</div>`;
+    cats.forEach(c => {
+        html += `<div class="know-filter-chip ${knowledgeFilterCat === c ? 'active' : ''}" onclick="setKnowledgeCat('${c}')">${esc(bootstrapData.categorySheets[c])}</div>`;
+    });
+    document.getElementById('know-filter-row').innerHTML = html;
+}
+function setKnowledgeCat(c) { knowledgeFilterCat = c; renderKnowFilterRow(); renderSearchList(); }
+
+function renderSearchList() {
+    if (!bootstrapData) return;
+    const q = (document.getElementById('search-input').value || '').trim().toLowerCase();
     let records = [];
     Object.keys(bootstrapData.knowledge).forEach(catKey => {
         if (knowledgeFilterCat !== 'all' && knowledgeFilterCat !== catKey) return;
-        (bootstrapData.knowledge[catKey] || []).forEach(rec => records.push({ catKey, rec }));
+        (bootstrapData.knowledge[catKey] || []).forEach(rec => records.push({ cat: catKey, rec }));
     });
     if (q) {
-        // 全域搜尋：比對欄位「值」（例如 Robin、1234），也要比對欄位「名稱」本身
-        // （例如輸入「早餐」要能找到所有有填早餐資訊的餐廳，不是只有值裡含「早餐」兩字才找得到）。
         records = records.filter(({ rec }) =>
             Object.entries(rec).some(([k, v]) => String(v).trim() !== '' && (
                 String(v).toLowerCase().includes(q) || k.toLowerCase().includes(q)
             ))
         );
     }
-    if (records.length === 0) { container.innerHTML = `<div class="empty-state">沒有符合的知識資料</div>`; return; }
-    container.innerHTML = records.map(({ catKey, rec }) => {
-        const titleCandidates = bootstrapData.titleFields[catKey] || [];
-        let title = rec.ID;
-        for (const c of titleCandidates) if (rec[c]) { title = rec[c]; break; }
-        const fields = Object.keys(rec).filter(k => k !== 'ID' && k !== '_row' && !titleCandidates.includes(k) && rec[k]);
-        return `<div class="knowledge-item">
-            <div class="knowledge-item-head"><div class="knowledge-item-title">${esc(title)}</div><div class="knowledge-item-cat">${esc(bootstrapData.categorySheets[catKey])}</div></div>
-            <div class="knowledge-item-fields">${fields.map(f => `<div class="knowledge-item-field"><b>${esc(f)}</b>：${esc(rec[f])}</div>`).join('')}</div>
+    const catName = c => bootstrapData.categorySheets[c];
+    const titleOf = (catKey, rec) => {
+        const cands = bootstrapData.titleFields[catKey] || [];
+        for (const c of cands) if (rec[c]) return rec[c];
+        return rec.ID;
+    };
+    document.getElementById('search-list').innerHTML = records.map(({ cat, rec }) => {
+        const rows = Object.keys(rec).filter(k => k !== 'ID').map(k => `<div style="font-size:13px; color:var(--text-sub); margin-top:2px;"><b style="color:var(--text-main);">${esc(k)}</b>：${esc(rec[k])}</div>`).join('');
+        return `<div class="list-item" style="align-items:flex-start;">
+            <div class="list-item-left"><div class="code">${esc(titleOf(cat, rec))}</div>${rows}</div>
+            <span class="list-item-cat">${esc(catName(cat))}</span>
         </div>`;
-    }).join('');
+    }).join('') || `<div style="padding:16px; text-align:center; font-size:13px; color:var(--text-sub);">查無符合的知識內容</div>`;
 }
 
-// ================================================================
-// UI：設定（主題、更改通行碼、重整、清空本機）
-// ================================================================
-function toggleTheme() {
-    const root = document.documentElement;
-    const isLight = root.getAttribute('data-theme') === 'light';
-    if (isLight) { root.removeAttribute('data-theme'); localStorage.setItem('v2_theme', 'dark'); }
-    else { root.setAttribute('data-theme', 'light'); localStorage.setItem('v2_theme', 'light'); }
-    updateThemeUI();
-}
-function updateThemeUI() {
-    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-    document.getElementById('theme-icon-side').innerText = isLight ? '☀️' : '🌙';
-    document.getElementById('theme-text-side').innerText = isLight ? '淺色模式' : '深色模式';
-    document.getElementById('theme-switch').classList.toggle('on', !isLight);
-}
-if (localStorage.getItem('v2_theme') === 'light') document.documentElement.setAttribute('data-theme', 'light');
-
-function resetLocalState() {
-    if (!confirm('確定要清空收藏、錯題本與答題統計嗎？這不會影響 Google 試算表的資料。')) return;
-    favs = []; wrongLog = []; stats = { correct: 0, total: 0, streak: 0 };
-    saveFavs(); saveWrongLog(); saveStats();
-    renderHomeStats();
-    alert('已清空本機紀錄。');
-}
-
-let changePinRole = null;
-function openChangePinModal() {
-    document.getElementById('change-pin-current').value = '';
-    document.getElementById('change-pin-new').value = '';
-    document.getElementById('change-pin-confirm').value = '';
-    document.getElementById('change-pin-error').innerText = '';
-    document.getElementById('change-pin-modal').classList.remove('hidden');
-}
-function closeChangePinModal() { document.getElementById('change-pin-modal').classList.add('hidden'); }
-
-async function submitChangePin() {
-    const cur = document.getElementById('change-pin-current').value;
-    const next = document.getElementById('change-pin-new').value;
-    const confirmVal = document.getElementById('change-pin-confirm').value;
-    const errEl = document.getElementById('change-pin-error');
-    errEl.innerText = '';
-
-    const checkRes = await apiGet({ action: 'checkPin', pin: cur });
-    const role = (checkRes.ok && checkRes.data.role) || 'none';
-    if (role === 'none') { errEl.innerText = '目前密碼不正確'; return; }
-    if (next.length < 4) { errEl.innerText = '新密碼至少需要 4 個字元'; return; }
-    if (next !== confirmVal) { errEl.innerText = '兩次輸入的新密碼不一致'; return; }
-    if (!adminToken) { errEl.innerText = '請先在下方「主管後台」登入，才能把新密碼同步到 Google 試算表'; return; }
-
-    const btn = document.getElementById('change-pin-submit');
-    btn.disabled = true; btn.innerText = '更新中...';
-    const body = { action: 'updatePins', token: adminToken };
-    if (role === 'staff') body.staffPin = next; else body.adminPin = next;
-    try {
-        const res = await apiPost(body);
-        if (res.ok) {
-            closeChangePinModal();
-            alert('🎉 通行碼已更新並同步到 Google 試算表！其他裝置下次登入會自動生效。');
-        } else {
-            errEl.innerText = res.error || '更新失敗';
-        }
-    } catch (e) {
-        errEl.innerText = '連線錯誤：' + e;
-    } finally {
-        btn.disabled = false; btn.innerText = '更新密碼';
-    }
-}
-
-// ================================================================
-// UI：後台管理（CRUD，欄位依 Google Sheet Header 動態產生）
-// ================================================================
-async function adminLogin() {
+/* ================================================================
+   後台管理：兩層驗證——
+     1) App 登入角色必須是 admin（才看得到入口／進得來頁面）
+     2) 另外要輸入 Google 試算表「設定」分頁的 admin_password 換到 adminToken，
+        CRUD 才真正能動作；token 只存在記憶體，重新整理就會消失，
+        必須重新驗證，不會因為 localStorage 留著什麼就自動恢復權限。
+   ================================================================ */
+async function submitAdminLogin() {
     const pw = document.getElementById('admin-password-input').value;
     const errEl = document.getElementById('admin-login-error');
-    errEl.innerText = '';
+    if (!pw) return;
+    errEl.textContent = '';
     try {
         const res = await apiPost({ action: 'adminLogin', password: pw });
-        if (res.ok && res.data.success) {
+        if (res.ok && res.data && res.data.success) {
             adminToken = res.data.token;
-            document.getElementById('admin-login-card').style.display = 'none';
+            document.getElementById('admin-login-gate').style.display = 'none';
             document.getElementById('admin-crud-area').style.display = 'flex';
-            document.getElementById('admin-add-fab').style.display = 'flex';
             renderAdminCatFilter();
             renderAdminList();
         } else {
-            errEl.innerText = (res.ok ? '密碼不正確' : res.error) || '登入失敗';
+            errEl.textContent = '密碼不正確。';
         }
     } catch (e) {
-        errEl.innerText = '連線錯誤：' + e;
+        errEl.textContent = '連線失敗：' + e.message;
     }
 }
-function adminLogout() {
-    adminToken = null;
-    document.getElementById('admin-login-card').style.display = 'block';
-    document.getElementById('admin-crud-area').style.display = 'none';
-    document.getElementById('admin-add-fab').style.display = 'none';
-    document.getElementById('admin-password-input').value = '';
-}
+
+function reloadBootstrap() { boot(); }
+
 function renderAdminCatFilter() {
     if (!bootstrapData) return;
-    if (!adminFilterCat) adminFilterCat = Object.keys(bootstrapData.categorySheets)[0];
-    const el = document.getElementById('admin-cat-filter');
-    if (el) el.innerHTML = catChipsHtml(adminFilterCat, 'setAdminCat', false);
+    const cats = Object.keys(bootstrapData.categorySheets);
+    if (!adminFilterCat) adminFilterCat = cats[0];
+    document.getElementById('admin-filter-row').innerHTML = cats.map(c =>
+        `<div class="know-filter-chip ${adminFilterCat === c ? 'active' : ''}" onclick="setAdminCat('${c}')">${esc(bootstrapData.categorySheets[c])}</div>`
+    ).join('');
+    document.getElementById('admin-list-title').innerText = `${bootstrapData.categorySheets[adminFilterCat]}（${(bootstrapData.knowledge[adminFilterCat] || []).length} 筆）`;
+    document.getElementById('admin-add-fab').style.display = 'flex';
 }
-function setAdminCat(c) { adminFilterCat = c; selectedRecordIds.clear(); renderAdminCatFilter(); renderAdminList(); }
+function setAdminCat(c) { adminFilterCat = c; selectedRecordIds.clear(); renderAdminCatFilter(); renderAdminList(); renderSelectionBar(); }
 
 function renderAdminList() {
     if (!bootstrapData || !adminFilterCat) return;
-    const cat = adminFilterCat;
-    const records = bootstrapData.knowledge[cat] || [];
-    document.getElementById('admin-list-title').innerText = `${bootstrapData.categorySheets[cat]}（${records.length} 筆）`;
-    const container = document.getElementById('admin-record-list');
-    renderSelectionBar();
-    if (records.length === 0) { container.innerHTML = `<div class="empty-state">目前沒有資料，點右下角「＋」新增</div>`; return; }
-    const titleCandidates = bootstrapData.titleFields[cat] || [];
-    container.innerHTML = records.map(rec => {
-        let title = rec.ID;
-        for (const c of titleCandidates) if (rec[c]) { title = rec[c]; break; }
-        const subFields = Object.keys(rec).filter(k => k !== 'ID' && k !== '_row' && !titleCandidates.includes(k) && rec[k]);
-        const sub = subFields.map(f => `${f}: ${rec[f]}`).join('　・　');
+    const q = (document.getElementById('admin-search-input').value || '').trim().toLowerCase();
+    let records = bootstrapData.knowledge[adminFilterCat] || [];
+    if (q) records = records.filter(rec => Object.values(rec).some(v => String(v).toLowerCase().includes(q)));
+
+    const titleCands = bootstrapData.titleFields[adminFilterCat] || [];
+    const titleOf = rec => { for (const c of titleCands) if (rec[c]) return rec[c]; return rec.ID; };
+
+    document.getElementById('admin-list').innerHTML = records.map(rec => {
+        const sub = Object.keys(rec).filter(k => k !== 'ID' && !titleCands.includes(k))
+            .map(k => `${esc(k)}：${esc(rec[k])}`).join('　');
         const checked = selectedRecordIds.has(rec.ID) ? 'checked' : '';
-        return `<div class="record-row">
-            <input type="checkbox" class="record-select-box" ${checked} onchange="toggleRecordSelect('${esc(rec.ID)}', this.checked)">
-            <div class="record-row-main"><div class="record-row-title">${esc(title)}</div><div class="record-row-sub">${esc(sub)}</div></div>
-            <div class="record-row-actions">
-                <button class="icon-btn" onclick="openRecordForm('${esc(cat)}','${esc(rec.ID)}')">✎</button>
-                <button class="icon-btn danger" onclick="deleteRecord('${esc(cat)}','${esc(rec.ID)}')">🗑</button>
+        return `<div class="list-item">
+            <div style="display:flex; align-items:center; gap:10px; flex:1; min-width:0;">
+                <input type="checkbox" ${checked} onchange="toggleRecordSelect('${esc(rec.ID)}', this.checked)" style="width:18px; height:18px; flex-shrink:0;">
+                <div class="list-item-left" style="min-width:0;">
+                    <div class="code">${esc(titleOf(rec))}</div>
+                    <div class="cn" style="font-weight:400; font-size:12px;">${sub}</div>
+                </div>
+            </div>
+            <div style="display:flex; gap:6px; flex-shrink:0;">
+                <button class="pin-change-btn" onclick="openRecordForm('${adminFilterCat}', '${esc(rec.ID)}')">編輯</button>
+                <button class="pin-change-btn" style="background:var(--danger); color:#fff;" onclick="deleteRecord('${adminFilterCat}', '${esc(rec.ID)}')">刪除</button>
             </div>
         </div>`;
-    }).join('');
+    }).join('') || `<div style="padding:16px; text-align:center; font-size:13px; color:var(--text-sub);">這個分類目前沒有資料</div>`;
 }
 
 function toggleRecordSelect(id, checked) {
     if (checked) selectedRecordIds.add(id); else selectedRecordIds.delete(id);
     renderSelectionBar();
 }
-
 function renderSelectionBar() {
     const bar = document.getElementById('admin-selection-bar');
-    if (!bar) return;
-    const n = selectedRecordIds.size;
-    if (n === 0) { bar.classList.add('hidden'); return; }
-    bar.classList.remove('hidden');
-    document.getElementById('admin-selection-count').innerText = `已選取 ${n} 筆`;
+    if (selectedRecordIds.size > 0) {
+        bar.classList.remove('hidden');
+        document.getElementById('admin-selection-count').innerText = `已選取 ${selectedRecordIds.size} 筆`;
+    } else {
+        bar.classList.add('hidden');
+    }
 }
+function clearSelection() { selectedRecordIds.clear(); renderSelectionBar(); renderAdminList(); }
 
-function clearSelection() {
-    selectedRecordIds.clear();
-    renderAdminList();
-}
-
-async function deleteSelectedRecords() {
-    const ids = Array.from(selectedRecordIds);
+async function batchDeleteRecords() {
+    const ids = [...selectedRecordIds];
     if (ids.length === 0) return;
     if (!confirm(`確定要刪除這 ${ids.length} 筆資料嗎？\n此操作無法復原，會同步從 Google 試算表移除。`)) return;
     try {
@@ -1131,25 +1748,33 @@ async function deleteSelectedRecords() {
         if (res.ok) {
             selectedRecordIds.clear();
             await boot(true);
-            renderAdminList();
+            renderAdminCatFilter(); renderAdminList(); renderSelectionBar();
+            alert('已刪除並同步到 Google 試算表。');
         } else {
-            alert('批次刪除失敗：' + res.error);
+            alert('刪除失敗：' + res.error);
         }
-    } catch (e) {
-        alert('連線錯誤：' + e);
-    }
+    } catch (e) { alert('刪除出錯：' + e.message); }
 }
 
+async function deleteRecord(cat, id) {
+    if (!confirm('確定要刪除這筆資料嗎？\n此操作無法復原，會同步從 Google 試算表移除。')) return;
+    try {
+        const res = await apiPost({ action: 'deleteRecords', token: adminToken, category: cat, ids: [id] });
+        if (res.ok) { await boot(true); renderAdminCatFilter(); renderAdminList(); alert('已刪除並同步到 Google 試算表。'); }
+        else alert('刪除失敗：' + res.error);
+    } catch (e) { alert('刪除出錯：' + e.message); }
+}
+
+/* ---- 新增／編輯資料：欄位完全依照該分類目前 Google 試算表的 Header 動態產生 ---- */
 function openRecordForm(cat, id) {
-    cat = cat || adminFilterCat || Object.keys(bootstrapData.categorySheets)[0];
+    recordFormEditingId = id || null;
     const sel = document.getElementById('record-form-category');
-    sel.innerHTML = Object.keys(bootstrapData.categorySheets).map(k =>
-        `<option value="${k}" ${k === cat ? 'selected' : ''}>${esc(bootstrapData.categorySheets[k])}</option>`
+    sel.innerHTML = Object.keys(bootstrapData.categorySheets).map(c =>
+        `<option value="${c}" ${c === (cat || adminFilterCat) ? 'selected' : ''}>${esc(bootstrapData.categorySheets[c])}</option>`
     ).join('');
     sel.disabled = !!id;
-    document.getElementById('record-form-title').innerText = id ? '編輯題目' : '新增題目';
-    document.getElementById('record-form-error').innerText = '';
-    recordFormEditingId = id || null;
+    document.getElementById('record-form-title').innerText = id ? '編輯資料' : '新增資料';
+    document.getElementById('record-form-error').textContent = '';
     renderRecordFormFields();
     document.getElementById('record-form-modal').classList.remove('hidden');
 }
@@ -1157,96 +1782,116 @@ function closeRecordForm() { document.getElementById('record-form-modal').classL
 
 function renderRecordFormFields() {
     const cat = document.getElementById('record-form-category').value;
-    const headers = (bootstrapData.headers[cat] || ['ID']).filter(h => h !== '_row');
-    let record = {};
+    const headers = (bootstrapData.headers[cat] || ['ID']).filter(h => h !== 'ID');
+    let existing = {};
     if (recordFormEditingId) {
-        record = (bootstrapData.knowledge[cat] || []).find(r => r.ID === recordFormEditingId) || {};
+        existing = (bootstrapData.knowledge[cat] || []).find(r => r.ID === recordFormEditingId) || {};
     }
-    const container = document.getElementById('record-form-fields');
-    container.innerHTML = headers.map(h => {
-        if (h === 'ID') {
-            return `<div class="dynamic-field"><label class="field-label">ID${recordFormEditingId ? '（不可修改）' : '（留空自動編號）'}</label>
-                <input type="text" class="input-box record-field-input" data-field="ID" value="${esc(record.ID || '')}" ${recordFormEditingId ? 'disabled' : ''}></div>`;
-        }
-        return `<div class="dynamic-field"><label class="field-label">${esc(h)}</label>
-            <input type="text" class="input-box record-field-input" data-field="${esc(h)}" value="${esc(record[h] || '')}"></div>`;
-    }).join('') + `
-        <div class="dynamic-field">
-            <label class="field-label">新增自訂欄位（選填）</label>
-            <div style="display:flex; gap:8px;">
-                <input type="text" class="input-box" id="record-form-custom-field-name" placeholder="例如：下午茶">
-                <button type="button" class="btn-secondary" onclick="addCustomFieldToForm()">加入</button>
-            </div>
-        </div>`;
+    let html = `<label class="modal-label">ID（留空自動編號）</label><input type="text" id="record-field-ID" class="search-box" value="${esc(recordFormEditingId || '')}" ${recordFormEditingId ? 'disabled' : ''}>`;
+    headers.forEach(h => {
+        html += `<label class="modal-label">${esc(h)}</label><input type="text" class="search-box record-field" data-field="${esc(h)}" value="${esc(existing[h] || '')}">`;
+    });
+    html += `<button type="button" class="pin-change-btn" style="margin-top:8px;" onclick="addCustomFieldToForm()">＋ 新增自訂欄位（選填）</button>`;
+    document.getElementById('record-form-fields').innerHTML = html;
 }
 function addCustomFieldToForm() {
-    const nameInput = document.getElementById('record-form-custom-field-name');
-    const name = nameInput.value.trim();
+    const name = prompt('新欄位名稱（例如：下午茶）');
     if (!name) return;
+    const wrap = document.createElement('div');
+    wrap.innerHTML = `<label class="modal-label">${esc(name)}</label><input type="text" class="search-box record-field" data-field="${esc(name)}" value="">`;
     const container = document.getElementById('record-form-fields');
-    const div = document.createElement('div');
-    div.className = 'dynamic-field';
-    div.innerHTML = `<label class="field-label">${esc(name)}（新欄位）</label><input type="text" class="input-box record-field-input" data-field="${esc(name)}" value="">`;
-    container.insertBefore(div, container.lastElementChild);
-    nameInput.value = '';
+    const btn = container.querySelector('button');
+    container.insertBefore(wrap, btn);
 }
 
 async function submitRecordForm() {
     const cat = document.getElementById('record-form-category').value;
-    const inputs = document.querySelectorAll('#record-form-fields .record-field-input');
     const fields = {};
-    inputs.forEach(inp => { const f = inp.dataset.field; if (f) fields[f] = inp.value.trim(); });
+    document.querySelectorAll('#record-form-fields .record-field').forEach(inp => { fields[inp.dataset.field] = inp.value.trim(); });
     const errEl = document.getElementById('record-form-error');
-    errEl.innerText = '';
-
-    const hasAny = Object.keys(fields).some(k => k !== 'ID' && fields[k]);
-    if (!hasAny) { errEl.innerText = '請至少填寫一個欄位'; return; }
-
     const btn = document.getElementById('record-form-submit');
-    btn.disabled = true; btn.innerText = '儲存中...';
+    const titleCands = bootstrapData.titleFields[cat] || [];
+    const hasTitle = titleCands.some(c => fields[c]);
+    if (!hasTitle) { errEl.textContent = `請至少填寫「${titleCands[0] || '標題'}」欄位。`; return; }
+
+    btn.disabled = true; btn.innerText = '儲存中…';
     try {
         let res;
         if (recordFormEditingId) {
             res = await apiPost({ action: 'updateRecord', token: adminToken, category: cat, id: recordFormEditingId, fields: fields });
         } else {
+            const idInput = document.getElementById('record-field-ID').value.trim();
+            if (idInput) fields.ID = idInput;
             res = await apiPost({ action: 'createRecord', token: adminToken, category: cat, fields: fields });
         }
         if (res.ok) {
             closeRecordForm();
+            await boot(true);
             adminFilterCat = cat;
-            await boot(true);
-            renderAdminCatFilter();
-            renderAdminList();
+            renderAdminCatFilter(); renderAdminList();
+            alert('🎉 已儲存並同步到 Google 試算表！');
         } else {
-            errEl.innerText = res.error || '儲存失敗';
+            errEl.textContent = res.error || '儲存失敗。';
         }
     } catch (e) {
-        errEl.innerText = '連線錯誤：' + e;
+        errEl.textContent = '連線失敗：' + e.message;
     } finally {
-        btn.disabled = false; btn.innerText = '儲存並同步';
+        btn.disabled = false; btn.innerText = '儲存並同步至 Google 試算表';
     }
 }
 
-async function deleteRecord(cat, id) {
-    if (!confirm(`確定要刪除「${id}」這筆資料嗎？\n此操作無法復原，會同步從 Google 試算表移除。`)) return;
+/* ---- 密碼與判分門檻管理（只有已驗證的後台能看到，寫入需要 adminToken） ---- */
+function openChangePinModal(mode) {
+    pendingSwitchRole = mode;
+    const titles = { staff: '更改同仁登入密碼', admin: '更改主管登入密碼', threshold: '修改智慧判分門檻' };
+    const labels = { staff: '新密碼', admin: '新密碼', threshold: '門檻（0-100）' };
+    document.getElementById('change-pin-title').innerText = titles[mode];
+    document.getElementById('change-pin-label-1').innerText = labels[mode];
+    document.getElementById('change-pin-new').value = '';
+    document.getElementById('change-pin-error').textContent = '';
+    document.getElementById('change-pin-modal').classList.remove('hidden');
+}
+function closeChangePinModal() { document.getElementById('change-pin-modal').classList.add('hidden'); }
+
+async function submitChangePin() {
+    const val = document.getElementById('change-pin-new').value.trim();
+    const errEl = document.getElementById('change-pin-error');
+    const btn = document.getElementById('change-pin-submit');
+    if (!val) return;
+    if (pendingSwitchRole === 'threshold' && (isNaN(val) || val < 0 || val > 100)) {
+        errEl.textContent = '請輸入 0-100 之間的數字。'; return;
+    }
+    if (pendingSwitchRole !== 'threshold' && val.length < 4) {
+        errEl.textContent = '密碼至少需要 4 碼。'; return;
+    }
+    btn.disabled = true;
+    const body = { action: 'updatePins', token: adminToken };
+    if (pendingSwitchRole === 'staff') body.staffPin = val;
+    if (pendingSwitchRole === 'admin') body.adminPin = val;
+    if (pendingSwitchRole === 'threshold') body.judgingThreshold = val;
     try {
-        const res = await apiPost({ action: 'deleteRecords', token: adminToken, category: cat, ids: [id] });
+        const res = await apiPost(body);
+        btn.disabled = false;
         if (res.ok) {
+            closeChangePinModal();
             await boot(true);
-            renderAdminList();
+            alert('✅ 已更新，並同步到 Google 試算表「設定」分頁。');
         } else {
-            alert('刪除失敗：' + res.error);
+            errEl.textContent = res.error || '更新失敗。';
         }
     } catch (e) {
-        alert('連線錯誤：' + e);
+        btn.disabled = false;
+        errEl.textContent = '連線失敗：' + e.message;
     }
 }
 
-// ================================================================
-// 啟動：先更新主題 UI，剩下的等通行碼驗證通過才 boot()
-// ================================================================
-updateThemeUI();
-</script>
+/* ================================================================
+   啟動
+   ================================================================ */
+if (localStorage.getItem('v3_theme') === 'light') document.body.classList.add('light-mode');
+applyThemeUI();
+applyExamSettingsUI();
 
+</script>
 </body>
 </html>

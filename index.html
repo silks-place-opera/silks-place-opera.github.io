@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
-    <title>OPERA 卡牌大師</title>
+    <title>禮賓司萬事通</title>
 
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
     <link rel="icon" type="image/png" href="apple-touch-icon.png">
@@ -181,7 +181,8 @@
         body:not(.light-mode) .silks-logo { filter: brightness(0) invert(1); }
         body.light-mode .silks-logo { filter: none; }
 
-        .app-title { font-size: 19px; font-weight: 800; color: var(--text-main); letter-spacing: 0.5px; }
+        .app-title { font-size: 19px; font-weight: 800; color: var(--text-main); letter-spacing: 0.5px; line-height: 1.25; }
+        .app-subtitle { font-size: 10px; font-weight: 600; color: var(--text-sub); letter-spacing: 0.3px; margin-top: 1px; }
 
         .theme-toggle {
             position: relative;
@@ -412,6 +413,10 @@
             border: 1px solid var(--border-color); border-radius: 9px; display: flex; align-items: center; justify-content: center;
         }
         .modal-label { font-size: 12px; color: var(--text-sub); margin-top: 6px; }
+        .record-form-row { border: 1px solid var(--border-color); border-radius: 14px; padding: 12px; margin-top: 12px; background: var(--input-bg); }
+        .record-form-row-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+        .record-form-row-title { font-size: 13px; font-weight: 800; color: var(--primary); }
+        .record-form-row-remove { font-size: 12px; color: var(--danger); cursor: pointer; font-weight: 700; }
         .modal-btn-row { display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
         .modal-btn-secondary {
             background: transparent; border: 1px solid var(--border-color); color: var(--text-sub);
@@ -535,20 +540,15 @@
     <div class="sidebar-top">
         <div class="sidebar-brand">
             <img src="silks_logo.png" alt="晶英酒店" class="silks-logo" onerror="this.style.display='none'">
-            <div class="app-title">OPERA 卡牌大師</div>
+            <div>
+                <div class="app-title">禮賓司萬事通</div>
+                <div class="app-subtitle">Concierge Knowledge</div>
+            </div>
         </div>
 
         <nav class="sidebar-nav">
-            <button class="side-nav-btn active" onclick="switchTab('home', this)">
-                <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-                首頁
-            </button>
-            <button class="side-nav-btn" onclick="switchTab('learn', this)">
+            <button class="side-nav-btn active" onclick="switchTab('learn', this)">
                 <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-                學習卡片
-            </button>
-            <button class="side-nav-btn" onclick="switchTab('quiz', this)">
-                <svg viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
                 考題測驗
             </button>
             <button class="side-nav-btn" onclick="switchTab('search', this)">
@@ -586,9 +586,12 @@
     <div class="stage-inner">
         <!-- 行動端 Header -->
         <header class="mobile-header">
-            <div style="display:flex; align-items:center; gap:8px; cursor:pointer;" onclick="switchTab('home', null)">
+            <div style="display:flex; align-items:center; gap:8px;">
                 <img src="silks_logo.png" alt="晶英酒店" class="silks-logo" onerror="this.style.display='none'">
-                <div class="app-title">OPERA 卡牌大師</div>
+                <div>
+                    <div class="app-title">禮賓司萬事通</div>
+                    <div class="app-subtitle">Concierge Knowledge</div>
+                </div>
             </div>
             <button class="theme-toggle" onclick="toggleTheme()">
                 <svg class="theme-icon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
@@ -612,30 +615,8 @@
             </div>
         </div>
 
-        <!-- 0. 首頁 -->
-        <div id="view-home" class="view-content active">
-            <div class="home-stat-grid">
-                <div class="home-stat-tile"><div class="val" id="h-st-accuracy">0%</div><div class="lbl">正確率</div></div>
-                <div class="home-stat-tile"><div class="val" id="h-st-streak">0</div><div class="lbl">連續答對</div></div>
-                <div class="home-stat-tile"><div class="val" id="h-st-wrong">0</div><div class="lbl">錯題本</div></div>
-                <div class="home-stat-tile"><div class="val" id="h-st-fav">0</div><div class="lbl">收藏數</div></div>
-            </div>
-            <div class="home-action-grid">
-                <div class="home-action-btn" onclick="switchTab('learn', null)">
-                    <span class="icon">📖</span><span class="title">開始學習</span><span class="sub">翻卡片記憶</span>
-                </div>
-                <div class="home-action-btn" onclick="switchTab('quiz', null)">
-                    <span class="icon">✍️</span><span class="title">開始測驗</span><span class="sub">動態出題</span>
-                </div>
-                <div class="home-action-btn" onclick="switchTab('search', null)">
-                    <span class="icon">🔍</span><span class="title">搜尋知識</span><span class="sub">知識總覽</span>
-                </div>
-            </div>
-            <div class="admin-box" style="font-size:12px; color:var(--text-sub);" id="home-sync-status">正在連線 Google 試算表…</div>
-        </div>
-
-        <!-- 1. 學習卡片（原汁原味打字輸入模式） -->
-        <div id="view-learn" class="view-content">
+        <!-- 考題測驗＝原本「學習卡片」的打字輸入＋翻牌模式，只是名稱改掉，UI/排版完全不變。 -->
+        <div id="view-learn" class="view-content active">
             <div class="learn-grid-pc">
                 <div style="display:flex; flex-direction:column; gap:14px; width:100%;">
                     <div class="flashcard-container" id="learn-card-container">
@@ -692,27 +673,7 @@
             </div>
         </div>
 
-        <!-- 2. 考題測驗：動態出題＋直接問答（智慧判分），頁面本身不放任何範圍/題數/模式控制項，
-             這些全部移到「設定」頁，考題頁只負責當下這一題。 -->
-        <div id="view-quiz" class="view-content">
-            <div class="quiz-card">
-                <div class="quiz-progress" id="quiz-progress">第 1 / 10 題</div>
-                <div class="quiz-q" id="quiz-title">載入中...</div>
-                <form id="quiz-form" class="input-group" onsubmit="event.preventDefault(); submitQuizAnswer();">
-                    <input type="text" class="card-input" id="quiz-input" placeholder="輸入答案後按 Enter 或送出..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-                    <button type="submit" class="btn-submit">送出</button>
-                </form>
-                <div class="quiz-result hidden" id="quiz-result">
-                    <div class="result-badge" id="quiz-result-badge">🎉 答對了！</div>
-                    <div class="quiz-result-answer" id="quiz-result-answer"></div>
-                    <div class="quiz-result-reason" id="quiz-result-reason"></div>
-                    <div class="quiz-result-note" id="quiz-result-note"></div>
-                </div>
-            </div>
-            <button class="btn-action hidden" id="quiz-next-btn" onclick="nextQuiz()">下一題 ➔ (Enter)</button>
-        </div>
-
-        <!-- 3. 知識總覽（全域搜尋，橫跨 OPERA縮寫／分機表／餐廳資訊／房型資訊） -->
+        <!-- 知識總覽（全域搜尋，橫跨 OPERA縮寫／分機表／餐廳資訊／房型資訊） -->
         <div id="view-search" class="view-content">
             <input type="text" class="search-box" id="search-input" placeholder="🔍 全域搜尋：餐廳名稱、分機、縮寫、早餐…" oninput="renderSearchList()">
             <div class="know-filter-row" id="know-filter-row"></div>
@@ -829,12 +790,6 @@
                                 <span class="ios-label">切換身分</span>
                             </div>
                         </div>
-                        <div class="ios-item hidden" id="settings-admin-entry" onclick="switchTab('admin', null)">
-                            <div class="ios-item-left">
-                                <div class="ios-icon-box"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 14.93V17a1 1 0 0 1-2 0v-.07A7.002 7.002 0 0 1 5.07 11H5a1 1 0 0 1 0-2h.07A7.002 7.002 0 0 1 11 5.07V5a1 1 0 0 1 2 0v.07A7.002 7.002 0 0 1 18.93 11H19a1 1 0 0 1 0 2h-.07A7.002 7.002 0 0 1 13 16.93z"></path></svg></div>
-                                <span class="ios-label" style="color:var(--primary); font-weight:800;">進入主管後台</span>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -854,20 +809,10 @@
             </div>
         </div>
 
-        <!-- 5. 主管管理後台 -->
+        <!-- 5. 主管管理後台：主管密碼第一次登入成功就直接拿到這裡的權限，
+             不會再跳出第二次密碼輸入畫面。 -->
         <div id="view-admin" class="view-content">
-            <!-- 後台寫入權限閘門：就算 app 角色已經是 admin，CRUD 仍然要另外驗證
-                 Google 試算表「設定」分頁的 admin_password 換到 adminToken 才能動作，
-                 不是只靠前端判斷 role 就放行。 -->
-            <div class="admin-box" id="admin-login-gate">
-                <b style="color:var(--text-main); font-size:15px;">主管後台驗證</b>
-                <div style="font-size:12px; color:var(--text-sub);">請輸入 Google 試算表「設定」分頁內的 admin_password</div>
-                <input type="password" id="admin-password-input" class="search-box" placeholder="輸入主管後台密碼" autocomplete="off">
-                <div id="admin-login-error" class="auth-status is-error" style="text-align:left; min-height:16px;"></div>
-                <button class="btn-action" onclick="submitAdminLogin()">驗證進入</button>
-            </div>
-
-            <div id="admin-crud-area" style="display:none; flex-direction:column; gap:14px;">
+            <div id="admin-crud-area" style="display:flex; flex-direction:column; gap:14px;">
                 <div class="admin-box">
                     <div class="sync-banner">
                         <div>
@@ -899,7 +844,7 @@
                         <div class="pin-manage-label"><span>智慧判分門檻</span><span class="pin-manage-tag">%</span></div>
                         <button class="pin-change-btn" onclick="openChangePinModal('threshold')">修改門檻</button>
                     </div>
-                    <div class="pin-manage-hint">同仁／主管登入密碼跟「主管後台驗證」密碼是兩回事，同仁永遠無法得知或取得後台驗證密碼。</div>
+                    <div class="pin-manage-hint">登入密碼只有主管能在這裡修改，一般同仁看不到這個頁面。</div>
                 </div>
 
                 <div class="admin-box">
@@ -921,7 +866,9 @@
         </div>
     </div>
 
-    <!-- 新增／編輯資料彈窗：欄位完全依照該分類目前 Google 試算表的 Header 動態產生 -->
+    <!-- 新增／編輯資料彈窗：欄位完全依照該分類目前 Google 試算表的 Header 動態產生。
+         新增模式可以一次新增最多 5 筆（第1題～第5題，＋新增一題），編輯模式只會有一筆。
+         不會要求填寫 ID，識別碼由系統自動產生，不會出現在這個表單裡。 -->
     <div id="record-form-modal" class="modal-overlay hidden">
         <div class="modal-card">
             <div class="modal-head">
@@ -930,7 +877,8 @@
             </div>
             <label class="modal-label">分類</label>
             <select id="record-form-category" class="search-box" onchange="renderRecordFormFields()"></select>
-            <div id="record-form-fields"></div>
+            <div id="record-form-rows"></div>
+            <button type="button" class="pin-change-btn" id="record-form-add-row-btn" style="margin-top:10px;" onclick="addRecordFormRow()">＋ 新增一題</button>
             <div id="record-form-error" class="auth-status is-error" style="text-align:left; margin:4px 0 0; min-height:16px;"></div>
             <button class="btn-action" id="record-form-submit" onclick="submitRecordForm()" style="margin-top:14px;">儲存並同步至 Google 試算表</button>
         </div>
@@ -957,7 +905,7 @@
 <!-- 手機底部浮動導覽列：依照規格只保留 考題測驗／知識總覽／設定 三個，
      首頁、學習卡片、後台管理都不放進來（後台另外從「設定」頁的主管入口進入）。 -->
 <nav class="nav-bar">
-    <button class="nav-item active" onclick="switchTab('quiz', this)" aria-label="考題測驗"><svg viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></button>
+    <button class="nav-item active" onclick="switchTab('learn', this)" aria-label="考題測驗"><svg viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></button>
     <button class="nav-item" onclick="switchTab('search', this)" aria-label="知識總覽"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button>
     <button class="nav-item" onclick="switchTab('settings', this)" aria-label="設定"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button>
 </nav>
@@ -1252,10 +1200,13 @@ async function checkAuthPin() {
         btn.disabled = false;
         if (role === 'admin' || role === 'staff') {
             userRole = role;
+            // 主管密碼只輸入這一次：後端在同一次驗證直接核發後台寫入用的短期 token（只存記憶體），
+            // 不會再要求第二次輸入密碼。同仁永遠拿不到 token。
+            adminToken = role === 'admin' ? (res.data.token || null) : null;
             statusEl.textContent = '';
             document.getElementById('auth-modal').style.display = 'none';
             applyRoleUI();
-            switchTab('home', null);
+            switchTab('learn', null);
             boot();
         } else {
             statusEl.textContent = '密碼錯誤，請再試一次';
@@ -1275,20 +1226,12 @@ async function checkAuthPin() {
 function applyRoleUI() {
     const isAdmin = userRole === 'admin';
     document.getElementById('d-nav-admin-btn').classList.toggle('hidden', !isAdmin);
-    document.getElementById('settings-admin-entry').classList.toggle('hidden', !isAdmin);
     const roleLabel = document.getElementById('current-role-label');
     if (roleLabel) roleLabel.textContent = isAdmin ? '主管' : '同仁';
     if (!isAdmin) {
-        // 降級成同仁：後台 CRUD token 必須立即清掉，不能留著舊 session。
-        adminToken = null;
-        const gate = document.getElementById('admin-login-gate');
-        const crud = document.getElementById('admin-crud-area');
-        if (gate) gate.style.display = 'flex';
-        if (crud) crud.style.display = 'none';
-        // 如果使用者剛好停在後台頁面，直接踢回首頁。
-        if (document.getElementById('view-admin').classList.contains('active')) {
-            switchTab('home', null);
-        }
+        adminToken = null; // 降級成同仁：後台寫入 token 立即清掉
+        document.getElementById('admin-add-fab').style.display = 'none';
+        if (document.getElementById('view-admin').classList.contains('active')) switchTab('learn', null);
     }
 }
 
@@ -1296,8 +1239,8 @@ function applyRoleUI() {
    BOOT — 從 Google 試算表抓 bootstrap，重建 Knowledge Units，刷新畫面
    ================================================================ */
 async function boot(silent) {
-    const statusEl = document.getElementById('home-sync-status');
-    if (!silent && statusEl) statusEl.innerText = '正在連線 Google 試算表…';
+    const statusEl = document.getElementById('sync-status-txt');
+    if (!silent && statusEl) statusEl.innerText = '狀態：正在連線 Google 試算表…';
     try {
         const res = await apiGet({ action: 'bootstrap' });
         if (!res.ok) throw new Error(res.error || '未知錯誤');
@@ -1306,38 +1249,34 @@ async function boot(silent) {
         buildKnowledgeUnits();
         renderKnowFilterRow();
         renderHomeStats();
-        if (statusEl) statusEl.innerText = `已連線 Google 試算表・共 ${knowledgeUnits.length} 筆知識單元`;
+        if (statusEl) statusEl.innerText = `狀態：已連線，共 ${knowledgeUnits.length} 筆知識單元`;
         nextCard();
-        startNewQuizSession();
         renderSearchList();
-        if (adminToken) { renderAdminCatFilter(); renderAdminList(); }
+        if (userRole === 'admin') { renderAdminCatFilter(); renderAdminList(); }
     } catch (e) {
-        if (statusEl) statusEl.innerText = '⚠️ 連線 Google 試算表失敗：' + e.message;
+        document.getElementById('card-prompt').innerText = '⚠️ 連線 Google 試算表失敗：' + e.message;
+        if (statusEl) statusEl.innerText = '狀態：連線失敗';
     }
 }
 
 /* ================================================================
    導覽：桌面 Sidebar（6 顆，含後台）／手機底部只有 3 顆（考題/知識/設定）
    ================================================================ */
-const DESKTOP_TABS = ['home', 'learn', 'quiz', 'search', 'settings', 'admin'];
-const MOBILE_TABS = ['quiz', 'search', 'settings'];
+const DESKTOP_TABS = ['learn', 'search', 'settings', 'admin'];
+const MOBILE_TABS = ['learn', 'search', 'settings'];
 const PAGE_TITLES = {
-    home: ['首頁', '台南晶英 禮賓司萬事通・動態知識庫'],
-    learn: ['學習卡片', '翻卡片記憶，熟悉代碼與知識內容'],
-    quiz: ['考題測驗', '動態出題，智慧判分'],
+    learn: ['考題測驗', '輸入答案、翻牌確認，熟悉所有知識內容'],
     search: ['知識總覽', '全域搜尋所有分類的知識內容'],
     settings: ['設定', '外觀、考試設定與身分管理'],
     admin: ['後台管理', '新增、編輯、刪除知識，管理密碼與判分門檻']
 };
 
 function switchTab(tab, btn) {
-    if (tab === 'admin' && userRole !== 'admin') tab = 'home'; // 防呆：同仁永遠進不了後台頁
+    if (tab === 'admin' && userRole !== 'admin') tab = 'learn'; // 防呆：同仁永遠進不了後台頁
 
     document.querySelectorAll('.view-content').forEach(el => el.classList.toggle('active', el.id === 'view-' + tab));
-
     const dIdx = DESKTOP_TABS.indexOf(tab);
     document.querySelectorAll('.side-nav-btn').forEach((el, i) => el.classList.toggle('active', i === dIdx));
-
     const mIdx = MOBILE_TABS.indexOf(tab);
     document.querySelectorAll('.nav-item').forEach((el, i) => el.classList.toggle('active', i === mIdx));
 
@@ -1347,22 +1286,10 @@ function switchTab(tab, btn) {
     if (titleEl) titleEl.innerText = titles[0];
     if (descEl) descEl.innerText = titles[1];
 
-    if (tab === 'admin') {
-        const gate = document.getElementById('admin-login-gate');
-        const crud = document.getElementById('admin-crud-area');
-        if (adminToken) {
-            gate.style.display = 'none';
-            crud.style.display = 'flex';
-            renderAdminCatFilter();
-            renderAdminList();
-        } else {
-            gate.style.display = 'flex';
-            crud.style.display = 'none';
-            document.getElementById('admin-password-input').value = '';
-            document.getElementById('admin-login-error').textContent = '';
-        }
-    }
+    document.getElementById('admin-add-fab').style.display = (tab === 'admin' && bootstrapData) ? 'flex' : 'none';
+    if (tab === 'admin' && bootstrapData) { renderAdminCatFilter(); renderAdminList(); }
     if (tab === 'settings') updateSettingsStatsUI();
+    if (tab === 'learn') setTimeout(() => document.getElementById('type-input')?.focus(), 50);
 }
 
 /* ================================================================
@@ -1384,11 +1311,10 @@ function applyThemeUI() {
 function renderHomeStats() {
     const acc = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
     const vals = { accuracy: acc + '%', streak: stats.streak, wrong: getWrongKnowledgeIds().length, fav: favs.length };
-    ['h-st', 'st', 'd-st'].forEach(prefix => {
-        const a = document.getElementById(`${prefix}-accuracy`); if (a) a.innerText = vals.accuracy;
-        const s = document.getElementById(`${prefix}-streak`); if (s) s.innerText = vals.streak;
-        const w = document.getElementById(`${prefix}-wrong`); if (w) w.innerText = vals.wrong;
-        const f = document.getElementById(`${prefix}-fav`); if (f) f.innerText = vals.fav;
+    ['st', 'd-st'].forEach(prefix => {
+        ['accuracy', 'streak', 'wrong', 'fav'].forEach(k => {
+            const el = document.getElementById(`${prefix}-${k}`); if (el) el.innerText = vals[k];
+        });
     });
 }
 function updateSettingsStatsUI() {
@@ -1400,26 +1326,31 @@ function updateSettingsStatsUI() {
    學習卡片（翻卡片記憶：打字輸入 → 翻牌看答案 → 下一題）
    ================================================================ */
 function nextCard() {
-    document.getElementById('learn-action-area').style.display = 'flex';
-    document.getElementById('learn-card-container').style.display = 'block';
+    document.getElementById('main-card').classList.remove('flipped');
+    document.getElementById('next-card-btn').classList.add('hidden');
+    document.getElementById('type-input').value = '';
 
-    const pool = getFilteredUnits('all', 'random', true);
+    const pool = getFilteredUnits(examSettings.scope, examSettings.mode, true);
     if (pool.length === 0) {
-        document.getElementById('card-prompt').innerText = bootstrapData ? '目前沒有可學習的知識內容，請聯繫主管確認出題規則或 Google 試算表資料。' : '載入中…';
+        document.getElementById('card-badge').innerText = '考題測驗';
+        document.getElementById('card-prompt').innerText = bootstrapData ? '目前沒有可出題的知識內容，請到設定調整考試範圍，或聯繫主管確認出題規則。' : '載入中…';
         currentCardUnit = null;
         return;
     }
-    currentCardUnit = pool[Math.floor(Math.random() * pool.length)];
-    document.getElementById('main-card').classList.remove('flipped');
+    // 去重：同一輪內盡量不重複出同一個知識點，題庫用完才重新洗牌
+    let candidates = pool.filter(u => !usedQuestionKeys.has(u.id));
+    if (candidates.length === 0) { usedQuestionKeys.clear(); candidates = pool; }
+    currentCardUnit = candidates[Math.floor(Math.random() * candidates.length)];
+    usedQuestionKeys.add(currentCardUnit.id);
+
     document.getElementById('card-badge').innerText = `【${currentCardUnit.categoryName}】${currentCardUnit.field}`;
-    document.getElementById('card-prompt').innerText = `${currentCardUnit.title}`;
+    document.getElementById('card-prompt').innerText = currentCardUnit.title;
     document.getElementById('card-star').classList.toggle('active', favs.includes(currentCardUnit.knowledgeId));
-    document.getElementById('type-input').value = '';
-    document.getElementById('next-card-btn').classList.add('hidden');
     setTimeout(() => document.getElementById('type-input')?.focus(), 50);
 }
 
 function submitAnswer() {
+    if (!document.getElementById('next-card-btn').classList.contains('hidden')) { nextCard(); return; }
     if (!currentCardUnit) return;
     const input = document.getElementById('type-input');
     const userVal = input.value.trim();
@@ -1428,8 +1359,8 @@ function submitAnswer() {
     const result = gradeAnswer(userVal, { correctAnswer: currentCardUnit.value, gradingType: currentCardUnit.gradingType });
     document.getElementById('main-card').classList.add('flipped');
     document.getElementById('card-result-badge').className = 'result-badge ' + (result.correct ? 'correct' : 'wrong');
-    document.getElementById('card-result-badge').innerText = result.correct ? '🎉 答對了！' : '❌ 再想想';
-    document.getElementById('card-ans-code').innerText = currentCardUnit.field;
+    document.getElementById('card-result-badge').innerText = result.correct ? '🎉 答對了！' : '❌ 答錯了';
+    document.getElementById('card-ans-code').innerText = `${currentCardUnit.title}・${currentCardUnit.field}`;
     document.getElementById('card-ans-cn').innerText = currentCardUnit.value;
     document.getElementById('card-ans-user').innerText = `你的輸入：${userVal}（${result.reason}）`;
 
@@ -1475,75 +1406,11 @@ function renderMiniSearch() {
    考題測驗：依照「設定」頁的考試範圍／題數／模式產生一整輪測驗，
    頁面本身只負責顯示「當下這一題」，不放任何範圍/模式切換 UI。
    ================================================================ */
-function startNewQuizSession() {
-    usedQuestionKeys.clear();
-    const pool = getFilteredUnits(examSettings.scope, examSettings.mode, true);
-    const shuffled = pool.slice().sort(() => Math.random() - 0.5);
-    const count = Math.min(examSettings.count, shuffled.length);
-    quizQueue = shuffled.slice(0, count);
-    quizIndex = 0;
-    nextQuiz();
-}
 
-function nextQuiz() {
-    document.getElementById('quiz-result').classList.add('hidden');
-    document.getElementById('quiz-next-btn').classList.add('hidden');
-    document.getElementById('quiz-input').value = '';
-    document.getElementById('quiz-form').style.display = 'flex';
 
-    if (quizQueue.length === 0) {
-        document.getElementById('quiz-title').innerText = bootstrapData ? '目前沒有可出題的知識內容，請到設定調整考試範圍，或聯繫主管確認出題規則。' : '載入中…';
-        document.getElementById('quiz-progress').innerText = '';
-        currentQuestion = null;
-        return;
-    }
-    if (quizIndex >= quizQueue.length) {
-        // 一輪考完，自動重新開一輪（維持「考題測驗」頁永遠有題目可作答）
-        startNewQuizSession();
-        return;
-    }
 
-    const unit = quizQueue[quizIndex];
-    let q = generateQuestionFromUnit(unit, true);
-    let guard = 0;
-    while (usedQuestionKeys.has(q.id) && guard < 5) { q = generateQuestionFromUnit(unit, true); guard++; }
-    usedQuestionKeys.add(q.id);
-    currentQuestion = q;
 
-    document.getElementById('quiz-progress').innerText = `第 ${quizIndex + 1} / ${quizQueue.length} 題`;
-    document.getElementById('quiz-title').innerText = q.prompt;
-    setTimeout(() => document.getElementById('quiz-input')?.focus(), 50);
-}
 
-function submitQuizAnswer() {
-    if (!currentQuestion) return;
-    const input = document.getElementById('quiz-input');
-    const userVal = input.value.trim();
-    if (!userVal) return;
-
-    const result = gradeAnswer(userVal, currentQuestion);
-    const unit = currentQuestion.unit;
-
-    document.getElementById('quiz-form').style.display = 'none';
-    const resultBox = document.getElementById('quiz-result');
-    resultBox.classList.remove('hidden');
-    document.getElementById('quiz-result-badge').className = 'result-badge ' + (result.correct ? 'correct' : 'wrong');
-    document.getElementById('quiz-result-badge').innerText = result.correct ? '🎉 答對了！' : '❌ 答錯了';
-    document.getElementById('quiz-result-answer').innerText = `正確答案：${currentQuestion.correctAnswer}`;
-    document.getElementById('quiz-result-reason').innerText = `判定原因：${result.reason}`;
-    document.getElementById('quiz-result-note').innerText = `補充說明：${unit.categoryName} · ${unit.title} · ${unit.field}`;
-    document.getElementById('quiz-next-btn').classList.remove('hidden');
-
-    stats.total++;
-    if (result.correct) { stats.correct++; stats.streak++; removeWrong(unit.knowledgeId); }
-    else {
-        stats.streak = 0;
-        logWrong({ questionId: currentQuestion.id, knowledgeId: unit.knowledgeId, category: unit.categoryName, field: unit.field, userAnswer: userVal, correctAnswer: currentQuestion.correctAnswer, timestamp: new Date().toISOString() });
-    }
-    saveStats();
-    renderHomeStats();
-    quizIndex++;
-}
 
 /* ================================================================
    設定頁：考試設定（範圍／題數／模式）＋ 本機紀錄 ＋ 身分
@@ -1551,17 +1418,17 @@ function submitQuizAnswer() {
 function changeExamScope(scope) {
     examSettings.scope = scope; saveExamSettings();
     document.querySelectorAll('#exam-scope-group .ios-item').forEach(el => el.classList.toggle('active', el.dataset.scope === scope));
-    startNewQuizSession();
+    usedQuestionKeys.clear(); nextCard();
 }
 function changeExamCount(count) {
     examSettings.count = count; saveExamSettings();
     document.querySelectorAll('#exam-count-group .ios-item').forEach(el => el.classList.toggle('active', String(el.dataset.count) === String(count)));
-    startNewQuizSession();
+    usedQuestionKeys.clear(); nextCard();
 }
 function changeExamMode(mode) {
     examSettings.mode = mode; saveExamSettings();
     document.querySelectorAll('#exam-mode-group .ios-item').forEach(el => el.classList.toggle('active', el.dataset.mode === mode));
-    startNewQuizSession();
+    usedQuestionKeys.clear(); nextCard();
 }
 function applyExamSettingsUI() {
     document.querySelectorAll('#exam-scope-group .ios-item').forEach(el => el.classList.toggle('active', el.dataset.scope === examSettings.scope));
@@ -1598,8 +1465,10 @@ async function submitSwitchIdentity() {
         btn.disabled = false;
         if (role === 'admin' || role === 'staff') {
             userRole = role;
+            adminToken = role === 'admin' ? (res.data.token || null) : null; // 主管：重新驗證後取得 token；同仁：清掉
             applyRoleUI();
             closeSwitchIdentityModal();
+            if (role === 'admin') { renderAdminCatFilter(); renderAdminList(); }
         } else {
             errEl.textContent = '密碼錯誤，請再試一次';
         }
@@ -1645,7 +1514,7 @@ function renderSearchList() {
         return rec.ID;
     };
     document.getElementById('search-list').innerHTML = records.map(({ cat, rec }) => {
-        const rows = Object.keys(rec).filter(k => k !== 'ID').map(k => `<div style="font-size:13px; color:var(--text-sub); margin-top:2px;"><b style="color:var(--text-main);">${esc(k)}</b>：${esc(rec[k])}</div>`).join('');
+        const rows = Object.keys(rec).filter(k => k !== 'ID' && !k.startsWith('_')).map(k => `<div style="font-size:13px; color:var(--text-sub); margin-top:2px;"><b style="color:var(--text-main);">${esc(k)}</b>：${esc(rec[k])}</div>`).join('');
         return `<div class="list-item" style="align-items:flex-start;">
             <div class="list-item-left"><div class="code">${esc(titleOf(cat, rec))}</div>${rows}</div>
             <span class="list-item-cat">${esc(catName(cat))}</span>
@@ -1660,26 +1529,7 @@ function renderSearchList() {
         CRUD 才真正能動作；token 只存在記憶體，重新整理就會消失，
         必須重新驗證，不會因為 localStorage 留著什麼就自動恢復權限。
    ================================================================ */
-async function submitAdminLogin() {
-    const pw = document.getElementById('admin-password-input').value;
-    const errEl = document.getElementById('admin-login-error');
-    if (!pw) return;
-    errEl.textContent = '';
-    try {
-        const res = await apiPost({ action: 'adminLogin', password: pw });
-        if (res.ok && res.data && res.data.success) {
-            adminToken = res.data.token;
-            document.getElementById('admin-login-gate').style.display = 'none';
-            document.getElementById('admin-crud-area').style.display = 'flex';
-            renderAdminCatFilter();
-            renderAdminList();
-        } else {
-            errEl.textContent = '密碼不正確。';
-        }
-    } catch (e) {
-        errEl.textContent = '連線失敗：' + e.message;
-    }
-}
+
 
 function reloadBootstrap() { boot(); }
 
@@ -1705,7 +1555,7 @@ function renderAdminList() {
     const titleOf = rec => { for (const c of titleCands) if (rec[c]) return rec[c]; return rec.ID; };
 
     document.getElementById('admin-list').innerHTML = records.map(rec => {
-        const sub = Object.keys(rec).filter(k => k !== 'ID' && !titleCands.includes(k))
+        const sub = Object.keys(rec).filter(k => k !== 'ID' && !k.startsWith('_') && !titleCands.includes(k))
             .map(k => `${esc(k)}：${esc(rec[k])}`).join('　');
         const checked = selectedRecordIds.has(rec.ID) ? 'checked' : '';
         return `<div class="list-item">
@@ -1766,6 +1616,10 @@ async function deleteRecord(cat, id) {
 }
 
 /* ---- 新增／編輯資料：欄位完全依照該分類目前 Google 試算表的 Header 動態產生 ---- */
+
+function closeRecordForm() { document.getElementById('record-form-modal').classList.add('hidden'); }
+
+const MAX_NEW_RECORDS = 5;
 function openRecordForm(cat, id) {
     recordFormEditingId = id || null;
     const sel = document.getElementById('record-form-category');
@@ -1773,72 +1627,100 @@ function openRecordForm(cat, id) {
         `<option value="${c}" ${c === (cat || adminFilterCat) ? 'selected' : ''}>${esc(bootstrapData.categorySheets[c])}</option>`
     ).join('');
     sel.disabled = !!id;
-    document.getElementById('record-form-title').innerText = id ? '編輯資料' : '新增資料';
+    document.getElementById('record-form-title').innerText = id ? '編輯資料' : '新增考題';
     document.getElementById('record-form-error').textContent = '';
+    document.getElementById('record-form-add-row-btn').style.display = id ? 'none' : 'inline-block';
     renderRecordFormFields();
     document.getElementById('record-form-modal').classList.remove('hidden');
 }
-function closeRecordForm() { document.getElementById('record-form-modal').classList.add('hidden'); }
+
+function recordFormHeaders() {
+    const cat = document.getElementById('record-form-category').value;
+    return (bootstrapData.headers[cat] || []).filter(h => h !== 'ID' && !h.startsWith('_'));
+}
+
+function buildRecordFormRow(n, values) {
+    const headers = recordFormHeaders();
+    const head = recordFormEditingId ? '' :
+        `<div class="record-form-row-head"><span class="record-form-row-title">第 ${n} 題</span>${n > 1 ? '<span class="record-form-row-remove" onclick="removeRecordFormRow(this)">移除</span>' : ''}</div>`;
+    const inputs = headers.map(h => `<label class="modal-label">${esc(h)}</label><input type="text" class="search-box record-field" data-field="${esc(h)}" value="${esc((values && values[h]) || '')}">`).join('');
+    return `<div class="record-form-row">${head}${inputs}</div>`;
+}
 
 function renderRecordFormFields() {
     const cat = document.getElementById('record-form-category').value;
-    const headers = (bootstrapData.headers[cat] || ['ID']).filter(h => h !== 'ID');
-    let existing = {};
-    if (recordFormEditingId) {
-        existing = (bootstrapData.knowledge[cat] || []).find(r => r.ID === recordFormEditingId) || {};
-    }
-    let html = `<label class="modal-label">ID（留空自動編號）</label><input type="text" id="record-field-ID" class="search-box" value="${esc(recordFormEditingId || '')}" ${recordFormEditingId ? 'disabled' : ''}>`;
-    headers.forEach(h => {
-        html += `<label class="modal-label">${esc(h)}</label><input type="text" class="search-box record-field" data-field="${esc(h)}" value="${esc(existing[h] || '')}">`;
-    });
-    html += `<button type="button" class="pin-change-btn" style="margin-top:8px;" onclick="addCustomFieldToForm()">＋ 新增自訂欄位（選填）</button>`;
-    document.getElementById('record-form-fields').innerHTML = html;
+    const box = document.getElementById('record-form-rows');
+    let existing = null;
+    if (recordFormEditingId) existing = (bootstrapData.knowledge[cat] || []).find(r => r.ID === recordFormEditingId) || {};
+    box.innerHTML = buildRecordFormRow(1, existing);
+    updateAddRowBtn();
 }
-function addCustomFieldToForm() {
-    const name = prompt('新欄位名稱（例如：下午茶）');
-    if (!name) return;
-    const wrap = document.createElement('div');
-    wrap.innerHTML = `<label class="modal-label">${esc(name)}</label><input type="text" class="search-box record-field" data-field="${esc(name)}" value="">`;
-    const container = document.getElementById('record-form-fields');
-    const btn = container.querySelector('button');
-    container.insertBefore(wrap, btn);
+
+function addRecordFormRow() {
+    const box = document.getElementById('record-form-rows');
+    const n = box.querySelectorAll('.record-form-row').length;
+    if (n >= MAX_NEW_RECORDS) return;
+    box.insertAdjacentHTML('beforeend', buildRecordFormRow(n + 1, null));
+    updateAddRowBtn();
+}
+function removeRecordFormRow(el) {
+    el.closest('.record-form-row').remove();
+    document.querySelectorAll('#record-form-rows .record-form-row-title').forEach((t, i) => t.textContent = `第 ${i + 1} 題`);
+    updateAddRowBtn();
+}
+function updateAddRowBtn() {
+    const n = document.querySelectorAll('#record-form-rows .record-form-row').length;
+    const btn = document.getElementById('record-form-add-row-btn');
+    btn.disabled = n >= MAX_NEW_RECORDS;
+    btn.textContent = n >= MAX_NEW_RECORDS ? `已達上限（一次最多 ${MAX_NEW_RECORDS} 題）` : `＋ 新增一題（${n} / ${MAX_NEW_RECORDS}）`;
 }
 
 async function submitRecordForm() {
     const cat = document.getElementById('record-form-category').value;
-    const fields = {};
-    document.querySelectorAll('#record-form-fields .record-field').forEach(inp => { fields[inp.dataset.field] = inp.value.trim(); });
     const errEl = document.getElementById('record-form-error');
     const btn = document.getElementById('record-form-submit');
     const titleCands = bootstrapData.titleFields[cat] || [];
-    const hasTitle = titleCands.some(c => fields[c]);
-    if (!hasTitle) { errEl.textContent = `請至少填寫「${titleCands[0] || '標題'}」欄位。`; return; }
 
-    btn.disabled = true; btn.innerText = '儲存中…';
+    const rows = [...document.querySelectorAll('#record-form-rows .record-form-row')].map(row => {
+        const f = {};
+        row.querySelectorAll('.record-field').forEach(inp => { f[inp.dataset.field] = inp.value.trim(); });
+        return f;
+    });
+    // 完全空白的列直接略過；有填內容但沒填標題欄位的列要提醒
+    const filled = rows.filter(f => Object.values(f).some(v => v));
+    if (filled.length === 0) { errEl.textContent = '請至少填寫一題的內容。'; return; }
+    const bad = filled.findIndex(f => !titleCands.some(c => f[c]));
+    if (bad !== -1) { errEl.textContent = `第 ${rows.indexOf(filled[bad]) + 1} 題請至少填寫「${titleCands[0] || '標題'}」欄位。`; return; }
+    if (!recordFormEditingId && filled.length > MAX_NEW_RECORDS) { errEl.textContent = `一次最多新增 ${MAX_NEW_RECORDS} 題。`; return; }
+
+    btn.disabled = true; btn.innerText = '儲存中…'; errEl.textContent = '';
     try {
-        let res;
         if (recordFormEditingId) {
-            res = await apiPost({ action: 'updateRecord', token: adminToken, category: cat, id: recordFormEditingId, fields: fields });
+            const res = await apiPost({ action: 'updateRecord', token: adminToken, category: cat, id: recordFormEditingId, fields: filled[0] });
+            if (!res.ok) throw new Error(res.error || '儲存失敗');
         } else {
-            const idInput = document.getElementById('record-field-ID').value.trim();
-            if (idInput) fields.ID = idInput;
-            res = await apiPost({ action: 'createRecord', token: adminToken, category: cat, fields: fields });
+            for (let i = 0; i < filled.length; i++) {
+                const res = await apiPost({ action: 'createRecord', token: adminToken, category: cat, fields: filled[i] });
+                if (!res.ok) throw new Error(`第 ${i + 1} 題儲存失敗：${res.error || '未知錯誤'}（前面 ${i} 題已寫入）`);
+            }
         }
-        if (res.ok) {
-            closeRecordForm();
-            await boot(true);
-            adminFilterCat = cat;
-            renderAdminCatFilter(); renderAdminList();
-            alert('🎉 已儲存並同步到 Google 試算表！');
-        } else {
-            errEl.textContent = res.error || '儲存失敗。';
-        }
+        closeRecordForm();
+        await boot(true);
+        adminFilterCat = cat;
+        renderAdminCatFilter(); renderAdminList();
+        alert(`🎉 已儲存 ${filled.length} 筆並同步到 Google 試算表！`);
     } catch (e) {
-        errEl.textContent = '連線失敗：' + e.message;
+        errEl.textContent = e.message;
     } finally {
         btn.disabled = false; btn.innerText = '儲存並同步至 Google 試算表';
     }
 }
+
+
+
+
+
+
 
 /* ---- 密碼與判分門檻管理（只有已驗證的後台能看到，寫入需要 adminToken） ---- */
 function openChangePinModal(mode) {
@@ -1884,6 +1766,14 @@ async function submitChangePin() {
         errEl.textContent = '連線失敗：' + e.message;
     }
 }
+
+document.addEventListener('keydown', e => {
+    if (e.key !== 'Enter') return;
+    if (!document.getElementById('view-learn').classList.contains('active')) return;
+    if (document.getElementById('auth-modal').style.display !== 'none') return;
+    const nextBtn = document.getElementById('next-card-btn');
+    if (!nextBtn.classList.contains('hidden') && document.activeElement && document.activeElement.tagName !== 'INPUT') nextCard();
+});
 
 /* ================================================================
    啟動

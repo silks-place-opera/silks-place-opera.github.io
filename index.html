@@ -345,6 +345,30 @@
         .sync-btn:hover { border-color: var(--primary); }
         .sync-btn-icon { font-size: 20px; }
 
+
+        /* 切換身分：只放大這個流程的標題與必要操作文字 */
+        .ios-label.switch-identity-label { font-size: 17px; font-weight: 800; color: var(--text-main); }
+        #switch-identity-modal .modal-head { font-size: 20px; font-weight: 800; }
+        #switch-identity-modal .modal-label { font-size: 14px; font-weight: 700; color: var(--text-main); }
+        #switch-identity-modal .modal-btn-primary, #switch-identity-modal .modal-btn-secondary { font-size: 15px; font-weight: 800; }
+        .auth-status.is-checking { color: var(--text-sub); }
+
+        /* 後台勾選框顏色跟著主題色 */
+        #admin-list input[type=checkbox] { accent-color: var(--primary); }
+
+        /* 新增考題：電腦版五筆由左至右橫向排列，寬度不足時水平捲動；手機版改為直向堆疊避免擠壓 */
+        #record-form-modal.add-mode .modal-card { width: fit-content; min-width: min(420px, 96vw); max-width: 96vw; }
+        #record-form-rows.rows-h { display: flex; gap: 12px; overflow-x: auto; align-items: flex-start; padding-bottom: 8px; }
+        #record-form-rows.rows-h .record-form-row { flex: 1 0 196px; min-width: 0; margin-top: 8px; }
+        #record-form-rows.rows-h .record-form-row .search-box { width: 100%; box-sizing: border-box; }
+        @media (max-width: 859px) {
+            #record-form-modal.add-mode .modal-card { width: 100%; max-width: 100%; }
+            #record-form-rows.rows-h { flex-direction: column; overflow-x: visible; }
+            #record-form-rows.rows-h .record-form-row { flex: none; width: 100%; }
+            /* 手機版沒有側邊欄，主管後台入口放在設定頁的「身分」區；電腦版有側邊欄，不重複顯示 */
+        }
+        @media (min-width: 860px) { #settings-admin-entry { display: none !important; } }
+
         /* 通行碼安全管理卡片（圓角分層、標籤化 key/value，呼應深色現代風格） */
         .pin-manage-card {
             background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 20px;
@@ -625,7 +649,7 @@
                                 <span class="card-star" id="card-star" onclick="toggleFav(event)">★</span>
                                 <div class="card-badge" id="card-badge">隨機出題</div>
                                 <div class="card-prompt-text" id="card-prompt">--</div>
-                                <div style="font-size:13px; color:var(--text-sub);">輸入後送出翻轉卡片 👆</div>
+                                <div id="card-hint" style="font-size:13px; color:var(--text-sub);">輸入後送出翻轉卡片 👆</div>
                             </div>
                             <div class="card-face card-back">
                                 <div class="result-badge" id="card-result-badge">🎉 答對了！</div>
@@ -646,6 +670,7 @@
                             <button type="submit" class="btn-submit">送出</button>
                         </form>
                         <button class="btn-action hidden" id="next-card-btn" onclick="requestNextCard()">下一題 ➔ (Enter)</button>
+                        <button class="btn-action" id="end-exam-btn" style="background:var(--input-bg); color:var(--text-main); border:1px solid var(--border-color);" onclick="finishSession()">結束測驗</button>
                     </div>
                 </div>
 
@@ -729,6 +754,7 @@
                         <div class="ios-item active" data-count="10" onclick="changeExamCount(10)"><div class="ios-item-left"><span class="ios-label">10 題</span></div><span class="ios-check">✓</span></div>
                         <div class="ios-item" data-count="20" onclick="changeExamCount(20)"><div class="ios-item-left"><span class="ios-label">20 題</span></div><span class="ios-check">✓</span></div>
                         <div class="ios-item" data-count="30" onclick="changeExamCount(30)"><div class="ios-item-left"><span class="ios-label">30 題</span></div><span class="ios-check">✓</span></div>
+                        <div class="ios-item" data-count="0" onclick="changeExamCount(0)"><div class="ios-item-left"><span class="ios-label">無限題（∞）</span></div><span class="ios-check">✓</span></div>
                     </div>
                 </div>
 
@@ -787,8 +813,16 @@
                         <div class="ios-item" onclick="openSwitchIdentityModal()">
                             <div class="ios-item-left">
                                 <div class="ios-icon-box"><svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg></div>
-                                <span class="ios-label">切換身分</span>
+                                <span class="ios-label switch-identity-label">切換身分</span>
                             </div>
+                        </div>
+                        <!-- 手機版主管後台入口：只在目前身分是主管時才顯示（由 applyRoleUI 依真實權限決定，不是 CSS 強制顯示） -->
+                        <div class="ios-item hidden" id="settings-admin-entry" onclick="switchTab('admin', null)">
+                            <div class="ios-item-left">
+                                <div class="ios-icon-box"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="4"></circle></svg></div>
+                                <span class="ios-label switch-identity-label">主管後台管理</span>
+                            </div>
+                            <span class="ios-label" style="color:var(--primary); font-weight:800;">›</span>
                         </div>
                     </div>
                 </div>
@@ -855,7 +889,7 @@
                     <div class="know-filter-row" id="admin-filter-row"></div>
                     <div class="admin-selection-bar hidden" id="admin-selection-bar">
                         <span id="admin-selection-count">已選取 0 筆</span>
-                        <button class="pin-change-btn" style="background:var(--danger); color:#fff;" onclick="batchDeleteRecords()">批次刪除</button>
+                        <button class="pin-change-btn" style="background:var(--danger); color:#fff;" onclick="deleteSelectedRecords()">刪除選取項目</button>
                     </div>
                     <div class="list-container" id="admin-list" style="margin-top:4px; max-height:420px; overflow-y:auto;"></div>
                 </div>
@@ -939,6 +973,8 @@ let knowledgeFilterCat = 'all';
 let adminFilterCat = null;
 let recordFormEditingId = null;
 let selectedRecordIds = new Set();
+let switchBusy = false;       // 切換身分驗證中：避免 Enter／連點重複送出
+let session = { answered: 0, correct: 0, done: false };
 let pendingSwitchRole = null; // 'staff' | 'admin'，切換身分彈窗用
 
 let favs = JSON.parse(localStorage.getItem('v3_favs') || '[]');
@@ -967,11 +1003,15 @@ function esc(s) {
    text/plain 屬於「簡單請求」，不會觸發預檢，是業界公認在 Apps Script Web App
    上最可靠的跨網域 POST 做法）。
    ================================================================ */
+async function parseApiResponse(res) {
+    if (!res.ok) throw new Error('伺服器回應異常（HTTP ' + res.status + '）');
+    try { return await res.json(); }
+    catch (e) { throw new Error('伺服器回傳的內容無法解析，請確認 Apps Script 已正確部署'); }
+}
 async function apiGet(params) {
     const qs = new URLSearchParams(params).toString();
     const url = API_URL + (API_URL.includes('?') ? '&' : '?') + qs;
-    const res = await fetch(url);
-    return res.json();
+    return parseApiResponse(await fetch(url));
 }
 async function apiPost(body) {
     const res = await fetch(API_URL, {
@@ -979,7 +1019,7 @@ async function apiPost(body) {
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify(body)
     });
-    return res.json();
+    return parseApiResponse(res);
 }
 
 /* ================================================================
@@ -1226,6 +1266,7 @@ async function checkAuthPin() {
 function applyRoleUI() {
     const isAdmin = userRole === 'admin';
     document.getElementById('d-nav-admin-btn').classList.toggle('hidden', !isAdmin);
+    document.getElementById('settings-admin-entry').classList.toggle('hidden', !isAdmin);
     const roleLabel = document.getElementById('current-role-label');
     if (roleLabel) roleLabel.textContent = isAdmin ? '主管' : '同仁';
     if (!isAdmin) {
@@ -1249,13 +1290,19 @@ async function boot(silent) {
         buildKnowledgeUnits();
         renderKnowFilterRow();
         renderHomeStats();
-        if (statusEl) statusEl.innerText = `狀態：已連線，共 ${knowledgeUnits.length} 筆知識單元`;
-        nextCard();
+        const outdated = (bootstrapData.apiVersion || 0) < REQUIRED_API_VERSION;
+        if (statusEl) statusEl.innerText = outdated
+            ? '⚠️ 後端不是最新版（請重新部署 Apps Script），刪除功能暫時停用'
+            : `狀態：已連線，共 ${knowledgeUnits.length} 筆知識單元`;
+        if (!silent) { startSession(); }
+        else if (currentCardUnit && !knowledgeUnits.some(u => u.id === currentCardUnit.id)) { nextCard(); }
         renderSearchList();
         if (userRole === 'admin') { renderAdminCatFilter(); renderAdminList(); }
+        return true;
     } catch (e) {
         document.getElementById('card-prompt').innerText = '⚠️ 連線 Google 試算表失敗：' + e.message;
         if (statusEl) statusEl.innerText = '狀態：連線失敗';
+        return false;
     }
 }
 
@@ -1325,10 +1372,43 @@ function updateSettingsStatsUI() {
 /* ================================================================
    學習卡片（翻卡片記憶：打字輸入 → 翻牌看答案 → 下一題）
    ================================================================ */
+function sessionLimit() { return examSettings.count > 0 ? examSettings.count : Infinity; }
+
+function startSession() {
+    usedQuestionKeys.clear();
+    session = { answered: 0, correct: 0, done: false };
+    document.getElementById('input-form').style.display = '';
+    document.getElementById('end-exam-btn').style.display = '';
+    document.getElementById('card-star').style.display = '';
+    document.getElementById('next-card-btn').innerText = '下一題 ➔ (Enter)';
+    document.getElementById('card-hint').innerText = '輸入後送出翻轉卡片 👆';
+    nextCard();
+}
+
+function finishSession(reason) {
+    if (session.done) return;
+    session.done = true;
+    currentCardUnit = null;
+    const acc = session.answered > 0 ? Math.round((session.correct / session.answered) * 100) : 0;
+    document.getElementById('main-card').classList.remove('flipped');
+    document.getElementById('card-badge').innerText = '測驗完成';
+    document.getElementById('card-prompt').innerText = session.answered > 0 ? '🎉 本輪測驗完成' : '本輪尚未作答';
+    document.getElementById('card-hint').innerText = `共作答 ${session.answered} 題，答對 ${session.correct} 題，正確率 ${acc}%` + (reason ? `（${reason}）` : '');
+    document.getElementById('card-star').style.display = 'none';
+    document.getElementById('input-form').style.display = 'none';
+    document.getElementById('end-exam-btn').style.display = 'none';
+    const nb = document.getElementById('next-card-btn');
+    nb.innerText = '再測一次 ➔ (Enter)';
+    nb.classList.remove('hidden');
+}
+
 function nextCard() {
+    if (session.done) return;
     document.getElementById('main-card').classList.remove('flipped');
     document.getElementById('next-card-btn').classList.add('hidden');
     document.getElementById('type-input').value = '';
+
+    if (session.answered >= sessionLimit()) { finishSession('已達指定題數'); return; }
 
     const pool = getFilteredUnits(examSettings.scope, examSettings.mode, true);
     if (pool.length === 0) {
@@ -1337,20 +1417,21 @@ function nextCard() {
         currentCardUnit = null;
         return;
     }
-    // 去重：同一輪內盡量不重複出同一個知識點，題庫用完才重新洗牌
-    let candidates = pool.filter(u => !usedQuestionKeys.has(u.id));
-    if (candidates.length === 0) { usedQuestionKeys.clear(); candidates = pool; }
+    // 同一場測驗內不重複同一個知識點；全部出完就結束，不會無限循環
+    const candidates = pool.filter(u => !usedQuestionKeys.has(u.id));
+    if (candidates.length === 0) { finishSession('符合條件的題目已全部出完'); return; }
     currentCardUnit = candidates[Math.floor(Math.random() * candidates.length)];
     usedQuestionKeys.add(currentCardUnit.id);
 
-    document.getElementById('card-badge').innerText = `【${currentCardUnit.categoryName}】${currentCardUnit.field}`;
+    const progress = examSettings.count > 0 ? ` ・ ${session.answered + 1}/${examSettings.count}` : ` ・ 第 ${session.answered + 1} 題`;
+    document.getElementById('card-badge').innerText = `【${currentCardUnit.categoryName}】${currentCardUnit.field}${progress}`;
     document.getElementById('card-prompt').innerText = currentCardUnit.title;
     document.getElementById('card-star').classList.toggle('active', favs.includes(currentCardUnit.knowledgeId));
     setTimeout(() => document.getElementById('type-input')?.focus(), 50);
 }
 
 function submitAnswer() {
-    if (!document.getElementById('next-card-btn').classList.contains('hidden')) { nextCard(); return; }
+    if (!document.getElementById('next-card-btn').classList.contains('hidden')) { requestNextCard(); return; }
     if (!currentCardUnit) return;
     const input = document.getElementById('type-input');
     const userVal = input.value.trim();
@@ -1364,6 +1445,8 @@ function submitAnswer() {
     document.getElementById('card-ans-cn').innerText = currentCardUnit.value;
     document.getElementById('card-ans-user').innerText = `你的輸入：${userVal}（${result.reason}）`;
 
+    session.answered++;
+    if (result.correct) session.correct++;
     stats.total++;
     if (result.correct) { stats.correct++; stats.streak++; removeWrong(currentCardUnit.knowledgeId); }
     else {
@@ -1375,7 +1458,10 @@ function submitAnswer() {
     document.getElementById('next-card-btn').classList.remove('hidden');
 }
 
-function requestNextCard() { nextCard(); }
+function requestNextCard() {
+    if (session.done) { startSession(); return; }
+    nextCard();
+}
 
 function toggleFav(e) {
     if (e) e.stopPropagation();
@@ -1418,17 +1504,17 @@ function renderMiniSearch() {
 function changeExamScope(scope) {
     examSettings.scope = scope; saveExamSettings();
     document.querySelectorAll('#exam-scope-group .ios-item').forEach(el => el.classList.toggle('active', el.dataset.scope === scope));
-    usedQuestionKeys.clear(); nextCard();
+    startSession();
 }
 function changeExamCount(count) {
     examSettings.count = count; saveExamSettings();
     document.querySelectorAll('#exam-count-group .ios-item').forEach(el => el.classList.toggle('active', String(el.dataset.count) === String(count)));
-    usedQuestionKeys.clear(); nextCard();
+    startSession();
 }
 function changeExamMode(mode) {
     examSettings.mode = mode; saveExamSettings();
     document.querySelectorAll('#exam-mode-group .ios-item').forEach(el => el.classList.toggle('active', el.dataset.mode === mode));
-    usedQuestionKeys.clear(); nextCard();
+    startSession();
 }
 function applyExamSettingsUI() {
     document.querySelectorAll('#exam-scope-group .ios-item').forEach(el => el.classList.toggle('active', el.dataset.scope === examSettings.scope));
@@ -1446,36 +1532,53 @@ function resetAllData() {
 
 /* ---- 切換身分：一定要重新打 API 驗證，不是前端直接改變數 ---- */
 function openSwitchIdentityModal() {
-    document.getElementById('switch-identity-input').value = '';
-    document.getElementById('switch-identity-error').textContent = '';
+    switchBusy = false;
+    const inp = document.getElementById('switch-identity-input');
+    inp.value = ''; inp.disabled = false;
+    document.getElementById('switch-identity-submit').disabled = false;
+    setSwitchStatus('', false);
     document.getElementById('switch-identity-modal').classList.remove('hidden');
-    setTimeout(() => document.getElementById('switch-identity-input')?.focus(), 50);
+    setTimeout(() => inp.focus(), 50);
+}
+function setSwitchStatus(text, isError) {
+    const el = document.getElementById('switch-identity-error');
+    el.textContent = text;
+    el.className = 'auth-status ' + (isError ? 'is-error' : 'is-checking');
 }
 function closeSwitchIdentityModal() { document.getElementById('switch-identity-modal').classList.add('hidden'); }
 
 async function submitSwitchIdentity() {
-    const pin = document.getElementById('switch-identity-input').value.trim();
-    const errEl = document.getElementById('switch-identity-error');
+    if (switchBusy) return; // 驗證中不再接受第二次送出（Enter／連點都一樣）
+    const inp = document.getElementById('switch-identity-input');
     const btn = document.getElementById('switch-identity-submit');
+    const pin = inp.value.trim();
     if (!pin) return;
-    btn.disabled = true; errEl.textContent = '';
+
+    switchBusy = true;
+    btn.disabled = true; inp.disabled = true;
+    setSwitchStatus('驗證中…', false);
     try {
         const res = await apiGet({ action: 'checkPin', pin: pin });
         const role = (res.ok && res.data && res.data.role) || 'none';
-        btn.disabled = false;
         if (role === 'admin' || role === 'staff') {
             userRole = role;
-            adminToken = role === 'admin' ? (res.data.token || null) : null; // 主管：重新驗證後取得 token；同仁：清掉
+            adminToken = role === 'admin' ? (res.data.token || null) : null; // 主管：這次驗證直接取得 token；同仁：清掉
             applyRoleUI();
-            closeSwitchIdentityModal();
-            if (role === 'admin') { renderAdminCatFilter(); renderAdminList(); }
-        } else {
-            errEl.textContent = '密碼錯誤，請再試一次';
+            switchBusy = false;
+            document.getElementById('switch-identity-modal').classList.add('hidden');
+            if (role === 'admin' && bootstrapData) { renderAdminCatFilter(); renderAdminList(); }
+            btn.disabled = false; inp.disabled = false;
+            return;
         }
+        setSwitchStatus('密碼錯誤，請再試一次', true);
+        inp.value = '';
     } catch (e) {
-        btn.disabled = false;
-        errEl.textContent = '連線失敗，請確認網路後再試一次';
+        setSwitchStatus('連線失敗，請確認網路後再試一次', true);
     }
+    // 驗證結束：恢復正常輸入狀態
+    switchBusy = false;
+    btn.disabled = false; inp.disabled = false;
+    inp.focus();
 }
 
 /* ================================================================
@@ -1514,7 +1617,7 @@ function renderSearchList() {
         return rec.ID;
     };
     document.getElementById('search-list').innerHTML = records.map(({ cat, rec }) => {
-        const rows = Object.keys(rec).filter(k => k !== 'ID' && !k.startsWith('_')).map(k => `<div style="font-size:13px; color:var(--text-sub); margin-top:2px;"><b style="color:var(--text-main);">${esc(k)}</b>：${esc(rec[k])}</div>`).join('');
+        const rows = Object.keys(rec).filter(k => k !== 'ID' && !k.startsWith('_') && k !== 'is_deleted' && k !== 'deleted_at').map(k => `<div style="font-size:13px; color:var(--text-sub); margin-top:2px;"><b style="color:var(--text-main);">${esc(k)}</b>：${esc(rec[k])}</div>`).join('');
         return `<div class="list-item" style="align-items:flex-start;">
             <div class="list-item-left"><div class="code">${esc(titleOf(cat, rec))}</div>${rows}</div>
             <span class="list-item-cat">${esc(catName(cat))}</span>
@@ -1555,7 +1658,7 @@ function renderAdminList() {
     const titleOf = rec => { for (const c of titleCands) if (rec[c]) return rec[c]; return rec.ID; };
 
     document.getElementById('admin-list').innerHTML = records.map(rec => {
-        const sub = Object.keys(rec).filter(k => k !== 'ID' && !k.startsWith('_') && !titleCands.includes(k))
+        const sub = Object.keys(rec).filter(k => k !== 'ID' && !k.startsWith('_') && k !== 'is_deleted' && k !== 'deleted_at' && !titleCands.includes(k))
             .map(k => `${esc(k)}：${esc(rec[k])}`).join('　');
         const checked = selectedRecordIds.has(rec.ID) ? 'checked' : '';
         return `<div class="list-item">
@@ -1568,7 +1671,6 @@ function renderAdminList() {
             </div>
             <div style="display:flex; gap:6px; flex-shrink:0;">
                 <button class="pin-change-btn" onclick="openRecordForm('${adminFilterCat}', '${esc(rec.ID)}')">編輯</button>
-                <button class="pin-change-btn" style="background:var(--danger); color:#fff;" onclick="deleteRecord('${adminFilterCat}', '${esc(rec.ID)}')">刪除</button>
             </div>
         </div>`;
     }).join('') || `<div style="padding:16px; text-align:center; font-size:13px; color:var(--text-sub);">這個分類目前沒有資料</div>`;
@@ -1589,37 +1691,47 @@ function renderSelectionBar() {
 }
 function clearSelection() { selectedRecordIds.clear(); renderSelectionBar(); renderAdminList(); }
 
-async function batchDeleteRecords() {
+async function deleteSelectedRecords() {
     const ids = [...selectedRecordIds];
     if (ids.length === 0) return;
-    if (!confirm(`確定要刪除這 ${ids.length} 筆資料嗎？\n此操作無法復原，會同步從 Google 試算表移除。`)) return;
+    if (!bootstrapData || (bootstrapData.apiVersion || 0) < REQUIRED_API_VERSION) {
+        alert('無法刪除：目前連到的 Google Apps Script 不是最新版（沒有軟刪除功能）。\n請先把最新的 Code.gs 貼進 Apps Script 並「部署 → 管理部署作業 → 編輯 → 新版本」，再回來重新整理。');
+        return;
+    }
+    if (!confirm(`確定要刪除選取的 ${ids.length} 題嗎？\n資料會在 Google 試算表標記為「已刪除」並保留歷史紀錄，之後不會再出現在題庫。`)) return;
+
+    const cat = adminFilterCat;
     try {
-        const res = await apiPost({ action: 'deleteRecords', token: adminToken, category: adminFilterCat, ids: ids });
-        if (res.ok) {
-            selectedRecordIds.clear();
-            await boot(true);
-            renderAdminCatFilter(); renderAdminList(); renderSelectionBar();
-            alert('已刪除並同步到 Google 試算表。');
-        } else {
-            alert('刪除失敗：' + res.error);
+        const res = await apiPost({ action: 'deleteRecords', token: adminToken, category: cat, ids: ids });
+        if (!res.ok) throw new Error(res.error || '後端回報失敗');
+        // 成功條件 1：後端明確回報「軟刪除」且筆數相符（舊版後端不會有 softDelete，直接視為失敗）
+        if (!res.data || res.data.softDelete !== true || res.data.deletedCount !== ids.length) {
+            throw new Error('後端回傳內容不符合預期（可能還是舊版 Apps Script，尚未重新部署）。資料沒有被刪除。');
         }
-    } catch (e) { alert('刪除出錯：' + e.message); }
+        // 成功條件 2：重新從 Google 試算表讀取，確認這些題目真的不在有效題庫了
+        const ok = await boot(true);
+        if (!ok) throw new Error('刪除指令已送出，但重新讀取試算表失敗，無法確認結果，請稍後重新整理確認。');
+        const still = ids.filter(id => (bootstrapData.knowledge[cat] || []).some(r => r.ID === id));
+        if (still.length > 0) throw new Error('重新讀取後這些題目仍然存在，刪除沒有生效：' + still.join('、'));
+
+        selectedRecordIds.clear();
+        renderAdminCatFilter(); renderAdminList(); renderSelectionBar();
+        alert(`已刪除 ${ids.length} 題（試算表已標記為已刪除，資料仍保留）。`);
+    } catch (e) {
+        alert('刪除失敗：' + e.message + '\n目前資料沒有被更動。');
+        await boot(true);
+        renderAdminCatFilter(); renderAdminList();
+    }
 }
 
-async function deleteRecord(cat, id) {
-    if (!confirm('確定要刪除這筆資料嗎？\n此操作無法復原，會同步從 Google 試算表移除。')) return;
-    try {
-        const res = await apiPost({ action: 'deleteRecords', token: adminToken, category: cat, ids: [id] });
-        if (res.ok) { await boot(true); renderAdminCatFilter(); renderAdminList(); alert('已刪除並同步到 Google 試算表。'); }
-        else alert('刪除失敗：' + res.error);
-    } catch (e) { alert('刪除出錯：' + e.message); }
-}
+
 
 /* ---- 新增／編輯資料：欄位完全依照該分類目前 Google 試算表的 Header 動態產生 ---- */
 
 function closeRecordForm() { document.getElementById('record-form-modal').classList.add('hidden'); }
 
 const MAX_NEW_RECORDS = 5;
+const REQUIRED_API_VERSION = 3; // 對應 Code.gs 的 API_VERSION（含軟刪除）
 function openRecordForm(cat, id) {
     recordFormEditingId = id || null;
     const sel = document.getElementById('record-form-category');
@@ -1630,6 +1742,8 @@ function openRecordForm(cat, id) {
     document.getElementById('record-form-title').innerText = id ? '編輯資料' : '新增考題';
     document.getElementById('record-form-error').textContent = '';
     document.getElementById('record-form-add-row-btn').style.display = id ? 'none' : 'inline-block';
+    document.getElementById('record-form-modal').classList.toggle('add-mode', !id);
+    document.getElementById('record-form-rows').classList.toggle('rows-h', !id);
     renderRecordFormFields();
     document.getElementById('record-form-modal').classList.remove('hidden');
 }
@@ -1767,12 +1881,39 @@ async function submitChangePin() {
     }
 }
 
+// 新增 OPERA 縮寫表單：Enter 依欄位順序跳到下一欄（只限這個分類；輸入法選字時的 Enter 不處理）
+document.getElementById('record-form-rows').addEventListener('keydown', e => {
+    if (e.key !== 'Enter' || e.isComposing || e.keyCode === 229) return;
+    if (!e.target.classList || !e.target.classList.contains('record-field')) return;
+    if (document.getElementById('record-form-category').value !== 'opera') return;
+    e.preventDefault(); // 不讓 Enter 觸發任何提交，避免重複新增
+    const rowEls = [...document.querySelectorAll('#record-form-rows .record-form-row')];
+    const row = e.target.closest('.record-form-row');
+    const fields = [...row.querySelectorAll('.record-field')];
+    const idx = fields.indexOf(e.target);
+    if (idx < fields.length - 1) { fields[idx + 1].focus(); return; }
+    const ri = rowEls.indexOf(row);
+    if (ri < rowEls.length - 1) { rowEls[ri + 1].querySelector('.record-field')?.focus(); return; }
+    if (rowEls.length < MAX_NEW_RECORDS && !recordFormEditingId) {
+        addRecordFormRow();
+        const rows2 = document.querySelectorAll('#record-form-rows .record-form-row');
+        rows2[rows2.length - 1].querySelector('.record-field')?.focus();
+    }
+});
+
+// 切換身分：在通行碼欄位按 Enter ＝ 按確認（驗證中由 switchBusy 擋掉重複送出）
+document.getElementById('switch-identity-input').addEventListener('keydown', e => {
+    if (e.key !== 'Enter' || e.isComposing) return;
+    e.preventDefault();
+    submitSwitchIdentity();
+});
+
 document.addEventListener('keydown', e => {
     if (e.key !== 'Enter') return;
     if (!document.getElementById('view-learn').classList.contains('active')) return;
     if (document.getElementById('auth-modal').style.display !== 'none') return;
     const nextBtn = document.getElementById('next-card-btn');
-    if (!nextBtn.classList.contains('hidden') && document.activeElement && document.activeElement.tagName !== 'INPUT') nextCard();
+    if (!nextBtn.classList.contains('hidden') && document.activeElement && document.activeElement.tagName !== 'INPUT') requestNextCard();
 });
 
 /* ================================================================

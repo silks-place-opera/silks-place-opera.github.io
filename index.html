@@ -1027,6 +1027,14 @@ async function apiPost(body) {
    完全不知道「早餐」「分機」這些具體欄位名稱，純粹依照 bootstrap 回傳的
    headers / titleFields / fieldRules 動態運作，Sheet 加欄位不用改這裡。
    ================================================================ */
+function inferGradingType(values) {
+    const vs = values.filter(v => String(v).trim() !== '');
+    if (vs.length === 0) return 'text';
+    if (vs.every(v => /^\d{1,2}\s*[:：]\s*\d{2}\s*[-–—~至]\s*\d{1,2}\s*[:：]\s*\d{2}$/.test(String(v).trim()))) return 'time_range';
+    if (vs.every(v => /^[\d\s\-+()*#\/]+$/.test(String(v).trim()))) return 'number';
+    return 'text';
+}
+
 function buildKnowledgeUnits() {
     const units = [];
     const rulesByCat = {};
@@ -1034,42 +1042,94 @@ function buildKnowledgeUnits() {
         rulesByCat[r.category] = rulesByCat[r.category] || {};
         rulesByCat[r.category][r.field] = r;
     });
+    unitDiag = { perCategory: {}, generatorErrors: [] };
 
     Object.keys(bootstrapData.knowledge).forEach(catKey => {
         const catName = bootstrapData.categorySheets[catKey];
         const records = bootstrapData.knowledge[catKey] || [];
         const titleCandidates = bootstrapData.titleFields[catKey] || [];
+        const headers = (bootstrapData.headers && bootstrapData.headers[catKey]) || [];
+        const catRules = rulesByCat[catName] || {};
+        const dataFields = headers.filter(h => h !== 'ID');
+        // 出題規則分頁裡，這個分類有沒有任何一條規則對得到實際欄位？對不到（例如規則寫「分機」、
+        // 試算表欄位叫「分機&電話號碼」）就不能讓整個分類無題可考：改用「依實際欄位自動出題」。
+        const matchedRuleFields = dataFields.filter(h => catRules[h]);
+        const autoRules = matchedRuleFields.length === 0;
+        const autoType = {};
+        if (autoRules) dataFields.forEach(h => { autoType[h] = inferGradingType(records.map(r => r[h])); });
+
+        const diag = { records: records.length, withId: 0, skippedNoId: 0, units: 0, questionableUnits: 0,
+                       headers: headers, titleFields: titleCandidates, ruleFieldsEnabled: Object.keys(catRules).filter(f => catRules[f].enabled),
+                       matchedRuleFields: matchedRuleFields, autoRules: autoRules };
+        unitDiag.perCategory[catKey] = diag;
 
         records.forEach(rec => {
-            const id = rec.ID;
-            if (!id) return;
-            let title = '';
-            for (const c of titleCandidates) { if (rec[c]) { title = rec[c]; break; } }
-            if (!title) title = id;
+            try {
+                const id = String(rec.ID || '').trim();
+                if (!id) { diag.skippedNoId++; return; }   // 沒有穩定識別碼就無法收藏／記錄錯題，記下原因而不是默默吃掉
+                diag.withId++;
+                let title = '', titleField = '';
+                for (const c of titleCandidates) { if (rec[c]) { title = rec[c]; titleField = c; break; } }
+                if (!title) title = id;
 
-            Object.keys(rec).forEach(field => {
-                if (field === 'ID' || field === '_row') return;
-                if (titleCandidates.includes(field)) return;
-                const value = rec[field];
-                if (!value) return;
-                const rule = (rulesByCat[catName] || {})[field];
-                units.push({
-                    id: id + '::' + field,
-                    knowledgeId: id,
-                    category: catKey,
-                    categoryName: catName,
-                    title: title,
-                    field: field,
-                    value: value,
-                    record: rec,
-                    questionable: rule ? rule.enabled : false,
-                    gradingType: rule ? rule.gradingType : 'text',
-                    required: rule ? rule.required : false
+                Object.keys(rec).forEach(field => {
+                    if (field === 'ID' || field.startsWith('_')) return;
+                    if (field === titleField) return; // 只排除「這一筆實際拿來當題目標題」的欄位，其他欄位（例如縮寫為標題時的中文名稱）都可以出題
+                    const value = rec[field];
+                    if (!value || !String(value).trim()) return;
+                    const rule = catRules[field];
+                    const questionable = autoRules ? true : !!(rule && rule.enabled);
+                    const unit = {
+                        id: id + '::' + field,
+                        knowledgeId: id,
+                        category: catKey,
+                        categoryName: catName,
+                        title: title,
+                        field: field,
+                        value: value,
+                        record: rec,
+                        questionable: questionable,
+                        gradingType: autoRules ? (autoType[field] || 'text') : (rule ? rule.gradingType : 'text'),
+                        required: rule ? rule.required : false
+                    };
+                    if (!unit.title || !unit.value) return; // 問題或答案為空：不產生
+                    units.push(unit);
+                    diag.units++;
+                    if (questionable) diag.questionableUnits++;
                 });
-            });
+            } catch (e) {
+                unitDiag.generatorErrors.push({ category: catKey, error: String(e && e.message || e) });
+            }
         });
     });
     knowledgeUnits = units;
+    window.__conciergeDiag = unitDiag;
+    if (typeof console !== 'undefined') console.info('[禮賓司萬事通] 知識單元診斷', unitDiag);
+}
+
+/** 考題池是空的時候，回報「真正的原因」，而不是一律說沒有題目。 */
+function diagnoseEmptyPool() {
+    if (bootError) return { code: 'connection', message: '無法連線 Google 試算表：' + bootError, detail: bootError };
+    if (!bootstrapData) return { code: 'loading', message: '資料載入中，請稍候…', detail: '' };
+    if (unitDiag.generatorErrors.length) {
+        return { code: 'generator_error', message: '題目生成時發生錯誤，請聯繫管理者。', detail: JSON.stringify(unitDiag.generatorErrors.slice(0, 3)) };
+    }
+    const scope = examSettings.scope;
+    const cats = scope === 'all' ? Object.keys(bootstrapData.categorySheets) : [scope];
+    const lines = [];
+    cats.forEach(cat => {
+        const name = bootstrapData.categorySheets[cat];
+        const meta = (bootstrapData.meta && bootstrapData.meta[cat]) || {};
+        const d = unitDiag.perCategory[cat] || {};
+        if (meta.sheetFound === false) lines.push(`找不到試算表分頁「${name}」`);
+        else if ((d.records || 0) === 0 && (meta.deleted || 0) > 0) lines.push(`「${name}」的資料已全部被標記為刪除`);
+        else if ((d.records || 0) === 0) lines.push(`「${name}」目前沒有有效資料`);
+        else if ((d.withId || 0) === 0) lines.push(`「${name}」的資料缺少識別碼（ID），請確認 Apps Script 已部署最新版後重新整理`);
+        else if ((d.questionableUnits || 0) === 0) lines.push(`「${name}」有 ${d.records} 筆資料，但沒有可出題的欄位（試算表欄位：${(d.headers || []).join('、')}；出題規則啟用的欄位：${(d.ruleFieldsEnabled || []).join('、') || '無'}）`);
+        else lines.push(`「${name}」目前沒有符合條件的題目`);
+    });
+    const short = lines.length === 1 ? lines[0] : (scope === 'all' ? '所有分類目前都沒有可出題的內容' : lines[0]);
+    return { code: 'no_questionable_data', message: short, detail: lines.join('\n') };
 }
 
 function getFilteredUnits(scope, mode, requireQuestionable) {
@@ -1201,7 +1261,13 @@ function gradeAnswer(userInput, question) {
         const u = parseTimeToMinutes(normUser), c = parseTimeToMinutes(normCorrect);
         if (u !== null && c !== null) return { correct: u === c, reason: u === c ? '時間正確' : '時間不正確' };
     }
-    if (type === 'number' || type === 'phone' || type === 'code' || type === 'exact') {
+    if (type === 'number' || type === 'phone') {
+        // 分機／電話：空格、橫線、括號都不影響，只比對數字與 * # / 符號
+        const dig = x => String(x).normalize('NFKC').replace(/[\s\-–—().]/g, '');
+        const match = dig(rawUser) === dig(correct);
+        return { correct: match, reason: match ? '正確' : '不正確（此類型需精確符合，不接受相似答案）' };
+    }
+    if (type === 'code' || type === 'exact') {
         const match = normUser === normCorrect;
         return { correct: match, reason: match ? '正確' : '不正確（此類型需精確符合，不接受相似答案）' };
     }
@@ -1286,6 +1352,7 @@ async function boot(silent) {
         const res = await apiGet({ action: 'bootstrap' });
         if (!res.ok) throw new Error(res.error || '未知錯誤');
         bootstrapData = res.data;
+        bootError = null;
         if (!adminFilterCat) adminFilterCat = Object.keys(bootstrapData.categorySheets)[0];
         buildKnowledgeUnits();
         renderKnowFilterRow();
@@ -1293,15 +1360,16 @@ async function boot(silent) {
         const outdated = (bootstrapData.apiVersion || 0) < REQUIRED_API_VERSION;
         if (statusEl) statusEl.innerText = outdated
             ? '⚠️ 後端不是最新版（請重新部署 Apps Script），刪除功能暫時停用'
-            : `狀態：已連線，共 ${knowledgeUnits.length} 筆知識單元`;
+            : `狀態：已連線，共 ${knowledgeUnits.length} 筆知識單元` + (Object.values(bootstrapData.meta || {}).some(m => m.missingId > 0) ? '（有資料缺少 ID）' : '');
         if (!silent) { startSession(); }
         else if (currentCardUnit && !knowledgeUnits.some(u => u.id === currentCardUnit.id)) { nextCard(); }
         renderSearchList();
         if (userRole === 'admin') { renderAdminCatFilter(); renderAdminList(); }
         return true;
     } catch (e) {
-        document.getElementById('card-prompt').innerText = '⚠️ 連線 Google 試算表失敗：' + e.message;
-        if (statusEl) statusEl.innerText = '狀態：連線失敗';
+        bootError = e.message;
+        if (!bootstrapData) document.getElementById('card-prompt').innerText = '無法連線 Google 試算表：' + e.message;
+        if (statusEl) statusEl.innerText = '狀態：連線失敗（' + e.message + '）';
         return false;
     }
 }
@@ -1413,7 +1481,9 @@ function nextCard() {
     const pool = getFilteredUnits(examSettings.scope, examSettings.mode, true);
     if (pool.length === 0) {
         document.getElementById('card-badge').innerText = '考題測驗';
-        document.getElementById('card-prompt').innerText = bootstrapData ? '目前沒有可出題的知識內容，請到設定調整考試範圍，或聯繫主管確認出題規則。' : '載入中…';
+        const dg = diagnoseEmptyPool();
+        document.getElementById('card-prompt').innerText = dg.message;
+        if (dg.detail) console.warn('[禮賓司萬事通] 考題池為空：' + dg.code + '\n' + dg.detail);
         currentCardUnit = null;
         return;
     }
@@ -1692,31 +1762,49 @@ function renderSelectionBar() {
 function clearSelection() { selectedRecordIds.clear(); renderSelectionBar(); renderAdminList(); }
 
 async function deleteSelectedRecords() {
-    const ids = [...selectedRecordIds];
-    if (ids.length === 0) return;
+    const ids = [...selectedRecordIds].filter(Boolean);
+    if (selectedRecordIds.size === 0) return;
+    if (ids.length === 0) {
+        alert('刪除失敗：選取的資料沒有識別碼（ID）。\n請重新整理頁面；若仍出現，請確認 Apps Script 已部署最新版（版本 4 以上）。');
+        return;
+    }
     if (!bootstrapData || (bootstrapData.apiVersion || 0) < REQUIRED_API_VERSION) {
-        alert('無法刪除：目前連到的 Google Apps Script 不是最新版（沒有軟刪除功能）。\n請先把最新的 Code.gs 貼進 Apps Script 並「部署 → 管理部署作業 → 編輯 → 新版本」，再回來重新整理。');
+        alert('無法刪除：目前連到的 Google Apps Script 不是最新版。\n請先把最新的 Code.gs 貼進 Apps Script 並「部署 → 管理部署作業 → 編輯 → 新版本」，再回來重新整理。');
         return;
     }
     if (!confirm(`確定要刪除選取的 ${ids.length} 題嗎？\n資料會在 Google 試算表標記為「已刪除」並保留歷史紀錄，之後不會再出現在題庫。`)) return;
 
     const cat = adminFilterCat;
+    const titleCands = (bootstrapData.titleFields[cat] || []);
+    const nameOf = id => {
+        const rec = (bootstrapData.knowledge[cat] || []).find(r => r.ID === id) || {};
+        for (const c of titleCands) if (rec[c]) return rec[c];
+        return id;
+    };
+    const names = {}; ids.forEach(id => { names[id] = nameOf(id); });
     try {
         const res = await apiPost({ action: 'deleteRecords', token: adminToken, category: cat, ids: ids });
         if (!res.ok) throw new Error(res.error || '後端回報失敗');
-        // 成功條件 1：後端明確回報「軟刪除」且筆數相符（舊版後端不會有 softDelete，直接視為失敗）
-        if (!res.data || res.data.softDelete !== true || res.data.deletedCount !== ids.length) {
+        const d = res.data || {};
+        // 成功條件 1：後端明確回報「軟刪除」並逐筆回報結果（舊版後端沒有這些欄位，視為失敗）
+        if (d.softDelete !== true || !Array.isArray(d.deletedIds)) {
             throw new Error('後端回傳內容不符合預期（可能還是舊版 Apps Script，尚未重新部署）。資料沒有被刪除。');
         }
-        // 成功條件 2：重新從 Google 試算表讀取，確認這些題目真的不在有效題庫了
-        const ok = await boot(true);
-        if (!ok) throw new Error('刪除指令已送出，但重新讀取試算表失敗，無法確認結果，請稍後重新整理確認。');
-        const still = ids.filter(id => (bootstrapData.knowledge[cat] || []).some(r => r.ID === id));
-        if (still.length > 0) throw new Error('重新讀取後這些題目仍然存在，刪除沒有生效：' + still.join('、'));
+        const failed = d.failed || [];
+        // 成功條件 2：重新從 Google 試算表讀取，確認「後端說成功的那些」真的不在有效題庫了
+        const reloaded = await boot(true);
+        if (!reloaded) throw new Error('刪除指令已送出，但重新讀取試算表失敗，無法確認結果，請稍後重新整理確認。');
+        const still = d.deletedIds.filter(id => (bootstrapData.knowledge[cat] || []).some(r => r.ID === id));
+        if (still.length > 0) throw new Error('重新讀取後這些題目仍然存在，刪除沒有生效：' + still.map(id => names[id] || id).join('、'));
 
-        selectedRecordIds.clear();
+        d.deletedIds.forEach(id => selectedRecordIds.delete(id));
         renderAdminCatFilter(); renderAdminList(); renderSelectionBar();
-        alert(`已刪除 ${ids.length} 題（試算表已標記為已刪除，資料仍保留）。`);
+        if (failed.length > 0) {
+            alert(`部分完成：成功刪除 ${d.deletedIds.length} 題，${failed.length} 題失敗（失敗的仍保留、未被更動）：\n` +
+                  failed.map(f => `・${names[f.id] || f.id}：${f.reason}`).join('\n'));
+        } else {
+            alert(`已刪除 ${d.deletedIds.length} 題（試算表已標記為已刪除，資料仍保留）。`);
+        }
     } catch (e) {
         alert('刪除失敗：' + e.message + '\n目前資料沒有被更動。');
         await boot(true);
@@ -1731,7 +1819,9 @@ async function deleteSelectedRecords() {
 function closeRecordForm() { document.getElementById('record-form-modal').classList.add('hidden'); }
 
 const MAX_NEW_RECORDS = 5;
-const REQUIRED_API_VERSION = 3; // 對應 Code.gs 的 API_VERSION（含軟刪除）
+const REQUIRED_API_VERSION = 4; // 對應 Code.gs 的 API_VERSION（4：自動補穩定 ID、逐筆刪除結果）
+let bootError = null;          // 最近一次連線 Google 試算表失敗的原因（成功就清掉）
+let unitDiag = { perCategory: {}, generatorErrors: [] }; // 題目生成診斷資訊（開發者看，console 與 window.__conciergeDiag）
 function openRecordForm(cat, id) {
     recordFormEditingId = id || null;
     const sel = document.getElementById('record-form-category');

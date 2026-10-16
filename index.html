@@ -541,7 +541,21 @@
             .settings-grid-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: start; }
             .settings-full-width { grid-column: 1 / -1; margin-top: 8px; }
         }
-    </style>
+    
+        /* 答案卡片背面：完整問題（小）→ 正確答案（最大、視覺重點）→ 補充說明（小） */
+        .card-back-body { margin: auto 0; display: flex; flex-direction: column; align-items: center; gap: 6px; width: 100%; padding: 0 8px; box-sizing: border-box; }
+        .ans-question { font-size: 15px; font-weight: 600; color: var(--text-sub); line-height: 1.5; max-width: 100%; word-break: break-word; }
+        .ans-answer { font-size: clamp(34px, 4.6vw, 54px); font-weight: 900; color: var(--primary); line-height: 1.2; margin-top: 6px; max-width: 100%; word-break: break-word; overflow-wrap: anywhere; }
+        .ans-answer.long { font-size: clamp(22px, 3vw, 32px); }
+        .ans-note { font-size: 13px; color: var(--text-sub); margin-top: 8px; line-height: 1.5; max-width: 100%; word-break: break-word; white-space: pre-line; }
+        .card-prompt-text.long-text { font-size: clamp(22px, 2.6vw, 34px) !important; }
+        @media (max-width: 859px) {
+            .ans-question { font-size: 14px; }
+            .ans-answer { font-size: clamp(30px, 9vw, 44px); }
+            .ans-answer.long { font-size: clamp(20px, 6vw, 28px); }
+            .card-prompt-text.long-text { font-size: clamp(20px, 5.4vw, 28px) !important; }
+        }
+</style>
 </head>
 
 <body>
@@ -653,10 +667,10 @@
                             </div>
                             <div class="card-face card-back">
                                 <div class="result-badge" id="card-result-badge">🎉 答對了！</div>
-                                <div style="margin:auto 0; display:flex; flex-direction:column; align-items:center; gap:3px;">
-                                    <div class="ans-code" id="card-ans-code">VC</div>
-                                    <div class="ans-cn" id="card-ans-cn">房間已清潔，待查房，不可入住</div>
-                                    <div class="ans-user" id="card-ans-user">你的輸入：VC</div>
+                                <div class="card-back-body">
+                                    <div class="ans-question" id="card-ans-question"></div>
+                                    <div class="ans-answer" id="card-ans-answer"></div>
+                                    <div class="ans-note" id="card-ans-note"></div>
                                 </div>
                                 <div style="font-size:13px; color:var(--text-sub);">按 Enter 或點擊「下一題」繼續刷題</div>
                             </div>
@@ -962,6 +976,7 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbwmZjmS_d11ZYEc7NbTmvMp
    ================================================================ */
 let bootstrapData = null;
 let knowledgeUnits = [];
+let knowledgePoints = [];   // 每個「知識點（一筆資料）」＋它可用的題目變體；每輪每個知識點只會被考一次
 let userRole = null;        // 'staff' | 'admin'：App 一般進入關卡的角色，跟後台 CRUD 無關
 let adminToken = null;      // 後台 CRUD 專用的短期 session token，只在記憶體內，絕不落地
 let currentCardUnit = null;
@@ -974,7 +989,7 @@ let adminFilterCat = null;
 let recordFormEditingId = null;
 let selectedRecordIds = new Set();
 let switchBusy = false;       // 切換身分驗證中：避免 Enter／連點重複送出
-let session = { answered: 0, correct: 0, done: false };
+let session = { queue: [], index: 0, answered: 0, correct: 0, done: false, requested: 0, available: 0, endless: false, pool: [] };
 let pendingSwitchRole = null; // 'staff' | 'admin'，切換身分彈窗用
 
 let favs = JSON.parse(localStorage.getItem('v3_favs') || '[]');
@@ -1027,6 +1042,26 @@ async function apiPost(body) {
    完全不知道「早餐」「分機」這些具體欄位名稱，純粹依照 bootstrap 回傳的
    headers / titleFields / fieldRules 動態運作，Sheet 加欄位不用改這裡。
    ================================================================ */
+/* ---- 試算表設定（bootstrap.settings）→ 實際行為。登入、進入後台、每輪開始時都會重新讀取。 ---- */
+function cfgBool(key, def) {
+    const v = bootstrapData && bootstrapData.settings ? bootstrapData.settings[key] : undefined;
+    if (v === undefined || v === null || v === '') return def;
+    return String(v).toUpperCase() === 'TRUE';
+}
+function cfgNum(key, def) {
+    const v = bootstrapData && bootstrapData.settings ? parseFloat(bootstrapData.settings[key]) : NaN;
+    return isNaN(v) ? def : v;
+}
+/** Fisher–Yates 洗牌（不會改動原陣列） */
+function shuffle(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+
 function inferGradingType(values) {
     const vs = values.filter(v => String(v).trim() !== '');
     if (vs.length === 0) return 'text';
@@ -1035,14 +1070,32 @@ function inferGradingType(values) {
     return 'text';
 }
 
+function spaceAfterLatin(t) { return /[A-Za-z0-9'’)）]$/.test(t) ? t + ' ' : t; }
+function fillTemplate(tpl, ctx) {
+    return String(tpl).replace(/\{(標題欄位|標題|欄位|答案|分類)\}/g, (_, k) => ctx[k] === undefined ? '' : ctx[k]);
+}
+function defaultForwardPrompt(title, field, type) {
+    const t = spaceAfterLatin(title);
+    if (type === 'time_range') return `${t}的${field}${/時間$/.test(field) ? '' : '時間'}是幾點到幾點？`;
+    if (type === 'time') return `${t}的${field}是幾點？`;
+    if (type === 'number' || type === 'phone') return `${t}的${field}是多少？`;
+    if (type === 'list') return `${t}的${field}有哪些？`;
+    return `${t}的${field}是什麼？`;
+}
+function looksLikeCode(t) { return /^[A-Za-z0-9&\-\/ ]{1,10}$/.test(String(t).trim()); }
+
+/** 把 Google 試算表的每一筆資料，轉成「知識單元」與「每個知識點可用的題目」。
+ *  所有題目文字都由資料欄位＋試算表「出題規則」產生，題庫沒有任何寫死內容。 */
 function buildKnowledgeUnits() {
     const units = [];
+    const points = [];
     const rulesByCat = {};
     (bootstrapData.fieldRules || []).forEach(r => {
         rulesByCat[r.category] = rulesByCat[r.category] || {};
         rulesByCat[r.category][r.field] = r;
     });
-    unitDiag = { perCategory: {}, generatorErrors: [] };
+    const noteFields = bootstrapData.noteFields || [];
+    unitDiag = { perCategory: {}, generatorErrors: [], skipped: [] };
 
     Object.keys(bootstrapData.knowledge).forEach(catKey => {
         const catName = bootstrapData.categorySheets[catKey];
@@ -1051,65 +1104,83 @@ function buildKnowledgeUnits() {
         const headers = (bootstrapData.headers && bootstrapData.headers[catKey]) || [];
         const catRules = rulesByCat[catName] || {};
         const dataFields = headers.filter(h => h !== 'ID');
-        // 出題規則分頁裡，這個分類有沒有任何一條規則對得到實際欄位？對不到（例如規則寫「分機」、
-        // 試算表欄位叫「分機&電話號碼」）就不能讓整個分類無題可考：改用「依實際欄位自動出題」。
+        // 規則完全對不到實際欄位（例如規則寫「分機」、欄位叫「分機&電話號碼」）時，改依實際欄位自動出題
         const matchedRuleFields = dataFields.filter(h => catRules[h]);
         const autoRules = matchedRuleFields.length === 0;
         const autoType = {};
         if (autoRules) dataFields.forEach(h => { autoType[h] = inferGradingType(records.map(r => r[h])); });
 
-        const diag = { records: records.length, withId: 0, skippedNoId: 0, units: 0, questionableUnits: 0,
+        // 反向出題需要「這個答案在該欄位是唯一的」，先統計每個欄位各個值出現幾次
+        const valueCount = {};
+        dataFields.forEach(f => { valueCount[f] = {}; records.forEach(r => { const v = String(r[f] || '').trim(); if (v) valueCount[f][v] = (valueCount[f][v] || 0) + 1; }); });
+
+        const diag = { records: records.length, withId: 0, skippedNoId: 0, units: 0, questionableUnits: 0, points: 0, skippedQuestions: 0,
                        headers: headers, titleFields: titleCandidates, ruleFieldsEnabled: Object.keys(catRules).filter(f => catRules[f].enabled),
                        matchedRuleFields: matchedRuleFields, autoRules: autoRules };
         unitDiag.perCategory[catKey] = diag;
+        const skip = (rec, field, reason) => { diag.skippedQuestions++; unitDiag.skipped.push({ category: catName, id: rec.ID, field: field, reason: reason }); };
 
         records.forEach(rec => {
             try {
                 const id = String(rec.ID || '').trim();
-                if (!id) { diag.skippedNoId++; return; }   // 沒有穩定識別碼就無法收藏／記錄錯題，記下原因而不是默默吃掉
+                if (!id) { diag.skippedNoId++; return; }
                 diag.withId++;
                 let title = '', titleField = '';
-                for (const c of titleCandidates) { if (rec[c]) { title = rec[c]; titleField = c; break; } }
-                if (!title) title = id;
+                for (const c of titleCandidates) { if (String(rec[c] || '').trim()) { title = String(rec[c]).trim(); titleField = c; break; } }
+                const variants = [];
 
                 Object.keys(rec).forEach(field => {
-                    if (field === 'ID' || field.startsWith('_')) return;
-                    if (field === titleField) return; // 只排除「這一筆實際拿來當題目標題」的欄位，其他欄位（例如縮寫為標題時的中文名稱）都可以出題
-                    const value = rec[field];
-                    if (!value || !String(value).trim()) return;
+                    if (field === 'ID' || field.startsWith('_') || field === titleField) return;
+                    const value = String(rec[field] || '').trim();
+                    if (!value) return;
                     const rule = catRules[field];
-                    const questionable = autoRules ? true : !!(rule && rule.enabled);
-                    const unit = {
-                        id: id + '::' + field,
-                        knowledgeId: id,
-                        category: catKey,
-                        categoryName: catName,
-                        title: title,
-                        field: field,
-                        value: value,
-                        record: rec,
-                        questionable: questionable,
-                        gradingType: autoRules ? (autoType[field] || 'text') : (rule ? rule.gradingType : 'text'),
-                        required: rule ? rule.required : false
-                    };
-                    if (!unit.title || !unit.value) return; // 問題或答案為空：不產生
-                    units.push(unit);
-                    diag.units++;
-                    if (questionable) diag.questionableUnits++;
+                    const isNoteCol = noteFields.includes(field);
+                    const questionable = autoRules ? !isNoteCol : !!(rule && rule.enabled);
+                    const gradingType = autoRules ? (autoType[field] || 'text') : (rule ? rule.gradingType : 'text');
+                    // 補充說明：同一筆資料裡「不是這一題正在問的欄位」的補充欄位，顯示在答案卡片背面
+                    let note = '';
+                    for (const nf of noteFields) { if (nf !== field && String(rec[nf] || '').trim()) { note = String(rec[nf]).trim(); break; } }
+                    const unit = { id: id + '::' + field, knowledgeId: id, category: catKey, categoryName: catName, title: title, titleField: titleField,
+                                   field: field, value: value, note: note, record: rec, questionable: questionable, gradingType: gradingType,
+                                   required: rule ? rule.required : false };
+                    units.push(unit); diag.units++;
+                    if (!questionable) return;
+                    diag.questionableUnits++;
+
+                    // ---- 題目品質檢查：必須有明確的提問對象與提問內容，答案不能是空的或和題目重複 ----
+                    if (!title) { skip(rec, field, `缺少標題欄位（${titleCandidates.join('、')}）`); return; }
+                    if (title === value) { skip(rec, field, '答案和題目標題相同，沒有出題意義'); return; }
+                    const ctx = { '標題': spaceAfterLatin(title), '欄位': field, '答案': value, '分類': catName, '標題欄位': titleField };
+                    let prompt = (rule && rule.template) ? fillTemplate(rule.template, ctx).trim() : '';
+                    if (!prompt || !prompt.includes(title)) prompt = defaultForwardPrompt(title, field, gradingType); // 自訂問法沒帶到提問對象就改用預設問法
+                    variants.push({ id: id + '::' + field, knowledgeId: id, unitId: unit.id, category: catKey, categoryName: catName, title: title,
+                                    field: field, prompt: prompt, answer: value, gradingType: gradingType, note: note, reverse: false });
+
+                    // ---- 反向出題（出題規則「反向問法」有填，且答案在這個欄位唯一時才出）----
+                    if (rule && rule.reverseTemplate && valueCount[field][value] === 1 && titleField) {
+                        const tpl = rule.reverseTemplate === '自動' ? '{欄位}為「{答案}」的{標題欄位}是什麼？' : rule.reverseTemplate;
+                        const rp = fillTemplate(tpl, ctx).trim();
+                        if (rp && rp.includes(value)) {
+                            variants.push({ id: id + '::' + field + '::rev', knowledgeId: id, unitId: unit.id, category: catKey, categoryName: catName, title: title,
+                                            field: field, prompt: rp, answer: title, gradingType: looksLikeCode(title) ? 'code' : 'text', note: note, reverse: true });
+                        }
+                    }
                 });
+                if (variants.length) { points.push({ knowledgeId: id, category: catKey, categoryName: catName, title: title, variants: variants }); diag.points++; }
             } catch (e) {
                 unitDiag.generatorErrors.push({ category: catKey, error: String(e && e.message || e) });
             }
         });
     });
     knowledgeUnits = units;
+    knowledgePoints = points;
     window.__conciergeDiag = unitDiag;
     if (typeof console !== 'undefined') console.info('[禮賓司萬事通] 知識單元診斷', unitDiag);
 }
 
 /** 考題池是空的時候，回報「真正的原因」，而不是一律說沒有題目。 */
 function diagnoseEmptyPool() {
-    if (bootError) return { code: 'connection', message: '無法連線 Google 試算表：' + bootError, detail: bootError };
+    if (bootError && !bootstrapData) return { code: 'connection', message: '無法連線 Google 試算表：' + bootError, detail: bootError };
     if (!bootstrapData) return { code: 'loading', message: '資料載入中，請稍候…', detail: '' };
     if (unitDiag.generatorErrors.length) {
         return { code: 'generator_error', message: '題目生成時發生錯誤，請聯繫管理者。', detail: JSON.stringify(unitDiag.generatorErrors.slice(0, 3)) };
@@ -1124,8 +1195,9 @@ function diagnoseEmptyPool() {
         if (meta.sheetFound === false) lines.push(`找不到試算表分頁「${name}」`);
         else if ((d.records || 0) === 0 && (meta.deleted || 0) > 0) lines.push(`「${name}」的資料已全部被標記為刪除`);
         else if ((d.records || 0) === 0) lines.push(`「${name}」目前沒有有效資料`);
-        else if ((d.withId || 0) === 0) lines.push(`「${name}」的資料缺少識別碼（ID），請確認 Apps Script 已部署最新版後重新整理`);
+        else if ((d.withId || 0) === 0) lines.push(`「${name}」的資料缺少識別碼，請確認 Apps Script 已部署最新版後重新整理`);
         else if ((d.questionableUnits || 0) === 0) lines.push(`「${name}」有 ${d.records} 筆資料，但沒有可出題的欄位（試算表欄位：${(d.headers || []).join('、')}；出題規則啟用的欄位：${(d.ruleFieldsEnabled || []).join('、') || '無'}）`);
+        else if ((d.points || 0) === 0) lines.push(`「${name}」的資料無法產生有效題目：` + unitDiag.skipped.filter(x => x.category === name).slice(0, 3).map(x => x.reason).join('；'));
         else lines.push(`「${name}」目前沒有符合條件的題目`);
     });
     const short = lines.length === 1 ? lines[0] : (scope === 'all' ? '所有分類目前都沒有可出題的內容' : lines[0]);
@@ -1151,35 +1223,7 @@ function getFilteredUnits(scope, mode, requireQuestionable) {
    QUESTION ENGINE — 不預先產生固定題庫，每次從 Knowledge Unit 即時產生題目。
    支援多種問法（同一欄位隨機挑一句）與多方位出題（正向問值／反向問標題）。
    ================================================================ */
-const GENERIC_TEMPLATES = {
-    default: (t, f) => [`${t} 的${f}是什麼？`, `請回答 ${t} 的${f}。`, `${t}的${f}？`],
-    time_range: (t, f) => [`${t}的${f}是什麼時候？`, `${t} ${f}時間？`, `請問 ${t} 的${f}營業時間？`],
-    time: (t, f) => [`${t}的${f}是幾點？`, `${t} ${f}幾點開始？`],
-    number: (t, f) => [`${t}的${f}是多少？`, `${t} 的${f}號碼是？`],
-    phone: (t, f) => [`${t}的${f}是幾號？`, `${t} 的${f}電話是？`],
-    exact: (t, f) => [`${t}的${f}是？`],
-    code: (t, f) => [`${t}的${f}代碼是？`],
-    text: (t, f) => [`${t}的${f}是什麼？`, `請描述 ${t} 的${f}。`],
-    list: (t, f) => [`${t}提供哪些${f}？`]
-};
-function reverseTemplates(catName, field, value) {
-    return [`哪一個${catName}項目的${field}是「${value}」？`, `${field}是「${value}」的是哪一個？`];
-}
-function generateQuestionFromUnit(unit, allowReverse) {
-    const reverse = !!allowReverse && Math.random() < 0.3;
-    const templates = reverse
-        ? reverseTemplates(unit.categoryName, unit.field, unit.value)
-        : (GENERIC_TEMPLATES[unit.gradingType] || GENERIC_TEMPLATES.default)(unit.title, unit.field);
-    const prompt = templates[Math.floor(Math.random() * templates.length)];
-    return {
-        id: unit.id + (reverse ? '::rev' : ''),
-        unit: unit,
-        reverse: reverse,
-        prompt: prompt,
-        correctAnswer: reverse ? unit.title : unit.value,
-        gradingType: reverse ? 'text' : unit.gradingType
-    };
-}
+
 
 /* ================================================================
    SMART GRADING ENGINE — 規則優先，相似度是最後手段。
@@ -1237,6 +1281,16 @@ function gradeAnswer(userInput, question) {
     const rawUser = String(userInput || '').trim();
     if (!rawUser) return { correct: false, reason: '尚未作答' };
 
+    // 試算表「答案格式自動統一」＝否 時，不做任何格式統一，必須一字不差（文字題仍可用相似度門檻）
+    if (!cfgBool('answer_format_normalize', true)) {
+        if (rawUser === String(correct)) return { correct: true, reason: '完全正確' };
+        if (type === 'text') {
+            const th = cfgNum('judging_threshold', 85);
+            const sim0 = similarity(rawUser, String(correct));
+            return { correct: sim0 >= th, reason: `相似度 ${sim0.toFixed(0)}%（門檻 ${th}%）` };
+        }
+        return { correct: false, reason: '未統一格式，需完全一致' };
+    }
     const normUser = normalizeAnswer(rawUser);
     const normCorrect = normalizeAnswer(correct);
 
@@ -1278,7 +1332,7 @@ function gradeAnswer(userInput, question) {
         return { correct: match, reason: match ? '正確' : '項目不完整或不正確' };
     }
 
-    const threshold = parseFloat((bootstrapData && bootstrapData.settings && bootstrapData.settings.judging_threshold) || '85');
+    const threshold = cfgNum('judging_threshold', 85);   // 試算表「智慧判分門檻」
     const sim = similarity(normUser, normCorrect);
     if (sim >= threshold) return { correct: true, reason: `相似度 ${sim.toFixed(0)}% ≥ 門檻 ${threshold}%，判定正確` };
     return { correct: false, reason: `相似度 ${sim.toFixed(0)}% 未達門檻 ${threshold}%` };
@@ -1345,9 +1399,8 @@ function applyRoleUI() {
 /* ================================================================
    BOOT — 從 Google 試算表抓 bootstrap，重建 Knowledge Units，刷新畫面
    ================================================================ */
-async function boot(silent) {
+async function loadBootstrap() {
     const statusEl = document.getElementById('sync-status-txt');
-    if (!silent && statusEl) statusEl.innerText = '狀態：正在連線 Google 試算表…';
     try {
         const res = await apiGet({ action: 'bootstrap' });
         if (!res.ok) throw new Error(res.error || '未知錯誤');
@@ -1355,23 +1408,45 @@ async function boot(silent) {
         bootError = null;
         if (!adminFilterCat) adminFilterCat = Object.keys(bootstrapData.categorySheets)[0];
         buildKnowledgeUnits();
-        renderKnowFilterRow();
-        renderHomeStats();
         const outdated = (bootstrapData.apiVersion || 0) < REQUIRED_API_VERSION;
         if (statusEl) statusEl.innerText = outdated
-            ? '⚠️ 後端不是最新版（請重新部署 Apps Script），刪除功能暫時停用'
-            : `狀態：已連線，共 ${knowledgeUnits.length} 筆知識單元` + (Object.values(bootstrapData.meta || {}).some(m => m.missingId > 0) ? '（有資料缺少 ID）' : '');
-        if (!silent) { startSession(); }
-        else if (currentCardUnit && !knowledgeUnits.some(u => u.id === currentCardUnit.id)) { nextCard(); }
-        renderSearchList();
-        if (userRole === 'admin') { renderAdminCatFilter(); renderAdminList(); }
+            ? '⚠️ 後端不是最新版（請重新部署 Apps Script），部分功能暫時停用'
+            : `狀態：已連線，共 ${knowledgePoints.length} 個知識點` + (Object.values(bootstrapData.meta || {}).some(m => m.missingId > 0) ? '（有資料缺少識別碼）' : '');
         return true;
     } catch (e) {
         bootError = e.message;
-        if (!bootstrapData) document.getElementById('card-prompt').innerText = '無法連線 Google 試算表：' + e.message;
-        if (statusEl) statusEl.innerText = '狀態：連線失敗（' + e.message + '）';
+        if (!bootstrapData) setPromptText('無法連線 Google 試算表：' + e.message);
+        if (statusEl) statusEl.innerText = '狀態：連線失敗，目前顯示的是上次載入的資料（' + e.message + '）';
         return false;
     }
+}
+
+/** 目前這一輪裡，題目對應的資料已經被刪除或變更的，從尚未作答的部分移除，避免考到已刪除題目。 */
+function reconcileSession() {
+    if (!session || !session.queue) return;
+    const alive = {};
+    knowledgePoints.forEach(p => { alive[p.knowledgeId] = p; });
+    const answeredPart = session.queue.slice(0, session.index);
+    const remaining = session.queue.slice(session.index).filter(q => alive[q.knowledgeId]);
+    session.queue = answeredPart.concat(remaining);
+    session.pool = (session.pool || []).filter(p => alive[p.knowledgeId]);
+    const cur = currentCardUnit;
+    const flipped = !document.getElementById('next-card-btn').classList.contains('hidden');
+    if (cur && !alive[cur.knowledgeId] && !flipped && !session.done) nextCard();
+}
+
+async function boot(silent) {
+    const statusEl = document.getElementById('sync-status-txt');
+    if (!silent && statusEl) statusEl.innerText = '狀態：正在連線 Google 試算表…';
+    const ok = await loadBootstrap();
+    if (!ok) return false;
+    renderKnowFilterRow();
+    renderHomeStats();
+    if (!silent || !session || !session.queue || (session.queue.length === 0 && !session.done)) startSession();
+    else reconcileSession();
+    renderSearchList();
+    if (userRole === 'admin') { renderAdminCatFilter(); renderAdminList(); }
+    return true;
 }
 
 /* ================================================================
@@ -1402,7 +1477,11 @@ function switchTab(tab, btn) {
     if (descEl) descEl.innerText = titles[1];
 
     document.getElementById('admin-add-fab').style.display = (tab === 'admin' && bootstrapData) ? 'flex' : 'none';
-    if (tab === 'admin' && bootstrapData) { renderAdminCatFilter(); renderAdminList(); }
+    if (tab === 'admin' && bootstrapData) {
+        renderAdminCatFilter(); renderAdminList();
+        // 進入後台時重新讀取最新設定與資料；讀取失敗會在狀態列明確顯示，不會假裝已更新
+        loadBootstrap().then(ok => { if (ok) { reconcileSession(); renderKnowFilterRow(); renderSearchList(); renderAdminCatFilter(); renderAdminList(); } });
+    }
     if (tab === 'settings') updateSettingsStatsUI();
     if (tab === 'learn') setTimeout(() => document.getElementById('type-input')?.focus(), 50);
 }
@@ -1440,11 +1519,38 @@ function updateSettingsStatsUI() {
 /* ================================================================
    學習卡片（翻卡片記憶：打字輸入 → 翻牌看答案 → 下一題）
    ================================================================ */
-function sessionLimit() { return examSettings.count > 0 ? examSettings.count : Infinity; }
+
 
 function startSession() {
-    usedQuestionKeys.clear();
-    session = { answered: 0, correct: 0, done: false };
+    const randomize = cfgBool('question_randomize', true);   // 試算表「隨機出題」
+    const dedupe = cfgBool('question_dedupe', true);         // 試算表「同一輪不重複出題」
+    const count = examSettings.count;                         // 0＝無限題（∞）
+    const pickVariant = p => randomize ? p.variants[Math.floor(Math.random() * p.variants.length)] : p.variants[0];
+    const order = arr => randomize ? shuffle(arr) : arr.slice();
+
+    const inScope = knowledgePoints.filter(p => examSettings.scope === 'all' || p.category === examSettings.scope);
+    // 收藏優先／錯題優先：優先的知識點排在前面（各自隨機），其餘接在後面
+    const prioIds = examSettings.mode === 'fav' ? favs : (examSettings.mode === 'wrong' ? getWrongKnowledgeIds() : []);
+    const prio = prioIds.length ? inScope.filter(p => prioIds.includes(p.knowledgeId)) : [];
+    const rest = prioIds.length ? inScope.filter(p => !prioIds.includes(p.knowledgeId)) : inScope;
+    const ordered = order(prio).concat(order(rest));
+
+    let queue = [];
+    let endless = false;
+    if (dedupe) {
+        const n = count > 0 ? Math.min(count, ordered.length) : ordered.length;   // 題庫不足就是實際題數，不補空白、不重複
+        queue = ordered.slice(0, n).map(pickVariant);
+    } else if (count > 0) {
+        let pass = [], last = null;
+        while (queue.length < count && ordered.length) {
+            if (pass.length === 0) { pass = order(ordered); if (ordered.length > 1 && pass[0] === last) pass.push(pass.shift()); }
+            const p = pass.shift(); last = p; queue.push(pickVariant(p));
+        }
+    } else {
+        endless = ordered.length > 0;
+        queue = ordered.map(pickVariant);
+    }
+    session = { queue: queue, index: 0, answered: 0, correct: 0, done: false, requested: count, available: ordered.length, endless: endless, pool: ordered, lastPoint: null };
     document.getElementById('input-form').style.display = '';
     document.getElementById('end-exam-btn').style.display = '';
     document.getElementById('card-star').style.display = '';
@@ -1453,20 +1559,20 @@ function startSession() {
     nextCard();
 }
 
-function finishSession(reason) {
+function finishSession() {
     if (session.done) return;
     session.done = true;
     currentCardUnit = null;
-    const acc = session.answered > 0 ? Math.round((session.correct / session.answered) * 100) : 0;
+    // 不另外做結果頁：回到原本的考題介面，只留一個明確的「開始新一輪」操作（答題統計已在側邊欄）
     document.getElementById('main-card').classList.remove('flipped');
-    document.getElementById('card-badge').innerText = '測驗完成';
-    document.getElementById('card-prompt').innerText = session.answered > 0 ? '🎉 本輪測驗完成' : '本輪尚未作答';
-    document.getElementById('card-hint').innerText = `共作答 ${session.answered} 題，答對 ${session.correct} 題，正確率 ${acc}%` + (reason ? `（${reason}）` : '');
+    document.getElementById('card-badge').innerText = '考題測驗';
+    setPromptText('按下「開始新一輪」重新隨機出題');
+    document.getElementById('card-hint').innerText = '';
     document.getElementById('card-star').style.display = 'none';
     document.getElementById('input-form').style.display = 'none';
     document.getElementById('end-exam-btn').style.display = 'none';
     const nb = document.getElementById('next-card-btn');
-    nb.innerText = '再測一次 ➔ (Enter)';
+    nb.innerText = '開始新一輪 ➔ (Enter)';
     nb.classList.remove('hidden');
 }
 
@@ -1476,60 +1582,82 @@ function nextCard() {
     document.getElementById('next-card-btn').classList.add('hidden');
     document.getElementById('type-input').value = '';
 
-    if (session.answered >= sessionLimit()) { finishSession('已達指定題數'); return; }
-
-    const pool = getFilteredUnits(examSettings.scope, examSettings.mode, true);
-    if (pool.length === 0) {
+    // 不限題數且不要求不重複：佇列快用完時再補一輪洗牌過的題目
+    if (session.endless && session.index >= session.queue.length - 1 && session.pool.length) {
+        const last = session.queue[session.queue.length - 1];
+        let pass = cfgBool('question_randomize', true) ? shuffle(session.pool) : session.pool.slice();
+        if (pass.length > 1 && last && pass[0].knowledgeId === last.knowledgeId) pass.push(pass.shift());
+        pass.forEach(p => session.queue.push(p.variants[Math.floor(Math.random() * p.variants.length)]));
+    }
+    if (session.queue.length === 0) {
         document.getElementById('card-badge').innerText = '考題測驗';
         const dg = diagnoseEmptyPool();
-        document.getElementById('card-prompt').innerText = dg.message;
+        setPromptText(dg.message);
         if (dg.detail) console.warn('[禮賓司萬事通] 考題池為空：' + dg.code + '\n' + dg.detail);
         currentCardUnit = null;
         return;
     }
-    // 同一場測驗內不重複同一個知識點；全部出完就結束，不會無限循環
-    const candidates = pool.filter(u => !usedQuestionKeys.has(u.id));
-    if (candidates.length === 0) { finishSession('符合條件的題目已全部出完'); return; }
-    currentCardUnit = candidates[Math.floor(Math.random() * candidates.length)];
-    usedQuestionKeys.add(currentCardUnit.id);
+    if (session.index >= session.queue.length) { finishSession(); return; }
 
-    const progress = examSettings.count > 0 ? ` ・ ${session.answered + 1}/${examSettings.count}` : ` ・ 第 ${session.answered + 1} 題`;
-    document.getElementById('card-badge').innerText = `【${currentCardUnit.categoryName}】${currentCardUnit.field}${progress}`;
-    document.getElementById('card-prompt').innerText = currentCardUnit.title;
-    document.getElementById('card-star').classList.toggle('active', favs.includes(currentCardUnit.knowledgeId));
+    const q = session.queue[session.index];
+    currentCardUnit = q;
+    const total = session.endless ? 0 : session.queue.length;
+    let progress = total ? `第 ${session.index + 1} / ${total} 題` : `第 ${session.index + 1} 題`;
+    if (session.requested > 0 && total && total < session.requested) progress += `（題庫僅 ${total} 題）`;
+    document.getElementById('card-badge').innerText = `【${q.categoryName}】 ・ ${progress}`;
+    setPromptText(q.prompt);
+    document.getElementById('card-star').classList.toggle('active', favs.includes(q.knowledgeId));
     setTimeout(() => document.getElementById('type-input')?.focus(), 50);
+}
+function setPromptText(text) {
+    const el = document.getElementById('card-prompt');
+    el.innerText = text;
+    el.classList.toggle('long-text', String(text).length > 14);   // 完整問句比較長，字級自動縮小避免被截斷
 }
 
 function submitAnswer() {
     if (!document.getElementById('next-card-btn').classList.contains('hidden')) { requestNextCard(); return; }
     if (!currentCardUnit) return;
+    const q = currentCardUnit;
     const input = document.getElementById('type-input');
     const userVal = input.value.trim();
     if (!userVal) return;
 
-    const result = gradeAnswer(userVal, { correctAnswer: currentCardUnit.value, gradingType: currentCardUnit.gradingType });
+    const result = gradeAnswer(userVal, { correctAnswer: q.answer, gradingType: q.gradingType });
+    window.__lastGrade = { question: q.prompt, userAnswer: userVal, correct: result.correct, reason: result.reason }; // 只給開發診斷，不顯示給使用者
     document.getElementById('main-card').classList.add('flipped');
     document.getElementById('card-result-badge').className = 'result-badge ' + (result.correct ? 'correct' : 'wrong');
     document.getElementById('card-result-badge').innerText = result.correct ? '🎉 答對了！' : '❌ 答錯了';
-    document.getElementById('card-ans-code').innerText = `${currentCardUnit.title}・${currentCardUnit.field}`;
-    document.getElementById('card-ans-cn').innerText = currentCardUnit.value;
-    document.getElementById('card-ans-user').innerText = `你的輸入：${userVal}（${result.reason}）`;
+    // 背面：1 完整問題 → 2 正確答案（最大）→ 3 補充說明
+    document.getElementById('card-ans-question').innerText = q.prompt;
+    const ansEl = document.getElementById('card-ans-answer');
+    ansEl.innerText = q.answer;
+    ansEl.classList.toggle('long', String(q.answer).length > 14);
+    const noteEl = document.getElementById('card-ans-note');
+    noteEl.innerText = q.note ? '補充說明：' + q.note : '';
+    noteEl.style.display = q.note ? '' : 'none';
 
     session.answered++;
     if (result.correct) session.correct++;
+    session.index++;     // 答對或答錯都往下一題；答錯的題目不會被塞回佇列重複出現
     stats.total++;
-    if (result.correct) { stats.correct++; stats.streak++; removeWrong(currentCardUnit.knowledgeId); }
+    if (result.correct) { stats.correct++; stats.streak++; removeWrong(q.knowledgeId); }
     else {
         stats.streak = 0;
-        logWrong({ questionId: currentCardUnit.id, knowledgeId: currentCardUnit.knowledgeId, category: currentCardUnit.categoryName, field: currentCardUnit.field, userAnswer: userVal, correctAnswer: currentCardUnit.value, timestamp: new Date().toISOString() });
+        logWrong({ questionId: q.id, knowledgeId: q.knowledgeId, category: q.categoryName, field: q.field, userAnswer: userVal, correctAnswer: q.answer, timestamp: new Date().toISOString() });
     }
     saveStats();
     renderHomeStats();
     document.getElementById('next-card-btn').classList.remove('hidden');
 }
 
-function requestNextCard() {
-    if (session.done) { startSession(); return; }
+async function requestNextCard() {
+    if (session.done) {
+        // 新一輪開始前先重新讀取試算表，確保拿到最新的題庫、出題規則與設定；讀取失敗就沿用目前資料（狀態列會顯示連線失敗）
+        await loadBootstrap();
+        startSession();
+        return;
+    }
     nextCard();
 }
 
@@ -1819,7 +1947,7 @@ async function deleteSelectedRecords() {
 function closeRecordForm() { document.getElementById('record-form-modal').classList.add('hidden'); }
 
 const MAX_NEW_RECORDS = 5;
-const REQUIRED_API_VERSION = 4; // 對應 Code.gs 的 API_VERSION（4：自動補穩定 ID、逐筆刪除結果）
+const REQUIRED_API_VERSION = 5; // 對應 Code.gs 的 API_VERSION（4：自動補穩定 ID、逐筆刪除結果）
 let bootError = null;          // 最近一次連線 Google 試算表失敗的原因（成功就清掉）
 let unitDiag = { perCategory: {}, generatorErrors: [] }; // 題目生成診斷資訊（開發者看，console 與 window.__conciergeDiag）
 function openRecordForm(cat, id) {
@@ -1843,11 +1971,17 @@ function recordFormHeaders() {
     return (bootstrapData.headers[cat] || []).filter(h => h !== 'ID' && !h.startsWith('_'));
 }
 
+function requiredFieldsOf(cat) {
+    const name = bootstrapData.categorySheets[cat];
+    return new Set((bootstrapData.fieldRules || []).filter(r => r.category === name && r.required).map(r => r.field));
+}
 function buildRecordFormRow(n, values) {
     const headers = recordFormHeaders();
     const head = recordFormEditingId ? '' :
         `<div class="record-form-row-head"><span class="record-form-row-title">第 ${n} 題</span>${n > 1 ? '<span class="record-form-row-remove" onclick="removeRecordFormRow(this)">移除</span>' : ''}</div>`;
-    const inputs = headers.map(h => `<label class="modal-label">${esc(h)}</label><input type="text" class="search-box record-field" data-field="${esc(h)}" value="${esc((values && values[h]) || '')}">`).join('');
+    const cat = document.getElementById('record-form-category').value;
+    const reqSet = requiredFieldsOf(cat);
+    const inputs = headers.map(h => `<label class="modal-label">${esc(h)}${reqSet.has(h) ? ' <span style="color:var(--danger);">＊</span>' : ''}</label><input type="text" class="search-box record-field" data-field="${esc(h)}" value="${esc((values && values[h]) || '')}">`).join('');
     return `<div class="record-form-row">${head}${inputs}</div>`;
 }
 
@@ -1895,6 +2029,12 @@ async function submitRecordForm() {
     if (filled.length === 0) { errEl.textContent = '請至少填寫一題的內容。'; return; }
     const bad = filled.findIndex(f => !titleCands.some(c => f[c]));
     if (bad !== -1) { errEl.textContent = `第 ${rows.indexOf(filled[bad]) + 1} 題請至少填寫「${titleCands[0] || '標題'}」欄位。`; return; }
+    // 「出題規則」裡標示「是否必填＝是」的欄位，新增／編輯時不能空白
+    const reqSet = requiredFieldsOf(cat);
+    for (const f of filled) {
+        const miss = [...reqSet].filter(k => k in f && !String(f[k] || '').trim());
+        if (miss.length) { errEl.textContent = `第 ${rows.indexOf(f) + 1} 題的「${miss.join('、')}」必須填寫。`; return; }
+    }
     if (!recordFormEditingId && filled.length > MAX_NEW_RECORDS) { errEl.textContent = `一次最多新增 ${MAX_NEW_RECORDS} 題。`; return; }
 
     btn.disabled = true; btn.innerText = '儲存中…'; errEl.textContent = '';
